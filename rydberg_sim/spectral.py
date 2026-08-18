@@ -48,16 +48,11 @@ Algorithm (Cui Alg. 1/2, steps 1–4)
    Discarding the last entry before anchoring would leave an arbitrary
    global phase.
 
-What this module does **not** implement (Step 9+)
+What this module does **not** implement (Step 10+)
 -------------------------------------------------
-biased GS, EM-GS, Bessel ratio, CRLB, GD/PGD, Monte Carlo sweeps,
-figures, BER. The plan's comparison
-
-    "GS from spectral initialization should beat GS from random
-    initialization at SNR = -5 dB"
-
-is a **future Step-9** acceptance test. Do not implement GS here to
-satisfy it.
+EM-GS, Bessel ratio, CRLB, GD/PGD, Monte Carlo sweeps, figures, BER.
+Biased GS lives in ``gs.py``. The spectral-vs-random GS comparison at
+SNR = -5 dB is a Step-9 acceptance test, not implemented here.
 """
 
 from __future__ import annotations
@@ -71,7 +66,8 @@ PROJECTION_DENOM_FLOOR = 1e-300
 
 FUTURE_GS_SPECTRAL_VS_RANDOM_TEST = (
     "GS from spectral initialization should beat GS from random "
-    "initialization at SNR = -5 dB. Biased GS is Step 9; not implemented."
+    "initialization at SNR = -5 dB. That comparison is a Step 9 "
+    "acceptance test in tests/test_gs.py, not in this module."
 )
 
 

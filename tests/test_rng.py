@@ -21,6 +21,7 @@ def _draw_all(master_seed: int, trial_index: int) -> dict[str, np.ndarray]:
         "reference": rngs.reference.standard_normal(N_DRAW),
         "noise": rngs.noise.standard_normal(N_DRAW),
         "data": rngs.data.standard_normal(N_DRAW),
+        "solver": rngs.solver.standard_normal(N_DRAW),
     }
 
 
@@ -58,7 +59,7 @@ def test_independent_component_streams() -> None:
     """Within one trial, component streams are deterministic but distinct."""
     first = _draw_all(MASTER_SEED, 42)
     second = _draw_all(MASTER_SEED, 42)
-    names = ("channel", "pilots", "reference", "noise", "data")
+    names = ("channel", "pilots", "reference", "noise", "data", "solver")
     for name in names:
         np.testing.assert_array_equal(first[name], second[name], err_msg=name)
     for left, right in itertools.combinations(names, 2):
@@ -73,6 +74,17 @@ def test_data_stream_does_not_retune_legacy_streams() -> None:
     for i in range(4):
         a = np.random.default_rng(four[i]).standard_normal(N_DRAW)
         b = np.random.default_rng(five[i]).standard_normal(N_DRAW)
+        np.testing.assert_array_equal(a, b, err_msg=f"child {i}")
+
+
+def test_solver_stream_does_not_retune_legacy_streams() -> None:
+    """Appending the solver child must not change spawn children 0..4."""
+    entropy, trial = MASTER_SEED, 137
+    five = np.random.SeedSequence(entropy=entropy, spawn_key=(trial,)).spawn(5)
+    six = np.random.SeedSequence(entropy=entropy, spawn_key=(trial,)).spawn(6)
+    for i in range(5):
+        a = np.random.default_rng(five[i]).standard_normal(N_DRAW)
+        b = np.random.default_rng(six[i]).standard_normal(N_DRAW)
         np.testing.assert_array_equal(a, b, err_msg=f"child {i}")
 
 

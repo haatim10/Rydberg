@@ -1,4 +1,4 @@
-"""Steps 1–8 of the Rydberg atomic MIMO simulation stack.
+"""Steps 1–9 of the Rydberg atomic MIMO simulation stack.
 
 This package implements:
 
@@ -13,8 +13,9 @@ This package implements:
 * debugging/reference baselines (genie ZF, linearised closed-form LS,
   exhaustive QAM LS/ML). CM-ZF is explicitly unimplemented.
 * canonical Cui spectral initialization for ``z = |M^H u + b + w|``
+* Cui biased Gerchberg–Saxton (Algorithm 1) in the same canonical form
 
-It does **not** implement later stages (biased GS, EM-GS, Bessel ratio,
+It does **not** implement later stages (EM-GS, Bessel ratio,
 Cui/Xu CRLB, GD/PGD, Monte Carlo estimator sweeps, figures, BER).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``
@@ -66,6 +67,13 @@ from .channel import (
     steering_vector,
 )
 from .config import SimulationConfig
+from .gs import (
+    BiasedGSResult,
+    ChannelBiasedGSResult,
+    biased_gs,
+    biased_gs_channel_rows,
+    random_complex_initialization,
+)
 from .forward import (
     ExactObservation,
     LinearisedObservation,
@@ -103,6 +111,8 @@ __all__ = [
     "LinearisedLSResult",
     "ChannelSpectralInitResult",
     "SpectralInitResult",
+    "BiasedGSResult",
+    "ChannelBiasedGSResult",
     "ExactObservation",
     "LinearisedObservation",
     "MeasuredRSR",
@@ -117,6 +127,8 @@ __all__ = [
     "SimulationConfig",
     "TrialRNGs",
     "bits_to_qam",
+    "biased_gs",
+    "biased_gs_channel_rows",
     "build_qam_constellation",
     "cm_zf",
     "db_to_linear",
@@ -141,6 +153,7 @@ __all__ = [
     "min_circular_psi_separation",
     "qam_candidate_count",
     "qam_to_bits",
+    "random_complex_initialization",
     "reference_user_beta",
     "rsr_db_to_alpha_magnitude",
     "snr_db_to_sigma2",
