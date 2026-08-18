@@ -31,8 +31,9 @@ The first-order model is ``Y ≈ Y_linear_signal + Nbar`` with
 after linearisation. That statement is not permission to add another
 noise realization.
 
-There is **no** synthetic linearised generator here. RSR = 30 dB as a
-calibrated operating point is deferred to Step 6.
+There is **no** synthetic linearised generator here. Strong-reference
+behaviour including RSR = 30 dB is checked with Step-6 calibration;
+this module still does not compute RSR or SNR itself.
 """
 
 from __future__ import annotations

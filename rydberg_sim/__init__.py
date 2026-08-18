@@ -1,4 +1,4 @@
-"""Steps 1–5 of the Rydberg atomic MIMO simulation stack.
+"""Steps 1–6 of the Rydberg atomic MIMO simulation stack.
 
 This package implements:
 
@@ -9,9 +9,10 @@ This package implements:
   data generator
 * the exact magnitude observation Z = |GS+B+W| and the strong-reference
   linearisation Y = Z - |B|
+* SNR/RSR power calibration to sigma2 and |alpha_b|
 
-It does **not** implement later stages (SNR/RSR calibration, Cui GS/EM-GS,
-detection, BER, Monte Carlo sweeps, ...).
+It does **not** implement later stages (Cui GS/EM-GS, detection, BER,
+Monte Carlo estimator sweeps, ...).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``
 is known and used for channel estimation; QAM is a finite alphabet for
@@ -23,6 +24,18 @@ choice is a numerical normalization, not a claim that the physical
 atomic conversion gain equals 1.
 """
 
+from .calibration import (
+    MeasuredRSR,
+    MeasuredSNR,
+    db_to_linear,
+    linear_to_db,
+    make_alpha_b,
+    measure_rsr,
+    measure_snr,
+    reference_user_beta,
+    rsr_db_to_alpha_magnitude,
+    snr_db_to_sigma2,
+)
 from .channel import (
     PSI_SEP_MIN,
     RANK_SV_REL_TOL,
@@ -62,6 +75,8 @@ __all__ = [
     "ChannelRealization",
     "ExactObservation",
     "LinearisedObservation",
+    "MeasuredRSR",
+    "MeasuredSNR",
     "PILOT_RANK_SV_REL_TOL",
     "PSI_SEP_MIN",
     "QAMConstellation",
@@ -73,6 +88,7 @@ __all__ = [
     "TrialRNGs",
     "bits_to_qam",
     "build_qam_constellation",
+    "db_to_linear",
     "exact_forward",
     "generate_gaussian_pilots",
     "generate_qam",
@@ -82,8 +98,15 @@ __all__ = [
     "is_full_column_rank",
     "is_full_row_rank",
     "linearised_observation",
+    "linear_to_db",
+    "make_alpha_b",
+    "measure_rsr",
+    "measure_snr",
     "min_circular_psi_separation",
     "qam_to_bits",
+    "reference_user_beta",
+    "rsr_db_to_alpha_magnitude",
+    "snr_db_to_sigma2",
     "spatial_frequency",
     "steering_matrix",
     "steering_vector",

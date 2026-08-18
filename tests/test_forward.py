@@ -13,6 +13,8 @@ from rydberg_sim import (
     generate_ula_channel,
     get_trial_rngs,
     linearised_observation,
+    make_alpha_b,
+    rsr_db_to_alpha_magnitude,
 )
 
 MASTER_SEED = 20260818
@@ -175,35 +177,27 @@ def test_linear_signal_hand_example() -> None:
 
 
 def test_strong_reference_approximation_improves_with_amplitude() -> None:
-    """Relative linearisation error falls as |B| grows, same G, S, W.
+    """Relative linearisation error falls as official RSR increases.
 
-    This is **not** the official RSR = 30 dB test. Step 6 SNR/RSR
-    calibration does not exist yet, so alpha_b is not derived from RSR.
-    Reference matrices are the Step-3 field scaled by known amplitude
-    factors. The calibrated RSR = 30 dB check belongs to Step 6.
+    ``B`` is generated from Step-6 ``|alpha_b|(RSR)``, including the
+    RSR = 30 dB strong-reference point. ``sigma2 = 0`` isolates
+    Taylor error from noise. This is an acceptance test, not a figure.
     """
-    G, S, B0 = _gsb(trial=4)
-    signal = G @ S
-    # Put the weakest |B| on the order of |GS| so the trend is visible.
-    scale0 = float(np.mean(np.abs(signal)) / np.mean(np.abs(B0)))
-    B_unit = scale0 * B0
-    strengths = (0.5, 5.0, 50.0, 500.0)
-    sigma2 = 1e-4  # small so Taylor error, not noise, dominates the trend
+    G, S, _ = _gsb(trial=4)
+    rsr_dbs = (0.0, 10.0, 20.0, 30.0)
     errors = []
-    for amp in strengths:
-        exact = exact_forward(
-            G,
-            S,
-            amp * B_unit,
-            sigma2,
-            master_seed=MASTER_SEED,
-            trial_index=4,  # same W for every amplitude
-        )
+    for rsr_db in rsr_dbs:
+        alpha_b = make_alpha_b(rsr_db_to_alpha_magnitude(rsr_db, beta_ref=1.0))
+        B = generate_reference_field(
+            N=N, P=P, alpha_b=alpha_b, vartheta=0.3, c=1.0
+        ).B
+        exact = exact_forward(G, S, B, 0.0)
         lin = linearised_observation(exact)
         errors.append(lin.relative_frobenius_error)
     for weaker, stronger in zip(errors, errors[1:]):
-        assert stronger < weaker, (errors, strengths)
-    assert errors[-1] < 0.05
+        assert stronger < weaker, (rsr_dbs, errors)
+    assert rsr_dbs[-1] == 30.0
+    assert errors[-1] < 0.05, errors
 
 
 def test_noiseless_taylor_limit() -> None:
