@@ -138,6 +138,22 @@ def _freeze(arr: np.ndarray) -> np.ndarray:
     return arr
 
 
+def reference_phase_matrix(B: np.ndarray) -> np.ndarray:
+    """``Ψ = exp(-1j ∠B)``, unit-modulus, same sign as SystemModel.pdf §11.
+
+    Undefined if any entry of ``B`` is zero. The linearised Fisher
+    information depends on this phase, not on ``|B|``.
+    """
+    B_arr = _as_complex_matrix(B, "B")
+    if np.any(B_arr == 0):
+        raise ValueError(
+            "reference_phase_matrix requires B[n,p] != 0 for all n,p "
+            "(angle(B) is undefined at zeros)"
+        )
+    psi = np.exp(-1j * np.angle(B_arr)).astype(np.complex128, copy=False)
+    return _freeze(np.array(psi, dtype=np.complex128, copy=True))
+
+
 def exact_forward(
     G: np.ndarray,
     S: np.ndarray,
@@ -236,8 +252,8 @@ def linearised_observation(exact: ExactObservation) -> LinearisedObservation:
 
     abs_B = np.abs(exact.B)
     Y = np.asarray(exact.Z - abs_B, dtype=np.float64)
-    # Required sign: minus, not plus.
-    Psi = np.exp(-1j * np.angle(exact.B)).astype(np.complex128, copy=False)
+    # Required sign: minus, not plus. Shared with the linearised CRLB.
+    Psi = reference_phase_matrix(exact.B)
     Y_linear_signal = np.real(Psi * exact.signal).astype(np.float64, copy=False)
     residual = np.asarray(Y - Y_linear_signal, dtype=np.float64)
 

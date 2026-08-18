@@ -58,10 +58,12 @@ split at ``|λ|``. When ``|λ| < 8σ`` the lower limit is 0, recovering the
 plan. The truncated left tail is the same 8σ event the plan already
 accepts on the right. ``β`` is **not** clipped to ``1/(2σ²)``.
 
-What this module does **not** implement (Step 12+)
+What this module does **not** implement (Step 13+)
 -------------------------------------------------
-Xu's closed-form channel CRLB, GD/PGD, figure sweeps, BER, Track-C,
-machine learning. Do not import or copy Xu's constant here.
+Xu's published closed-form constant, GD/PGD, figure sweeps, BER,
+Track-C, machine learning. The **linearised** channel CRLB (Step 12)
+lives in :mod:`rydberg_sim.linearised_crlb` and is derived from
+``nbar ~ N(0, σ²/2 I)``, not copied from Xu.
 """
 
 from __future__ import annotations

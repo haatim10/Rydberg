@@ -402,10 +402,11 @@ def test_em_channel_adapter_conjugation_and_snr_pair() -> None:
     assert merge < 0.1
 
 
-def test_step12_plus_not_implemented() -> None:
+def test_step13_plus_not_implemented() -> None:
     import rydberg_sim.baselines as bmod
     import rydberg_sim.crlb as cmod
     import rydberg_sim.gs as gmod
+    import rydberg_sim.linearised_crlb as lmod
     import rydberg_sim.spectral as smod
 
     assert hasattr(gmod, "em_gs")
@@ -418,3 +419,6 @@ def test_step12_plus_not_implemented() -> None:
     assert hasattr(cmod, "cui_crlb")
     assert not hasattr(cmod, "xu_crlb")
     assert not hasattr(cmod, "xu_gd")
+    assert hasattr(lmod, "linearised_channel_crlb")
+    assert not hasattr(lmod, "xu_crlb")
+    assert not hasattr(lmod, "xu_gd")

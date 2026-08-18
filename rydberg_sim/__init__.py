@@ -1,4 +1,4 @@
-"""Steps 1–11 of the Rydberg atomic MIMO simulation stack.
+"""Steps 1–12 of the Rydberg atomic MIMO simulation stack.
 
 This package implements:
 
@@ -15,8 +15,10 @@ This package implements:
 * canonical Cui spectral initialization for ``z = |M^H u + b + w|``
 * Cui biased Gerchberg–Saxton (Algorithm 1) and EM-GS (Algorithm 2)
 * Cui Fisher information / CRLB for the magnitude-only Rician model
+* linearised channel CRLB from the Step-7 real Gaussian model
+  (derived from nbar ~ N(0, sigma2/2 I); not copied from Xu)
 
-It does **not** implement later stages (Xu CRLB, GD/PGD, Monte Carlo
+It does **not** implement later stages (metrics harness, GD/PGD, Monte Carlo
 estimator sweeps, figures, BER).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``
@@ -97,6 +99,15 @@ from .forward import (
     LinearisedObservation,
     exact_forward,
     linearised_observation,
+    reference_phase_matrix,
+)
+from .linearised_crlb import (
+    LinearisedChannelCRLBResult,
+    LinearisedRowCRLBResult,
+    expected_channel_frobenius_energy,
+    linearised_channel_crlb,
+    linearised_row_crlb,
+    linearised_row_fisher,
 )
 from .pilots import (
     PILOT_RANK_SV_REL_TOL,
@@ -135,6 +146,8 @@ __all__ = [
     "ChannelEMGSResult",
     "CuiCRLBResult",
     "CuiFisherResult",
+    "LinearisedChannelCRLBResult",
+    "LinearisedRowCRLBResult",
     "ExactObservation",
     "LinearisedObservation",
     "MeasuredRSR",
@@ -165,6 +178,7 @@ __all__ = [
     "exhaustive_magnitude_ls",
     "exhaustive_magnitude_ml",
     "exhaustive_search_complexity_gate",
+    "expected_channel_frobenius_energy",
     "fisher_beta",
     "fisher_expectation_z2_r2",
     "generate_gaussian_pilots",
@@ -175,8 +189,11 @@ __all__ = [
     "high_snr_fisher_beta_limit",
     "is_full_column_rank",
     "is_full_row_rank",
+    "linearised_channel_crlb",
     "linearised_closed_form_ls",
     "linearised_observation",
+    "linearised_row_crlb",
+    "linearised_row_fisher",
     "linear_to_db",
     "make_alpha_b",
     "measure_rsr",
@@ -185,6 +202,7 @@ __all__ = [
     "qam_candidate_count",
     "qam_to_bits",
     "random_complex_initialization",
+    "reference_phase_matrix",
     "reference_user_beta",
     "rician_amplitude_pdf",
     "rician_fisher_scalar",

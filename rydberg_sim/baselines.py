@@ -29,10 +29,11 @@ C. CM-ZF: **not implemented** (Cui's channel-magnitude ZF is not specified
 D. Exhaustive QAM search for Track-A *detection* (not channel estimation):
    magnitude-domain LS, and Rician ML for the Step-5 observation model.
 
-What is **not** implemented (Step 12+)
+What is **not** implemented (Step 13+)
 -------------------------------------
-Xu CRLB, GD/PGD, Monte Carlo estimator sweeps, figures, BER experiments.
-Cui CRLB lives in :mod:`rydberg_sim.crlb`, not here.
+GD/PGD, Monte Carlo estimator sweeps, figures, BER experiments.
+Cui CRLB lives in :mod:`rydberg_sim.crlb`. The linearised channel CRLB
+lives in :mod:`rydberg_sim.linearised_crlb` (derived, not copied from Xu).
 
 Future acceptance test (do **not** implement GD here to satisfy it):
 
@@ -495,7 +496,9 @@ def theoretical_linearised_ls_gtilde_covariance(
     """``Cov(gtilde_hat_n - gtilde_n) = (sigma2 / 2) (Phi^T Phi + ridge I)^{-1}``.
 
     This is the standard real LS covariance under ``nbar ~ N(0, sigma2/2)``.
-    It is the later linearised-CRLB check, not an estimator inverse.
+    Step 12 (:func:`rydberg_sim.linearised_crlb.linearised_row_crlb`)
+    derives the same no-ridge covariance from that model; no Xu
+    prefactor is copied. Ridge here is only for the LS estimator.
     """
     phi = np.asarray(Phi_n, dtype=np.float64)
     if phi.ndim != 2:

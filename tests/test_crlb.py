@@ -355,7 +355,7 @@ def test_channel_row_lambda_identity_canonical_fisher_runs() -> None:
     assert np.linalg.eigh(fim.F)[0][0] > 0.0
 
 
-def test_step12_plus_not_implemented() -> None:
+def test_step13_plus_not_in_cui_module() -> None:
     import rydberg_sim.baselines as bmod
     import rydberg_sim.crlb as cmod
     import rydberg_sim.gs as gmod
@@ -371,8 +371,12 @@ def test_step12_plus_not_implemented() -> None:
     assert not hasattr(smod, "cui_crlb")
     assert not hasattr(bmod, "cui_crlb")
     assert not hasattr(bmod, "xu_crlb")
+    import rydberg_sim.linearised_crlb as lmod
+
+    assert hasattr(lmod, "linearised_row_crlb")
+    assert not hasattr(lmod, "xu_crlb")
     src = inspect.getsource(cmod)
-    assert "xu_crlb" not in src.lower() or "do not import or copy xu" in src.lower()
+    assert "linearised_crlb" in src
 
 
 def test_requires_positive_sigma2() -> None:
