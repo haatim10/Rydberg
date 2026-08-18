@@ -45,9 +45,11 @@ append incompatible rows to an existing file.
 
 Tracks
 ------
-A — Cui detection: known channel, unknown QAM ``s``. Generator exists.
-B — ULA channel estimation: known ``S``, unknown ``G``. Default runner.
-C — estimate then detect: schema reserved; **not executed** in Step 14.
+A — Cui detection: known ``A``, unknown QAM ``s``. Uses
+  ``channel_model="cui_38901"`` (:mod:`rydberg_sim.channel_cui`).
+B — ULA channel estimation: known ``S``, unknown ``G``. Uses
+  ``channel_model="ula_geometric"`` (:mod:`rydberg_sim.channel`).
+C — estimate then detect: schema reserved; **not executed**.
 
 Long-form table
 ---------------
@@ -78,15 +80,22 @@ from .calibration import (
     snr_db_to_sigma2,
 )
 from .channel import generate_ula_channel
+from .channel_cui import (
+    CHANNEL_MODEL_CUI,
+    CuiChannelParams,
+    generate_cui_channel,
+    generate_cui_reference,
+)
 from .confidence import (
     NmseUncertainty,
     WilsonInterval,
     nmse_ratio_standard_error,
     wilson_interval,
 )
+from .crlb import cui_crlb
 from .config import SimulationConfig
 from .forward import exact_forward, linearised_observation
-from .gs import biased_gs_channel_rows, em_gs_channel_rows
+from .gs import biased_gs, biased_gs_channel_rows, em_gs, em_gs_channel_rows
 from .metrics import channel_nmse, detection_ber, detection_nmse, nmse_to_db
 from .pilots import generate_gaussian_pilots
 from .qam import generate_qam
@@ -99,14 +108,17 @@ from .rng import (
 
 TrackName = Literal["A", "B", "C"]
 
-CHANNEL_MODEL = "ula"
+CHANNEL_MODEL_ULA: str = "ula_geometric"
+CHANNEL_MODEL = CHANNEL_MODEL_ULA  # Track-B default; Track A must set cui_38901.
 
 CHANNEL_ESTIMATORS: frozenset[str] = frozenset(
     {"biased_gs", "em_gs", "linearised_ls"}
 )
-DETECTION_ALGORITHMS: frozenset[str] = frozenset({"genie_zf"})
+DETECTION_ALGORITHMS: frozenset[str] = frozenset(
+    {"genie_zf", "biased_gs", "em_gs", "cui_crlb"}
+)
 UNIMPLEMENTED_ALGORITHMS: frozenset[str] = frozenset(
-    {"gd", "pgd", "neural", "neural_net", "learned"}
+    {"gd", "pgd", "neural", "neural_net", "learned", "cm_zf"}
 )
 
 RESULT_COLUMNS: tuple[str, ...] = (
@@ -169,23 +181,34 @@ def fingerprint_payload(spec: "ExperimentSpec") -> dict[str, Any]:
     changing the world-generation / estimator hyperparameters.
     """
     cfg = spec.cfg
-    return {
-        "channel_model": CHANNEL_MODEL,
+    payload: dict[str, Any] = {
+        "channel_model": spec.channel_model,
         "track": spec.track,
         "N": int(cfg.N),
         "K": int(cfg.K),
-        "L_k": [int(x) for x in cfg.L_k],
-        "beta_k": [float(x) for x in cfg.beta_k],
-        "c": float(cfg.c),
         "master_seed": int(cfg.master_seed),
-        "P": int(spec.P),
-        "vartheta": float(spec.vartheta),
         "max_iter": int(spec.max_iter),
         "ridge": float(spec.ridge),
         "qam_M": int(spec.qam_M),
-        "beta_ref_user": int(spec.beta_ref_user),
-        "phi_b": float(spec.phi_b),
     }
+    if spec.channel_model == CHANNEL_MODEL_ULA:
+        payload.update(
+            {
+                "L_k": [int(x) for x in cfg.L_k],
+                "beta_k": [float(x) for x in cfg.beta_k],
+                "c": float(cfg.c),
+                "P": int(spec.P),
+                "vartheta": float(spec.vartheta),
+                "beta_ref_user": int(spec.beta_ref_user),
+                "phi_b": float(spec.phi_b),
+            }
+        )
+    elif spec.channel_model == CHANNEL_MODEL_CUI:
+        payload.update(spec.cui_params.as_fingerprint_dict())
+        payload["P"] = int(spec.P)
+    else:
+        raise ValueError(f"unknown channel_model {spec.channel_model!r}")
+    return payload
 
 
 def config_fingerprint(spec: "ExperimentSpec") -> str:
@@ -300,12 +323,38 @@ class ExperimentSpec:
     continue_on_error: bool = True
     store_diagnostics: bool = False
     diagnostic_trials: tuple[int, ...] = ()
+    channel_model: str = ""
+    cui_params: CuiChannelParams | None = None
+    write_ber: bool = True
 
     def __post_init__(self) -> None:
         if not str(self.experiment):
             raise ValueError("experiment name must be non-empty")
         if self.track not in ("A", "B", "C"):
             raise ValueError(f"track must be 'A', 'B', or 'C', got {self.track!r}")
+        model = str(self.channel_model) if self.channel_model else ""
+        if not model:
+            if self.track == "A":
+                model = CHANNEL_MODEL_CUI
+            elif self.track == "B":
+                model = CHANNEL_MODEL_ULA
+            else:
+                model = ""
+            object.__setattr__(self, "channel_model", model)
+        if self.track == "A" and model != CHANNEL_MODEL_CUI:
+            raise ValueError(
+                f"Track A requires channel_model={CHANNEL_MODEL_CUI!r}, got {model!r}. "
+                "Do not use the Track-B geometric ULA generator."
+            )
+        if self.track == "B" and model != CHANNEL_MODEL_ULA:
+            raise ValueError(
+                f"Track B requires channel_model={CHANNEL_MODEL_ULA!r}, got {model!r}."
+            )
+        if self.track == "A":
+            cui = self.cui_params if self.cui_params is not None else CuiChannelParams()
+            object.__setattr__(self, "cui_params", cui)
+        elif self.cui_params is not None:
+            raise ValueError("cui_params is only valid for Track A")
         if isinstance(self.P, (bool, np.bool_)) or int(self.P) != self.P:
             raise TypeError(f"P must be an integer, got {self.P!r}")
         object.__setattr__(self, "P", int(self.P))
@@ -418,13 +467,14 @@ class ChannelEstimationTrial:
 
 @dataclass(frozen=True, eq=False)
 class DetectionTrial:
-    """One immutable Track-A world: known mixing ``G``, unknown QAM ``s``.
+    """One immutable Track-A world: known ``A``, unknown QAM ``s``.
 
-    Canonical observation: ``z = |G s + b + w|`` with ``G`` known
-    (``M = G^H``, ``u = s``). Not a figure driver.
+    Canonical observation (Cui eq. 22): ``z = |A^H s + b + w|`` with
+    ``A ∈ C^{K × N}``. Solvers are called as ``biased_gs(M=A, ...)``
+    with **no** channel-estimation conjugation adapter.
     """
 
-    G: np.ndarray
+    A: np.ndarray
     s: np.ndarray
     bits: np.ndarray
     b: np.ndarray
@@ -444,6 +494,7 @@ class DetectionTrial:
     qam_M: int
     cfg: SimulationConfig
     track: str = "A"
+    channel_model: str = CHANNEL_MODEL_CUI
 
 
 def _alpha_b_for_spec(spec: ExperimentSpec, rsr_db: float) -> complex:
@@ -521,30 +572,28 @@ def generate_detection_trial(
     snr_db: float,
     rsr_db: float,
 ) -> DetectionTrial:
-    """Build one Track-A world (known ``G``, unknown QAM ``s``).
+    """Build one Track-A world (known ``A``, unknown QAM ``s``).
 
-    Not a Cui figure driver. Reserved so Track C can later reuse the
-    same operating-point keying without rewriting the harness.
+    Uses :func:`generate_cui_channel` / :func:`generate_cui_reference`.
+    Never calls the Track-B geometric ULA generator.
     """
     if spec.track != "A":
         raise ValueError(
             f"generate_detection_trial requires track='A', got {spec.track!r}"
         )
+    if spec.channel_model != CHANNEL_MODEL_CUI:
+        raise ValueError(
+            f"Track A worlds require {CHANNEL_MODEL_CUI!r}, got {spec.channel_model!r}"
+        )
     cfg = spec.cfg
+    cui = spec.cui_params if spec.cui_params is not None else CuiChannelParams()
     spawn_key = operating_point_spawn_key(trial_index, snr_db, rsr_db)
     rngs = get_operating_point_rngs(cfg.master_seed, trial_index, snr_db, rsr_db)
-    ch = generate_ula_channel(cfg, trial_index, rng=rngs.channel)
+    ch = generate_cui_channel(cfg.N, cfg.K, rngs.channel, params=cui)
     qam = generate_qam(rngs.data, cfg.K, spec.qam_M)
-    alpha_b = _alpha_b_for_spec(spec, rsr_db)
-    ref = generate_reference_field(
-        N=cfg.N,
-        P=1,
-        alpha_b=alpha_b,
-        vartheta=spec.vartheta,
-        c=cfg.c,
-    )
-    b = _freeze(ref.B[:, 0], np.complex128)
-    sigma2 = snr_db_to_sigma2(snr_db, cfg.beta_k, c=cfg.c)
+    b = generate_cui_reference(cfg.N, rngs.reference, rsr_db, params=cui)
+    # Eq. 37 with row-normalized A and unit-energy QAM: E|a_n^H s|² = K.
+    sigma2 = snr_db_to_sigma2(snr_db, np.ones(cfg.K, dtype=np.float64), c=1.0)
     if sigma2 == 0.0:
         w = _freeze(np.zeros(cfg.N, dtype=np.complex128), np.complex128)
     else:
@@ -552,19 +601,19 @@ def generate_detection_trial(
         real = rngs.noise.standard_normal(cfg.N)
         imag = rngs.noise.standard_normal(cfg.N)
         w = _freeze(scale * real + 1j * scale * imag, np.complex128)
-    field = ch.G @ qam.symbols + b + w
+    field = ch.A.conj().T @ qam.symbols + b + w
     z = _freeze(np.abs(field), np.float64)
     theta = _freeze(np.angle(field), np.float64)
     return DetectionTrial(
-        G=_freeze(ch.G, np.complex128),
+        A=_freeze(ch.A, np.complex128),
         s=_freeze(qam.symbols, np.complex128),
         bits=_freeze(qam.bits, np.uint8),
-        b=b,
+        b=_freeze(b, np.complex128),
         w=w,
         z=z,
         theta=theta,
         sigma2=float(sigma2),
-        alpha_b=complex(alpha_b),
+        alpha_b=complex(np.sqrt(float(np.mean(np.abs(b) ** 2)))),
         snr_db=float(snr_db),
         rsr_db=float(rsr_db),
         trial_index=int(trial_index),
@@ -572,10 +621,11 @@ def generate_detection_trial(
         snr_key=spawn_key[1],
         rsr_key=spawn_key[2],
         spawn_key=spawn_key,
-        vartheta=float(spec.vartheta),
+        vartheta=float(cui.lo_azimuth_deg),
         qam_M=int(spec.qam_M),
         cfg=cfg,
         track="A",
+        channel_model=CHANNEL_MODEL_CUI,
     )
 
 
@@ -921,14 +971,50 @@ def evaluate_detection_algorithm(
     algorithm: str,
     spec: ExperimentSpec,
 ) -> tuple[list[dict[str, Any]], dict[str, Any] | None]:
-    """Run one Track-A detector on a frozen world."""
-    if algorithm != "genie_zf":
+    """Run one Track-A method on a frozen world. ``M = A`` directly."""
+    M = world.A
+    if algorithm == "cui_crlb":
+        crlb = cui_crlb(
+            M, world.s, world.b, world.sigma2, expected_u_energy=float(world.s.size)
+        )
+        row = _base_row(
+            spec,
+            trial_index=world.trial_index,
+            snr_db=world.snr_db,
+            rsr_db=world.rsr_db,
+            algorithm=algorithm,
+            sigma2=world.sigma2,
+            alpha_b=world.alpha_b,
+        )
+        row.update(
+            {
+                "metric": "detection_nmse",
+                "value": float(crlb.normalized_crlb),
+                "error_energy": float(np.trace(crlb.crlb).real),
+                "expected_symbol_energy": float(crlb.expected_u_energy),
+            }
+        )
+        return [row], None
+
+    if algorithm == "biased_gs":
+        s_hat = biased_gs(
+            M, world.z, world.b, max_iter=spec.max_iter, ridge=spec.ridge
+        ).u_hat
+    elif algorithm == "em_gs":
+        s_hat = em_gs(
+            M,
+            world.z,
+            world.b,
+            world.sigma2,
+            max_iter=spec.max_iter,
+            ridge=spec.ridge,
+        ).u_hat
+    elif algorithm == "genie_zf":
+        s_hat = zf_known_phase(M, world.z, world.theta, world.b, ridge=spec.ridge)
+    else:
         raise ValueError(f"unknown Track A algorithm {algorithm!r}")
-    # Canonical: z = |M^H u + b + w| with M = G^H, u = s.
-    M = np.conjugate(world.G).T
-    s_hat = zf_known_phase(M, world.z, world.theta, world.b, ridge=spec.ridge)
+
     det = detection_nmse(s_hat, world.s)
-    ber = detection_ber(s_hat, world.bits, spec.qam_M)
     base = _base_row(
         spec,
         trial_index=world.trial_index,
@@ -947,16 +1033,20 @@ def evaluate_detection_algorithm(
             "expected_symbol_energy": float(det.expected_energy),
         }
     )
-    ber_row = dict(base)
-    ber_row.update(
-        {
-            "metric": "ber",
-            "value": float(ber.ber),
-            "bit_errors": int(ber.bit_errors),
-            "bit_count": int(ber.bit_count),
-        }
-    )
-    return [nmse_row, ber_row], None
+    rows = [nmse_row]
+    if spec.write_ber:
+        ber = detection_ber(s_hat, world.bits, spec.qam_M)
+        ber_row = dict(base)
+        ber_row.update(
+            {
+                "metric": "ber",
+                "value": float(ber.ber),
+                "bit_errors": int(ber.bit_errors),
+                "bit_count": int(ber.bit_count),
+            }
+        )
+        rows.append(ber_row)
+    return rows, None
 
 
 def _write_diagnostics(

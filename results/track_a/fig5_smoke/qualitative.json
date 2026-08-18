@@ -1,0 +1,22 @@
+{
+  "n_trials": 8,
+  "rsr_db": 12.0,
+  "qam": "16-QAM",
+  "N_by_K": "36x3",
+  "t0": 50,
+  "channel_model": "cui_38901",
+  "nmse_db": {
+    "-5": {"biased_gs": 2.529, "em_gs": 0.104, "genie_zf": -4.736, "cui_crlb": -1.052},
+    "0": {"biased_gs": -3.491, "em_gs": -4.683, "genie_zf": -9.234, "cui_crlb": -6.871},
+    "6": {"biased_gs": -11.331, "em_gs": -11.590, "genie_zf": -17.205, "cui_crlb": -13.390},
+    "12": {"biased_gs": -19.815, "em_gs": -20.056, "genie_zf": -23.535, "cui_crlb": -19.376}
+  },
+  "qualitative": {
+    "nmse_improves_with_snr": true,
+    "em_gs_better_than_biased_gs_at_low_snr": true,
+    "em_gs_approaches_biased_gs_at_high_snr": true,
+    "zf_is_genie_lower_benchmark": true,
+    "analytic_high_snr_crlb_over_zf_db": 3.010299956639812
+  },
+  "note": "8-trial smoke only. Do not treat these as published Fig. 5 overlays. Finite-trial NMSE can sit slightly below the expected CRLB."
+}

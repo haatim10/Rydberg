@@ -20,9 +20,11 @@ This package implements:
 * deterministic NMSE / BER metrics (no simulation generation)
 * Monte Carlo harness with common-random-number worlds, CSV checkpoint /
   resume, ratio-of-sums aggregation, and Wilson / NMSE uncertainty helpers
+* Track-A Cui 38.901-style clustered channel (``cui_38901``), distinct from
+  the Track-B geometric ULA generator
 
-It does **not** implement later stages (publication figure sweeps, Track C
-execution, GD/PGD, estimator research experiments).
+It does **not** implement later stages (full Cui Fig. 5–8 publication sweeps,
+Track-C execution, GD/PGD, estimator research experiments).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``
 is known and used for channel estimation; QAM is a finite alphabet for
@@ -71,6 +73,13 @@ from .channel import (
     spatial_frequency,
     steering_matrix,
     steering_vector,
+)
+from .channel_cui import (
+    CHANNEL_MODEL_CUI,
+    CuiChannelParams,
+    CuiChannelRealization,
+    generate_cui_channel,
+    generate_cui_reference,
 )
 from .config import SimulationConfig
 from .crlb import (
@@ -152,6 +161,7 @@ from .confidence import (
 )
 from .monte_carlo import (
     CHANNEL_ESTIMATORS,
+    CHANNEL_MODEL_ULA,
     RESULT_COLUMNS,
     AdaptiveBerPolicy,
     AggregateRecord,
@@ -193,6 +203,10 @@ __all__ = [
     "BERResult",
     "BerAccumulator",
     "CHANNEL_ESTIMATORS",
+    "CHANNEL_MODEL_CUI",
+    "CHANNEL_MODEL_ULA",
+    "CuiChannelParams",
+    "CuiChannelRealization",
     "ChannelNMSEResult",
     "DetectionTrial",
     "DetectionNMSEResult",
@@ -261,6 +275,8 @@ __all__ = [
     "expected_channel_frobenius_energy",
     "fisher_beta",
     "fisher_expectation_z2_r2",
+    "generate_cui_channel",
+    "generate_cui_reference",
     "generate_channel_estimation_trial",
     "generate_detection_trial",
     "generate_gaussian_pilots",

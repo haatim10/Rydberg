@@ -184,11 +184,14 @@ def test_track_a_world_generator_is_reproducible() -> None:
     spec = _spec(track="A", algorithms=("genie_zf",), P=8)
     a = generate_detection_trial(spec, 2, 5.0, 15.0)
     b = generate_detection_trial(spec, 2, 5.0, 15.0)
-    np.testing.assert_array_equal(a.G, b.G)
+    np.testing.assert_array_equal(a.A, b.A)
     np.testing.assert_array_equal(a.s, b.s)
     np.testing.assert_array_equal(a.z, b.z)
     np.testing.assert_array_equal(a.w, b.w)
-    assert a.G.flags.writeable is False
+    np.testing.assert_array_equal(a.b, b.b)
+    assert a.A.flags.writeable is False
+    assert a.A.shape == (a.cfg.K, a.cfg.N)
+    assert a.channel_model == "cui_38901"
 
 
 def test_track_c_not_executed() -> None:
