@@ -52,12 +52,12 @@ restored observation by the Bessel ratio ``R(κ) = I₁(κ)/I₀(κ)`` with
 ``bessel_ratio`` is computed via ``scipy.special.ive`` (and an
 asymptotic tail for ``κ > 1e4``). It is **not** ``i1/i0``.
 
-What this module does **not** implement (Step 14+)
+What this module does **not** implement (Step 15+)
 -------------------------------------------------
-Monte Carlo figure sweeps, Track-C, machine learning. Cui's CRLB lives
-in :mod:`rydberg_sim.crlb`. QAM projection is not applied inside GS or
-EM-GS iterations; :func:`rydberg_sim.qam.project_to_qam` is re-exported
-here for the optional detection-layer helper.
+Monte Carlo figure sweeps, Track-C execution, machine learning. Cui's
+CRLB lives in :mod:`rydberg_sim.crlb`. QAM projection is not applied
+inside GS or EM-GS iterations; :func:`rydberg_sim.qam.project_to_qam`
+is re-exported here for the optional detection-layer helper.
 
 """
 

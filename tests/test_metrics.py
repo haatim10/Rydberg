@@ -257,5 +257,5 @@ def test_step14_plus_not_implemented() -> None:
     assert not hasattr(mmod, "confidence_interval")
     assert not hasattr(mmod, "plot_nmse")
     src = inspect.getsource(mmod)
-    assert "Step 14+" in src
+    assert "Step 15+" in src
     assert "Never ``20 log10``" in src

@@ -1,4 +1,4 @@
-"""Steps 1–13 of the Rydberg atomic MIMO simulation stack.
+"""Steps 1–14 of the Rydberg atomic MIMO simulation stack.
 
 This package implements:
 
@@ -18,9 +18,11 @@ This package implements:
 * linearised channel CRLB from the Step-7 real Gaussian model
   (derived from nbar ~ N(0, sigma2/2 I); not copied from Xu)
 * deterministic NMSE / BER metrics (no simulation generation)
+* Monte Carlo harness with common-random-number worlds, CSV checkpoint /
+  resume, ratio-of-sums aggregation, and Wilson / NMSE uncertainty helpers
 
-It does **not** implement later stages (Monte Carlo harness, GD/PGD,
-estimator sweeps, figures).
+It does **not** implement later stages (publication figure sweeps, Track C
+execution, GD/PGD, estimator research experiments).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``
 is known and used for channel estimation; QAM is a finite alphabet for
@@ -140,7 +142,43 @@ from .metrics import (
     phase_align_channel_rows,
 )
 from .reference import ReferenceField, generate_reference_field
-from .rng import TrialRNGs, get_trial_rngs
+from .confidence import (
+    WILSON_Z_95,
+    NmseUncertainty,
+    WilsonInterval,
+    nmse_ratio_standard_error,
+    rule_of_three,
+    wilson_interval,
+)
+from .monte_carlo import (
+    CHANNEL_ESTIMATORS,
+    RESULT_COLUMNS,
+    AdaptiveBerPolicy,
+    AggregateRecord,
+    ChannelEstimationTrial,
+    ConfigFingerprintError,
+    DetectionTrial,
+    ExperimentSpec,
+    TrackCNotImplementedError,
+    adaptive_ber_budget_reached,
+    aggregate_result_table,
+    channel_trials_equal,
+    config_fingerprint,
+    generate_channel_estimation_trial,
+    generate_detection_trial,
+    generate_track_c_trial,
+    load_result_table,
+    result_key,
+    run_experiment,
+    sort_result_rows,
+)
+from .rng import (
+    TrialRNGs,
+    db_to_key,
+    get_operating_point_rngs,
+    get_trial_rngs,
+    operating_point_spawn_key,
+)
 from .spectral import (
     ChannelSpectralInitResult,
     SpectralInitResult,
@@ -150,12 +188,19 @@ from .spectral import (
 
 __all__ = [
     "DEFAULT_MAX_CANDIDATES",
+    "AdaptiveBerPolicy",
+    "AggregateRecord",
     "BERResult",
     "BerAccumulator",
+    "CHANNEL_ESTIMATORS",
     "ChannelNMSEResult",
+    "DetectionTrial",
     "DetectionNMSEResult",
     "NmseAccumulator",
+    "NmseUncertainty",
+    "ChannelEstimationTrial",
     "ChannelRealization",
+    "ExperimentSpec",
     "ExhaustiveSearchResult",
     "ExhaustiveSearchTooLargeError",
     "LinearisedLSResult",
@@ -165,6 +210,7 @@ __all__ = [
     "ChannelBiasedGSResult",
     "EMGSResult",
     "ChannelEMGSResult",
+    "ConfigFingerprintError",
     "CuiCRLBResult",
     "CuiFisherResult",
     "LinearisedChannelCRLBResult",
@@ -177,22 +223,31 @@ __all__ = [
     "PSI_SEP_MIN",
     "QAMConstellation",
     "QAMSequence",
+    "RESULT_COLUMNS",
     "RANK_SV_REL_TOL",
     "ReferenceField",
     "PilotMatrix",
     "SimulationConfig",
+    "TrackCNotImplementedError",
     "TrialRNGs",
+    "WILSON_Z_95",
+    "WilsonInterval",
+    "adaptive_ber_budget_reached",
+    "aggregate_result_table",
     "bits_to_qam",
     "biased_gs",
     "biased_gs_channel_rows",
     "bessel_ratio",
     "build_qam_constellation",
     "channel_nmse",
+    "channel_trials_equal",
     "cm_zf",
+    "config_fingerprint",
     "cui_crlb",
     "cui_crlb_high_snr_limit",
     "cui_fisher_information",
     "db_to_linear",
+    "db_to_key",
     "decoded_bits",
     "detection_ber",
     "detection_nmse",
@@ -206,10 +261,14 @@ __all__ = [
     "expected_channel_frobenius_energy",
     "fisher_beta",
     "fisher_expectation_z2_r2",
+    "generate_channel_estimation_trial",
+    "generate_detection_trial",
     "generate_gaussian_pilots",
     "generate_qam",
     "generate_reference_field",
+    "generate_track_c_trial",
     "generate_ula_channel",
+    "get_operating_point_rngs",
     "get_trial_rngs",
     "high_snr_fisher_beta_limit",
     "is_full_column_rank",
@@ -220,12 +279,15 @@ __all__ = [
     "linearised_row_crlb",
     "linearised_row_fisher",
     "linear_to_db",
+    "load_result_table",
     "make_alpha_b",
     "measure_rsr",
     "measure_snr",
     "min_circular_psi_separation",
     "nearest_qam_indices",
+    "nmse_ratio_standard_error",
     "nmse_to_db",
+    "operating_point_spawn_key",
     "qam_candidate_count",
     "phase_align_channel_rows",
     "project_to_qam",
@@ -233,15 +295,20 @@ __all__ = [
     "random_complex_initialization",
     "reference_phase_matrix",
     "reference_user_beta",
+    "result_key",
     "rician_amplitude_pdf",
     "rician_fisher_scalar",
     "rsr_db_to_alpha_magnitude",
+    "rule_of_three",
+    "run_experiment",
     "snr_db_to_sigma2",
+    "sort_result_rows",
     "spectral_initialize",
     "spectral_initialize_channel_rows",
     "spatial_frequency",
     "steering_matrix",
     "steering_vector",
+    "wilson_interval",
     "zf_known_phase",
     "zf_known_phase_from_truth",
 ]

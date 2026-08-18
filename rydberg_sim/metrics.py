@@ -44,11 +44,12 @@ dB conversion
 NMSE is a **power** ratio: ``nmse_db = 10 log10(nmse_linear)``.
 ``nmse_linear = 0`` returns ``-inf``. Never ``20 log10``.
 
-What this module does **not** implement (Step 14+)
+What this module does **not** implement (Step 15+)
 -------------------------------------------------
-Monte Carlo trial driver, common-random-number harness, parallel
-execution, result caching, confidence intervals, figure sweeps, Track-C,
-GD/PGD, machine learning.
+Figure sweeps, Track-C execution, GD/PGD, machine learning. Monte Carlo
+trial generation lives in :mod:`rydberg_sim.monte_carlo`. Confidence
+intervals live in :mod:`rydberg_sim.confidence`. This module stays
+side-effect free.
 """
 
 from __future__ import annotations
