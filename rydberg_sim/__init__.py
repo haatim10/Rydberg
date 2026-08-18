@@ -1,12 +1,13 @@
-"""Steps 1–2 of the Rydberg atomic MIMO simulation stack.
+"""Steps 1–3 of the Rydberg atomic MIMO simulation stack.
 
 This package implements:
 
 * frozen simulation configuration and a deterministic per-trial RNG policy
 * the geometric ULA channel generator from SystemModel.pdf
+* the known reference field B from SystemModel.pdf Section 6
 
 It does **not** implement later stages (Cui GS/EM-GS, spectral initialization,
-pilots, reference, noise, SNR/RSR calibration, BER, Monte Carlo sweeps, ...).
+pilots, noise, SNR/RSR calibration, BER, Monte Carlo sweeps, ...).
 
 The conversion/polarisation factor ``c = ℘/ℏ`` is a common known
 positive scalar (A5, A15). For normalized simulations ``c = 1``. That
@@ -26,14 +27,17 @@ from .channel import (
     steering_vector,
 )
 from .config import SimulationConfig
+from .reference import ReferenceField, generate_reference_field
 from .rng import TrialRNGs, get_trial_rngs
 
 __all__ = [
     "ChannelRealization",
     "PSI_SEP_MIN",
     "RANK_SV_REL_TOL",
+    "ReferenceField",
     "SimulationConfig",
     "TrialRNGs",
+    "generate_reference_field",
     "generate_ula_channel",
     "get_trial_rngs",
     "is_full_column_rank",
