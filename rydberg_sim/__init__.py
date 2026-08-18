@@ -1,4 +1,4 @@
-"""Steps 1–6 of the Rydberg atomic MIMO simulation stack.
+"""Steps 1–7 of the Rydberg atomic MIMO simulation stack.
 
 This package implements:
 
@@ -10,9 +10,11 @@ This package implements:
 * the exact magnitude observation Z = |GS+B+W| and the strong-reference
   linearisation Y = Z - |B|
 * SNR/RSR power calibration to sigma2 and |alpha_b|
+* debugging/reference baselines (genie ZF, linearised closed-form LS,
+  exhaustive QAM LS/ML). CM-ZF is explicitly unimplemented.
 
-It does **not** implement later stages (Cui GS/EM-GS, detection, BER,
-Monte Carlo estimator sweeps, ...).
+It does **not** implement later stages (spectral init, biased GS, EM-GS,
+Cui/Xu CRLB, GD/PGD, Monte Carlo estimator sweeps, figures, BER).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``
 is known and used for channel estimation; QAM is a finite alphabet for
@@ -24,6 +26,21 @@ choice is a numerical normalization, not a claim that the physical
 atomic conversion gain equals 1.
 """
 
+from .baselines import (
+    DEFAULT_MAX_CANDIDATES,
+    ExhaustiveSearchResult,
+    ExhaustiveSearchTooLargeError,
+    LinearisedLSResult,
+    cm_zf,
+    enumerate_qam_symbol_vectors,
+    exhaustive_magnitude_ls,
+    exhaustive_magnitude_ml,
+    exhaustive_search_complexity_gate,
+    linearised_closed_form_ls,
+    qam_candidate_count,
+    zf_known_phase,
+    zf_known_phase_from_truth,
+)
 from .calibration import (
     MeasuredRSR,
     MeasuredSNR,
@@ -72,7 +89,11 @@ from .reference import ReferenceField, generate_reference_field
 from .rng import TrialRNGs, get_trial_rngs
 
 __all__ = [
+    "DEFAULT_MAX_CANDIDATES",
     "ChannelRealization",
+    "ExhaustiveSearchResult",
+    "ExhaustiveSearchTooLargeError",
+    "LinearisedLSResult",
     "ExactObservation",
     "LinearisedObservation",
     "MeasuredRSR",
@@ -88,8 +109,13 @@ __all__ = [
     "TrialRNGs",
     "bits_to_qam",
     "build_qam_constellation",
+    "cm_zf",
     "db_to_linear",
+    "enumerate_qam_symbol_vectors",
     "exact_forward",
+    "exhaustive_magnitude_ls",
+    "exhaustive_magnitude_ml",
+    "exhaustive_search_complexity_gate",
     "generate_gaussian_pilots",
     "generate_qam",
     "generate_reference_field",
@@ -97,12 +123,14 @@ __all__ = [
     "get_trial_rngs",
     "is_full_column_rank",
     "is_full_row_rank",
+    "linearised_closed_form_ls",
     "linearised_observation",
     "linear_to_db",
     "make_alpha_b",
     "measure_rsr",
     "measure_snr",
     "min_circular_psi_separation",
+    "qam_candidate_count",
     "qam_to_bits",
     "reference_user_beta",
     "rsr_db_to_alpha_magnitude",
@@ -110,4 +138,6 @@ __all__ = [
     "spatial_frequency",
     "steering_matrix",
     "steering_vector",
+    "zf_known_phase",
+    "zf_known_phase_from_truth",
 ]
