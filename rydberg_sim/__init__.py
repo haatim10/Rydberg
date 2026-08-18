@@ -1,4 +1,4 @@
-"""Steps 1–7 of the Rydberg atomic MIMO simulation stack.
+"""Steps 1–8 of the Rydberg atomic MIMO simulation stack.
 
 This package implements:
 
@@ -12,8 +12,9 @@ This package implements:
 * SNR/RSR power calibration to sigma2 and |alpha_b|
 * debugging/reference baselines (genie ZF, linearised closed-form LS,
   exhaustive QAM LS/ML). CM-ZF is explicitly unimplemented.
+* canonical Cui spectral initialization for ``z = |M^H u + b + w|``
 
-It does **not** implement later stages (spectral init, biased GS, EM-GS,
+It does **not** implement later stages (biased GS, EM-GS, Bessel ratio,
 Cui/Xu CRLB, GD/PGD, Monte Carlo estimator sweeps, figures, BER).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``
@@ -87,6 +88,12 @@ from .qam import (
 )
 from .reference import ReferenceField, generate_reference_field
 from .rng import TrialRNGs, get_trial_rngs
+from .spectral import (
+    ChannelSpectralInitResult,
+    SpectralInitResult,
+    spectral_initialize,
+    spectral_initialize_channel_rows,
+)
 
 __all__ = [
     "DEFAULT_MAX_CANDIDATES",
@@ -94,6 +101,8 @@ __all__ = [
     "ExhaustiveSearchResult",
     "ExhaustiveSearchTooLargeError",
     "LinearisedLSResult",
+    "ChannelSpectralInitResult",
+    "SpectralInitResult",
     "ExactObservation",
     "LinearisedObservation",
     "MeasuredRSR",
@@ -135,6 +144,8 @@ __all__ = [
     "reference_user_beta",
     "rsr_db_to_alpha_magnitude",
     "snr_db_to_sigma2",
+    "spectral_initialize",
+    "spectral_initialize_channel_rows",
     "spatial_frequency",
     "steering_matrix",
     "steering_vector",
