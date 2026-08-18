@@ -22,8 +22,9 @@ This package implements:
   resume, ratio-of-sums aggregation, and Wilson / NMSE uncertainty helpers
 * Track-A Cui 38.901-style clustered channel (``cui_38901``), distinct from
   the Track-B geometric ULA generator
+* Track-A Fig. 4 and Fig. 5 drivers (smoke + full detection-NMSE sweep)
 
-It does **not** implement later stages (full Cui Fig. 5–8 publication sweeps,
+It does **not** implement later stages (Cui Fig. 6–8 publication sweeps,
 Track-C execution, GD/PGD, estimator research experiments).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``

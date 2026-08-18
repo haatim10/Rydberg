@@ -1,7 +1,9 @@
 """Track A (Cui validation) experiment drivers.
 
-Fig. 4 (Bessel ratio) and a **small** Fig. 5 NMSE smoke study.
-Does not launch the full Fig. 5–8 publication sweeps.
+Fig. 4 (Bessel ratio), the Fig. 5 smoke study, and the full Fig. 5
+reproduction driver (see :mod:`rydberg_sim.track_a_fig5`).
+
+Does **not** launch Fig. 6–8, Track B, Track C, or machine learning.
 Does not import or call :func:`rydberg_sim.channel.generate_ula_channel`.
 """
 
@@ -225,7 +227,7 @@ def _cli(argv: list[str] | None = None) -> None:
 
     args = list(sys.argv[1:] if argv is None else argv)
     if not args or args[0] in {"-h", "--help"}:
-        print("usage: python -m rydberg_sim.track_a {fig4|fig5-smoke}")
+        print("usage: python -m rydberg_sim.track_a {fig4|fig5-smoke|fig5|fig5-norm-diag}")
         return
     if args[0] == "fig4":
         vals = reproduce_fig4()
@@ -234,6 +236,18 @@ def _cli(argv: list[str] | None = None) -> None:
     if args[0] == "fig5-smoke":
         summary = run_fig5_smoke()
         print(json.dumps({k: v for k, v in summary.items() if k != "aggregate"}, indent=2))
+        return
+    if args[0] == "fig5":
+        from .track_a_fig5 import run_fig5
+
+        summary = run_fig5()
+        print(json.dumps({k: v for k, v in summary.items() if k != "acceptance"}, indent=2))
+        return
+    if args[0] == "fig5-norm-diag":
+        from .track_a_fig5 import default_fig5_dir, run_row_normalization_diagnostic
+
+        summary = run_row_normalization_diagnostic(default_fig5_dir())
+        print(json.dumps({k: v for k, v in summary.items() if k != "shifts"}, indent=2))
         return
     raise SystemExit(f"unknown command {args[0]!r}")
 

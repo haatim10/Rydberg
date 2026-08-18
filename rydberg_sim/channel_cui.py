@@ -206,12 +206,19 @@ def generate_cui_channel(
     K: int,
     rng: np.random.Generator,
     params: CuiChannelParams | None = None,
+    *,
+    normalize_rows: bool = True,
 ) -> CuiChannelRealization:
     """Draw one Cui clustered channel ``A ∈ C^{K × N}``.
 
     Randomness: path gains, cluster AoA, ray offsets, delays, and
     **per-element** polarizations all come from ``rng`` (the Step-14
     **channel** stream). Does not touch pilots/noise/data/solver.
+
+    ``normalize_rows=True`` (production Track A) scales each user row so
+    ``mean_n |a_{nk}|² = 1``. ``normalize_rows=False`` is a diagnostic
+    only: the Table I draw is returned at its raw scale. The RNG
+    consumption is identical; only the final per-row scale is skipped.
     """
     if not isinstance(rng, np.random.Generator):
         raise TypeError(f"rng must be a numpy Generator, got {type(rng)!r}")
@@ -268,16 +275,18 @@ def generate_cui_channel(
         theta_all.append(thetas)
         tau_all.append(taus)
 
-    # Per-user row power → 1 so eq. 37/38 have E|a_{nk}|^2 = 1 after
-    # averaging over n. Table I CN(0,1) gains plus |μ·ε| do not already
-    # guarantee that scale.
+    # Production Track A: per-user row power → 1 so eq. 37/38 have
+    # E|a_{nk}|^2 = 1 after averaging over n. Table I CN(0,1) gains plus
+    # |μ·ε| do not already guarantee that scale. The unnormalized path
+    # is a diagnostic; it does not change the production definition.
     mean_pow = np.empty(K, dtype=np.float64)
     for k in range(K):
         mean_pow[k] = float(np.mean(np.abs(A[k, :]) ** 2))
         if mean_pow[k] <= 0.0:
             raise RuntimeError(f"user {k} channel has zero power")
-        A[k, :] /= np.sqrt(mean_pow[k])
-        mean_pow[k] = 1.0
+        if normalize_rows:
+            A[k, :] /= np.sqrt(mean_pow[k])
+            mean_pow[k] = 1.0
 
     A.setflags(write=False)
     mean_pow.setflags(write=False)
