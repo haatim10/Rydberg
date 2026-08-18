@@ -1,4 +1,4 @@
-"""Steps 1–10 of the Rydberg atomic MIMO simulation stack.
+"""Steps 1–11 of the Rydberg atomic MIMO simulation stack.
 
 This package implements:
 
@@ -14,8 +14,9 @@ This package implements:
   exhaustive QAM LS/ML). CM-ZF is explicitly unimplemented.
 * canonical Cui spectral initialization for ``z = |M^H u + b + w|``
 * Cui biased Gerchberg–Saxton (Algorithm 1) and EM-GS (Algorithm 2)
+* Cui Fisher information / CRLB for the magnitude-only Rician model
 
-It does **not** implement later stages (Cui/Xu CRLB, GD/PGD, Monte Carlo
+It does **not** implement later stages (Xu CRLB, GD/PGD, Monte Carlo
 estimator sweeps, figures, BER).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``
@@ -67,6 +68,18 @@ from .channel import (
     steering_vector,
 )
 from .config import SimulationConfig
+from .crlb import (
+    CuiCRLBResult,
+    CuiFisherResult,
+    cui_crlb,
+    cui_crlb_high_snr_limit,
+    cui_fisher_information,
+    fisher_beta,
+    fisher_expectation_z2_r2,
+    high_snr_fisher_beta_limit,
+    rician_amplitude_pdf,
+    rician_fisher_scalar,
+)
 from .gs import (
     BiasedGSResult,
     ChannelBiasedGSResult,
@@ -120,6 +133,8 @@ __all__ = [
     "ChannelBiasedGSResult",
     "EMGSResult",
     "ChannelEMGSResult",
+    "CuiCRLBResult",
+    "CuiFisherResult",
     "ExactObservation",
     "LinearisedObservation",
     "MeasuredRSR",
@@ -139,6 +154,9 @@ __all__ = [
     "bessel_ratio",
     "build_qam_constellation",
     "cm_zf",
+    "cui_crlb",
+    "cui_crlb_high_snr_limit",
+    "cui_fisher_information",
     "db_to_linear",
     "em_gs",
     "em_gs_channel_rows",
@@ -147,11 +165,14 @@ __all__ = [
     "exhaustive_magnitude_ls",
     "exhaustive_magnitude_ml",
     "exhaustive_search_complexity_gate",
+    "fisher_beta",
+    "fisher_expectation_z2_r2",
     "generate_gaussian_pilots",
     "generate_qam",
     "generate_reference_field",
     "generate_ula_channel",
     "get_trial_rngs",
+    "high_snr_fisher_beta_limit",
     "is_full_column_rank",
     "is_full_row_rank",
     "linearised_closed_form_ls",
@@ -165,6 +186,8 @@ __all__ = [
     "qam_to_bits",
     "random_complex_initialization",
     "reference_user_beta",
+    "rician_amplitude_pdf",
+    "rician_fisher_scalar",
     "rsr_db_to_alpha_magnitude",
     "snr_db_to_sigma2",
     "spectral_initialize",

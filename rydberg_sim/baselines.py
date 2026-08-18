@@ -29,10 +29,10 @@ C. CM-ZF: **not implemented** (Cui's channel-magnitude ZF is not specified
 D. Exhaustive QAM search for Track-A *detection* (not channel estimation):
    magnitude-domain LS, and Rician ML for the Step-5 observation model.
 
-What is **not** implemented (Step 8+)
+What is **not** implemented (Step 12+)
 -------------------------------------
-spectral initialization, biased GS, EM-GS, Bessel-ratio iteration, Cui/Xu
-CRLBs, GD/PGD, Monte Carlo estimator sweeps, figures, BER experiments.
+Xu CRLB, GD/PGD, Monte Carlo estimator sweeps, figures, BER experiments.
+Cui CRLB lives in :mod:`rydberg_sim.crlb`, not here.
 
 Future acceptance test (do **not** implement GD here to satisfy it):
 
