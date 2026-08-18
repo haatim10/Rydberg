@@ -52,11 +52,12 @@ restored observation by the Bessel ratio ``R(κ) = I₁(κ)/I₀(κ)`` with
 ``bessel_ratio`` is computed via ``scipy.special.ive`` (and an
 asymptotic tail for ``κ > 1e4``). It is **not** ``i1/i0``.
 
-What this module does **not** implement (Step 12+)
+What this module does **not** implement (Step 14+)
 -------------------------------------------------
-Xu CRLB, GD/PGD, Monte Carlo figure sweeps, BER, Track-C, machine
-learning. Cui's CRLB lives in :mod:`rydberg_sim.crlb`. QAM projection
-is not applied inside GS or EM-GS iterations.
+Monte Carlo figure sweeps, Track-C, machine learning. Cui's CRLB lives
+in :mod:`rydberg_sim.crlb`. QAM projection is not applied inside GS or
+EM-GS iterations; :func:`rydberg_sim.qam.project_to_qam` is re-exported
+here for the optional detection-layer helper.
 
 """
 
@@ -69,7 +70,7 @@ import numpy as np
 from scipy.special import ive
 
 from .baselines import rician_log_likelihood
-from .qam import QAMConstellation, build_qam_constellation
+from .qam import project_to_qam
 from .spectral import spectral_initialize
 
 DEFAULT_RIDGE = 0.0
@@ -242,28 +243,6 @@ def random_complex_initialization(
         vec = np.ones(d, dtype=np.complex128)
         nrm = float(np.linalg.norm(vec))
     return vec / nrm
-
-
-def project_to_qam(
-    u: np.ndarray,
-    constellation: QAMConstellation | int,
-) -> np.ndarray:
-    """Optional detection-layer nearest-neighbour projection onto Step-4 QAM.
-
-    **Not** part of the continuous biased-GS iteration. Cui Algorithm 1
-    as implemented here is the unconstrained LS update; call this only
-    after the iterations if a discrete symbol estimate is required.
-    """
-    const = (
-        constellation
-        if isinstance(constellation, QAMConstellation)
-        else build_qam_constellation(int(constellation))
-    )
-    u_arr = np.asarray(u, dtype=np.complex128).reshape(-1)
-    _require_finite(u_arr, "u")
-    delta = u_arr[:, np.newaxis] - const.points[np.newaxis, :]
-    idx = np.argmin(np.abs(delta), axis=1)
-    return const.points[idx].astype(np.complex128, copy=False)
 
 
 def _solve_ls(A: np.ndarray, rhs: np.ndarray, ridge: float) -> np.ndarray:

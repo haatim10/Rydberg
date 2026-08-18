@@ -41,9 +41,9 @@ Callers who want trial-addressable data should pass
 is a *fifth* SeedSequence child and does not change the channel,
 pilots, reference, or noise streams.
 
-This module does not implement a detector. ``qam_to_bits`` performs an
-exact constellation lookup (or accepts integer indices), not
-nearest-neighbor slicing.
+This module does not implement a Monte Carlo detector. ``qam_to_bits``
+performs an exact constellation lookup (or accepts integer indices).
+Nearest-neighbour projection for BER lives in :func:`project_to_qam`.
 """
 
 from __future__ import annotations
@@ -160,6 +160,47 @@ def build_qam_constellation(M: int) -> QAMConstellation:
     )
     _CONSTELLATION_CACHE[M] = const
     return const
+
+
+def _require_finite(arr: np.ndarray, name: str) -> None:
+    if not np.all(np.isfinite(arr)):
+        raise ValueError(f"{name} must be finite")
+
+
+def _as_constellation(constellation: QAMConstellation | int) -> QAMConstellation:
+    if isinstance(constellation, QAMConstellation):
+        return constellation
+    return build_qam_constellation(int(constellation))
+
+
+def nearest_qam_indices(
+    symbols: np.ndarray,
+    constellation: QAMConstellation | int,
+) -> np.ndarray:
+    """Euclidean nearest-neighbour indices into the Step-4 constellation."""
+    const = _as_constellation(constellation)
+    arr = np.asarray(symbols, dtype=np.complex128).reshape(-1)
+    _require_finite(arr, "symbols")
+    delta = arr[:, np.newaxis] - const.points[np.newaxis, :]
+    return np.argmin(np.abs(delta), axis=1).astype(np.int64, copy=False)
+
+
+def project_to_qam(
+    symbols: np.ndarray,
+    constellation: QAMConstellation | int,
+) -> np.ndarray:
+    """Nearest-neighbour projection onto the Step-4 unit-energy QAM alphabet.
+
+    ``s_hat_k = argmin_{q in constellation} |s_tilde_k - q|``.
+    Used after a continuous detector (Step 9/10); not an exact lookup.
+    """
+    const = _as_constellation(constellation)
+    orig = np.asarray(symbols)
+    idx = nearest_qam_indices(orig, const)
+    out = const.points[idx].astype(np.complex128, copy=False)
+    if orig.ndim == 0:
+        return np.asarray(out[0])
+    return out.reshape(orig.shape)
 
 
 def _pack_bits(bits: np.ndarray) -> np.ndarray:

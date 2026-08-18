@@ -61,10 +61,10 @@ question and is **not** this Fisher information.
 Do not compare this bound to Step 11's Rician CRLB as if they described
 the same statistical model at arbitrary RSR.
 
-What this module does **not** implement (Step 13+)
+What this module does **not** implement (Step 14+)
 -------------------------------------------------
-metrics framework, Monte Carlo harness, GD/PGD, figure sweeps, BER,
-Track-C, machine learning.
+Monte Carlo harness, GD/PGD, figure sweeps, Track-C, machine learning.
+Metrics (NMSE/BER) live in :mod:`rydberg_sim.metrics`.
 """
 
 from __future__ import annotations

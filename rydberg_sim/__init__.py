@@ -1,4 +1,4 @@
-"""Steps 1–12 of the Rydberg atomic MIMO simulation stack.
+"""Steps 1–13 of the Rydberg atomic MIMO simulation stack.
 
 This package implements:
 
@@ -17,9 +17,10 @@ This package implements:
 * Cui Fisher information / CRLB for the magnitude-only Rician model
 * linearised channel CRLB from the Step-7 real Gaussian model
   (derived from nbar ~ N(0, sigma2/2 I); not copied from Xu)
+* deterministic NMSE / BER metrics (no simulation generation)
 
-It does **not** implement later stages (metrics harness, GD/PGD, Monte Carlo
-estimator sweeps, figures, BER).
+It does **not** implement later stages (Monte Carlo harness, GD/PGD,
+estimator sweeps, figures).
 
 Gaussian pilots ``S`` and QAM data symbols are distinct: ``S ~ CN(0,1)``
 is known and used for channel estimation; QAM is a finite alphabet for
@@ -121,7 +122,22 @@ from .qam import (
     bits_to_qam,
     build_qam_constellation,
     generate_qam,
+    nearest_qam_indices,
+    project_to_qam,
     qam_to_bits,
+)
+from .metrics import (
+    BERResult,
+    BerAccumulator,
+    ChannelNMSEResult,
+    DetectionNMSEResult,
+    NmseAccumulator,
+    channel_nmse,
+    decoded_bits,
+    detection_ber,
+    detection_nmse,
+    nmse_to_db,
+    phase_align_channel_rows,
 )
 from .reference import ReferenceField, generate_reference_field
 from .rng import TrialRNGs, get_trial_rngs
@@ -134,6 +150,11 @@ from .spectral import (
 
 __all__ = [
     "DEFAULT_MAX_CANDIDATES",
+    "BERResult",
+    "BerAccumulator",
+    "ChannelNMSEResult",
+    "DetectionNMSEResult",
+    "NmseAccumulator",
     "ChannelRealization",
     "ExhaustiveSearchResult",
     "ExhaustiveSearchTooLargeError",
@@ -166,11 +187,15 @@ __all__ = [
     "biased_gs_channel_rows",
     "bessel_ratio",
     "build_qam_constellation",
+    "channel_nmse",
     "cm_zf",
     "cui_crlb",
     "cui_crlb_high_snr_limit",
     "cui_fisher_information",
     "db_to_linear",
+    "decoded_bits",
+    "detection_ber",
+    "detection_nmse",
     "em_gs",
     "em_gs_channel_rows",
     "enumerate_qam_symbol_vectors",
@@ -199,7 +224,11 @@ __all__ = [
     "measure_rsr",
     "measure_snr",
     "min_circular_psi_separation",
+    "nearest_qam_indices",
+    "nmse_to_db",
     "qam_candidate_count",
+    "phase_align_channel_rows",
+    "project_to_qam",
     "qam_to_bits",
     "random_complex_initialization",
     "reference_phase_matrix",

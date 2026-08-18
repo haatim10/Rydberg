@@ -320,7 +320,7 @@ def test_step11_cui_crlb_still_separate() -> None:
     assert cui.crlb.shape == (2, 2)
 
 
-def test_step13_plus_not_implemented() -> None:
+def test_step14_plus_not_implemented() -> None:
     import rydberg_sim.baselines as bmod
     import rydberg_sim.crlb as cmod
     import rydberg_sim.gs as gmod
@@ -331,10 +331,13 @@ def test_step13_plus_not_implemented() -> None:
     assert not hasattr(lmod, "xu_crlb")
     assert not hasattr(lmod, "xu_gd")
     assert not hasattr(lmod, "monte_carlo_harness")
-    assert not hasattr(lmod, "metrics")
+    import rydberg_sim.metrics as mmod
+
+    assert hasattr(mmod, "detection_nmse")
+    assert not hasattr(mmod, "monte_carlo_harness")
     assert not hasattr(gmod, "xu_gd")
     assert not hasattr(bmod, "xu_crlb")
     assert not hasattr(cmod, "xu_crlb")
     src = inspect.getsource(lmod)
     assert "No prefactor is copied from Xu" in src
-    assert "Step 13+" in src
+    assert "Step 14+" in src
