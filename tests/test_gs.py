@@ -300,13 +300,13 @@ def test_optional_qam_projection_is_not_inside_gs() -> None:
     assert const.M == 4
 
 
-def test_em_gs_not_implemented() -> None:
+def test_em_gs_lives_in_gs_module_only() -> None:
     import rydberg_sim.baselines as bmod
     import rydberg_sim.gs as gmod
     import rydberg_sim.spectral as smod
 
-    assert not hasattr(gmod, "em_gs")
-    assert not hasattr(gmod, "bessel_ratio")
+    assert hasattr(gmod, "em_gs")
+    assert hasattr(gmod, "bessel_ratio")
     assert not hasattr(smod, "biased_gs")
     assert not hasattr(smod, "em_gs")
     assert not hasattr(bmod, "biased_gs")

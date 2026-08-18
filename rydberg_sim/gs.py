@@ -44,12 +44,19 @@ every update is
 
     J(u) = ||z - |M^H u + b|||_2^2
 
-What this module does **not** implement (Step 10+)
+Algorithm 2 (EM-GS) uses the same phase and LS steps, but multiplies the
+restored observation by the Bessel ratio ``R(κ) = I₁(κ)/I₀(κ)`` with
+
+    κ = (2 / σ²) z ⊙ |λ|.
+
+``bessel_ratio`` is computed via ``scipy.special.ive`` (and an
+asymptotic tail for ``κ > 1e4``). It is **not** ``i1/i0``.
+
+What this module does **not** implement (Step 11+)
 -------------------------------------------------
-EM-GS, Bessel ratio I1/I0, CRLB, GD/PGD, Monte Carlo figure sweeps, BER,
-QAM projection inside the iteration. Optional nearest-neighbour QAM
-projection is a separate detection-layer helper and is never called by
-the continuous solver.
+CRLB, GD/PGD, Monte Carlo figure sweeps, BER, Track-C, machine learning.
+QAM projection is not applied inside GS or EM-GS iterations.
+
 """
 
 from __future__ import annotations
@@ -58,11 +65,16 @@ from dataclasses import dataclass
 from typing import Literal
 
 import numpy as np
+from scipy.special import ive
 
+from .baselines import rician_log_likelihood
 from .qam import QAMConstellation, build_qam_constellation
 from .spectral import spectral_initialize
 
 DEFAULT_RIDGE = 0.0
+# Plan: use 1 - 1/(2x) - 1/(8x^2) for x > 1e4 (high-SNR kappa).
+BESSEL_RATIO_ASYMP_X = 1.0e4
+IVE_DENOM_FLOOR = 1.0e-300
 
 
 @dataclass(frozen=True, eq=False)
@@ -263,7 +275,7 @@ def _solve_ls(A: np.ndarray, rhs: np.ndarray, ridge: float) -> np.ndarray:
         return np.linalg.solve(gram, rhs)
     except np.linalg.LinAlgError as exc:
         raise np.linalg.LinAlgError(
-            "M M^H is singular with the requested ridge; biased GS needs "
+            "M M^H is singular with the requested ridge; GS/EM-GS needs "
             "full-row-rank M or ridge > 0. Refusing to switch algorithms."
         ) from exc
 
@@ -420,3 +432,272 @@ def biased_gs_channel_rows(
         G0=G0_out,
         row_results=tuple(rows),
     )
+
+
+# ---------------------------------------------------------------------------
+# Bessel ratio R(x) = I1(x)/I0(x)  (Cui Alg. 2)
+# ---------------------------------------------------------------------------
+
+def _bessel_ratio_asymptotic(x: np.ndarray) -> np.ndarray:
+    """``1 - 1/(2x) - 1/(8x^2)`` for large positive ``x``."""
+    return 1.0 - 1.0 / (2.0 * x) - 1.0 / (8.0 * x * x)
+
+
+def bessel_ratio(x: np.ndarray | float) -> np.ndarray:
+    """Stable ``R(x) = I_1(x) / I_0(x)`` for ``x >= 0``.
+
+    Uses ``scipy.special.ive`` so the shared ``exp(-|x|)`` factor in
+    ``I_ν(x)`` cancels. Do **not** form ``i1(x)/i0(x)``: both overflow
+    for realistic high-SNR ``κ``.
+
+    For ``x > 1e4`` the implementation plan's expansion
+    ``R(x) ≈ 1 - 1/(2x) - 1/(8x^2)`` is used. ``R(0) = 0`` exactly.
+    Output lies in ``[0, 1]``.
+    """
+    arr = np.asarray(x, dtype=np.float64)
+    orig_shape = arr.shape
+    ax = np.abs(arr).reshape(-1)
+    out = np.empty(ax.shape, dtype=np.float64)
+    large = ax > BESSEL_RATIO_ASYMP_X
+    small = ~large
+    if np.any(small):
+        xs = ax[small]
+        num = ive(1, xs)
+        den = ive(0, xs)
+        ratio = np.zeros(xs.shape, dtype=np.float64)
+        finite_den = np.isfinite(den) & (den > 0.0)
+        ratio[finite_den] = num[finite_den] / np.maximum(
+            den[finite_den], IVE_DENOM_FLOOR
+        )
+        # Exact identity: I1(0)=0, I0(0)=1.
+        ratio[xs == 0.0] = 0.0
+        out[small] = ratio
+    if np.any(large):
+        out[large] = _bessel_ratio_asymptotic(ax[large])
+    np.clip(out, 0.0, 1.0, out=out)
+    return out.reshape(orig_shape)
+
+
+def _as_sigma2_positive(value: object) -> float:
+    try:
+        sigma2 = float(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError) as exc:
+        raise TypeError(f"sigma2 must be a real number, got {value!r}") from exc
+    if not np.isfinite(sigma2):
+        raise ValueError(f"sigma2 must be finite, got {value!r}")
+    if sigma2 <= 0.0:
+        raise ValueError(
+            f"sigma2 must be > 0 for EM-GS, got {sigma2}; "
+            "κ contains 1/sigma2. Use biased GS for the noiseless problem."
+        )
+    return sigma2
+
+
+def em_kappa(z: np.ndarray, lam: np.ndarray, sigma2: float) -> np.ndarray:
+    """``κ = (2 / σ²) z ⊙ |λ|``. Factor 2 and ``sigma2`` (not ``sigma``)."""
+    sigma2_val = _as_sigma2_positive(sigma2)
+    z_arr = np.asarray(z, dtype=np.float64)
+    lam_arr = np.asarray(lam)
+    if z_arr.shape != np.shape(lam_arr):
+        raise ValueError(
+            f"z and lambda shapes must match, got {z_arr.shape} and {np.shape(lam_arr)}"
+        )
+    return (2.0 / sigma2_val) * z_arr * np.abs(lam_arr)
+
+
+@dataclass(frozen=True, eq=False)
+class EMGSResult:
+    """Canonical EM-GS (Algorithm 2) output.
+
+    ``objective_history`` is the magnitude LS ``J(u)``. It is **not**
+    required to be monotone: EM-GS maximises a Rician likelihood, not
+    ``J``. ``loglik_history`` uses the Step-7
+    :func:`~rydberg_sim.baselines.rician_log_likelihood` convention.
+    """
+
+    u_hat: np.ndarray
+    u0: np.ndarray
+    n_iter: int
+    sigma2: float
+    ridge: float
+    regularization_used: bool
+    init_source: Literal["spectral", "given"]
+    objective_history: np.ndarray
+    loglik_history: np.ndarray
+    kappa_mean: np.ndarray
+    kappa_final: np.ndarray
+    iterates: np.ndarray | None
+
+
+@dataclass(frozen=True, eq=False)
+class ChannelEMGSResult:
+    """Per-element channel-row adapter around :func:`em_gs`."""
+
+    G_hat: np.ndarray
+    G0: np.ndarray
+    row_results: tuple[EMGSResult, ...]
+
+
+def em_gs(
+    M: np.ndarray,
+    z: np.ndarray,
+    b: np.ndarray,
+    sigma2: float,
+    *,
+    max_iter: int,
+    u0: np.ndarray | None = None,
+    ridge: float = DEFAULT_RIDGE,
+    store_iterates: bool = False,
+) -> EMGSResult:
+    """Cui EM-GS (Algorithm 2) for ``z = |M^H u + b + w|``.
+
+    Same phase and LS update as :func:`biased_gs`, with the extra
+    Bessel weight::
+
+        λ = M^H u + b
+        κ = (2 / σ²) z ⊙ |λ|
+        y_EM = z ⊙ exp(1j angle(λ)) ⊙ R(κ)
+        r = y_EM - b
+        (M M^H + ridge I) u_new = M r
+
+    ``sigma2 > 0`` is required. This function has no channel or QAM
+    special case.
+    """
+    M_arr = _as_complex_matrix(M, "M")
+    d, q = M_arr.shape
+    z_arr = _as_real_vector(z, "z", q)
+    b_arr = _as_complex_vector(b, "b", q)
+    if np.any(z_arr < 0.0):
+        raise ValueError("z must be nonnegative amplitudes")
+    sigma2_val = _as_sigma2_positive(sigma2)
+    n_iter = _as_max_iter(max_iter)
+    ridge_val = _as_ridge(ridge)
+
+    if u0 is None:
+        u = spectral_initialize(M_arr, z_arr, b_arr).u0
+        init_source: Literal["spectral", "given"] = "spectral"
+    else:
+        u = _as_complex_vector(u0, "u0", d)
+        init_source = "given"
+
+    m_h = M_arr.conj().T
+    gram = M_arr @ m_h
+    if ridge_val != 0.0:
+        gram = gram + ridge_val * np.eye(d, dtype=np.complex128)
+
+    def _lam(u_vec: np.ndarray) -> np.ndarray:
+        return m_h @ u_vec + b_arr
+
+    def _ll(u_vec: np.ndarray) -> float:
+        return rician_log_likelihood(z_arr, _lam(u_vec), sigma2_val)
+
+    history = np.empty(n_iter + 1, dtype=np.float64)
+    loglik = np.empty(n_iter + 1, dtype=np.float64)
+    kappa_mean = np.empty(n_iter, dtype=np.float64)
+    history[0] = magnitude_objective(M_arr, u, b_arr, z_arr, M_H=m_h)
+    loglik[0] = _ll(u)
+    iterates: np.ndarray | None
+    if store_iterates:
+        iterates = np.empty((n_iter + 1, d), dtype=np.complex128)
+        iterates[0] = u
+    else:
+        iterates = None
+
+    u_work = np.array(u, dtype=np.complex128, copy=True)
+    kappa = np.empty(q, dtype=np.float64)
+    for t in range(1, n_iter + 1):
+        lam = _lam(u_work)
+        # Same phase as biased GS; extra R(κ) weight is the EM correction.
+        kappa = em_kappa(z_arr, lam, sigma2_val)
+        kappa_mean[t - 1] = float(np.mean(kappa))
+        y_em = z_arr * np.exp(1j * np.angle(lam)) * bessel_ratio(kappa)
+        r = y_em - b_arr
+        u_work = _solve_ls(gram, M_arr @ r, ridge=0.0)
+        history[t] = magnitude_objective(M_arr, u_work, b_arr, z_arr, M_H=m_h)
+        loglik[t] = _ll(u_work)
+        if iterates is not None:
+            iterates[t] = u_work
+
+    kappa_final = em_kappa(z_arr, _lam(u_work), sigma2_val)
+    return EMGSResult(
+        u_hat=np.asarray(u_work, dtype=np.complex128).reshape(d),
+        u0=np.asarray(u, dtype=np.complex128).reshape(d),
+        n_iter=n_iter,
+        sigma2=sigma2_val,
+        ridge=ridge_val,
+        regularization_used=ridge_val > 0.0,
+        init_source=init_source,
+        objective_history=history,
+        loglik_history=loglik,
+        kappa_mean=kappa_mean,
+        kappa_final=kappa_final,
+        iterates=iterates,
+    )
+
+
+def em_gs_channel_rows(
+    S: np.ndarray,
+    Z: np.ndarray,
+    B: np.ndarray,
+    sigma2: float,
+    *,
+    max_iter: int,
+    ridge: float = DEFAULT_RIDGE,
+    G0: np.ndarray | None = None,
+    store_iterates: bool = False,
+) -> ChannelEMGSResult:
+    """Channel-estimation adapter: loop of canonical :func:`em_gs`.
+
+    ``M = S``, ``b_solver = conj(B[n])``, ``G_hat[n] = conj(u_hat)``.
+    Does not copy EM equations. Each row has its own spectral init.
+    """
+    S_arr = _as_complex_matrix(S, "S")
+    Z_arr = np.asarray(Z, dtype=np.float64)
+    B_arr = _as_complex_matrix(B, "B")
+    if Z_arr.ndim != 2:
+        raise ValueError(f"Z must be 2-D (N, P), got shape {Z_arr.shape}")
+    _require_finite(Z_arr, "Z")
+    n_rx, n_pilots = Z_arr.shape
+    n_users, p_s = S_arr.shape
+    if p_s != n_pilots:
+        raise ValueError(
+            f"incompatible Z and S: Z.shape={Z_arr.shape}, S.shape={S_arr.shape}"
+        )
+    if B_arr.shape != (n_rx, n_pilots):
+        raise ValueError(
+            f"incompatible B: B.shape={B_arr.shape}, expected {(n_rx, n_pilots)}"
+        )
+    g0_arr: np.ndarray | None
+    if G0 is None:
+        g0_arr = None
+    else:
+        g0_arr = _as_complex_matrix(G0, "G0")
+        if g0_arr.shape != (n_rx, n_users):
+            raise ValueError(
+                f"G0.shape={g0_arr.shape}, expected {(n_rx, n_users)}"
+            )
+
+    G_hat = np.empty((n_rx, n_users), dtype=np.complex128)
+    G0_out = np.empty((n_rx, n_users), dtype=np.complex128)
+    rows: list[EMGSResult] = []
+    for n in range(n_rx):
+        u0_n = None if g0_arr is None else np.conjugate(g0_arr[n])
+        row = em_gs(
+            S_arr,
+            Z_arr[n],
+            np.conjugate(B_arr[n]),
+            sigma2,
+            max_iter=max_iter,
+            u0=u0_n,
+            ridge=ridge,
+            store_iterates=store_iterates,
+        )
+        G_hat[n] = np.conjugate(row.u_hat)
+        G0_out[n] = np.conjugate(row.u0)
+        rows.append(row)
+    return ChannelEMGSResult(
+        G_hat=G_hat,
+        G0=G0_out,
+        row_results=tuple(rows),
+    )
+
