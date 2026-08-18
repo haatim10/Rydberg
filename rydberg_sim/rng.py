@@ -16,10 +16,15 @@ trial index:
 
     trial_ss = SeedSequence(entropy=master_seed, spawn_key=(trial_index,))
 
-Component streams (channel, pilots, reference, noise) are then spawned
-from that trial sequence. This avoids ``master.spawn(trial_index + 1)``,
+Component streams (channel, pilots, reference, noise, data) are then
+spawned from that trial sequence. This avoids ``master.spawn(trial_index + 1)``,
 which would make random access to trial ``t`` require spawning ``t+1``
 children.
+
+The ``data`` stream is a fifth child appended after the original four.
+``SeedSequence.spawn`` numbers children sequentially, so adding ``data``
+does **not** change the channel, pilots, reference, or noise sequences
+for a given ``(master_seed, trial_index)``.
 """
 
 from __future__ import annotations
@@ -28,9 +33,17 @@ from dataclasses import dataclass
 
 import numpy as np
 
-# Fixed spawn order. Later stages consume pilots/reference/noise; Step 2
-# uses only the channel stream.
-COMPONENT_STREAMS: tuple[str, ...] = ("channel", "pilots", "reference", "noise")
+# Fixed spawn order. Children are numbered sequentially, so appending a
+# stream does not retune earlier ones. Step 2 uses channel; Step 4
+# pilots uses pilots; Step 3 does not consume reference; QAM data may
+# use data.
+COMPONENT_STREAMS: tuple[str, ...] = (
+    "channel",
+    "pilots",
+    "reference",
+    "noise",
+    "data",
+)
 
 
 @dataclass(frozen=True, eq=False)
@@ -41,6 +54,7 @@ class TrialRNGs:
     pilots: np.random.Generator
     reference: np.random.Generator
     noise: np.random.Generator
+    data: np.random.Generator
 
 
 def get_trial_rngs(master_seed: int, trial_index: int) -> TrialRNGs:
@@ -57,9 +71,9 @@ def get_trial_rngs(master_seed: int, trial_index: int) -> TrialRNGs:
     Returns
     -------
     TrialRNGs
-        Four independent ``numpy.random.Generator`` objects, one per
+        Independent ``numpy.random.Generator`` objects, one per
         component stream, in the order ``channel``, ``pilots``,
-        ``reference``, ``noise``.
+        ``reference``, ``noise``, ``data``.
     """
     if isinstance(trial_index, (bool, np.bool_)) or int(trial_index) != trial_index:
         raise TypeError(f"trial_index must be an integer, got {trial_index!r}")
@@ -71,10 +85,12 @@ def get_trial_rngs(master_seed: int, trial_index: int) -> TrialRNGs:
         entropy=int(master_seed),
         spawn_key=(trial_index,),
     )
-    channel_ss, pilots_ss, reference_ss, noise_ss = trial_ss.spawn(len(COMPONENT_STREAMS))
+    spawned = trial_ss.spawn(len(COMPONENT_STREAMS))
+    channel_ss, pilots_ss, reference_ss, noise_ss, data_ss = spawned
     return TrialRNGs(
         channel=np.random.default_rng(channel_ss),
         pilots=np.random.default_rng(pilots_ss),
         reference=np.random.default_rng(reference_ss),
         noise=np.random.default_rng(noise_ss),
+        data=np.random.default_rng(data_ss),
     )
