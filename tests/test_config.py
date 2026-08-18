@@ -55,6 +55,13 @@ def test_rejects_L_k_out_of_range() -> None:
         SimulationConfig.create(N=4, K=2, L_k=(2, 5), beta=1.0, master_seed=0)
 
 
+def test_rejects_non_positive_c() -> None:
+    with pytest.raises(ValueError, match="c must be finite and > 0"):
+        SimulationConfig.create(N=4, K=1, L=1, beta=1.0, master_seed=0, c=0.0)
+    with pytest.raises(ValueError, match="c must be finite and > 0"):
+        SimulationConfig.create(N=4, K=1, L=1, beta=1.0, master_seed=0, c=-1.0)
+
+
 def test_rejects_non_positive_beta() -> None:
     with pytest.raises(ValueError, match="beta_k"):
         SimulationConfig.create(N=4, K=1, L=1, beta=0.0, master_seed=0)

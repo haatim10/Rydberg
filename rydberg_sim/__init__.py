@@ -8,9 +8,10 @@ This package implements:
 It does **not** implement later stages (Cui GS/EM-GS, spectral initialization,
 pilots, reference, noise, SNR/RSR calibration, BER, Monte Carlo sweeps, ...).
 
-The conversion/polarization factor ``c`` is a common known scalar. For
-normalized simulations ``c = 1``. That choice is a numerical normalization,
-not a claim that the physical atomic conversion gain equals 1.
+The conversion/polarisation factor ``c = ℘/ℏ`` is a common known
+positive scalar (A5, A15). For normalized simulations ``c = 1``. That
+choice is a numerical normalization, not a claim that the physical
+atomic conversion gain equals 1.
 """
 
 from .channel import (

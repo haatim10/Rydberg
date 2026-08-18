@@ -1,65 +1,77 @@
-"""Geometric ULA channel generator from SystemModel.pdf (Step 2).
+"""Geometric ULA channel generator from SystemModel.pdf Sections 3–5 (Step 2).
 
-This is **not** Cui's 3GPP TR 38.901 generator. There is no random
-per-element polarization. The polarization/conversion factor is a
-common known scalar ``c``. For normalized simulations ``c = 1``, which
-is a numerical convention, not a physical claim that the atomic
-conversion gain equals 1.
+This is **not** Cui's 3GPP TR 38.901 generator and **not** the four-level
+model of Gong et al. There is no random per-element polarisation: A5
+fixes ``℘ = |μ_eg · ê|`` as a known real constant, identical for all
+``(n, k, ℓ)``, which restores a separable array manifold.
 
-Model
------
-For user ``k`` and path ``ell``:
+The atomic conversion gain (Section 5, A15) is the known real scalar
 
-    theta_{ell,k} ~ Uniform[-pi/2, pi/2]
+    c ≜ ℘ / ℏ    [rad · s^{-1} per V · m^{-1}]
 
-Because ``d = lambda/2``:
+For normalized simulations ``c = 1``. That is a numerical convention,
+not a claim that the physical atomic conversion gain equals 1.
 
-    psi_{ell,k} = pi * sin(theta_{ell,k})
+Model (SystemModel.pdf)
+-----------------------
+ULA on the x-axis at ``p_n = (n-1) d x̂``, ``n = 1, …, N``, with
+``d = λ/2``. For user ``k`` and path ``ℓ``:
 
-The ULA steering vector is
+    theta_{ℓ,k} ~ Uniform[-π/2, π/2]     (from array broadside; A13 table)
 
-    a(theta) = [1, exp(-j psi), exp(-j 2 psi), ..., exp(-j (N-1) psi)]^T
+    ψ_{ℓ,k} = (2π d / λ) sin(θ_{ℓ,k}) = π sin(θ_{ℓ,k}) ∈ [-π, π]
 
-so every entry has magnitude 1 and ``||a(theta)||_2^2 = N``.
+As a map into ℝ, ``θ ↦ ψ`` is injective on ``[-π/2, π/2]``
+(``ψ(π/2) = π ≠ -π = ψ(-π/2)``), so there is no spatial aliasing.
+On the array manifold the endpoints are equivalent because
+``exp(-j m π) = exp(j m π)``; the degeneracy test below therefore
+identifies ``ψ ~ ψ + 2π``.
 
-Path gains:
+The ULA steering vector (1-based index ``n``, 0-based code ``n-1``) is
 
-    alpha_{ell,k} ~ CN(0, beta_k / L_k)
+    a(θ) = [1, exp(-j ψ), exp(-j 2 ψ), …, exp(-j (N-1) ψ)]^T
 
-i.e. real and imaginary parts are independent N(0, (beta_k / L_k) / 2),
-which gives ``E[|alpha|^2] = beta_k / L_k``.
+so every entry has magnitude 1 and ``||a(θ)||_2^2 = N``.
 
-With ``A_k = [a(theta_1k), ..., a(theta_{L_k,k})]`` of shape ``(N, L_k)``
-and ``alpha_k`` of shape ``(L_k,)``:
+Path gains (A13):
 
-    h_k = A_k @ alpha_k
-    H   = [h_1, ..., h_K]          # shape (N, K)
-    G   = c * H
+    α_{ℓ,k} ~ CN(0, β_k / L_k), independent across paths
+
+Real and imaginary parts are independent ``N(0, (β_k / L_k) / 2)``,
+which gives ``E[|α|^2] = β_k / L_k``. Then
+
+    h_{n,k} = Σ_ℓ α_{ℓ,k} exp(-j (n-1) ψ_{ℓ,k})
+
+    h_k = A_k α_k ∈ ℂ^N,   A_k ∈ ℂ^{N × L_k},   α_k ∈ ℂ^{L_k}
+
+    H = [h_1, …, h_K] ∈ ℂ^{N × K}     (propagation; no atomic quantity)
+
+    G = c H ∈ ℂ^{N × K}               (atomic-domain channel)
+
+A13 implies ``E[|h_{n,k}|^2] = β_k`` and ``E[||h_k||_2^2] = N β_k``.
 
 Rank / degeneracy handling
 --------------------------
 Config already enforces ``L_k <= N``. For distinct spatial frequencies
 the Vandermonde structure of ``A_k`` has full column rank ``L_k``.
 Exact angle collisions have probability zero under the continuous
-Uniform[-pi/2, pi/2] law, including the identification
-``a(pi/2) = a(-pi/2)`` (because ``psi = ±pi`` yield the same steering
-vector).
+Uniform[-π/2, π/2] law.
 
 Pathological near-collisions are rejected and redrawn using **two**
 explicit numerical criteria, **not** ``numpy.linalg.matrix_rank``'s
 default tolerance (``max(M, N) * eps * sigma_max``):
 
-1. Circular spatial-frequency separation. Identify ``psi ~ psi + 2 pi``
-   and require
+1. Circular spatial-frequency separation. Identify ``ψ ~ ψ + 2π``
+   (manifold periodicity) and require
 
-       min_{i != j} d_circ(psi_i, psi_j) >= PSI_SEP_MIN = 1e-10
+       min_{i != j} d_circ(ψ_i, ψ_j) >= PSI_SEP_MIN = 1e-10
 
-   This is many orders of magnitude below the Rayleigh scale ``2 pi / N``
-   and does not materially alter the Uniform[-pi/2, pi/2] distribution.
+   This is many orders of magnitude below the Rayleigh scale ``2π / N``
+   and does not materially alter the Uniform[-π/2, π/2] distribution.
 
 2. Relative singular-value test. ``A_k`` is full column rank iff
 
-       sigma_min(A_k) >= RANK_SV_REL_TOL * sigma_max(A_k)
+       σ_min(A_k) >= RANK_SV_REL_TOL * σ_max(A_k)
 
    with ``RANK_SV_REL_TOL = 1e-8``.
 
@@ -93,9 +105,11 @@ class ChannelRealization:
     Attributes
     ----------
     G
-        Atomic-domain channel, ``c * H``, shape ``(N, K)``, complex128.
+        Atomic-domain channel ``c H`` (Section 5), shape ``(N, K)``,
+        complex128.
     H
-        RF-domain channel, shape ``(N, K)``, complex128.
+        Propagation channel (Section 4), shape ``(N, K)``, complex128.
+        Contains no atomic or optical quantity.
     theta
         Length-``K`` tuple of AoA arrays (radians), each shape ``(L_k,)``,
         float64, supported on ``[-pi/2, pi/2]``.

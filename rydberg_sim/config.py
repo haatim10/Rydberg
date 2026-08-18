@@ -63,6 +63,9 @@ class SimulationConfig:
     L_k
         Paths per user. A scalar is expanded to all ``K`` users; otherwise a
         length-``K`` sequence. Each entry must satisfy ``1 <= L_k <= N``.
+        Section 10 of SystemModel.pdf additionally wants ``N > max L_k``
+        for later angle identifiability; that stricter bound is not
+        enforced at generation time.
     beta_k
         Large-scale channel power per user. A scalar is expanded to all
         ``K`` users; otherwise a length-``K`` sequence. Each entry must be
@@ -71,10 +74,12 @@ class SimulationConfig:
         Seed used with ``trial_index`` to construct independent per-trial
         RNG streams.
     c
-        Common known polarization/conversion scalar applied as ``G = c H``.
-        The default ``c = 1.0`` is a **numerical normalization** for
-        simulations, not a claim that the physical atomic conversion gain
-        equals 1.
+        Atomic conversion gain from SystemModel.pdf Section 5 / A15:
+        ``c = ℘ / ℏ > 0``, a known real constant identical for all
+        ``(n, k, ℓ)`` (A5: co-polarised array, no per-element random
+        polarisation). Applied as ``G = c H``. The default ``c = 1.0``
+        is a **numerical normalization** for simulations, not a claim
+        that the physical atomic conversion gain equals 1.
 
     Notes
     -----
@@ -103,8 +108,8 @@ class SimulationConfig:
             raise ValueError(f"N must be > 0, got {self.N}")
         if self.K <= 0:
             raise ValueError(f"K must be > 0, got {self.K}")
-        if not np.isfinite(self.c):
-            raise ValueError(f"c must be finite, got {self.c}")
+        if not np.isfinite(self.c) or self.c <= 0.0:
+            raise ValueError(f"c must be finite and > 0, got {self.c}")
 
         L_k = _as_tuple_int(self.L_k, self.K, "L_k")
         beta_k = _as_tuple_float(self.beta_k, self.K, "beta_k")
