@@ -158,11 +158,19 @@ def pivot_nmse_db(agg: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, float
 
 
 def _agg_lookup(
-    agg: Sequence[Mapping[str, Any]], algorithm: str, snr_db: float
+    agg: Sequence[Mapping[str, Any]],
+    algorithm: str,
+    value: float,
+    sweep_key: str = "snr_db",
 ) -> dict[str, Any] | None:
-    target = float(snr_db)
+    """Find one aggregate row by algorithm and sweep-variable value.
+
+    ``sweep_key`` is ``"snr_db"`` for Fig. 5 (NMSE vs SNR) and ``"rsr_db"``
+    for Fig. 6 (NMSE vs RSR).
+    """
+    target = float(value)
     for row in agg:
-        if str(row["algorithm"]) == algorithm and abs(float(row["snr_db"]) - target) < 1e-12:
+        if str(row["algorithm"]) == algorithm and abs(float(row[sweep_key]) - target) < 1e-12:
             return dict(row)
     return None
 
@@ -171,29 +179,36 @@ def checkpoint_deltas_db(
     prev: Sequence[Mapping[str, Any]],
     cur: Sequence[Mapping[str, Any]],
     algorithms: Sequence[str] = FIG5_CONVERGENCE_ALGS,
+    sweep_key: str = "snr_db",
 ) -> list[dict[str, Any]]:
+    """Per-cell NMSE-dB change between two checkpoints.
+
+    ``sweep_key`` selects the swept variable: ``"snr_db"`` for Fig. 5,
+    ``"rsr_db"`` for Fig. 6. Each output record carries the sweep value
+    under both its own key and ``"snr_db"``-style access via ``sweep_key``.
+    """
     out: list[dict[str, Any]] = []
     for alg in algorithms:
         snrs = sorted(
-            {float(r["snr_db"]) for r in cur if str(r["algorithm"]) == alg}
+            {float(r[sweep_key]) for r in cur if str(r["algorithm"]) == alg}
         )
         for snr in snrs:
-            a = _agg_lookup(prev, alg, snr)
-            b = _agg_lookup(cur, alg, snr)
+            a = _agg_lookup(prev, alg, snr, sweep_key)
+            b = _agg_lookup(cur, alg, snr, sweep_key)
             if a is None or b is None:
                 continue
             delta = float(b["nmse_db"]) - float(a["nmse_db"])
             out.append(
                 {
                     "algorithm": alg,
-                    "snr_db": snr,
+                    sweep_key: snr,
                     "prev_nmse_db": float(a["nmse_db"]),
                     "cur_nmse_db": float(b["nmse_db"]),
                     "delta_db": delta,
                     "abs_delta_db": abs(delta),
                 }
             )
-    out.sort(key=lambda d: (d["algorithm"], d["snr_db"]))
+    out.sort(key=lambda d: (d["algorithm"], d[sweep_key]))
     return out
 
 
@@ -1181,6 +1196,7 @@ def outlier_diagnostics(
     *,
     percentiles: Sequence[float] = OUTLIER_PERCENTILES,
     outlier_nmse_linear: float = OUTLIER_NMSE_LINEAR,
+    sweep_key: str = "snr_db",
 ) -> list[dict[str, Any]]:
     """Per-(algorithm, SNR) tail statistics of the per-trial detection NMSE.
 
@@ -1214,17 +1230,17 @@ def outlier_diagnostics(
     for row in rows:
         if str(row["metric"]) not in ("detection_nmse", "failure"):
             continue
-        key = (str(row["algorithm"]), float(row["snr_db"]))
+        key = (str(row["algorithm"]), float(row[sweep_key]))
         groups.setdefault(key, []).append(row)
 
     out: list[dict[str, Any]] = []
-    for (algorithm, snr_db), group in sorted(groups.items()):
+    for (algorithm, sweep_value), group in sorted(groups.items()):
         ok = [r for r in group if str(r["status"]) == "ok"
               and str(r["metric"]) == "detection_nmse"]
         n_failed = sum(1 for r in group if str(r["status"]) != "ok")
         if not ok:
             out.append({
-                "algorithm": algorithm, "snr_db": snr_db, "n_ok": 0,
+                "algorithm": algorithm, sweep_key: sweep_value, "n_ok": 0,
                 "n_failed": n_failed, "failure_rate": 1.0 if group else 0.0,
             })
             continue
@@ -1245,7 +1261,7 @@ def outlier_diagnostics(
         med_lin = float(np.median(per_trial))
         rec: dict[str, Any] = {
             "algorithm": algorithm,
-            "snr_db": snr_db,
+            sweep_key: sweep_value,
             "n_ok": n,
             "n_failed": n_failed,
             "failure_rate": n_failed / float(n + n_failed),
