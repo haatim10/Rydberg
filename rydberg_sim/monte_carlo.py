@@ -160,6 +160,18 @@ class ConfigFingerprintError(ValueError):
     """Existing on-disk results do not match this experiment configuration."""
 
 
+class MixedFingerprintError(ConfigFingerprintError):
+    """Rows from more than one ``config_fingerprint`` were passed to aggregation.
+
+    Audit M3: the write path is guarded by :func:`_assert_compatible_store`,
+    but :func:`aggregate_result_table` accepts an arbitrary list of rows and
+    used to pool them silently. Concatenating two result CSVs, or loading a
+    hand-merged table, would then average incompatible experiments into one
+    number. Pass ``group_by_fingerprint=True`` to aggregate them as separate
+    groups on purpose.
+    """
+
+
 class TrackCNotImplementedError(NotImplementedError):
     """Track C (estimate G, then detect) is reserved for a later step."""
 
@@ -1141,6 +1153,7 @@ def _run_operating_point(
 class AggregateRecord:
     """One grouped Monte Carlo summary (ratio-of-sums / pooled BER)."""
 
+    config_fingerprint: str
     experiment: str
     track: str
     snr_db: float
@@ -1161,8 +1174,9 @@ class AggregateRecord:
     total_bit_count: int | None
 
 
-def _group_key(row: Mapping[str, Any]) -> tuple:
+def _group_key(row: Mapping[str, Any], *, by_fingerprint: bool) -> tuple:
     return (
+        str(row["config_fingerprint"]) if by_fingerprint else "",
         str(row["experiment"]),
         str(row["track"]),
         db_to_key(float(row["snr_db"]), "snr_db"),
@@ -1173,8 +1187,15 @@ def _group_key(row: Mapping[str, Any]) -> tuple:
     )
 
 
+def result_table_fingerprints(rows: Sequence[Mapping[str, Any]]) -> set[str]:
+    """Distinct ``config_fingerprint`` values present in a long-form table."""
+    return {str(row["config_fingerprint"]) for row in rows}
+
+
 def aggregate_result_table(
     rows: Sequence[Mapping[str, Any]],
+    *,
+    group_by_fingerprint: bool = False,
 ) -> list[AggregateRecord]:
     """Aggregate long-form rows with Step-13 conventions.
 
@@ -1182,14 +1203,37 @@ def aggregate_result_table(
     Detection NMSE: ``sum(error_energy) / sum(expected_symbol_energy)``.
     BER: ``sum(bit_errors) / sum(bit_count)``.
     Failed rows are counted but excluded from the sums.
+
+    Fingerprint safety (audit M3)
+    -----------------------------
+    Rows carrying more than one ``config_fingerprint`` describe different
+    experiment configurations and must never be pooled into one number. By
+    default this raises :class:`MixedFingerprintError`. Pass
+    ``group_by_fingerprint=True`` to aggregate them deliberately as separate
+    groups, one per fingerprint; each returned record then reports its own
+    ``config_fingerprint``.
     """
+    fingerprints = result_table_fingerprints(rows)
+    if not group_by_fingerprint and len(fingerprints) > 1:
+        raise MixedFingerprintError(
+            f"aggregate_result_table received {len(fingerprints)} distinct "
+            f"config_fingerprint values: {sorted(fingerprints)}. These are "
+            "different experiment configurations and pooling them would "
+            "average incompatible runs. Aggregate each fingerprint separately, "
+            "or pass group_by_fingerprint=True to group them explicitly."
+        )
+
     groups: dict[tuple, list[Mapping[str, Any]]] = {}
     for row in rows:
-        groups.setdefault(_group_key(row), []).append(row)
+        groups.setdefault(
+            _group_key(row, by_fingerprint=group_by_fingerprint), []
+        ).append(row)
 
     records: list[AggregateRecord] = []
-    for key, group in sorted(groups.items(), key=lambda kv: kv[0][:5]):
-        experiment, track, _sk, _rk, algorithm, snr_db, rsr_db = key
+    for key, group in sorted(groups.items(), key=lambda kv: kv[0][:6]):
+        fingerprint, experiment, track, _sk, _rk, algorithm, snr_db, rsr_db = key
+        if not group_by_fingerprint:
+            fingerprint = str(group[0]["config_fingerprint"])
         n_failed = sum(1 for r in group if r["status"] != "ok")
         ok = [r for r in group if r["status"] == "ok"]
 
@@ -1200,6 +1244,7 @@ def aggregate_result_table(
             unc = nmse_ratio_standard_error(errors, energies)
             records.append(
                 AggregateRecord(
+                    config_fingerprint=fingerprint,
                     experiment=experiment,
                     track=track,
                     snr_db=float(snr_db),
@@ -1230,6 +1275,7 @@ def aggregate_result_table(
             unc = nmse_ratio_standard_error(errors, energies)
             records.append(
                 AggregateRecord(
+                    config_fingerprint=fingerprint,
                     experiment=experiment,
                     track=track,
                     snr_db=float(snr_db),
@@ -1258,6 +1304,7 @@ def aggregate_result_table(
             wil = wilson_interval(k, n)
             records.append(
                 AggregateRecord(
+                    config_fingerprint=fingerprint,
                     experiment=experiment,
                     track=track,
                     snr_db=float(snr_db),

@@ -50,8 +50,15 @@ def track_a_fig5_spec(
     snr_db_grid: tuple[float, ...],
     experiment: str = "cui_fig5",
     master_seed: int = FIG5_MASTER_SEED,
+    cui_params: CuiChannelParams | None = None,
 ) -> ExperimentSpec:
-    """Cui Fig. 5 configuration. Default smoke uses a short SNR list."""
+    """Cui Fig. 5 configuration. Default smoke uses a short SNR list.
+
+    ``cui_params`` defaults to the production Table-I parameters
+    (``normalize_rows=True``). The row-normalization diagnostic passes
+    ``CuiChannelParams(normalize_rows=False)`` so its arm carries a
+    **different** config fingerprint (audit M4).
+    """
     cfg = SimulationConfig.create(
         N=FIG5_N,
         K=FIG5_K,
@@ -73,7 +80,7 @@ def track_a_fig5_spec(
         max_iter=FIG5_T0,
         qam_M=FIG5_QAM,
         channel_model=CHANNEL_MODEL_CUI,
-        cui_params=CuiChannelParams(),
+        cui_params=cui_params if cui_params is not None else CuiChannelParams(),
         write_ber=False,
     )
 

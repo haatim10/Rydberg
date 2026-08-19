@@ -380,6 +380,25 @@ def test_em_channel_adapter_conjugation_and_snr_pair() -> None:
         f"  SNR=0 dB:  init={low[0]:.4f}  GS={low[1]:.4f}  EM={low[2]:.4f}\n"
         f"  SNR=30 dB: init={high[0]:.4f}  GS={high[1]:.4f}  EM={high[2]:.4f}"
     )
+    # Audit fix H2: these numbers used to be computed and only printed, so a
+    # broken adapter (unconjugated b, or a missing output conjugation) left
+    # this test green. Assert the trend.
+    #
+    # This configuration is deliberately hard -- RSR = 0 dB, P = 16, only 20
+    # iterations -- so the improvement is real but modest. Measured here:
+    #
+    #                 SNR = 0 dB   SNR = 30 dB
+    #     shipped        1.1972        0.6208
+    #     broken b       1.5888        1.2907
+    #     broken out     1.5553        1.3328
+    #
+    # Both assertions below separate the shipped adapter from both broken
+    # ones at this operating point. The tight, converged thresholds live in
+    # tests/test_track_b_adapter.py; this is the trend check only.
+    assert high[1] < 0.75 * low[1], (low[1], high[1])
+    assert high[2] < 0.75 * low[2], (low[2], high[2])
+    assert high[1] < 0.8, high[1]
+    assert high[2] < 0.8, high[2]
     # High SNR: EM and GS should be close.
     exact_hi = exact_forward(
         G,

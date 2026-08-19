@@ -12,11 +12,39 @@ is Cui's unknown QAM symbol vector or ``conj(g_n)`` from the
 channel-estimation adapter. Those mappings live outside
 :func:`spectral_initialize`.
 
+Reference-strength regime (audit H1)
+------------------------------------
 When ``|b_q|`` is much larger than the columns of ``M``, every ``mbar_q``
-points nearly along the last axis and ``u0`` collapses toward 0. That is
-the high-RSR limit of this initializer, not a conjugate-transpose bug.
-The weak ``||u0-u||/||u|| < 0.5`` sanity test therefore uses a strong
-*nonzero* reference with ``|b|`` on the same order as ``|M^H u|``.
+points nearly along the last axis, ``M_spec`` is dominated by its
+``(D+1, D+1)`` entry, the principal eigenvector converges to ``e_{D+1}``,
+and ``u0 = ubar0[:D]`` collapses toward 0. That is the strong-reference
+limit of Cui's initializer as published, not a conjugate-transpose bug.
+
+Measured for the Cui detection setting (N x K = 36 x 3, SNR = 30 dB,
+mean over 60 draws), with ``||u_true|| = 1``:
+
+    RSR (dB)      0      6     12     18     24     30
+    ||u0||     1.408  0.338  0.092  0.039  0.018  0.009
+    rel err    0.895  0.860  0.974  0.992  0.998  1.000
+
+Two consequences, both documented rather than patched:
+
+1. The ``||u0-u||/||u|| < 0.5`` criterion is a **moderate-reference sanity
+   check only**. It is not an asymptotic strong-reference guarantee, and it
+   is not attainable at any RSR at or above 0 dB in the setting above.
+   Tests that use it must say what reference strength they run at.
+
+2. At the RSR values this project actually uses (Cui Fig. 5 fixes
+   RSR = 12 dB), the initializer is **inert**: biased GS and EM-GS reach
+   the same fixed point from the spectral init, from zero, and from a
+   random start, agreeing to three decimal places in NMSE. Spectral
+   initialization is therefore *not* what makes the Fig. 5 curves correct,
+   and the Fig. 5 run does not validate this step.
+
+The production default is unchanged. It is faithful to Cui Alg. 1/2
+steps 1-4, it does not harm the validated GS/EM-GS curves, and it does
+help at weak reference (RSR near 0 dB), which is where the
+spectral-vs-random comparison in ``tests/test_gs.py`` is run.
 
 Algorithm (Cui Alg. 1/2, steps 1–4)
 -----------------------------------
@@ -66,8 +94,11 @@ PROJECTION_DENOM_FLOOR = 1e-300
 
 FUTURE_GS_SPECTRAL_VS_RANDOM_TEST = (
     "GS from spectral initialization should beat GS from random "
-    "initialization at SNR = -5 dB. That comparison is a Step 9 "
-    "acceptance test in tests/test_gs.py, not in this module."
+    "initialization at SNR = -5 dB, at moderate reference strength. "
+    "That comparison is a Step 9 acceptance test in tests/test_gs.py, "
+    "not in this module. It holds only at weak-to-moderate RSR: at "
+    "RSR = 12 dB the spectral, zero, and random starts are "
+    "indistinguishable (audit H1)."
 )
 
 

@@ -10,13 +10,18 @@ from __future__ import annotations
 import csv
 import json
 import os
+from dataclasses import replace
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
 import numpy as np
 
 from .calibration import db_to_linear
-from .channel_cui import generate_cui_channel, generate_cui_reference
+from .channel_cui import (
+    CuiChannelParams,
+    generate_cui_channel,
+    generate_cui_reference,
+)
 from .crlb import cui_crlb_high_snr_limit
 from .monte_carlo import (
     DetectionTrial,
@@ -286,9 +291,10 @@ def generate_unnormalized_detection_trial(
     assert cui is not None
     spawn_key = operating_point_spawn_key(trial_index, snr_db, rsr_db)
     rngs = get_operating_point_rngs(cfg.master_seed, trial_index, snr_db, rsr_db)
-    ch = generate_cui_channel(
-        cfg.N, cfg.K, rngs.channel, params=cui, normalize_rows=False
-    )
+    # Audit M4: the switch travels in the fingerprinted params, not as a
+    # keyword, so this arm's config fingerprint differs from production.
+    cui = replace(cui, normalize_rows=False)
+    ch = generate_cui_channel(cfg.N, cfg.K, rngs.channel, params=cui)
     qam = generate_qam(rngs.data, cfg.K, spec.qam_M)
     b_unit_rsr = generate_cui_reference(cfg.N, rngs.reference, rsr_db, params=cui)
     one_user_power = float(np.mean(np.abs(ch.A) ** 2))
@@ -356,6 +362,9 @@ def run_row_normalization_diagnostic(
         n_trials=n_trials,
         snr_db_grid=snr_db_grid,
         experiment="cui_fig5_norm_diag_B",
+        # Audit M4: arm B is the raw Table-I draw, so it must carry a
+        # different config fingerprint from production arm A.
+        cui_params=CuiChannelParams(normalize_rows=False),
     )
     rows_a: list[dict[str, Any]] = []
     rows_b: list[dict[str, Any]] = []

@@ -7,8 +7,12 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from rydberg_sim.channel_cui import generate_cui_channel
-from rydberg_sim.monte_carlo import generate_detection_trial
+from rydberg_sim.channel_cui import CuiChannelParams, generate_cui_channel
+from rydberg_sim.monte_carlo import (
+    config_fingerprint,
+    fingerprint_payload,
+    generate_detection_trial,
+)
 from rydberg_sim.rng import get_operating_point_rngs
 from rydberg_sim.track_a import track_a_fig5_spec
 from rydberg_sim.track_a_fig5 import (
@@ -159,3 +163,62 @@ def test_tiny_norm_diag(tmp_path: Path) -> None:
     assert summary["same_symbols_across_AB"] is True
     assert summary["production_unchanged"] is True
     assert (tmp_path / "row_normalization_diagnostic" / "summary.json").is_file()
+
+
+# ---------------------------------------------------------------------------
+# Row normalization is part of the experiment identity (audit M4)
+# ---------------------------------------------------------------------------
+
+
+def test_normalize_rows_is_in_the_config_fingerprint() -> None:
+    """Normalized and unnormalized Track-A runs cannot share a fingerprint.
+
+    Before this fix ``normalize_rows`` lived only as a keyword argument to
+    ``generate_cui_channel``, outside ``CuiChannelParams``, so the most
+    consequential Track-A modelling switch did not reach the fingerprint.
+    Two runs differing only in normalization hashed identically and the
+    resume/append guard would not have separated them.
+    """
+    prod = track_a_fig5_spec(n_trials=1, snr_db_grid=(0.0,))
+    raw = track_a_fig5_spec(
+        n_trials=1,
+        snr_db_grid=(0.0,),
+        cui_params=CuiChannelParams(normalize_rows=False),
+    )
+    assert prod.cui_params.normalize_rows is True
+    assert raw.cui_params.normalize_rows is False
+    assert "normalize_rows" in prod.cui_params.as_fingerprint_dict()
+    assert fingerprint_payload(prod)["normalize_rows"] is True
+    assert fingerprint_payload(raw)["normalize_rows"] is False
+    assert config_fingerprint(prod) != config_fingerprint(raw)
+
+
+def test_params_drive_normalization_without_the_keyword() -> None:
+    """``params.normalize_rows`` alone selects the behaviour."""
+    a = generate_cui_channel(
+        8, 3, get_operating_point_rngs(7, 3, -5.0, 12.0).channel,
+        params=CuiChannelParams(normalize_rows=True),
+    )
+    b = generate_cui_channel(
+        8, 3, get_operating_point_rngs(7, 3, -5.0, 12.0).channel,
+        params=CuiChannelParams(normalize_rows=False),
+    )
+    for k in range(3):
+        assert float(np.mean(np.abs(a.A[k]) ** 2)) == pytest.approx(1.0, rel=1e-12)
+        scale = np.sqrt(float(np.mean(np.abs(b.A[k]) ** 2)))
+        np.testing.assert_allclose(a.A[k] * scale, b.A[k], rtol=1e-12, atol=1e-12)
+    assert not np.allclose(a.A, b.A)
+
+
+def test_unnormalized_diagnostic_trial_carries_the_raw_params() -> None:
+    """The diagnostic arm's world really is built from unnormalized params."""
+    spec = track_a_fig5_spec(
+        n_trials=1,
+        snr_db_grid=(-5.0,),
+        experiment="norm_diag_B",
+        cui_params=CuiChannelParams(normalize_rows=False),
+    )
+    world = generate_unnormalized_detection_trial(spec, 0, -5.0, 12.0)
+    row_pow = np.mean(np.abs(np.asarray(world.A)) ** 2, axis=1)
+    # Raw Table-I row power is ~200-250, nowhere near the normalized 1.0.
+    assert np.all(row_pow > 10.0), row_pow
