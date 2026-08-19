@@ -1,0 +1,142 @@
+{
+  "n_trials": 32,
+  "snr_db_grid": [
+    -5.0,
+    0.0,
+    6.0,
+    12.0
+  ],
+  "production_unchanged": true,
+  "A": "per-realization row normalization (production Track A)",
+  "B": "raw Table I draw; \u03c3\u00b2 and |b| recalibrated from the raw channel so labeled SNR/RSR still follow Cui eq. 37/38",
+  "material_threshold_db": 0.5,
+  "negligible_threshold_db": 0.2,
+  "max_abs_delta_db_gs_emgs": 0.3860141798914736,
+  "material": false,
+  "negligible": false,
+  "keep_production_normalization": true,
+  "shifts": [
+    {
+      "algorithm": "biased_gs",
+      "snr_db": -5.0,
+      "nmse_db_normalized_A": 1.7180790955896872,
+      "nmse_db_unnormalized_B": 2.056326795007816,
+      "delta_B_minus_A_db": 0.3382476994181287
+    },
+    {
+      "algorithm": "biased_gs",
+      "snr_db": 0.0,
+      "nmse_db_normalized_A": -4.922653302148784,
+      "nmse_db_unnormalized_B": -4.53663912225731,
+      "delta_B_minus_A_db": 0.3860141798914736
+    },
+    {
+      "algorithm": "biased_gs",
+      "snr_db": 6.0,
+      "nmse_db_normalized_A": -11.790794550640237,
+      "nmse_db_unnormalized_B": -11.643566534767949,
+      "delta_B_minus_A_db": 0.1472280158722885
+    },
+    {
+      "algorithm": "biased_gs",
+      "snr_db": 12.0,
+      "nmse_db_normalized_A": -18.20717627703585,
+      "nmse_db_unnormalized_B": -17.884170503654172,
+      "delta_B_minus_A_db": 0.32300577338167713
+    },
+    {
+      "algorithm": "em_gs",
+      "snr_db": -5.0,
+      "nmse_db_normalized_A": -0.58546906301034,
+      "nmse_db_unnormalized_B": -0.29778474347222994,
+      "delta_B_minus_A_db": 0.28768431953811
+    },
+    {
+      "algorithm": "em_gs",
+      "snr_db": 0.0,
+      "nmse_db_normalized_A": -5.821354794858648,
+      "nmse_db_unnormalized_B": -5.729105160045601,
+      "delta_B_minus_A_db": 0.09224963481304638
+    },
+    {
+      "algorithm": "em_gs",
+      "snr_db": 6.0,
+      "nmse_db_normalized_A": -12.141661155521664,
+      "nmse_db_unnormalized_B": -12.01074795306713,
+      "delta_B_minus_A_db": 0.13091320245453453
+    },
+    {
+      "algorithm": "em_gs",
+      "snr_db": 12.0,
+      "nmse_db_normalized_A": -18.41066175783752,
+      "nmse_db_unnormalized_B": -18.07264279827396,
+      "delta_B_minus_A_db": 0.3380189595635592
+    },
+    {
+      "algorithm": "genie_zf",
+      "snr_db": -5.0,
+      "nmse_db_normalized_A": -5.203565321582305,
+      "nmse_db_unnormalized_B": -4.965988487898707,
+      "delta_B_minus_A_db": 0.2375768336835984
+    },
+    {
+      "algorithm": "genie_zf",
+      "snr_db": 0.0,
+      "nmse_db_normalized_A": -10.023612509374061,
+      "nmse_db_unnormalized_B": -9.897174592843074,
+      "delta_B_minus_A_db": 0.12643791653098724
+    },
+    {
+      "algorithm": "genie_zf",
+      "snr_db": 6.0,
+      "nmse_db_normalized_A": -17.23656114282932,
+      "nmse_db_unnormalized_B": -17.10991604370474,
+      "delta_B_minus_A_db": 0.12664509912458044
+    },
+    {
+      "algorithm": "genie_zf",
+      "snr_db": 12.0,
+      "nmse_db_normalized_A": -22.905091156727906,
+      "nmse_db_unnormalized_B": -22.65463840560894,
+      "delta_B_minus_A_db": 0.25045275111896714
+    },
+    {
+      "algorithm": "cui_crlb",
+      "snr_db": -5.0,
+      "nmse_db_normalized_A": -1.0555158927604484,
+      "nmse_db_unnormalized_B": -0.9354484683265212,
+      "delta_B_minus_A_db": 0.12006742443392726
+    },
+    {
+      "algorithm": "cui_crlb",
+      "snr_db": 0.0,
+      "nmse_db_normalized_A": -6.846274777375476,
+      "nmse_db_unnormalized_B": -6.76734517182609,
+      "delta_B_minus_A_db": 0.07892960554938622
+    },
+    {
+      "algorithm": "cui_crlb",
+      "snr_db": 6.0,
+      "nmse_db_normalized_A": -13.35918943419153,
+      "nmse_db_unnormalized_B": -13.279684390986148,
+      "delta_B_minus_A_db": 0.07950504320538165
+    },
+    {
+      "algorithm": "cui_crlb",
+      "snr_db": 12.0,
+      "nmse_db_normalized_A": -19.432252647368962,
+      "nmse_db_unnormalized_B": -19.33861582270556,
+      "delta_B_minus_A_db": 0.09363682466340251
+    }
+  ],
+  "raw_row_power": {
+    "mean": 231.29980302511044,
+    "median": 230.66330255813023,
+    "std": 40.09141243006647,
+    "min": 135.10432029077788,
+    "max": 346.28407881208153,
+    "cv": 0.17333094064811658
+  },
+  "same_symbols_across_AB": true,
+  "note": "A material shift means stop before treating Fig. 5 as the publication curve and report the normalization choice. Solvers were not modified."
+}
