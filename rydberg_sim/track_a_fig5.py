@@ -34,6 +34,7 @@ from .monte_carlo import (
     load_result_table,
     run_experiment,
 )
+from .metrics import nmse_to_db
 from .qam import generate_qam
 from .rng import get_operating_point_rngs, operating_point_spawn_key
 from .track_a import (
@@ -1159,3 +1160,115 @@ def run_fig5(
         "core_solvers_unchanged": True,
         "did_not_run": config["not_run"],
     }
+
+
+# ---------------------------------------------------------------------------
+# Outlier / tail diagnostics (Fig. 5 section 8)
+# ---------------------------------------------------------------------------
+
+# A trial whose per-trial NMSE exceeds 1.0 is worse than the trivial
+# estimate s_hat = 0: for unit-energy QAM the denominator is E||s||^2 = K,
+# so NMSE_trial = ||s_hat - s||^2 / K > 1 means the solver returned
+# something further from the truth than the origin. This is a
+# threshold-free, physically meaningful definition of a failed trial and
+# is reported alongside the harness's own status != "ok" rate.
+OUTLIER_NMSE_LINEAR = 1.0
+OUTLIER_PERCENTILES: tuple[float, ...] = (10.0, 25.0, 50.0, 75.0, 90.0, 95.0, 99.0)
+
+
+def outlier_diagnostics(
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    percentiles: Sequence[float] = OUTLIER_PERCENTILES,
+    outlier_nmse_linear: float = OUTLIER_NMSE_LINEAR,
+) -> list[dict[str, Any]]:
+    """Per-(algorithm, SNR) tail statistics of the per-trial detection NMSE.
+
+    The primary Fig. 5 curve stays the ratio-of-sums NMSE. These are
+    diagnostics only, and exist because biased GS and EM-GS can have rare
+    failure trials that dominate a mean.
+
+    Per-trial NMSE is ``error_energy / expected_symbol_energy`` with
+    ``expected_symbol_energy = K`` -- never a realization-specific
+    ``||s||^2``, matching the aggregate convention.
+
+    Reported per group:
+
+    ``nmse_db``
+        Ratio-of-sums aggregate, i.e. the plotted curve.
+    ``median_nmse_db``
+        Median of the per-trial NMSE. A large ``aggregate_minus_median_db``
+        means the mean is tail-driven.
+    ``p10 .. p99``
+        Percentiles of the per-trial NMSE, in dB.
+    ``failure_rate``
+        Fraction of rows the harness recorded with ``status != "ok"``.
+    ``worse_than_zero_rate``
+        Fraction of ok trials with per-trial NMSE > ``outlier_nmse_linear``.
+    ``top1pct_energy_share`` / ``top5pct_energy_share``
+        Share of total error energy contributed by the worst 1% / 5% of
+        trials. Near 0.01 / 0.05 means no tail domination; a large value
+        means a handful of trials set the curve.
+    """
+    groups: dict[tuple[str, float], list[Mapping[str, Any]]] = {}
+    for row in rows:
+        if str(row["metric"]) not in ("detection_nmse", "failure"):
+            continue
+        key = (str(row["algorithm"]), float(row["snr_db"]))
+        groups.setdefault(key, []).append(row)
+
+    out: list[dict[str, Any]] = []
+    for (algorithm, snr_db), group in sorted(groups.items()):
+        ok = [r for r in group if str(r["status"]) == "ok"
+              and str(r["metric"]) == "detection_nmse"]
+        n_failed = sum(1 for r in group if str(r["status"]) != "ok")
+        if not ok:
+            out.append({
+                "algorithm": algorithm, "snr_db": snr_db, "n_ok": 0,
+                "n_failed": n_failed, "failure_rate": 1.0 if group else 0.0,
+            })
+            continue
+        err = np.asarray([float(r["error_energy"]) for r in ok], dtype=np.float64)
+        den = np.asarray(
+            [float(r["expected_symbol_energy"]) for r in ok], dtype=np.float64
+        )
+        per_trial = err / den
+        total = float(np.sum(err))
+        order = np.sort(err)[::-1]
+        n = per_trial.size
+
+        def _share(frac: float) -> float:
+            k = max(1, int(np.ceil(frac * n)))
+            return float(np.sum(order[:k]) / total) if total > 0.0 else 0.0
+
+        agg_lin = total / float(np.sum(den))
+        med_lin = float(np.median(per_trial))
+        rec: dict[str, Any] = {
+            "algorithm": algorithm,
+            "snr_db": snr_db,
+            "n_ok": n,
+            "n_failed": n_failed,
+            "failure_rate": n_failed / float(n + n_failed),
+            "nmse_linear": agg_lin,
+            "nmse_db": float(nmse_to_db(agg_lin)),
+            "median_nmse_linear": med_lin,
+            "median_nmse_db": float(nmse_to_db(med_lin)) if med_lin > 0 else None,
+            "aggregate_minus_median_db": (
+                float(nmse_to_db(agg_lin) - nmse_to_db(med_lin))
+                if med_lin > 0 else None
+            ),
+            "mean_nmse_linear": float(np.mean(per_trial)),
+            "max_nmse_linear": float(np.max(per_trial)),
+            "worse_than_zero_rate": float(
+                np.count_nonzero(per_trial > outlier_nmse_linear) / n
+            ),
+            "outlier_nmse_linear_threshold": float(outlier_nmse_linear),
+            "top1pct_energy_share": _share(0.01),
+            "top5pct_energy_share": _share(0.05),
+        }
+        for p in percentiles:
+            v = float(np.percentile(per_trial, p))
+            rec[f"p{int(p)}_nmse_linear"] = v
+            rec[f"p{int(p)}_nmse_db"] = float(nmse_to_db(v)) if v > 0 else None
+        out.append(rec)
+    return out
