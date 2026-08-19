@@ -16,6 +16,7 @@ from rydberg_sim.monte_carlo import (
 from rydberg_sim.rng import get_operating_point_rngs
 from rydberg_sim.track_a import track_a_fig5_spec
 from rydberg_sim.track_a_fig5 import (
+    outlier_diagnostics,
     CONVERGENCE_CRITERION,
     FIG5_SNR_DB,
     _forbid_smoke_dir,
@@ -222,3 +223,85 @@ def test_unnormalized_diagnostic_trial_carries_the_raw_params() -> None:
     row_pow = np.mean(np.abs(np.asarray(world.A)) ** 2, axis=1)
     # Raw Table-I row power is ~200-250, nowhere near the normalized 1.0.
     assert np.all(row_pow > 10.0), row_pow
+
+
+# ---------------------------------------------------------------------------
+# Outlier / tail diagnostics (Fig. 5 section 8)
+# ---------------------------------------------------------------------------
+
+
+def _diag_row(alg: str, snr: float, trial: int, error: float, status: str = "ok"):
+    return {
+        "experiment": "diag", "config_fingerprint": "F", "track": "A",
+        "trial": trial, "snr_db": snr, "rsr_db": 12.0, "N": 36, "K": 3, "P": 1,
+        "modulation": "16-QAM", "algorithm": alg,
+        "metric": "detection_nmse" if status == "ok" else "failure",
+        "value": error / 3.0, "error_energy": error, "true_energy": None,
+        "expected_symbol_energy": 3.0, "bit_errors": None, "bit_count": None,
+        "status": status, "error_type": "", "error_message": "",
+        "master_seed": 1, "sigma2": 3.0, "alpha_b_abs": 3.98, "max_iter": 50,
+    }
+
+
+def test_outlier_diagnostics_separates_aggregate_from_median() -> None:
+    """One catastrophic trial must move the aggregate but not the median."""
+    # Nine good trials at per-trial NMSE 0.1, one failure at 100.
+    rows = [_diag_row("biased_gs", 0.0, t, 0.3) for t in range(9)]
+    rows.append(_diag_row("biased_gs", 0.0, 9, 300.0))
+    (rec,) = outlier_diagnostics(rows)
+
+    assert rec["n_ok"] == 10
+    assert rec["n_failed"] == 0
+    # aggregate = sum(err)/sum(den) = (9*0.3 + 300)/30 = 10.09
+    assert rec["nmse_linear"] == pytest.approx(302.7 / 30.0)
+    # median per-trial NMSE is 0.1, untouched by the outlier
+    assert rec["median_nmse_linear"] == pytest.approx(0.1)
+    # ... so the aggregate sits ~20 dB above the median
+    assert rec["aggregate_minus_median_db"] == pytest.approx(
+        10.0 * np.log10((302.7 / 30.0) / 0.1)
+    )
+    # and the single worst trial carries ~99% of the error energy
+    assert rec["top1pct_energy_share"] == pytest.approx(300.0 / 302.7)
+    # one of ten trials is worse than the trivial s_hat = 0
+    assert rec["worse_than_zero_rate"] == pytest.approx(0.1)
+    assert rec["max_nmse_linear"] == pytest.approx(100.0)
+
+
+def test_outlier_diagnostics_clean_case_has_no_tail_domination() -> None:
+    """Identical trials: median == aggregate, energy share == the fraction."""
+    rows = [_diag_row("em_gs", 6.0, t, 0.3) for t in range(100)]
+    (rec,) = outlier_diagnostics(rows)
+    assert rec["nmse_linear"] == pytest.approx(0.1)
+    assert rec["median_nmse_linear"] == pytest.approx(0.1)
+    assert rec["aggregate_minus_median_db"] == pytest.approx(0.0, abs=1e-12)
+    assert rec["top1pct_energy_share"] == pytest.approx(0.01)
+    assert rec["top5pct_energy_share"] == pytest.approx(0.05)
+    assert rec["worse_than_zero_rate"] == 0.0
+    for p in (10, 25, 50, 75, 90, 95, 99):
+        assert rec[f"p{p}_nmse_linear"] == pytest.approx(0.1)
+
+
+def test_outlier_diagnostics_counts_harness_failures() -> None:
+    """status != 'ok' rows are counted as failures, not as NMSE samples."""
+    rows = [_diag_row("biased_gs", 0.0, t, 0.3) for t in range(8)]
+    rows += [_diag_row("biased_gs", 0.0, t, 0.0, status="failed") for t in (8, 9)]
+    (rec,) = outlier_diagnostics(rows)
+    assert rec["n_ok"] == 8
+    assert rec["n_failed"] == 2
+    assert rec["failure_rate"] == pytest.approx(0.2)
+    assert rec["nmse_linear"] == pytest.approx(0.1)
+
+
+def test_outlier_diagnostics_groups_by_algorithm_and_snr() -> None:
+    rows = (
+        [_diag_row("biased_gs", 0.0, t, 0.3) for t in range(4)]
+        + [_diag_row("em_gs", 0.0, t, 0.6) for t in range(4)]
+        + [_diag_row("biased_gs", 6.0, t, 0.15) for t in range(4)]
+    )
+    recs = outlier_diagnostics(rows)
+    assert len(recs) == 3
+    keyed = {(r["algorithm"], r["snr_db"]): r for r in recs}
+    assert set(keyed) == {("biased_gs", 0.0), ("em_gs", 0.0), ("biased_gs", 6.0)}
+    assert keyed[("biased_gs", 0.0)]["nmse_linear"] == pytest.approx(0.1)
+    assert keyed[("em_gs", 0.0)]["nmse_linear"] == pytest.approx(0.2)
+    assert keyed[("biased_gs", 6.0)]["nmse_linear"] == pytest.approx(0.05)
