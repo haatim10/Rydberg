@@ -17,6 +17,7 @@ from rydberg_sim import (
     spectral_initialize,
     spectral_initialize_channel_rows,
 )
+from rydberg_sim.gs import biased_gs
 from rydberg_sim.spectral import (
     FUTURE_GS_SPECTRAL_VS_RANDOM_TEST,
     build_augmented_dictionary,
@@ -180,19 +181,31 @@ def test_dimensions_one_case() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Acceptance test 7 — high SNR / high RSR sanity
+# Acceptance test 7 — high SNR / moderate reference sanity (audit H1)
 # ---------------------------------------------------------------------------
 
 
-def test_high_snr_high_rsr_relative_error() -> None:
-    """||u0 - u_true|| / ||u_true|| < 0.5 (weak sanity criterion).
+def test_high_snr_moderate_reference_relative_error() -> None:
+    """``||u0-u||/||u|| < 0.5`` at SNR = 40 dB and MODERATE reference.
+
+    Audit H1 renamed this test. It was called ``..._high_rsr_...``, which
+    overstated what it covers: the reference here is ``|b| = 1.5`` against
+    ``||u_true|| = 1``, i.e. **RSR = 5.1 dB** in Cui's single-user
+    convention (0.35 dB against total signal power). That is a moderate
+    reference, not a strong one.
+
+    The ``< 0.5`` criterion is a moderate-reference sanity check only. It
+    is **not** an asymptotic strong-reference guarantee and is not
+    attainable at any RSR at or above 0 dB in the Cui detection setting --
+    see ``test_strong_reference_init_collapses_but_gs_still_converges``
+    below, and the regime table in ``rydberg_sim.spectral``.
 
     Spectral init recovers the direction of ``ubar = [u; 1]``. That only
     stays well-conditioned when the known coefficient 1 is comparable to
-    ``||u||`` (QAM-like unknown) *and* the reference is strong but not so
-    large that every column of ``Mbar`` collapses onto the last axis.
-    Extreme RSR (``|b| >> |M^H u|``) makes ``u0 ≈ 0``; that is expected
-    for this initializer and is not a conjugate/``z`` vs ``z^2`` bug.
+    ``||u||`` (QAM-like unknown) *and* the reference is not so large that
+    every column of ``Mbar`` collapses onto the last axis. Strong RSR
+    (``|b| >> |M^H u|``) makes ``u0 ≈ 0``; that is expected for this
+    initializer and is not a conjugate or ``z`` vs ``z^2`` bug.
     """
     rng = np.random.default_rng(195)
     D, Q = 3, 128
@@ -202,7 +215,8 @@ def test_high_snr_high_rsr_relative_error() -> None:
     )
     u_true = u_true / np.linalg.norm(u_true)
     signal = M.conj().T @ u_true
-    # Strong nonzero reference: |b| on the same order as |M^H u| (RSR ~ 0 dB).
+    # Moderate nonzero reference: |b| on the same order as |M^H u|.
+    # RSR = 5.1 dB single-user / 0.35 dB against total signal power.
     bmag = 1.5
     b = bmag * np.exp(1j * rng.uniform(-np.pi, np.pi, size=Q))
     snr_lin = 10.0 ** (40.0 / 10.0)
@@ -214,10 +228,14 @@ def test_high_snr_high_rsr_relative_error() -> None:
     rel = float(np.linalg.norm(result.u0 - u_true) / np.linalg.norm(u_true))
     rsr_db = 10.0 * np.log10(float(np.mean(np.abs(b) ** 2) / np.mean(np.abs(signal) ** 2)))
     print(
-        f"\ncanonical high-SNR sanity: rel={rel:.6g}  RSR={rsr_db:.2f} dB  "
-        f"SNR=40 dB  D={D} Q={Q}"
+        f"\ncanonical high-SNR moderate-reference sanity: rel={rel:.6g}  "
+        f"RSR={rsr_db:.2f} dB vs total  SNR=40 dB  D={D} Q={Q}"
     )
     assert rel < 0.5, rel
+    # Pin the regime this test actually covers, so a future edit that
+    # strengthens the reference cannot silently keep the name and the
+    # criterion while testing something else (audit H1).
+    assert -1.0 < rsr_db < 3.0, rsr_db
 
 
 # ---------------------------------------------------------------------------
@@ -225,7 +243,7 @@ def test_high_snr_high_rsr_relative_error() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_channel_adapter_high_snr_high_rsr() -> None:
+def test_channel_adapter_high_snr_moderate_reference() -> None:
     """M=S, u=conj(g_n), b_solver=conj(b_n); g0=conj(u0).
 
     Physical row: ``z_n = |S^T g_n + b_n + w_n|``. The conjugation belongs
@@ -301,12 +319,19 @@ def test_channel_adapter_distinct_m_spec_across_elements() -> None:
         np.testing.assert_allclose(adapted.G0[n], np.conjugate(row.u0), rtol=0.0, atol=0.0)
 
 
-def test_channel_adapter_ula_high_rsr_reports_error() -> None:
-    """ULA + Step-6 RSR=30 dB: adapter still builds N distinct M_spec.
+def test_channel_adapter_ula_strong_reference_init_collapses() -> None:
+    """ULA + Step-6 RSR = 30 dB: the initializer collapses, by design.
 
-    Accuracy is not asserted here. At this RSR the columns of ``Mbar``
-    align with the reference axis, so spectral init alone is a weak
-    ``G`` estimate (GS in Step 9 is what refines it).
+    Audit H1 renamed this test (it was ``..._high_rsr_reports_error``) and
+    replaced its "accuracy is deliberately not asserted" stance with an
+    explicit assertion of what actually happens: at strong reference the
+    columns of ``Mbar`` align with the reference axis, the principal
+    eigenvector converges to ``e_{K+1}``, and ``G0`` collapses toward 0.
+
+    Asserting the collapse pins it as known behaviour instead of leaving a
+    silent gap where a real regression could hide. The companion test
+    ``test_strong_reference_init_collapses_but_gs_still_converges`` shows
+    GS reaching the right answer anyway.
     """
     N, K, P = 8, 3, 12
     cfg = SimulationConfig.create(
@@ -325,7 +350,13 @@ def test_channel_adapter_ula_high_rsr_reports_error() -> None:
     rel = float(
         np.linalg.norm(adapted.G0 - G, ord="fro") / np.linalg.norm(G, ord="fro")
     )
-    print(f"\nULA adapter RSR=30 dB SNR=40 dB relative Frobenius error: {rel:.6g}")
+    collapse = float(
+        np.linalg.norm(adapted.G0, ord="fro") / np.linalg.norm(G, ord="fro")
+    )
+    print(
+        f"\nULA adapter RSR=30 dB SNR=40 dB: relative Frobenius error {rel:.6g}, "
+        f"||G0||/||G|| = {collapse:.6g}"
+    )
     assert adapted.G0.shape == (N, K)
     assert not np.allclose(
         adapted.row_results[0].M_spec,
@@ -333,6 +364,10 @@ def test_channel_adapter_ula_high_rsr_reports_error() -> None:
         rtol=1e-12,
         atol=1e-12,
     )
+    # The collapse, asserted rather than assumed. Measured: ||G0||/||G||
+    # = 0.0207 and rel error 0.9998 at RSR = 30 dB.
+    assert collapse < 0.1, collapse
+    assert rel > 0.9, rel
 
 
 def test_canonical_initializer_has_no_channel_special_case() -> None:
@@ -361,3 +396,111 @@ def test_future_gs_comparison_is_documented_not_implemented() -> None:
 
     assert not hasattr(bl, "biased_gs")
     assert not hasattr(bl, "spectral_initialize")
+
+
+# ---------------------------------------------------------------------------
+# Reference-strength regime (audit H1)
+# ---------------------------------------------------------------------------
+
+
+def test_strong_reference_init_collapses_but_gs_still_converges() -> None:
+    """Document the strong-reference regime of Cui's spectral initializer.
+
+    Audit H1. Two facts, asserted together because they are only safe as a
+    pair:
+
+    1. As the reference grows, ``||u0||`` collapses toward 0 and the
+       ``||u0-u||/||u|| < 0.5`` criterion stops holding. This is a property
+       of Cui Alg. 1/2 steps 1-4 as published, not an implementation bug --
+       ``mbar_q = [m_q; conj(b_q)]``, so a dominant ``|b|`` makes
+       ``M_spec`` a near-rank-one matrix along the last axis and the
+       principal eigenvector converges to ``e_{D+1}``.
+
+    2. Biased GS converges to the correct answer anyway, and to the *same*
+       answer it reaches from a zero start. The initializer being inert is
+       therefore harmless here -- but it also means the Fig. 5 curves do
+       **not** validate this step.
+
+    The production default is unchanged: spectral init remains the default
+    for ``biased_gs`` / ``em_gs``, because it is faithful to Cui and does
+    help at weak reference (see
+    ``test_spectral_vs_random_at_snr_minus_5db_moderate_reference``).
+    """
+    rng = np.random.default_rng(4242)
+    D, Q = 3, 36
+    n_draws = 24
+    rsr_grid = (0.0, 6.0, 12.0, 24.0)
+    sum_norms = np.zeros(len(rsr_grid))
+    sum_rels = np.zeros(len(rsr_grid))
+
+    # Average over draws: at weak reference the principal eigenvector is
+    # noisy, so a single draw is not monotone. The collapse is a trend in
+    # the mean, which is how the audit measured it.
+    for _ in range(n_draws):
+        M = _full_rank_M(rng, D, Q)
+        u_true = (rng.standard_normal(D) + 1j * rng.standard_normal(D)).astype(
+            np.complex128
+        )
+        u_true = u_true / np.linalg.norm(u_true)
+        signal = M.conj().T @ u_true
+        sig_pow = float(np.mean(np.abs(signal) ** 2))
+        sigma2 = sig_pow / 10.0 ** (30.0 / 10.0)
+        for i, rsr_db in enumerate(rsr_grid):
+            bmag = np.sqrt((10.0 ** (rsr_db / 10.0)) * sig_pow / D)
+            b = bmag * np.exp(1j * rng.uniform(-np.pi, np.pi, size=Q))
+            w = np.sqrt(sigma2 / 2.0) * (
+                rng.standard_normal(Q) + 1j * rng.standard_normal(Q)
+            )
+            z = np.abs(signal + b + w)
+            u0 = spectral_initialize(M, z, b).u0
+            sum_norms[i] += float(np.linalg.norm(u0))
+            sum_rels[i] += float(
+                np.linalg.norm(u0 - u_true) / np.linalg.norm(u_true)
+            )
+
+    norms = (sum_norms / n_draws).tolist()
+    rels = (sum_rels / n_draws).tolist()
+    for rsr_db, nrm, rel in zip(rsr_grid, norms, rels):
+        print(
+            f"\nRSR={rsr_db:5.1f} dB  mean ||u0||={nrm:.4f}  "
+            f"mean rel={rel:.4f}  (||u_true||=1, {n_draws} draws)"
+        )
+
+    # 1. The initializer norm collapses monotonically once the reference
+    # dominates. Measured means: 0.916, 0.854, 0.209, 0.031.
+    for i in range(1, len(norms)):
+        assert norms[i] < norms[i - 1], (rsr_grid, norms)
+    # By RSR = 12 dB the initial estimate is essentially zero and the plan's
+    # < 0.5 criterion no longer holds; by 24 dB it is gone entirely.
+    assert norms[rsr_grid.index(12.0)] < 0.3, norms
+    assert rels[rsr_grid.index(12.0)] > 0.5, rels
+    assert norms[-1] < 0.1, norms
+    assert rels[-1] > 0.9, rels
+
+    # 2. GS converges anyway, and to the same place as a zero start.
+    M = _full_rank_M(rng, D, Q)
+    u_true = (rng.standard_normal(D) + 1j * rng.standard_normal(D)).astype(
+        np.complex128
+    )
+    u_true = u_true / np.linalg.norm(u_true)
+    signal = M.conj().T @ u_true
+    bmag = np.sqrt(
+        (10.0 ** (12.0 / 10.0)) * float(np.mean(np.abs(signal) ** 2)) / D
+    )
+    b = bmag * np.exp(1j * rng.uniform(-np.pi, np.pi, size=Q))
+    z = np.abs(signal + b)
+    from_spectral = biased_gs(M, z, b, max_iter=200).u_hat
+    from_zero = biased_gs(
+        M, z, b, max_iter=200, u0=np.zeros(D, dtype=np.complex128)
+    ).u_hat
+    rel_spectral = float(
+        np.linalg.norm(from_spectral - u_true) / np.linalg.norm(u_true)
+    )
+    rel_zero = float(np.linalg.norm(from_zero - u_true) / np.linalg.norm(u_true))
+    print(
+        f"\nRSR=12 dB, noiseless, t=200: GS from spectral rel={rel_spectral:.3e}, "
+        f"GS from zero rel={rel_zero:.3e}"
+    )
+    assert rel_spectral < 1e-8, rel_spectral
+    # Inert initializer: the two starts reach the same fixed point.
+    np.testing.assert_allclose(from_spectral, from_zero, rtol=0.0, atol=1e-8)

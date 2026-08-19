@@ -15,7 +15,9 @@ from rydberg_sim import (
     TrackCNotImplementedError,
     adaptive_ber_budget_reached,
     AdaptiveBerPolicy,
+    MixedFingerprintError,
     aggregate_result_table,
+    result_table_fingerprints,
     channel_trials_equal,
     config_fingerprint,
     generate_channel_estimation_trial,
@@ -479,3 +481,100 @@ def test_tiny_track_b_integration(tmp_path: Path) -> None:
 def test_unimplemented_algorithms_rejected() -> None:
     with pytest.raises(NotImplementedError, match="gd"):
         _spec(algorithms=("gd",))
+
+
+# ---------------------------------------------------------------------------
+# Aggregation fingerprint safety (audit M3)
+# ---------------------------------------------------------------------------
+
+
+def _fp_row(fingerprint: str, trial: int, error: float) -> dict:
+    """One detection-NMSE row carrying an explicit config_fingerprint."""
+    return {
+        "experiment": "fp_mix",
+        "config_fingerprint": fingerprint,
+        "track": "A",
+        "trial": trial,
+        "snr_db": 0.0,
+        "rsr_db": 12.0,
+        "N": 36,
+        "K": 3,
+        "P": 1,
+        "modulation": "16-QAM",
+        "algorithm": "biased_gs",
+        "metric": "detection_nmse",
+        "value": error / 3.0,
+        "error_energy": error,
+        "true_energy": None,
+        "expected_symbol_energy": 3.0,
+        "bit_errors": None,
+        "bit_count": None,
+        "status": "ok",
+        "error_type": "",
+        "error_message": "",
+        "master_seed": 1,
+        "sigma2": 3.0,
+        "alpha_b_abs": 3.98,
+        "max_iter": 50,
+    }
+
+
+def test_aggregation_refuses_to_pool_mixed_fingerprints() -> None:
+    """Two config fingerprints must raise, not silently average.
+
+    Before this fix the two rows below were pooled into one record with
+    n_ok = 2 and value 1.667 -- a number describing neither experiment.
+    """
+    rows = [_fp_row("AAA", 0, 1.0), _fp_row("BBB", 1, 9.0)]
+    with pytest.raises(MixedFingerprintError, match="distinct"):
+        aggregate_result_table(rows)
+    # The error names both fingerprints so the caller can find them.
+    try:
+        aggregate_result_table(rows)
+    except MixedFingerprintError as exc:
+        assert "AAA" in str(exc) and "BBB" in str(exc)
+    assert result_table_fingerprints(rows) == {"AAA", "BBB"}
+
+
+def test_aggregation_groups_by_fingerprint_when_asked() -> None:
+    """Explicit opt-in keeps the two experiments separate, never merged."""
+    rows = [
+        _fp_row("AAA", 0, 1.0),
+        _fp_row("AAA", 1, 3.0),
+        _fp_row("BBB", 0, 9.0),
+    ]
+    records = aggregate_result_table(rows, group_by_fingerprint=True)
+    assert len(records) == 2
+    by_fp = {r.config_fingerprint: r for r in records}
+    assert set(by_fp) == {"AAA", "BBB"}
+    # AAA: (1 + 3) / (3 + 3); BBB: 9 / 3. Neither is the pooled 13/9.
+    assert by_fp["AAA"].value_linear == pytest.approx(4.0 / 6.0)
+    assert by_fp["AAA"].n_ok == 2
+    assert by_fp["BBB"].value_linear == pytest.approx(9.0 / 3.0)
+    assert by_fp["BBB"].n_ok == 1
+    pooled = 13.0 / 9.0
+    assert by_fp["AAA"].value_linear != pytest.approx(pooled)
+    assert by_fp["BBB"].value_linear != pytest.approx(pooled)
+
+
+def test_single_fingerprint_aggregation_is_unchanged() -> None:
+    """The normal path still works and now reports its fingerprint."""
+    rows = [_fp_row("AAA", 0, 1.0), _fp_row("AAA", 1, 3.0)]
+    records = aggregate_result_table(rows)
+    assert len(records) == 1
+    assert records[0].config_fingerprint == "AAA"
+    assert records[0].value_linear == pytest.approx(4.0 / 6.0)
+    assert records[0].n_ok == 2
+    # Opting in gives the same answer when there is only one fingerprint.
+    grouped = aggregate_result_table(rows, group_by_fingerprint=True)
+    assert len(grouped) == 1
+    assert grouped[0].value_linear == pytest.approx(records[0].value_linear)
+
+
+def test_real_run_aggregation_reports_its_fingerprint(tmp_path: Path) -> None:
+    """End-to-end: a real Track-B run aggregates and carries its identity."""
+    spec = _spec("fpreal", n_trials=2, algorithms=("linearised_ls",), max_iter=2)
+    path = run_experiment(spec, tmp_path / "fpreal")
+    records = aggregate_result_table(load_result_table(path))
+    assert records
+    assert {r.config_fingerprint for r in records} == {spec.fingerprint}

@@ -93,9 +93,15 @@ class CuiChannelParams:
     lo_azimuth_deg: float = 0.0
     array_geometry: str = CUI_ARRAY_GEOMETRY
     mu_eg_direction: tuple[float, float, float] = CUI_MU_EG_DIRECTION
+    normalize_rows: bool = True
     channel_model: str = CHANNEL_MODEL_CUI
 
     def __post_init__(self) -> None:
+        if not isinstance(self.normalize_rows, (bool, np.bool_)):
+            raise TypeError(
+                f"normalize_rows must be a bool, got {self.normalize_rows!r}"
+            )
+        object.__setattr__(self, "normalize_rows", bool(self.normalize_rows))
         if self.channel_model != CHANNEL_MODEL_CUI:
             raise ValueError(
                 f"CuiChannelParams.channel_model must be {CHANNEL_MODEL_CUI!r}, "
@@ -126,6 +132,11 @@ class CuiChannelParams:
             "lo_azimuth_deg": float(self.lo_azimuth_deg),
             "array_geometry": self.array_geometry,
             "mu_eg_direction": [float(x) for x in self.mu_eg_direction],
+            # Audit M4: the per-realization row-power normalization is the most
+            # consequential Track-A modelling switch. It must be part of the
+            # experiment identity so a normalized and an unnormalized run can
+            # never share a config fingerprint (and therefore a result store).
+            "normalize_rows": bool(self.normalize_rows),
         }
 
 
@@ -207,7 +218,7 @@ def generate_cui_channel(
     rng: np.random.Generator,
     params: CuiChannelParams | None = None,
     *,
-    normalize_rows: bool = True,
+    normalize_rows: bool | None = None,
 ) -> CuiChannelRealization:
     """Draw one Cui clustered channel ``A ∈ C^{K × N}``.
 
@@ -215,10 +226,18 @@ def generate_cui_channel(
     **per-element** polarizations all come from ``rng`` (the Step-14
     **channel** stream). Does not touch pilots/noise/data/solver.
 
-    ``normalize_rows=True`` (production Track A) scales each user row so
-    ``mean_n |a_{nk}|² = 1``. ``normalize_rows=False`` is a diagnostic
-    only: the Table I draw is returned at its raw scale. The RNG
-    consumption is identical; only the final per-row scale is skipped.
+    Row normalization scales each user row so ``mean_n |a_{nk}|² = 1``
+    (production Track A). Skipping it returns the Table I draw at its raw
+    scale. The RNG consumption is identical either way; only the final
+    per-row scale is skipped.
+
+    The fingerprinted source of truth is ``params.normalize_rows``, which
+    :meth:`CuiChannelParams.as_fingerprint_dict` includes in the experiment
+    identity (audit M4). ``normalize_rows=None`` (the default) reads that
+    field. Passing an explicit ``bool`` overrides it for a **direct
+    diagnostic call only** and does *not* change any fingerprint — trial
+    generators must go through ``params`` so that the switch and the
+    recorded experiment identity can never disagree.
     """
     if not isinstance(rng, np.random.Generator):
         raise TypeError(f"rng must be a numpy Generator, got {type(rng)!r}")
@@ -229,6 +248,9 @@ def generate_cui_channel(
     N = int(N)
     K = int(K)
     p = params if params is not None else CuiChannelParams()
+    # params is the fingerprinted source of truth; an explicit keyword is a
+    # direct-call diagnostic override (audit M4).
+    do_normalize = bool(p.normalize_rows if normalize_rows is None else normalize_rows)
     mu = _mu_hat(p)
     n_idx = np.arange(N, dtype=np.float64)
     two_pi_f = 2.0 * np.pi * float(p.carrier_hz)
@@ -284,7 +306,7 @@ def generate_cui_channel(
         mean_pow[k] = float(np.mean(np.abs(A[k, :]) ** 2))
         if mean_pow[k] <= 0.0:
             raise RuntimeError(f"user {k} channel has zero power")
-        if normalize_rows:
+        if do_normalize:
             A[k, :] /= np.sqrt(mean_pow[k])
             mean_pow[k] = 1.0
 

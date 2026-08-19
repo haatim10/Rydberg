@@ -177,8 +177,29 @@ def test_high_reference_gs_refines_spectral_init() -> None:
     assert jf <= j0 + 1e-8 * max(1.0, j0)
 
 
-def test_spectral_vs_random_at_snr_minus_5db() -> None:
-    """Same (M,u,b,w,z) for both runs; only u0 differs. Median over trials."""
+def test_spectral_vs_random_at_snr_minus_5db_moderate_reference() -> None:
+    """Spectral beats random init at SNR = -5 dB and MODERATE reference.
+
+    Same (M, u, b, w, z) for both runs; only u0 differs. Median over trials.
+
+    Audit H1 scoped this test. The implementation plan states the gap
+    between spectral and random initialization is "the entire justification
+    for the step". That is true here, where ``|b| = 1.5`` against
+    ``||u_true|| = 1`` -- roughly 5 dB RSR in Cui's single-user convention.
+
+    It is **not** true at the RSR this project actually runs at. At
+    RSR = 12 dB (Cui Fig. 5's fixed setting) the spectral, zero, and random
+    starts are statistically indistinguishable: over 150 trials at
+    t0 = 50, biased GS reaches -1.398 / -1.390 / -1.424 dB NMSE at
+    SNR = -5 dB and -18.765 / -18.765 / -18.764 dB at SNR = 12 dB. The
+    initializer collapses toward zero once the reference dominates -- see
+    ``tests/test_spectral.py::
+    test_strong_reference_init_collapses_but_gs_still_converges``.
+
+    So: this test justifies keeping spectral initialization (it does help
+    at weak reference, and it is faithful to Cui), but the Fig. 5 curves do
+    **not** validate it, and no claim to the contrary should be made.
+    """
     D, Q = 3, 64
     n_mc = 40
     max_iter = 30
