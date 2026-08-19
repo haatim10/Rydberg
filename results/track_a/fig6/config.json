@@ -74,10 +74,9 @@
   "crn": "identical A,s,b,w,z for all methods at each (trial, SNR, RSR)",
   "convergence_criterion": "For biased GS and EM-GS, the ratio-of-sums detection NMSE at every integer-dB RSR in [0, 25] must change by less than 0.1 dB between the last two checkpoints with n_trials >= 250. Ladder: [250, 500, 1000, 2000] trials/RSR. Stop as soon as the criterion holds; do not force the ceiling.",
   "checkpoints": [
+    100,
     250,
-    500,
-    1000,
-    2000
+    500
   ],
   "fingerprint_note": "matches Fig. 5 by design: fingerprint_payload excludes sweep grids. Stores separated by experiment name + directory.",
   "not_run": [
@@ -87,5 +86,6 @@
     "track_b",
     "track_c",
     "machine_learning"
-  ]
+  ],
+  "note": "Prioritizes speed: target ~500 trials/RSR, not strict 0.1 dB convergence."
 }

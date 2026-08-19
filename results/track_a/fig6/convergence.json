@@ -1,0 +1,1463 @@
+{
+  "criterion": "For biased GS and EM-GS, the ratio-of-sums detection NMSE at every integer-dB RSR in [0, 25] must change by less than 0.1 dB between the last two checkpoints with n_trials >= 250. Ladder: [250, 500, 1000, 2000] trials/RSR. Stop as soon as the criterion holds; do not force the ceiling.",
+  "final": {
+    "converged": false,
+    "previous_n": 250,
+    "current_n": 500,
+    "max_abs_delta_db": 0.5241262557280741,
+    "median_abs_delta_db": 0.15998420125145252,
+    "p90_abs_delta_db": 0.3090988369036241,
+    "n_over_tol": 36,
+    "within_tol": 16,
+    "n_cells": 52,
+    "tol_db": 0.1
+  },
+  "checkpoint_log": [
+    {
+      "n_trials_requested": 100,
+      "n_trials_complete": 135
+    },
+    {
+      "n_trials_requested": 250,
+      "n_trials_complete": 250,
+      "vs_previous": {
+        "previous_n": 100,
+        "n_cells": 52,
+        "max_abs_delta_db": 0.725362401132263,
+        "median_abs_delta_db": 0.20192154379689864,
+        "p90_abs_delta_db": 0.4932628799235609,
+        "n_over_tol": 35,
+        "tol_db": 0.1,
+        "within_tol": 17,
+        "converged": false,
+        "n_violations": 35,
+        "violations": [
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 0.0,
+            "prev_nmse_db": -2.2670549692822317,
+            "cur_nmse_db": -2.7426187938642093,
+            "delta_db": -0.47556382458197755,
+            "abs_delta_db": 0.47556382458197755
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 1.0,
+            "prev_nmse_db": -4.160217263077803,
+            "cur_nmse_db": -3.8662646538601924,
+            "delta_db": 0.293952609217611,
+            "abs_delta_db": 0.293952609217611
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 3.0,
+            "prev_nmse_db": -4.831242056028724,
+            "cur_nmse_db": -5.227893463758292,
+            "delta_db": -0.39665140772956775,
+            "abs_delta_db": 0.39665140772956775
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 4.0,
+            "prev_nmse_db": -5.537403789895269,
+            "cur_nmse_db": -5.794103442601023,
+            "delta_db": -0.25669965270575457,
+            "abs_delta_db": 0.25669965270575457
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 5.0,
+            "prev_nmse_db": -6.110190034897197,
+            "cur_nmse_db": -5.9412583618844454,
+            "delta_db": 0.16893167301275192,
+            "abs_delta_db": 0.16893167301275192
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 6.0,
+            "prev_nmse_db": -6.408268300199815,
+            "cur_nmse_db": -6.786044443388841,
+            "delta_db": -0.37777614318902586,
+            "abs_delta_db": 0.37777614318902586
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 7.0,
+            "prev_nmse_db": -6.5768450667692635,
+            "cur_nmse_db": -7.13835926025369,
+            "delta_db": -0.5615141934844265,
+            "abs_delta_db": 0.5615141934844265
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 8.0,
+            "prev_nmse_db": -8.263593846914981,
+            "cur_nmse_db": -8.017250024843701,
+            "delta_db": 0.24634382207127992,
+            "abs_delta_db": 0.24634382207127992
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 10.0,
+            "prev_nmse_db": -7.7638252647128,
+            "cur_nmse_db": -8.129798824202064,
+            "delta_db": -0.36597355948926413,
+            "abs_delta_db": 0.36597355948926413
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 11.0,
+            "prev_nmse_db": -8.037101347959617,
+            "cur_nmse_db": -8.295860057151113,
+            "delta_db": -0.2587587091914969,
+            "abs_delta_db": 0.2587587091914969
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 12.0,
+            "prev_nmse_db": -9.031496327441495,
+            "cur_nmse_db": -8.661718429048719,
+            "delta_db": 0.3697778983927762,
+            "abs_delta_db": 0.3697778983927762
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 13.0,
+            "prev_nmse_db": -9.287278166851966,
+            "cur_nmse_db": -9.096517173365598,
+            "delta_db": 0.19076099348636788,
+            "abs_delta_db": 0.19076099348636788
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 15.0,
+            "prev_nmse_db": -9.493597782200693,
+            "cur_nmse_db": -9.147426118041238,
+            "delta_db": 0.34617166415945455,
+            "abs_delta_db": 0.34617166415945455
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 17.0,
+            "prev_nmse_db": -8.93994690468807,
+            "cur_nmse_db": -9.202665694149609,
+            "delta_db": -0.26271878946153926,
+            "abs_delta_db": 0.26271878946153926
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 18.0,
+            "prev_nmse_db": -8.99644137069441,
+            "cur_nmse_db": -9.11084647470028,
+            "delta_db": -0.11440510400587023,
+            "abs_delta_db": 0.11440510400587023
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 21.0,
+            "prev_nmse_db": -9.258151181111202,
+            "cur_nmse_db": -9.781921342473247,
+            "delta_db": -0.5237701613620445,
+            "abs_delta_db": 0.5237701613620445
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 22.0,
+            "prev_nmse_db": -9.790525827998028,
+            "cur_nmse_db": -9.906755706748855,
+            "delta_db": -0.11622987875082735,
+            "abs_delta_db": 0.11622987875082735
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 23.0,
+            "prev_nmse_db": -9.902679187830298,
+            "cur_nmse_db": -9.670066035281945,
+            "delta_db": 0.23261315254835324,
+            "abs_delta_db": 0.23261315254835324
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 0.0,
+            "prev_nmse_db": -4.061428674435153,
+            "cur_nmse_db": -4.613040807258518,
+            "delta_db": -0.5516121328233643,
+            "abs_delta_db": 0.5516121328233643
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 1.0,
+            "prev_nmse_db": -6.5505723456129425,
+            "cur_nmse_db": -5.8252099444806795,
+            "delta_db": 0.725362401132263,
+            "abs_delta_db": 0.725362401132263
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 2.0,
+            "prev_nmse_db": -5.956476815353758,
+            "cur_nmse_db": -6.070699218842214,
+            "delta_db": -0.1142224034884558,
+            "abs_delta_db": 0.1142224034884558
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 3.0,
+            "prev_nmse_db": -6.542573456913484,
+            "cur_nmse_db": -6.997615396882284,
+            "delta_db": -0.45504193996880016,
+            "abs_delta_db": 0.45504193996880016
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 4.0,
+            "prev_nmse_db": -7.349095509522745,
+            "cur_nmse_db": -7.150140948328439,
+            "delta_db": 0.19895456119430577,
+            "abs_delta_db": 0.19895456119430577
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 5.0,
+            "prev_nmse_db": -7.617306479542483,
+            "cur_nmse_db": -7.412417953142992,
+            "delta_db": 0.2048885263994915,
+            "abs_delta_db": 0.2048885263994915
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 6.0,
+            "prev_nmse_db": -7.8202349027135085,
+            "cur_nmse_db": -8.18648518883197,
+            "delta_db": -0.36625028611846133,
+            "abs_delta_db": 0.36625028611846133
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 7.0,
+            "prev_nmse_db": -7.648171857944927,
+            "cur_nmse_db": -8.264682939736424,
+            "delta_db": -0.6165110817914972,
+            "abs_delta_db": 0.6165110817914972
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 10.0,
+            "prev_nmse_db": -8.646772511659734,
+            "cur_nmse_db": -9.007519094674535,
+            "delta_db": -0.36074658301480156,
+            "abs_delta_db": 0.36074658301480156
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 13.0,
+            "prev_nmse_db": -9.937462176076453,
+            "cur_nmse_db": -9.69657584857787,
+            "delta_db": 0.24088632749858263,
+            "abs_delta_db": 0.24088632749858263
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 15.0,
+            "prev_nmse_db": -9.959176633493215,
+            "cur_nmse_db": -9.669391463209386,
+            "delta_db": 0.2897851702838281,
+            "abs_delta_db": 0.2897851702838281
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 17.0,
+            "prev_nmse_db": -9.367715871352386,
+            "cur_nmse_db": -9.635771120896418,
+            "delta_db": -0.26805524954403204,
+            "abs_delta_db": 0.26805524954403204
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 18.0,
+            "prev_nmse_db": -9.283664352223228,
+            "cur_nmse_db": -9.42175685863782,
+            "delta_db": -0.13809250641459236,
+            "abs_delta_db": 0.13809250641459236
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 21.0,
+            "prev_nmse_db": -9.565617031771612,
+            "cur_nmse_db": -10.060846473399794,
+            "delta_db": -0.4952294416281813,
+            "abs_delta_db": 0.4952294416281813
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 22.0,
+            "prev_nmse_db": -10.057240108159798,
+            "cur_nmse_db": -10.194479929572786,
+            "delta_db": -0.1372398214129884,
+            "abs_delta_db": 0.1372398214129884
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 23.0,
+            "prev_nmse_db": -10.122301023375131,
+            "cur_nmse_db": -9.902500697702747,
+            "delta_db": 0.2198003256723844,
+            "abs_delta_db": 0.2198003256723844
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 24.0,
+            "prev_nmse_db": -10.092778199572807,
+            "cur_nmse_db": -10.211570831942854,
+            "delta_db": -0.118792632370047,
+            "abs_delta_db": 0.118792632370047
+          }
+        ],
+        "criterion": "For biased GS and EM-GS, the ratio-of-sums detection NMSE at every integer-dB SNR in [-5, 12] must change by less than 0.1 dB between the last two checkpoints with n_trials >= 250. Start at 500 trials/SNR; if that test fails, continue through 1000 then 2000. Prefix aggregates at 100/250/500 are always reported even when the run starts at 500.",
+        "deltas": [
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 0.0,
+            "prev_nmse_db": -2.2670549692822317,
+            "cur_nmse_db": -2.7426187938642093,
+            "delta_db": -0.47556382458197755,
+            "abs_delta_db": 0.47556382458197755
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 1.0,
+            "prev_nmse_db": -4.160217263077803,
+            "cur_nmse_db": -3.8662646538601924,
+            "delta_db": 0.293952609217611,
+            "abs_delta_db": 0.293952609217611
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 2.0,
+            "prev_nmse_db": -4.108370622526845,
+            "cur_nmse_db": -4.149907714966389,
+            "delta_db": -0.041537092439543954,
+            "abs_delta_db": 0.041537092439543954
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 3.0,
+            "prev_nmse_db": -4.831242056028724,
+            "cur_nmse_db": -5.227893463758292,
+            "delta_db": -0.39665140772956775,
+            "abs_delta_db": 0.39665140772956775
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 4.0,
+            "prev_nmse_db": -5.537403789895269,
+            "cur_nmse_db": -5.794103442601023,
+            "delta_db": -0.25669965270575457,
+            "abs_delta_db": 0.25669965270575457
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 5.0,
+            "prev_nmse_db": -6.110190034897197,
+            "cur_nmse_db": -5.9412583618844454,
+            "delta_db": 0.16893167301275192,
+            "abs_delta_db": 0.16893167301275192
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 6.0,
+            "prev_nmse_db": -6.408268300199815,
+            "cur_nmse_db": -6.786044443388841,
+            "delta_db": -0.37777614318902586,
+            "abs_delta_db": 0.37777614318902586
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 7.0,
+            "prev_nmse_db": -6.5768450667692635,
+            "cur_nmse_db": -7.13835926025369,
+            "delta_db": -0.5615141934844265,
+            "abs_delta_db": 0.5615141934844265
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 8.0,
+            "prev_nmse_db": -8.263593846914981,
+            "cur_nmse_db": -8.017250024843701,
+            "delta_db": 0.24634382207127992,
+            "abs_delta_db": 0.24634382207127992
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 9.0,
+            "prev_nmse_db": -8.299578008807208,
+            "cur_nmse_db": -8.295559171626923,
+            "delta_db": 0.004018837180284507,
+            "abs_delta_db": 0.004018837180284507
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 10.0,
+            "prev_nmse_db": -7.7638252647128,
+            "cur_nmse_db": -8.129798824202064,
+            "delta_db": -0.36597355948926413,
+            "abs_delta_db": 0.36597355948926413
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 11.0,
+            "prev_nmse_db": -8.037101347959617,
+            "cur_nmse_db": -8.295860057151113,
+            "delta_db": -0.2587587091914969,
+            "abs_delta_db": 0.2587587091914969
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 12.0,
+            "prev_nmse_db": -9.031496327441495,
+            "cur_nmse_db": -8.661718429048719,
+            "delta_db": 0.3697778983927762,
+            "abs_delta_db": 0.3697778983927762
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 13.0,
+            "prev_nmse_db": -9.287278166851966,
+            "cur_nmse_db": -9.096517173365598,
+            "delta_db": 0.19076099348636788,
+            "abs_delta_db": 0.19076099348636788
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 14.0,
+            "prev_nmse_db": -8.747088922191836,
+            "cur_nmse_db": -8.827034995592944,
+            "delta_db": -0.07994607340110882,
+            "abs_delta_db": 0.07994607340110882
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 15.0,
+            "prev_nmse_db": -9.493597782200693,
+            "cur_nmse_db": -9.147426118041238,
+            "delta_db": 0.34617166415945455,
+            "abs_delta_db": 0.34617166415945455
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 16.0,
+            "prev_nmse_db": -9.511746297938032,
+            "cur_nmse_db": -9.487365961316197,
+            "delta_db": 0.02438033662183514,
+            "abs_delta_db": 0.02438033662183514
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 17.0,
+            "prev_nmse_db": -8.93994690468807,
+            "cur_nmse_db": -9.202665694149609,
+            "delta_db": -0.26271878946153926,
+            "abs_delta_db": 0.26271878946153926
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 18.0,
+            "prev_nmse_db": -8.99644137069441,
+            "cur_nmse_db": -9.11084647470028,
+            "delta_db": -0.11440510400587023,
+            "abs_delta_db": 0.11440510400587023
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 19.0,
+            "prev_nmse_db": -9.453059261423967,
+            "cur_nmse_db": -9.439439121543385,
+            "delta_db": 0.013620139880581306,
+            "abs_delta_db": 0.013620139880581306
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 20.0,
+            "prev_nmse_db": -9.107806129637282,
+            "cur_nmse_db": -9.091998163742083,
+            "delta_db": 0.01580796589519906,
+            "abs_delta_db": 0.01580796589519906
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 21.0,
+            "prev_nmse_db": -9.258151181111202,
+            "cur_nmse_db": -9.781921342473247,
+            "delta_db": -0.5237701613620445,
+            "abs_delta_db": 0.5237701613620445
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 22.0,
+            "prev_nmse_db": -9.790525827998028,
+            "cur_nmse_db": -9.906755706748855,
+            "delta_db": -0.11622987875082735,
+            "abs_delta_db": 0.11622987875082735
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 23.0,
+            "prev_nmse_db": -9.902679187830298,
+            "cur_nmse_db": -9.670066035281945,
+            "delta_db": 0.23261315254835324,
+            "abs_delta_db": 0.23261315254835324
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 24.0,
+            "prev_nmse_db": -9.969934641763444,
+            "cur_nmse_db": -10.06694001235722,
+            "delta_db": -0.09700537059377545,
+            "abs_delta_db": 0.09700537059377545
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 25.0,
+            "prev_nmse_db": -9.848641016825532,
+            "cur_nmse_db": -9.76661722317437,
+            "delta_db": 0.08202379365116208,
+            "abs_delta_db": 0.08202379365116208
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 0.0,
+            "prev_nmse_db": -4.061428674435153,
+            "cur_nmse_db": -4.613040807258518,
+            "delta_db": -0.5516121328233643,
+            "abs_delta_db": 0.5516121328233643
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 1.0,
+            "prev_nmse_db": -6.5505723456129425,
+            "cur_nmse_db": -5.8252099444806795,
+            "delta_db": 0.725362401132263,
+            "abs_delta_db": 0.725362401132263
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 2.0,
+            "prev_nmse_db": -5.956476815353758,
+            "cur_nmse_db": -6.070699218842214,
+            "delta_db": -0.1142224034884558,
+            "abs_delta_db": 0.1142224034884558
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 3.0,
+            "prev_nmse_db": -6.542573456913484,
+            "cur_nmse_db": -6.997615396882284,
+            "delta_db": -0.45504193996880016,
+            "abs_delta_db": 0.45504193996880016
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 4.0,
+            "prev_nmse_db": -7.349095509522745,
+            "cur_nmse_db": -7.150140948328439,
+            "delta_db": 0.19895456119430577,
+            "abs_delta_db": 0.19895456119430577
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 5.0,
+            "prev_nmse_db": -7.617306479542483,
+            "cur_nmse_db": -7.412417953142992,
+            "delta_db": 0.2048885263994915,
+            "abs_delta_db": 0.2048885263994915
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 6.0,
+            "prev_nmse_db": -7.8202349027135085,
+            "cur_nmse_db": -8.18648518883197,
+            "delta_db": -0.36625028611846133,
+            "abs_delta_db": 0.36625028611846133
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 7.0,
+            "prev_nmse_db": -7.648171857944927,
+            "cur_nmse_db": -8.264682939736424,
+            "delta_db": -0.6165110817914972,
+            "abs_delta_db": 0.6165110817914972
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 8.0,
+            "prev_nmse_db": -8.96992706577562,
+            "cur_nmse_db": -9.031490741416086,
+            "delta_db": -0.06156367564046583,
+            "abs_delta_db": 0.06156367564046583
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 9.0,
+            "prev_nmse_db": -9.241099923174236,
+            "cur_nmse_db": -9.306906019035642,
+            "delta_db": -0.06580609586140618,
+            "abs_delta_db": 0.06580609586140618
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 10.0,
+            "prev_nmse_db": -8.646772511659734,
+            "cur_nmse_db": -9.007519094674535,
+            "delta_db": -0.36074658301480156,
+            "abs_delta_db": 0.36074658301480156
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 11.0,
+            "prev_nmse_db": -9.261994096948435,
+            "cur_nmse_db": -9.205733751327545,
+            "delta_db": 0.056260345620890106,
+            "abs_delta_db": 0.056260345620890106
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 12.0,
+            "prev_nmse_db": -9.594480527968402,
+            "cur_nmse_db": -9.55891061911488,
+            "delta_db": 0.03556990885352285,
+            "abs_delta_db": 0.03556990885352285
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 13.0,
+            "prev_nmse_db": -9.937462176076453,
+            "cur_nmse_db": -9.69657584857787,
+            "delta_db": 0.24088632749858263,
+            "abs_delta_db": 0.24088632749858263
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 14.0,
+            "prev_nmse_db": -9.450607809613938,
+            "cur_nmse_db": -9.444241986433902,
+            "delta_db": 0.006365823180036756,
+            "abs_delta_db": 0.006365823180036756
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 15.0,
+            "prev_nmse_db": -9.959176633493215,
+            "cur_nmse_db": -9.669391463209386,
+            "delta_db": 0.2897851702838281,
+            "abs_delta_db": 0.2897851702838281
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 16.0,
+            "prev_nmse_db": -9.875031880157257,
+            "cur_nmse_db": -9.800744965020066,
+            "delta_db": 0.07428691513719166,
+            "abs_delta_db": 0.07428691513719166
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 17.0,
+            "prev_nmse_db": -9.367715871352386,
+            "cur_nmse_db": -9.635771120896418,
+            "delta_db": -0.26805524954403204,
+            "abs_delta_db": 0.26805524954403204
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 18.0,
+            "prev_nmse_db": -9.283664352223228,
+            "cur_nmse_db": -9.42175685863782,
+            "delta_db": -0.13809250641459236,
+            "abs_delta_db": 0.13809250641459236
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 19.0,
+            "prev_nmse_db": -9.805237667297018,
+            "cur_nmse_db": -9.73641156834796,
+            "delta_db": 0.06882609894905833,
+            "abs_delta_db": 0.06882609894905833
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 20.0,
+            "prev_nmse_db": -9.389268688923893,
+            "cur_nmse_db": -9.351615779722554,
+            "delta_db": 0.03765290920133957,
+            "abs_delta_db": 0.03765290920133957
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 21.0,
+            "prev_nmse_db": -9.565617031771612,
+            "cur_nmse_db": -10.060846473399794,
+            "delta_db": -0.4952294416281813,
+            "abs_delta_db": 0.4952294416281813
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 22.0,
+            "prev_nmse_db": -10.057240108159798,
+            "cur_nmse_db": -10.194479929572786,
+            "delta_db": -0.1372398214129884,
+            "abs_delta_db": 0.1372398214129884
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 23.0,
+            "prev_nmse_db": -10.122301023375131,
+            "cur_nmse_db": -9.902500697702747,
+            "delta_db": 0.2198003256723844,
+            "abs_delta_db": 0.2198003256723844
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 24.0,
+            "prev_nmse_db": -10.092778199572807,
+            "cur_nmse_db": -10.211570831942854,
+            "delta_db": -0.118792632370047,
+            "abs_delta_db": 0.118792632370047
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 25.0,
+            "prev_nmse_db": -10.022070714615154,
+            "cur_nmse_db": -9.938125701815233,
+            "delta_db": 0.08394501279992106,
+            "abs_delta_db": 0.08394501279992106
+          }
+        ]
+      }
+    },
+    {
+      "n_trials_requested": 500,
+      "n_trials_complete": 500,
+      "vs_previous": {
+        "previous_n": 250,
+        "n_cells": 52,
+        "max_abs_delta_db": 0.5241262557280741,
+        "median_abs_delta_db": 0.15998420125145252,
+        "p90_abs_delta_db": 0.3090988369036241,
+        "n_over_tol": 36,
+        "tol_db": 0.1,
+        "within_tol": 16,
+        "converged": false,
+        "n_violations": 36,
+        "violations": [
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 0.0,
+            "prev_nmse_db": -2.7426187938642093,
+            "cur_nmse_db": -3.2667450495922834,
+            "delta_db": -0.5241262557280741,
+            "abs_delta_db": 0.5241262557280741
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 1.0,
+            "prev_nmse_db": -3.8662646538601924,
+            "cur_nmse_db": -3.523317963741179,
+            "delta_db": 0.34294669011901346,
+            "abs_delta_db": 0.34294669011901346
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 2.0,
+            "prev_nmse_db": -4.149907714966389,
+            "cur_nmse_db": -3.9863607933242022,
+            "delta_db": 0.16354692164218676,
+            "abs_delta_db": 0.16354692164218676
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 4.0,
+            "prev_nmse_db": -5.794103442601023,
+            "cur_nmse_db": -5.903974178596146,
+            "delta_db": -0.10987073599512254,
+            "abs_delta_db": 0.10987073599512254
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 5.0,
+            "prev_nmse_db": -5.9412583618844454,
+            "cur_nmse_db": -6.2096341679687175,
+            "delta_db": -0.26837580608427203,
+            "abs_delta_db": 0.26837580608427203
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 6.0,
+            "prev_nmse_db": -6.786044443388841,
+            "cur_nmse_db": -7.003941593983472,
+            "delta_db": -0.21789715059463166,
+            "abs_delta_db": 0.21789715059463166
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 8.0,
+            "prev_nmse_db": -8.017250024843701,
+            "cur_nmse_db": -7.883062069129835,
+            "delta_db": 0.1341879557138661,
+            "abs_delta_db": 0.1341879557138661
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 9.0,
+            "prev_nmse_db": -8.295559171626923,
+            "cur_nmse_db": -8.186609010451361,
+            "delta_db": 0.10895016117556189,
+            "abs_delta_db": 0.10895016117556189
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 12.0,
+            "prev_nmse_db": -8.661718429048719,
+            "cur_nmse_db": -8.793037454917267,
+            "delta_db": -0.1313190258685477,
+            "abs_delta_db": 0.1313190258685477
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 13.0,
+            "prev_nmse_db": -9.096517173365598,
+            "cur_nmse_db": -8.787967723930342,
+            "delta_db": 0.3085494494352563,
+            "abs_delta_db": 0.3085494494352563
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 14.0,
+            "prev_nmse_db": -8.827034995592944,
+            "cur_nmse_db": -8.662027249161673,
+            "delta_db": 0.16500774643127158,
+            "abs_delta_db": 0.16500774643127158
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 16.0,
+            "prev_nmse_db": -9.487365961316197,
+            "cur_nmse_db": -9.236617198769519,
+            "delta_db": 0.250748762546678,
+            "abs_delta_db": 0.250748762546678
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 17.0,
+            "prev_nmse_db": -9.202665694149609,
+            "cur_nmse_db": -9.359087175010327,
+            "delta_db": -0.15642148086071828,
+            "abs_delta_db": 0.15642148086071828
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 18.0,
+            "prev_nmse_db": -9.11084647470028,
+            "cur_nmse_db": -9.262289233790057,
+            "delta_db": -0.1514427590897771,
+            "abs_delta_db": 0.1514427590897771
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 20.0,
+            "prev_nmse_db": -9.091998163742083,
+            "cur_nmse_db": -9.330227887445773,
+            "delta_db": -0.23822972370368944,
+            "abs_delta_db": 0.23822972370368944
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 22.0,
+            "prev_nmse_db": -9.906755706748855,
+            "cur_nmse_db": -9.708010169280996,
+            "delta_db": 0.19874553746785928,
+            "abs_delta_db": 0.19874553746785928
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 24.0,
+            "prev_nmse_db": -10.06694001235722,
+            "cur_nmse_db": -9.765593127510677,
+            "delta_db": 0.30134688484654326,
+            "abs_delta_db": 0.30134688484654326
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 0.0,
+            "prev_nmse_db": -4.613040807258518,
+            "cur_nmse_db": -5.040804652550353,
+            "delta_db": -0.4277638452918353,
+            "abs_delta_db": 0.4277638452918353
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 1.0,
+            "prev_nmse_db": -5.8252099444806795,
+            "cur_nmse_db": -5.311535786431714,
+            "delta_db": 0.5136741580489659,
+            "abs_delta_db": 0.5136741580489659
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 2.0,
+            "prev_nmse_db": -6.070699218842214,
+            "cur_nmse_db": -5.6884654250617075,
+            "delta_db": 0.3822337937805065,
+            "abs_delta_db": 0.3822337937805065
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 3.0,
+            "prev_nmse_db": -6.997615396882284,
+            "cur_nmse_db": -6.845779783757216,
+            "delta_db": 0.15183561312506821,
+            "abs_delta_db": 0.15183561312506821
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 4.0,
+            "prev_nmse_db": -7.150140948328439,
+            "cur_nmse_db": -7.459300828284104,
+            "delta_db": -0.30915987995566496,
+            "abs_delta_db": 0.30915987995566496
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 5.0,
+            "prev_nmse_db": -7.412417953142992,
+            "cur_nmse_db": -7.701511136400584,
+            "delta_db": -0.2890931832575925,
+            "abs_delta_db": 0.2890931832575925
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 6.0,
+            "prev_nmse_db": -8.18648518883197,
+            "cur_nmse_db": -8.492027951820491,
+            "delta_db": -0.30554276298852123,
+            "abs_delta_db": 0.30554276298852123
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 7.0,
+            "prev_nmse_db": -8.264682939736424,
+            "cur_nmse_db": -8.469375738936574,
+            "delta_db": -0.20469279920014927,
+            "abs_delta_db": 0.20469279920014927
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 9.0,
+            "prev_nmse_db": -9.306906019035642,
+            "cur_nmse_db": -9.111803844196182,
+            "delta_db": 0.19510217483946057,
+            "abs_delta_db": 0.19510217483946057
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 13.0,
+            "prev_nmse_db": -9.69657584857787,
+            "cur_nmse_db": -9.4382891877335,
+            "delta_db": 0.25828666084437124,
+            "abs_delta_db": 0.25828666084437124
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 14.0,
+            "prev_nmse_db": -9.444241986433902,
+            "cur_nmse_db": -9.264680685573875,
+            "delta_db": 0.1795613008600263,
+            "abs_delta_db": 0.1795613008600263
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 16.0,
+            "prev_nmse_db": -9.800744965020066,
+            "cur_nmse_db": -9.603057789312544,
+            "delta_db": 0.1976871757075216,
+            "abs_delta_db": 0.1976871757075216
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 17.0,
+            "prev_nmse_db": -9.635771120896418,
+            "cur_nmse_db": -9.735926945554333,
+            "delta_db": -0.1001558246579144,
+            "abs_delta_db": 0.1001558246579144
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 18.0,
+            "prev_nmse_db": -9.42175685863782,
+            "cur_nmse_db": -9.589001505255137,
+            "delta_db": -0.1672446466173163,
+            "abs_delta_db": 0.1672446466173163
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 19.0,
+            "prev_nmse_db": -9.73641156834796,
+            "cur_nmse_db": -9.631604950230763,
+            "delta_db": 0.10480661811719649,
+            "abs_delta_db": 0.10480661811719649
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 20.0,
+            "prev_nmse_db": -9.351615779722554,
+            "cur_nmse_db": -9.587507484837074,
+            "delta_db": -0.23589170511452018,
+            "abs_delta_db": 0.23589170511452018
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 21.0,
+            "prev_nmse_db": -10.060846473399794,
+            "cur_nmse_db": -9.955542547301024,
+            "delta_db": 0.10530392609877026,
+            "abs_delta_db": 0.10530392609877026
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 22.0,
+            "prev_nmse_db": -10.194479929572786,
+            "cur_nmse_db": -9.940158290672768,
+            "delta_db": 0.25432163890001824,
+            "abs_delta_db": 0.25432163890001824
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 24.0,
+            "prev_nmse_db": -10.211570831942854,
+            "cur_nmse_db": -9.940084121883636,
+            "delta_db": 0.271486710059218,
+            "abs_delta_db": 0.271486710059218
+          }
+        ],
+        "criterion": "For biased GS and EM-GS, the ratio-of-sums detection NMSE at every integer-dB SNR in [-5, 12] must change by less than 0.1 dB between the last two checkpoints with n_trials >= 250. Start at 500 trials/SNR; if that test fails, continue through 1000 then 2000. Prefix aggregates at 100/250/500 are always reported even when the run starts at 500.",
+        "deltas": [
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 0.0,
+            "prev_nmse_db": -2.7426187938642093,
+            "cur_nmse_db": -3.2667450495922834,
+            "delta_db": -0.5241262557280741,
+            "abs_delta_db": 0.5241262557280741
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 1.0,
+            "prev_nmse_db": -3.8662646538601924,
+            "cur_nmse_db": -3.523317963741179,
+            "delta_db": 0.34294669011901346,
+            "abs_delta_db": 0.34294669011901346
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 2.0,
+            "prev_nmse_db": -4.149907714966389,
+            "cur_nmse_db": -3.9863607933242022,
+            "delta_db": 0.16354692164218676,
+            "abs_delta_db": 0.16354692164218676
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 3.0,
+            "prev_nmse_db": -5.227893463758292,
+            "cur_nmse_db": -5.171210124150604,
+            "delta_db": 0.05668333960768823,
+            "abs_delta_db": 0.05668333960768823
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 4.0,
+            "prev_nmse_db": -5.794103442601023,
+            "cur_nmse_db": -5.903974178596146,
+            "delta_db": -0.10987073599512254,
+            "abs_delta_db": 0.10987073599512254
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 5.0,
+            "prev_nmse_db": -5.9412583618844454,
+            "cur_nmse_db": -6.2096341679687175,
+            "delta_db": -0.26837580608427203,
+            "abs_delta_db": 0.26837580608427203
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 6.0,
+            "prev_nmse_db": -6.786044443388841,
+            "cur_nmse_db": -7.003941593983472,
+            "delta_db": -0.21789715059463166,
+            "abs_delta_db": 0.21789715059463166
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 7.0,
+            "prev_nmse_db": -7.13835926025369,
+            "cur_nmse_db": -7.226459909498208,
+            "delta_db": -0.08810064924451755,
+            "abs_delta_db": 0.08810064924451755
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 8.0,
+            "prev_nmse_db": -8.017250024843701,
+            "cur_nmse_db": -7.883062069129835,
+            "delta_db": 0.1341879557138661,
+            "abs_delta_db": 0.1341879557138661
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 9.0,
+            "prev_nmse_db": -8.295559171626923,
+            "cur_nmse_db": -8.186609010451361,
+            "delta_db": 0.10895016117556189,
+            "abs_delta_db": 0.10895016117556189
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 10.0,
+            "prev_nmse_db": -8.129798824202064,
+            "cur_nmse_db": -8.062954975554224,
+            "delta_db": 0.06684384864784043,
+            "abs_delta_db": 0.06684384864784043
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 11.0,
+            "prev_nmse_db": -8.295860057151113,
+            "cur_nmse_db": -8.329542853862783,
+            "delta_db": -0.03368279671166974,
+            "abs_delta_db": 0.03368279671166974
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 12.0,
+            "prev_nmse_db": -8.661718429048719,
+            "cur_nmse_db": -8.793037454917267,
+            "delta_db": -0.1313190258685477,
+            "abs_delta_db": 0.1313190258685477
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 13.0,
+            "prev_nmse_db": -9.096517173365598,
+            "cur_nmse_db": -8.787967723930342,
+            "delta_db": 0.3085494494352563,
+            "abs_delta_db": 0.3085494494352563
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 14.0,
+            "prev_nmse_db": -8.827034995592944,
+            "cur_nmse_db": -8.662027249161673,
+            "delta_db": 0.16500774643127158,
+            "abs_delta_db": 0.16500774643127158
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 15.0,
+            "prev_nmse_db": -9.147426118041238,
+            "cur_nmse_db": -9.09588641639973,
+            "delta_db": 0.05153970164150756,
+            "abs_delta_db": 0.05153970164150756
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 16.0,
+            "prev_nmse_db": -9.487365961316197,
+            "cur_nmse_db": -9.236617198769519,
+            "delta_db": 0.250748762546678,
+            "abs_delta_db": 0.250748762546678
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 17.0,
+            "prev_nmse_db": -9.202665694149609,
+            "cur_nmse_db": -9.359087175010327,
+            "delta_db": -0.15642148086071828,
+            "abs_delta_db": 0.15642148086071828
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 18.0,
+            "prev_nmse_db": -9.11084647470028,
+            "cur_nmse_db": -9.262289233790057,
+            "delta_db": -0.1514427590897771,
+            "abs_delta_db": 0.1514427590897771
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 19.0,
+            "prev_nmse_db": -9.439439121543385,
+            "cur_nmse_db": -9.36121647246065,
+            "delta_db": 0.07822264908273446,
+            "abs_delta_db": 0.07822264908273446
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 20.0,
+            "prev_nmse_db": -9.091998163742083,
+            "cur_nmse_db": -9.330227887445773,
+            "delta_db": -0.23822972370368944,
+            "abs_delta_db": 0.23822972370368944
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 21.0,
+            "prev_nmse_db": -9.781921342473247,
+            "cur_nmse_db": -9.690727861775432,
+            "delta_db": 0.09119348069781452,
+            "abs_delta_db": 0.09119348069781452
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 22.0,
+            "prev_nmse_db": -9.906755706748855,
+            "cur_nmse_db": -9.708010169280996,
+            "delta_db": 0.19874553746785928,
+            "abs_delta_db": 0.19874553746785928
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 23.0,
+            "prev_nmse_db": -9.670066035281945,
+            "cur_nmse_db": -9.697931302213075,
+            "delta_db": -0.027865266931129895,
+            "abs_delta_db": 0.027865266931129895
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 24.0,
+            "prev_nmse_db": -10.06694001235722,
+            "cur_nmse_db": -9.765593127510677,
+            "delta_db": 0.30134688484654326,
+            "abs_delta_db": 0.30134688484654326
+          },
+          {
+            "algorithm": "biased_gs",
+            "rsr_db": 25.0,
+            "prev_nmse_db": -9.76661722317437,
+            "cur_nmse_db": -9.840923927905024,
+            "delta_db": -0.07430670473065426,
+            "abs_delta_db": 0.07430670473065426
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 0.0,
+            "prev_nmse_db": -4.613040807258518,
+            "cur_nmse_db": -5.040804652550353,
+            "delta_db": -0.4277638452918353,
+            "abs_delta_db": 0.4277638452918353
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 1.0,
+            "prev_nmse_db": -5.8252099444806795,
+            "cur_nmse_db": -5.311535786431714,
+            "delta_db": 0.5136741580489659,
+            "abs_delta_db": 0.5136741580489659
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 2.0,
+            "prev_nmse_db": -6.070699218842214,
+            "cur_nmse_db": -5.6884654250617075,
+            "delta_db": 0.3822337937805065,
+            "abs_delta_db": 0.3822337937805065
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 3.0,
+            "prev_nmse_db": -6.997615396882284,
+            "cur_nmse_db": -6.845779783757216,
+            "delta_db": 0.15183561312506821,
+            "abs_delta_db": 0.15183561312506821
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 4.0,
+            "prev_nmse_db": -7.150140948328439,
+            "cur_nmse_db": -7.459300828284104,
+            "delta_db": -0.30915987995566496,
+            "abs_delta_db": 0.30915987995566496
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 5.0,
+            "prev_nmse_db": -7.412417953142992,
+            "cur_nmse_db": -7.701511136400584,
+            "delta_db": -0.2890931832575925,
+            "abs_delta_db": 0.2890931832575925
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 6.0,
+            "prev_nmse_db": -8.18648518883197,
+            "cur_nmse_db": -8.492027951820491,
+            "delta_db": -0.30554276298852123,
+            "abs_delta_db": 0.30554276298852123
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 7.0,
+            "prev_nmse_db": -8.264682939736424,
+            "cur_nmse_db": -8.469375738936574,
+            "delta_db": -0.20469279920014927,
+            "abs_delta_db": 0.20469279920014927
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 8.0,
+            "prev_nmse_db": -9.031490741416086,
+            "cur_nmse_db": -8.958963375862265,
+            "delta_db": 0.072527365553821,
+            "abs_delta_db": 0.072527365553821
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 9.0,
+            "prev_nmse_db": -9.306906019035642,
+            "cur_nmse_db": -9.111803844196182,
+            "delta_db": 0.19510217483946057,
+            "abs_delta_db": 0.19510217483946057
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 10.0,
+            "prev_nmse_db": -9.007519094674535,
+            "cur_nmse_db": -9.002608924635565,
+            "delta_db": 0.004910170038970207,
+            "abs_delta_db": 0.004910170038970207
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 11.0,
+            "prev_nmse_db": -9.205733751327545,
+            "cur_nmse_db": -9.215951605686994,
+            "delta_db": -0.010217854359449774,
+            "abs_delta_db": 0.010217854359449774
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 12.0,
+            "prev_nmse_db": -9.55891061911488,
+            "cur_nmse_db": -9.578145261493926,
+            "delta_db": -0.019234642379046818,
+            "abs_delta_db": 0.019234642379046818
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 13.0,
+            "prev_nmse_db": -9.69657584857787,
+            "cur_nmse_db": -9.4382891877335,
+            "delta_db": 0.25828666084437124,
+            "abs_delta_db": 0.25828666084437124
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 14.0,
+            "prev_nmse_db": -9.444241986433902,
+            "cur_nmse_db": -9.264680685573875,
+            "delta_db": 0.1795613008600263,
+            "abs_delta_db": 0.1795613008600263
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 15.0,
+            "prev_nmse_db": -9.669391463209386,
+            "cur_nmse_db": -9.611298848606392,
+            "delta_db": 0.05809261460299453,
+            "abs_delta_db": 0.05809261460299453
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 16.0,
+            "prev_nmse_db": -9.800744965020066,
+            "cur_nmse_db": -9.603057789312544,
+            "delta_db": 0.1976871757075216,
+            "abs_delta_db": 0.1976871757075216
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 17.0,
+            "prev_nmse_db": -9.635771120896418,
+            "cur_nmse_db": -9.735926945554333,
+            "delta_db": -0.1001558246579144,
+            "abs_delta_db": 0.1001558246579144
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 18.0,
+            "prev_nmse_db": -9.42175685863782,
+            "cur_nmse_db": -9.589001505255137,
+            "delta_db": -0.1672446466173163,
+            "abs_delta_db": 0.1672446466173163
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 19.0,
+            "prev_nmse_db": -9.73641156834796,
+            "cur_nmse_db": -9.631604950230763,
+            "delta_db": 0.10480661811719649,
+            "abs_delta_db": 0.10480661811719649
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 20.0,
+            "prev_nmse_db": -9.351615779722554,
+            "cur_nmse_db": -9.587507484837074,
+            "delta_db": -0.23589170511452018,
+            "abs_delta_db": 0.23589170511452018
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 21.0,
+            "prev_nmse_db": -10.060846473399794,
+            "cur_nmse_db": -9.955542547301024,
+            "delta_db": 0.10530392609877026,
+            "abs_delta_db": 0.10530392609877026
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 22.0,
+            "prev_nmse_db": -10.194479929572786,
+            "cur_nmse_db": -9.940158290672768,
+            "delta_db": 0.25432163890001824,
+            "abs_delta_db": 0.25432163890001824
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 23.0,
+            "prev_nmse_db": -9.902500697702747,
+            "cur_nmse_db": -9.88949102051211,
+            "delta_db": 0.013009677190636282,
+            "abs_delta_db": 0.013009677190636282
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 24.0,
+            "prev_nmse_db": -10.211570831942854,
+            "cur_nmse_db": -9.940084121883636,
+            "delta_db": 0.271486710059218,
+            "abs_delta_db": 0.271486710059218
+          },
+          {
+            "algorithm": "em_gs",
+            "rsr_db": 25.0,
+            "prev_nmse_db": -9.938125701815233,
+            "cur_nmse_db": -9.984677107147292,
+            "delta_db": -0.04655140533205859,
+            "abs_delta_db": 0.04655140533205859
+          }
+        ]
+      }
+    }
+  ]
+}
