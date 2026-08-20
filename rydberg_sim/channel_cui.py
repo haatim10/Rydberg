@@ -78,6 +78,13 @@ SPEED_OF_LIGHT: float = 299_792_458.0
 # per-user geometric steering from channel.py).
 CUI_ARRAY_GEOMETRY: str = "ula_half_wavelength"
 
+# TR 38.901 cluster power-delay parameters. Table I gives neither, because it
+# fixes path gains to CN(0, 1) instead. These are the UMa-NLOS values from the
+# specification (uploaded chapter, Table VI) and are used only when
+# ``CuiChannelParams.cluster_pdp`` is enabled.
+CUI_PDP_R_TAU: float = 2.3           # delay distribution proportionality factor
+CUI_PDP_SHADOWING_DB: float = 3.0    # per-cluster shadowing STD ζ [dB]
+
 
 @dataclass(frozen=True)
 class CuiChannelParams:
@@ -94,6 +101,10 @@ class CuiChannelParams:
     array_geometry: str = CUI_ARRAY_GEOMETRY
     mu_eg_direction: tuple[float, float, float] = CUI_MU_EG_DIRECTION
     normalize_rows: bool = True
+    per_ray_polarization: bool = False
+    cluster_pdp: bool = False
+    pdp_r_tau: float = CUI_PDP_R_TAU
+    pdp_shadowing_db: float = CUI_PDP_SHADOWING_DB
     channel_model: str = CHANNEL_MODEL_CUI
 
     def __post_init__(self) -> None:
@@ -102,6 +113,21 @@ class CuiChannelParams:
                 f"normalize_rows must be a bool, got {self.normalize_rows!r}"
             )
         object.__setattr__(self, "normalize_rows", bool(self.normalize_rows))
+        if not isinstance(self.per_ray_polarization, (bool, np.bool_)):
+            raise TypeError(
+                "per_ray_polarization must be a bool, got "
+                f"{self.per_ray_polarization!r}"
+            )
+        object.__setattr__(
+            self, "per_ray_polarization", bool(self.per_ray_polarization)
+        )
+        if not isinstance(self.cluster_pdp, (bool, np.bool_)):
+            raise TypeError(f"cluster_pdp must be a bool, got {self.cluster_pdp!r}")
+        object.__setattr__(self, "cluster_pdp", bool(self.cluster_pdp))
+        if not np.isfinite(self.pdp_r_tau) or self.pdp_r_tau <= 1.0:
+            raise ValueError("pdp_r_tau must be finite and > 1")
+        if not np.isfinite(self.pdp_shadowing_db) or self.pdp_shadowing_db < 0.0:
+            raise ValueError("pdp_shadowing_db must be finite and >= 0")
         if self.channel_model != CHANNEL_MODEL_CUI:
             raise ValueError(
                 f"CuiChannelParams.channel_model must be {CHANNEL_MODEL_CUI!r}, "
@@ -120,7 +146,7 @@ class CuiChannelParams:
             raise ValueError("carrier_hz must be finite and > 0")
 
     def as_fingerprint_dict(self) -> dict[str, object]:
-        return {
+        payload: dict[str, object] = {
             "channel_model": self.channel_model,
             "n_clusters": int(self.n_clusters),
             "n_rays_per_cluster": int(self.n_rays_per_cluster),
@@ -138,6 +164,18 @@ class CuiChannelParams:
             # never share a config fingerprint (and therefore a result store).
             "normalize_rows": bool(self.normalize_rows),
         }
+        # TR 38.901 fidelity switches. Both change the channel distribution and
+        # so must be part of the experiment identity (same rationale as
+        # normalize_rows, audit M4) — but they are added to the payload **only
+        # when enabled**, so the historical ``cui_38901`` fingerprint
+        # 925f2ab8… is preserved bit-for-bit for the default configuration.
+        if self.per_ray_polarization:
+            payload["per_ray_polarization"] = True
+        if self.cluster_pdp:
+            payload["cluster_pdp"] = True
+            payload["pdp_r_tau"] = float(self.pdp_r_tau)
+            payload["pdp_shadowing_db"] = float(self.pdp_shadowing_db)
+        return payload
 
 
 @dataclass(frozen=True, eq=False)
@@ -184,13 +222,35 @@ def _polarization_basis(theta_rad: float) -> tuple[np.ndarray, np.ndarray]:
 
 
 def _polarization_couplings(
-    rng: np.random.Generator, theta_rad: float, mu: np.ndarray, N: int
+    rng: np.random.Generator,
+    theta_rad: float,
+    mu: np.ndarray,
+    N: int,
+    *,
+    per_ray: bool = False,
 ) -> np.ndarray:
-    """Per-element ``μ·ε_n`` with ε_n on the incident-normal unit circle."""
+    """``μ·ε`` with ε on the incident-normal unit circle.
+
+    ``per_ray=False`` (default, Cui §VI-A) draws an independent ε for every
+    antenna element: "vectors ε_{n k ℓ} … are randomly sampled from unit
+    circles perpendicular to their incident angles", indexed by the element
+    ``n``. ``per_ray=True`` draws one ε per ray and broadcasts it across the
+    aperture, which is what TR 38.901 eq. (10) prescribes — there the random
+    polarization phases carry only the ``(n, m)`` cluster/ray subscript, and
+    the element index enters through the field pattern and steering phase.
+
+    The per-element draw multiplies the steering vector by an i.i.d. vector
+    and therefore whitens the array response; the per-ray draw preserves the
+    spatial correlation the clustered geometry implies.
+    """
     e1, e2 = _polarization_basis(theta_rad)
-    psi = rng.uniform(0.0, 2.0 * np.pi, size=N)
+    size = () if per_ray else N
+    psi = rng.uniform(0.0, 2.0 * np.pi, size=size)
     # ε = cosψ e1 + sinψ e2  →  μ·ε = (μ·e1) cosψ + (μ·e2) sinψ
-    return (float(np.dot(mu, e1)) * np.cos(psi)) + (float(np.dot(mu, e2)) * np.sin(psi))
+    coup = (float(np.dot(mu, e1)) * np.cos(psi)) + (
+        float(np.dot(mu, e2)) * np.sin(psi)
+    )
+    return np.broadcast_to(coup, (N,)) if per_ray else coup
 
 
 def _mu_hat(params: CuiChannelParams) -> np.ndarray:
@@ -204,6 +264,48 @@ def _array_phase(n_index: np.ndarray, theta_rad: float) -> np.ndarray:
     Track A never calls :func:`rydberg_sim.channel.steering_vector`.
     """
     return np.exp(-1j * n_index * np.pi * np.sin(theta_rad))
+
+
+def _cluster_delays_and_amplitudes(
+    rng: np.random.Generator, p: CuiChannelParams, delay_spread: float
+) -> tuple[np.ndarray | None, np.ndarray | None]:
+    """TR 38.901 cluster delays (eq. 12–13) and amplitudes (eq. 15–16).
+
+    Returns ``(None, None)`` unless ``p.cluster_pdp`` is enabled, leaving the
+    default Cui path — uniform cluster delays and equal-power CN(0, 1) rays —
+    untouched, including its RNG consumption.
+
+    With the switch on::
+
+        τ'_n = -r_τ DS ln(X_n),  X_n ~ U(0, 1)                     (12)
+        τ_n  = sort(τ'_n - min τ'_n)                               (13)
+        P'_n = exp(-τ_n (r_τ - 1)/(r_τ DS)) · 10^(-Z_n/10)         (15)
+        P_n  = P'_n / Σ P'_n,   Z_n ~ N(0, ζ²)                     (16)
+
+    ``DS`` is Cui's Table I "maximum delay spread ~ U(0, 30 ns)" draw. The
+    returned amplitude is ``sqrt(P_n / M)`` so that a cluster's ``M`` rays
+    carry total power ``P_n`` and the per-user channel power stays normalized.
+    """
+    if not p.cluster_pdp:
+        return None, None
+    n_cl = int(p.n_clusters)
+    r_tau = float(p.pdp_r_tau)
+    if delay_spread <= 0.0:
+        tau = np.zeros(n_cl, dtype=np.float64)
+    else:
+        x = rng.uniform(0.0, 1.0, size=n_cl)
+        # guard the ln(0) endpoint without perturbing the distribution
+        x = np.clip(x, np.finfo(np.float64).tiny, 1.0)
+        tau = np.sort(-r_tau * delay_spread * np.log(x))
+        tau = tau - tau[0]
+    z = rng.normal(0.0, float(p.pdp_shadowing_db), size=n_cl)
+    if delay_spread > 0.0:
+        decay = np.exp(-tau * (r_tau - 1.0) / (r_tau * delay_spread))
+    else:
+        decay = np.ones(n_cl, dtype=np.float64)
+    power = decay * 10.0 ** (-z / 10.0)
+    power = power / power.sum()
+    return tau, np.sqrt(power / float(p.n_rays_per_cluster))
 
 
 def _cn01(rng: np.random.Generator) -> complex:
@@ -265,12 +367,19 @@ def generate_cui_channel(
         delay_spread = float(rng.uniform(0.0, float(p.delay_spread_max_s)))
         thetas = np.empty(n_paths, dtype=np.float64)
         taus = np.empty(n_paths, dtype=np.float64)
+        cluster_tau, cluster_amp = _cluster_delays_and_amplitudes(
+            rng, p, delay_spread
+        )
         path_i = 0
         for _c in range(int(p.n_clusters)):
             theta_c = float(
                 rng.uniform(float(p.angle_min_deg), float(p.angle_max_deg))
             )
-            tau_c = float(rng.uniform(0.0, delay_spread)) if delay_spread > 0.0 else 0.0
+            tau_c = (
+                cluster_tau[_c]
+                if cluster_tau is not None
+                else (float(rng.uniform(0.0, delay_spread)) if delay_spread > 0.0 else 0.0)
+            )
             for _r in range(int(p.n_rays_per_cluster)):
                 offset = float(
                     rng.uniform(
@@ -289,7 +398,11 @@ def generate_cui_channel(
                 alpha = _cn01(rng)
                 delay_phase = np.exp(-1j * two_pi_f * tau_c)
                 array_ph = _array_phase(n_idx, theta_rad)
-                couplings = _polarization_couplings(rng, theta_rad, mu, N)
+                couplings = _polarization_couplings(
+                    rng, theta_rad, mu, N, per_ray=p.per_ray_polarization
+                )
+                if cluster_amp is not None:
+                    alpha = alpha * cluster_amp[_c]
                 A[k, :] += alpha * delay_phase * couplings * array_ph
                 thetas[path_i] = theta_deg
                 taus[path_i] = tau_c
