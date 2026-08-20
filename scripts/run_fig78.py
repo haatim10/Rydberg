@@ -24,6 +24,7 @@ from rydberg_sim.monte_carlo import (
     run_experiment,
 )
 from rydberg_sim.track_a_fig78 import (
+    FIG8_QAM_CAPTION_CLAIM,
     aggregate_ber,
     track_a_fig7a_spec,
     track_a_fig7b_spec,
@@ -46,6 +47,18 @@ def _alloc(points, bands):
 
 FIG7_SNR = [float(v) for v in range(-5, 13)]
 FIG8_RSR = [float(v) for v in range(0, 26)]
+# Small diagnostic sweep documenting the Fig. 8 caption/body contradiction:
+# the caption claims 16-QAM, the body text says 4-QAM. A handful of RSR
+# points is enough to show which one the published BER levels belong to.
+FIG8_16QAM_RSR = [0.0, 6.0, 12.0, 18.0, 25.0]
+
+
+def _fig8_16qam_spec(*, n_trials: int, **kw):
+    """Fig. 8 exactly as the caption claims: 16-QAM instead of 4-QAM."""
+    kw.setdefault("experiment", "cui_fig8_16qam_caption")
+    return track_a_fig8_spec(
+        n_trials=n_trials, qam_M=FIG8_QAM_CAPTION_CLAIM, **kw
+    )
 
 JOBS = {
     # name: (spec builder, sweep key, fixed other-axis value, allocation)
@@ -68,6 +81,11 @@ JOBS = {
         _alloc(FIG8_RSR, [(lambda x: x <= 6, 3_000),
                           (lambda x: x <= 14, 8_000),
                           (lambda x: True, 14_000)]),
+    ),
+    # 16-QAM at 3 dB SNR sits near 1e-1, so 3k trials (= 36k bits) is ample.
+    "fig8_16qam": (
+        _fig8_16qam_spec, "rsr_db", 3.0,
+        _alloc(FIG8_16QAM_RSR, [(lambda x: True, 3_000)]),
     ),
 }
 
