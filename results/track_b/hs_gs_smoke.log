@@ -1,0 +1,33 @@
+Frozen baselines vs proposed HS-GS, identical CRN worlds, 60 trials/point, RSR=12.0 dB, t0=50
+NMSE_G (dB), ratio of sums
+
+=== N = 8 (Hankel rank cap 4; L_k ~ U{3..7}) ===
+   P   SNR |  biased GS      EM-GS      HS-GS |  vs EM-GS  mean Lhat  active
+  10   0.0 |       2.06       1.88       0.96 |     +0.92       1.80     87%
+  10  10.0 |      -7.32      -7.40      -5.92 |     -1.48       2.92     63%
+  30   0.0 |      -4.90      -5.31      -4.84 |     -0.47       2.43     80%
+  30  10.0 |     -16.26     -16.31     -16.13 |     -0.18       3.47     47%
+  30  20.0 |     -25.71     -25.72     -25.76 |     +0.05       3.77     22%
+
+=== N = 16 (Hankel rank cap 8; L_k ~ U{3..7}) ===
+   P   SNR |  biased GS      EM-GS      HS-GS |  vs EM-GS  mean Lhat  active
+  10   0.0 |       1.87       1.71      -0.64 |     +2.35       2.17     95%
+  10  10.0 |      -7.50      -7.55      -7.51 |     -0.04       4.20     93%
+  30   0.0 |      -5.04      -5.36      -6.05 |     +0.69       3.52     95%
+  30  10.0 |     -16.29     -16.34     -17.29 |     +0.95       4.75     98%
+  30  20.0 |     -25.83     -25.84     -26.54 |     +0.71       5.22     92%
+
+=== N = 32 (Hankel rank cap 16; L_k ~ U{3..7}) ===
+   P   SNR |  biased GS      EM-GS      HS-GS |  vs EM-GS  mean Lhat  active
+  10   0.0 |       1.81       1.73      -2.13 |     +3.86       2.28    100%
+  10  10.0 |      -7.12      -7.17     -10.76 |     +3.60       5.33    100%
+  30   0.0 |      -5.12      -5.46      -7.78 |     +2.32       4.15    100%
+  30  10.0 |     -16.25     -16.30     -18.84 |     +2.54       5.18    100%
+  30  20.0 |     -25.90     -25.90     -28.39 |     +2.48       5.78    100%
+
+Convergence of the residual (N=16, P=30, SNR=10 dB, one world):
+  L=2: J[1]=  446.545 J[10]=  267.424 J[50]=  266.981 monotone=False NMSE=  -6.85 dB active=True
+  L=4: J[1]=  325.177 J[10]=   81.432 J[50]=   81.884 monotone=False NMSE= -16.87 dB active=True
+  L=6: J[1]=  308.614 J[10]=   69.650 J[50]=   69.404 monotone=False NMSE= -16.27 dB active=True
+  L=8: J[1]=  300.973 J[10]=   62.094 J[50]=   61.607 monotone=False NMSE= -16.23 dB active=False
+  EM-GS baseline: J=   61.607 NMSE= -16.23 dB
