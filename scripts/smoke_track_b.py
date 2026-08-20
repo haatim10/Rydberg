@@ -34,8 +34,9 @@ def check(name, cond, extra=""):
     print(f"  [{'PASS' if cond else 'FAIL'}] {name} {extra}")
 
 
-def spec(N=16, K=3, P=16, n_trials=4, algorithms=("biased_gs", "em_gs", "linearised_ls")):
-    cfg = SimulationConfig.create(N=N, K=K, L=(3, 5, 7), beta=1.0, master_seed=20250820, c=1.0)
+def spec(N=8, K=3, P=10, n_trials=4, algorithms=("biased_gs", "em_gs", "linearised_ls"),
+         L=(3, 5, 7)):
+    cfg = SimulationConfig.create(N=N, K=K, L=L, beta=1.0, master_seed=20250820, c=1.0)
     return ExperimentSpec(
         experiment="track_b_smoke", track="B", cfg=cfg, P=P, vartheta=0.0,
         snr_db_grid=(0.0,), rsr_db_grid=(30.0,), n_trials=n_trials,
@@ -46,7 +47,7 @@ def spec(N=16, K=3, P=16, n_trials=4, algorithms=("biased_gs", "em_gs", "lineari
 
 print("1. G matches the ULA formula g[n,k] = sum_l alpha exp(-j(n-1)psi)")
 sp = spec()
-w = generate_channel_estimation_trial(sp, 0, 0.0, 30.0)
+w = generate_channel_estimation_trial(sp, 0, 0.0, 12.0)
 N, K = w.G.shape
 manual = np.zeros_like(w.G)
 for k in range(K):
@@ -65,7 +66,7 @@ check("theta in [-90,90] deg",
 
 print("2. noiseless forward model is exact")
 sp0 = spec()
-w0 = generate_channel_estimation_trial(sp0, 1, 200.0, 30.0)   # 200 dB SNR ~ noiseless
+w0 = generate_channel_estimation_trial(sp0, 1, 200.0, 12.0)   # 200 dB SNR ~ noiseless
 resid = np.abs(w0.G @ w0.S + w0.B + w0.W) - w0.Z
 check("Z == |GS+B+W| exactly", np.allclose(resid, 0.0, atol=1e-12),
       f"max={np.abs(resid).max():.2e}")
@@ -75,8 +76,8 @@ check("Z == |GS+B| when W~0",
       np.allclose(w0.Z, np.abs(w0.G @ w0.S + w0.B), atol=1e-8))
 
 print("3. one realization reaches every estimator")
-a = generate_channel_estimation_trial(sp, 2, 0.0, 30.0)
-b = generate_channel_estimation_trial(sp, 2, 0.0, 30.0)
+a = generate_channel_estimation_trial(sp, 2, 0.0, 12.0)
+b = generate_channel_estimation_trial(sp, 2, 0.0, 12.0)
 check("regenerated world is identical", channel_trials_equal(a, b))
 for attr in ("G", "S", "B", "W", "Z"):
     check(f"  {attr} identical", np.array_equal(getattr(a, attr), getattr(b, attr)))
@@ -98,7 +99,7 @@ check("biased_gs NMSE is finite and sane", 0.0 < nm.nmse_linear < 100.0,
 print("5. NMSE aggregation is a ratio of sums, not a mean of dB")
 errs, tots, per_db = 0.0, 0.0, []
 for t in range(6):
-    ww = generate_channel_estimation_trial(sp, t, 0.0, 30.0)
+    ww = generate_channel_estimation_trial(sp, t, 0.0, 12.0)
     gh = biased_gs_channel_rows(ww.S, ww.Z, ww.B, max_iter=50).G_hat
     r = channel_nmse(gh, ww.G)
     errs += r.error_energy
@@ -111,10 +112,10 @@ check("ratio-of-sums differs from mean-of-dB",
 
 print("6. increasing SNR improves estimation")
 prev = None
-for snr in (-5.0, 0.0, 5.0, 10.0, 15.0):
+for snr in (-5.0, 0.0, 5.0, 10.0, 15.0, 20.0):
     e, tt = 0.0, 0.0
     for t in range(6):
-        ww = generate_channel_estimation_trial(sp, t, snr, 30.0)
+        ww = generate_channel_estimation_trial(sp, t, snr, 12.0)
         gh = em_gs_channel_rows(ww.S, ww.Z, ww.B, ww.sigma2, max_iter=50).G_hat
         r = channel_nmse(gh, ww.G)
         e += r.error_energy
@@ -127,11 +128,11 @@ for snr in (-5.0, 0.0, 5.0, 10.0, 15.0):
 
 print("7. increasing pilot length P improves estimation")
 prev = None
-for P in (8, 16, 32, 64):
+for P in (6, 10, 20, 40):
     spP = spec(P=P)
     e, tt = 0.0, 0.0
     for t in range(6):
-        ww = generate_channel_estimation_trial(spP, t, 0.0, 30.0)
+        ww = generate_channel_estimation_trial(spP, t, 0.0, 12.0)
         gh = em_gs_channel_rows(ww.S, ww.Z, ww.B, ww.sigma2, max_iter=50).G_hat
         r = channel_nmse(gh, ww.G)
         e += r.error_energy
@@ -141,6 +142,26 @@ for P in (8, 16, 32, 64):
     if prev is not None:
         check(f"  P={P} improves on previous", db < prev + 0.5)
     prev = db
+
+print("7b. SNR / RSR calibration (Cui eq. 36/37 conventions)")
+from rydberg_sim.track_b_drivers import track_b_world, TRACK_B_RSR_DB, draw_L_k
+sig=noi=ref=one=0.0
+for t in range(200):
+    ww = track_b_world(t, 10, 5.0)
+    sig += float(np.mean(np.abs(ww.G @ ww.S) ** 2))
+    noi += float(np.mean(np.abs(ww.W) ** 2))
+    ref += float(np.mean(np.abs(ww.B) ** 2))
+    one += float(np.mean(np.abs(np.outer(ww.G[:, 0], ww.S[0])) ** 2))
+snr_meas = 10*np.log10(sig/noi); rsr_meas = 10*np.log10(ref/one)
+print(f"     measured SNR = {snr_meas:.3f} dB (target 5.0)")
+print(f"     measured RSR = {rsr_meas:.3f} dB (target {TRACK_B_RSR_DB})")
+check("SNR within 0.3 dB", abs(snr_meas - 5.0) < 0.3)
+check("RSR within 0.3 dB", abs(rsr_meas - TRACK_B_RSR_DB) < 0.3)
+flat = np.array([draw_L_k(t) for t in range(3000)]).ravel()
+check("L_k ~ U{3..7}: support", flat.min() == 3 and flat.max() == 7)
+check("L_k ~ U{3..7}: mean ~5", abs(flat.mean() - 5.0) < 0.15, f"mean={flat.mean():.3f}")
+check("L_k varies across trials", len({draw_L_k(t) for t in range(40)}) > 1)
+check("L_k reproducible", draw_L_k(11) == draw_L_k(11))
 
 print("8. structural utilities are exact on noiseless structured data")
 rng = np.random.default_rng(0)
@@ -190,15 +211,23 @@ finally:
     _bl.linearised_closed_form_ls = orig
 check("linearised LS was never called", calls["n"] == 0)
 check("result flags linearised_model_used=False", res.linearised_model_used is False)
-check("objective is non-increasing at the chosen round",
-      res.objective_history[res.best_round] <= res.objective_history[0] + 1e-9,
-      f"J0={res.objective_history[0]:.4f} Jbest={res.objective_history[res.best_round]:.4f}")
+# with accept="objective" the selector must be monotone by construction;
+# the default accept="always" deliberately returns the last iterate, which
+# may fit Z slightly worse (see the warning in track_b_prototype).
+res_obj = structured_exact_estimate(a.S, a.Z, a.B, a.sigma2, exact_step="em_gs",
+                                    projection="hankel", n_paths=5, n_outer=2,
+                                    accept="objective")
+check("accept='objective' is non-increasing in J",
+      res_obj.objective_history[res_obj.best_round]
+      <= res_obj.objective_history[0] + 1e-9,
+      f"J0={res_obj.objective_history[0]:.4f} "
+      f"Jbest={res_obj.objective_history[res_obj.best_round]:.4f}")
 
 print("10. prototype vs plain exact (same realization)")
 for proj in ("hankel", "angular", "esprit"):
     e_s, e_p, tt = 0.0, 0.0, 0.0
     for t in range(6):
-        ww = generate_channel_estimation_trial(sp, t, 0.0, 30.0)
+        ww = generate_channel_estimation_trial(sp, t, 0.0, 12.0)
         r = structured_exact_estimate(ww.S, ww.Z, ww.B, ww.sigma2,
                                       exact_step="em_gs", projection=proj,
                                       n_paths=5, n_outer=2)

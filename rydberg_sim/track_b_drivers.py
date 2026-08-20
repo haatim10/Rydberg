@@ -37,16 +37,26 @@ from .metrics import channel_nmse
 from .monte_carlo import ExperimentSpec, generate_channel_estimation_trial
 from .track_b_prototype import structured_exact_estimate
 
+# --- Parameters from the ULA implementation plan, Part 5 -------------------
+# Fig. B1: "Fixed: N = 8 (matches Xu's I = 8 for comparability), K = 3,
+#           L_k ~ U{3,…,7}, RSR 10–12 dB. Two panels: P = 10 and P = 30."
+# Fig. B2: "Sweep P from 2K to ~40, SNR = 5 dB."
 TRACK_B_MASTER_SEED = 20250820
-TRACK_B_N = 16
+TRACK_B_N = 8
 TRACK_B_K = 3
-TRACK_B_L = (3, 5, 7)      # see the L_k note in the module README
-TRACK_B_RSR_DB = 30.0      # strong reference, so the linearized baseline is fair
+TRACK_B_L_MIN = 3
+TRACK_B_L_MAX = 7
+#: RSR = 12 dB. Inside the plan's stated 10–12 dB band, and the value Cui
+#: uses throughout Figs. 5/7/8 with a physical justification (§VI-B: a LO
+#: closer than a quarter of the user distance gives RSR > 10log10(4²) ≈ 12
+#: dB). Deliberately *not* the 30 dB used in scratch testing, where
+#: R(κ) → 1 makes EM-GS degenerate to GS and the two become inseparable.
+TRACK_B_RSR_DB = 12.0
 
 B1_SNR_DB = (-5.0, 0.0, 5.0, 10.0, 15.0, 20.0)
-B1_P = 32
-B2_P = (8, 16, 32, 64, 128)
-B2_SNR_DB = 10.0
+B1_P = (10, 30)            # the plan's two panels
+B2_P = (6, 10, 14, 20, 30, 40)     # 2K = 6 up to ~40
+B2_SNR_DB = 5.0
 
 #: Estimators and whether they use the exact nonlinear model.
 EXACT_MODEL = "EXACT"
@@ -74,13 +84,36 @@ class TrackBPoint:
     n_trials: int
 
 
+def draw_L_k(
+    trial_index: int,
+    K: int = TRACK_B_K,
+    *,
+    master_seed: int = TRACK_B_MASTER_SEED,
+    L_min: int = TRACK_B_L_MIN,
+    L_max: int = TRACK_B_L_MAX,
+) -> tuple[int, ...]:
+    """``L_k ~ U{L_min,…,L_max}`` i.i.d. per user, per realization.
+
+    The frozen system-model document lists ``L_k`` only as "user-dependent"
+    and gives no distribution; the ULA implementation plan (Part 5, Fig. B1)
+    is what specifies ``L_k ~ U{3,…,7}``. Drawn from a dedicated
+    SeedSequence keyed by ``(master_seed, trial_index)`` so it is
+    reproducible and independent of the channel/pilot/noise streams, and
+    applied by building a per-trial config — the validated
+    :func:`generate_ula_channel` is not modified.
+    """
+    ss = np.random.SeedSequence([int(master_seed), int(trial_index), 0x4C4B])
+    rng = np.random.default_rng(ss)
+    return tuple(int(v) for v in rng.integers(L_min, L_max + 1, size=int(K)))
+
+
 def track_b_spec(
     *,
     P: int,
     n_trials: int,
     N: int = TRACK_B_N,
     K: int = TRACK_B_K,
-    L: Sequence[int] = TRACK_B_L,
+    L: Sequence[int] = (TRACK_B_L_MIN,) * TRACK_B_K,
     master_seed: int = TRACK_B_MASTER_SEED,
     experiment: str = "track_b",
 ) -> ExperimentSpec:
@@ -118,6 +151,23 @@ def estimate(world, estimator: str, *, max_iter: int = 50, inner_iter: int = 1):
     raise ValueError(f"unknown Track-B estimator {estimator!r}")
 
 
+def track_b_world(trial_index: int, P: int, snr_db: float,
+                  *, rsr_db: float = TRACK_B_RSR_DB,
+                  N: int = TRACK_B_N, K: int = TRACK_B_K,
+                  master_seed: int = TRACK_B_MASTER_SEED,
+                  experiment: str = "track_b"):
+    """One frozen Track-B world with ``L_k`` redrawn for this realization.
+
+    All estimators at this ``(trial, P, SNR)`` receive this identical object,
+    so common random numbers hold across algorithms by construction.
+    """
+    L = draw_L_k(trial_index, K, master_seed=master_seed)
+    spec = track_b_spec(P=P, n_trials=trial_index + 1, N=N, K=K, L=L,
+                        master_seed=master_seed, experiment=experiment)
+    return generate_channel_estimation_trial(
+        spec, int(trial_index), float(snr_db), float(rsr_db))
+
+
 def _sweep(points, sweep_key, make_world, estimators, n_trials):
     out: list[TrackBPoint] = []
     for value in points:
@@ -138,30 +188,30 @@ def _sweep(points, sweep_key, make_world, estimators, n_trials):
     return out
 
 
+BASELINE_ESTIMATORS: tuple[str, ...] = ("biased_gs", "em_gs")
+
+
 def run_b1(
-    *, n_trials: int, snr_db=B1_SNR_DB, P: int = B1_P,
-    estimators: Sequence[str] = tuple(ESTIMATORS),
+    *, n_trials: int, snr_db=B1_SNR_DB, P: int = 10,
+    estimators: Sequence[str] = BASELINE_ESTIMATORS,
 ) -> list[TrackBPoint]:
-    """B1 — channel NMSE vs SNR."""
-    spec = track_b_spec(P=P, n_trials=n_trials, experiment="track_b_b1")
+    """B1 — channel NMSE vs SNR at one pilot length (plan: P = 10 and 30)."""
     return _sweep(
         snr_db, "snr_db",
-        lambda v, t: generate_channel_estimation_trial(spec, t, float(v), TRACK_B_RSR_DB),
+        lambda v, t: track_b_world(t, int(P), float(v), experiment="track_b_b1"),
         estimators, n_trials,
     )
 
 
 def run_b2(
     *, n_trials: int, P_grid=B2_P, snr_db: float = B2_SNR_DB,
-    estimators: Sequence[str] = tuple(ESTIMATORS),
+    estimators: Sequence[str] = BASELINE_ESTIMATORS,
 ) -> list[TrackBPoint]:
-    """B2 — channel NMSE vs pilot length P."""
-    specs = {P: track_b_spec(P=P, n_trials=n_trials, experiment="track_b_b2")
-             for P in P_grid}
+    """B2 — channel NMSE vs pilot length P (plan: 2K…~40 at SNR = 5 dB)."""
     return _sweep(
         P_grid, "P",
-        lambda v, t: generate_channel_estimation_trial(
-            specs[v], t, float(snr_db), TRACK_B_RSR_DB),
+        lambda v, t: track_b_world(t, int(v), float(snr_db),
+                                   experiment="track_b_b2"),
         estimators, n_trials,
     )
 
@@ -181,6 +231,7 @@ def format_table(points: Sequence[TrackBPoint]) -> str:
 
 __all__ = [
     "B1_P", "B1_SNR_DB", "B2_P", "B2_SNR_DB", "ESTIMATORS", "EXACT_MODEL",
-    "LINEARIZED_MODEL", "TrackBPoint", "estimate", "format_table", "run_b1",
-    "run_b2", "track_b_spec",
+    "LINEARIZED_MODEL", "BASELINE_ESTIMATORS", "TrackBPoint", "draw_L_k",
+    "estimate", "format_table", "run_b1", "run_b2", "track_b_spec",
+    "track_b_world",
 ]
