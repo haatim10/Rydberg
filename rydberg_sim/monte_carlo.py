@@ -72,7 +72,12 @@ from typing import Any, Literal, Mapping, Sequence
 
 import numpy as np
 
-from .baselines import linearised_closed_form_ls, zf_known_phase
+from .baselines import (
+    exhaustive_magnitude_ls,
+    exhaustive_magnitude_ml,
+    linearised_closed_form_ls,
+    zf_known_phase,
+)
 from .calibration import (
     make_alpha_b,
     reference_user_beta,
@@ -115,8 +120,13 @@ CHANNEL_ESTIMATORS: frozenset[str] = frozenset(
     {"biased_gs", "em_gs", "linearised_ls"}
 )
 DETECTION_ALGORITHMS: frozenset[str] = frozenset(
-    {"genie_zf", "biased_gs", "em_gs", "cui_crlb"}
+    {"genie_zf", "biased_gs", "em_gs", "cui_crlb", "exhaustive_ls", "exhaustive_ml"}
 )
+# Cui's two "exhaustive search" BER benchmarks (§VI-A). They evaluate
+# ``constellation**K`` candidates, so they are only tractable for the
+# small-scale Fig. 7(a)/Fig. 8 configuration; Cui likewise drops them from
+# Fig. 7(b) ("the computation of exhaustive search method is prohibitive").
+EXHAUSTIVE_ALGORITHMS: frozenset[str] = frozenset({"exhaustive_ls", "exhaustive_ml"})
 UNIMPLEMENTED_ALGORITHMS: frozenset[str] = frozenset(
     {"gd", "pgd", "neural", "neural_net", "learned", "cm_zf"}
 )
@@ -1023,6 +1033,15 @@ def evaluate_detection_algorithm(
         ).u_hat
     elif algorithm == "genie_zf":
         s_hat = zf_known_phase(M, world.z, world.theta, world.b, ridge=spec.ridge)
+    elif algorithm == "exhaustive_ls":
+        # Cui §VI-A: "exhaustively searches all feasible constellation points
+        # to solve the LS problem in (22)".
+        s_hat = exhaustive_magnitude_ls(M, world.b, world.z, spec.qam_M).u_hat
+    elif algorithm == "exhaustive_ml":
+        # Cui §VI-A: the same search against the ML problem in (24).
+        s_hat = exhaustive_magnitude_ml(
+            M, world.b, world.z, spec.qam_M, world.sigma2
+        ).u_hat
     else:
         raise ValueError(f"unknown Track A algorithm {algorithm!r}")
 
