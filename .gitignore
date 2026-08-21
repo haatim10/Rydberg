@@ -1,4 +1,5 @@
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.venv/
+# Raw per-chunk Monte Carlo tables are archived as results.csv.gz instead:
+# they exceed GitHub's 100 MB per-file limit uncompressed (17.5x compressible).
+# Restore with:  gunzip -k results/track_a/*/results.csv.gz
+#                gunzip -k results/track_a/*/chunk*/results.csv.gz
+results/**/results.csv
