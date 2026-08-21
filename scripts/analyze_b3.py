@@ -60,6 +60,14 @@ def summarize(path: Path, n_boot: int = NBOOT) -> dict:
         "gain_median_per_trial_db": float(
             10 * np.log10(np.median(num["em_gs"] / num["hs_gs"]))),
         "win_rate_vs_em": float(np.mean(num["hs_gs"] < num["em_gs"])),
+        # HS-GS == EM-GS bit-for-bit whenever the order selector picks
+        # L_hat >= rank cap, which makes the projection a no-op. Those
+        # trials are exact ties, and they dominate the median at N = 8.
+        "tie_frac": float(np.mean(num["hs_gs"] == num["em_gs"])),
+        "gain_median_active_db": (
+            float(10 * np.log10(np.median(
+                (num["em_gs"] / num["hs_gs"])[d["active"]])))
+            if d["active"].any() else float("nan")),
         "mean_sum_L_true": float(d["L_true"].sum(1).mean()),
         "mean_L_hat": float(d["L_hat"].mean()),
         "constraint_active_frac": float(d["active"].mean()),
