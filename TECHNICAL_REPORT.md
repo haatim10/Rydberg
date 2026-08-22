@@ -184,6 +184,12 @@ indistinguishable — visible in every high-SNR figure. Evaluated with exponenti
 to avoid overflow, never as a raw ratio; checked against SciPy and against the quadrature definition
 $I_n(\kappa)=\frac{1}{\pi}\int_0^\pi e^{\kappa\cos t}\cos(nt)\,dt$.
 
+![Bessel ratio](https://github.com/haatim10/Rydberg/raw/track-a-cui-reproduction/results/track_a/fig4/fig4_bessel_ratio.png)
+
+**The Bessel ratio $R(\kappa)$.** The weighting function of eq. (14), and the reason GS and EM-GS converge
+at high SNR: $R$ saturates at 1, at which point the EM weighting becomes the identity and Algorithm 2
+reduces to Algorithm 1.
+
 ### 4.4 Genie ZF with known phase
 
 $$\mathbf{r} = \mathbf{z}\odot e^{\jmath\boldsymbol{\theta}}-\mathbf{b},\qquad
@@ -271,6 +277,12 @@ eq. (14) predicts. Genie ZF sits below the CRLB because it is given the phase.
 **Fig. 6 — detection NMSE vs RSR.** ZF is flat in RSR (fitted slope −0.0026 dB/dB, not significant), as it
 must be since the genie ZF error does not depend on $\mathbf{b}$. That flatness is a correctness check.
 
+![Fig. 6 full range](https://github.com/haatim10/Rydberg/raw/track-a-cui-reproduction/results/track_a/fig6/fig6_cui_style_fullrange.png)
+
+**Fig. 6, full vertical range.** Genie ZF sits at −13.6 dB, *below* the −12 dB axis floor Cui's figure
+uses. Rather than clip the curve silently, the main panel is drawn to the requested range with an on-plot
+annotation, and this full-range companion is kept alongside it.
+
 ![Fig. 7a](https://github.com/haatim10/Rydberg/raw/track-a-cui-reproduction/results/final_figures/fig7a_clean.png)
 
 **Fig. 7(a) — BER vs SNR, small scale.** 333 000 trials, 1 998 000 bits per algorithm. At 240 000 bits the
@@ -290,6 +302,11 @@ order of magnitude".
 > 4-QAM. Rather than guess, both were run. Median BER ratio to Cui's published curve: **0.82 at 4-QAM**
 > versus **24.12 at 16-QAM**. The body text is correct and the caption is in error. The 16-QAM variant is
 > retained as a diagnostic, clearly labelled as not a reproduction.
+
+![Fig. 8 at 16-QAM](https://github.com/haatim10/Rydberg/raw/track-a-cui-reproduction/results/final_figures/fig8_16qam_diagnostic.png)
+
+**Diagnostic — Fig. 8 run at 16-QAM as the caption claims.** 5 RSR points, 15 000 trials. Not a
+reproduction of Fig. 8; it exists only to settle the caption/body contradiction, and it does.
 
 ---
 
@@ -383,6 +400,16 @@ CRN pairing is preserved, 2 000 resamples.
 | B3 | NMSE vs SNR, $N\in\{8,16,32\}\times P\in\{10,30\}$ | 36 | 21 700 |
 | B4 | NMSE vs pilot length $P$, at $N=16$ | 6 | 2 400 |
 | B5 | scaling summary, derived from B3 | — | — |
+
+![B1 baseline](results/track_b/b1_clean.png)
+
+**B1 — the frozen baseline, NMSE vs SNR.** $N=8$, GS and EM-GS only, 400 trials/point. This is the
+validated two-estimator baseline that B3 extends; HS-GS did not exist when it was run.
+
+![B2 baseline](results/track_b/b2_clean.png)
+
+**B2 — the frozen baseline, NMSE vs pilot length.** $N=8$, SNR = 5 dB, with $P=2K$ marked. B4 is the
+$N=16$ counterpart of this sweep with the third estimator added.
 
 B4's $P=10$ and $P=30$ points are the same CRN worlds B3 already evaluates, so they were **copied rather
 than recomputed**. $N=16$ was fixed *a priori* as the smallest tested array whose rank cap (8) exceeds
