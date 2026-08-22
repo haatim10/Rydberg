@@ -11,7 +11,6 @@ plotted point is a computed value; nothing is smoothed or interpolated.
 from __future__ import annotations
 
 import json
-import shutil
 from pathlib import Path
 
 import matplotlib
@@ -22,7 +21,9 @@ from matplotlib.ticker import MultipleLocator
 
 REPO = Path(__file__).resolve().parent.parent
 TB = REPO / "results/track_b"
-FINAL = Path("/home/user/Rydberg/results/final_figures")
+# Track-B figures stay inside the Track-B worktree. Track A is frozen and
+# must not be written into, not even with new untracked files.
+FINAL = REPO / "results/track_b/final"
 
 plt.rcParams.update({
     "font.family": "serif", "font.serif": ["DejaVu Serif"], "font.size": 9,
@@ -60,11 +61,8 @@ def style_axes(ax, xstep=None):
 def save(fig, stem):
     out = TB / "final"
     out.mkdir(parents=True, exist_ok=True)
-    FINAL.mkdir(parents=True, exist_ok=True)
     for ext in ("pdf", "png"):
-        p = out / f"{stem}.{ext}"
-        fig.savefig(p)
-        shutil.copy2(p, FINAL / f"{stem}.{ext}")
+        fig.savefig(out / f"{stem}.{ext}")
     plt.close(fig)
     print(f"  wrote {stem}.pdf/.png")
 
