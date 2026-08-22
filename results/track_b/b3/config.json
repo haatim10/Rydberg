@@ -1,0 +1,42 @@
+{
+  "fingerprint": "46dbd9f1cf57d1cc",
+  "N_grid": [
+    8,
+    16,
+    32
+  ],
+  "P_grid": [
+    10,
+    30
+  ],
+  "snr_db_grid": [
+    -5.0,
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0
+  ],
+  "n_trials": 400,
+  "estimators": [
+    "biased_gs",
+    "em_gs",
+    "hs_gs"
+  ],
+  "hs_kwargs": {
+    "exact_step": "em_gs",
+    "max_iter": 50,
+    "select_iter": 20
+  },
+  "gs_max_iter": 50,
+  "rsr_db": 12.0,
+  "master_seed": 20250820,
+  "K": 3,
+  "L_k": "U{3..7} iid per user per trial",
+  "rank_cap": {
+    "8": 4,
+    "16": 8,
+    "32": 16
+  },
+  "observation": "EXACT Z = |G S + B + W|, no linearization"
+}

@@ -1,0 +1,31 @@
+{
+  "fingerprint": "46dbd9f1cf57d1cc",
+  "N": 16,
+  "P_grid": [
+    6,
+    10,
+    14,
+    20,
+    30,
+    40
+  ],
+  "snr_db": 5.0,
+  "n_trials": 400,
+  "estimators": [
+    "biased_gs",
+    "em_gs",
+    "hs_gs"
+  ],
+  "hs_kwargs": {
+    "exact_step": "em_gs",
+    "max_iter": 50,
+    "select_iter": 20
+  },
+  "gs_max_iter": 50,
+  "reused_from_b3": [
+    "N16_P10_snr+05.0.npz",
+    "N16_P30_snr+05.0.npz"
+  ],
+  "why_N16": "smallest tested N whose Hankel rank cap (8) exceeds max L_k (7), so the constraint is non-vacuous across the whole L_k support; fixed a priori, not chosen from curves",
+  "observation": "EXACT Z = |G S + B + W|, no linearization"
+}
