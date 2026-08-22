@@ -1,0 +1,30 @@
+{
+  "fingerprint": "46dbd9f1cf57d1cc",
+  "rsr_db_grid": [
+    0.0,
+    6.0,
+    12.0,
+    18.0,
+    24.0
+  ],
+  "N_grid": [
+    8,
+    32
+  ],
+  "P": 30,
+  "snr_db": 5.0,
+  "n_trials": 400,
+  "estimators": [
+    "biased_gs",
+    "em_gs",
+    "hs_gs"
+  ],
+  "hs_kwargs": {
+    "exact_step": "em_gs",
+    "max_iter": 50,
+    "select_iter": 20
+  },
+  "gs_max_iter": 50,
+  "rationale": "RSR was fixed at 12 dB in B1-B5; this asks whether the structural advantage survives at weak reference",
+  "observation": "EXACT Z = |G S + B + W|, no linearization"
+}

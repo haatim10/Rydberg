@@ -8,7 +8,7 @@
 | Track A branch | `track-a-cui-reproduction` @ `ce118f0` (frozen) |
 | Track B branch | `track-b-ula-channel-estimation` @ `786df67` |
 | Config fingerprint | `46dbd9f1cf57d1cc` |
-| Track B trials | 24 100 (B3 21 700 + B4 2 400) |
+| Track B trials | **20,000** unique (B3 18,400 + B4 1,600 new; B4's other 800 are B3 points reused, not recomputed) |
 | Audit checks | 141 (deep) + 21 (Step-0), 0 failures |
 | Linearizations used | **0** |
 
@@ -31,8 +31,10 @@ structure becomes more useful as array dimension $N$ grows relative to channel p
 experiment was built to *test* that hypothesis, not to find a configuration where the new method looks good.
 
 **Result: the hypothesis is supported.** The advantage over EM-GS is −0.19 dB at $N=8$, +0.78 dB at
-$N=16$ and +2.85 dB at $N=32$, and the sign flips precisely where the algebra says the structural
-constraint stops being vacuous.
+$N=16$ and +2.85 dB at $N=32$. The sign of the effect changes between $N=8$ and $N=16$. The algebraic
+threshold at which the constraint ceases to be vacuous for *every* draw of $L_k$ is $N=15$
+($\lceil N/2\rceil > \max L_k = 7$); it lies inside that interval, but with three array sizes the crossing
+can be bracketed, not located.
 
 ---
 
@@ -72,12 +74,23 @@ $$\mathbf{z} = \left|\, \mathbf{M}^{H}\mathbf{u} + \mathbf{b} + \mathbf{w} \,\ri
 
 | | Detection | Channel estimation |
 |---|---|---|
-| $\mathbf{M}$ | $\mathbf{A}$ | $\overline{\mathbf{S}}$ (conjugate pilots) |
-| $\mathbf{u}$ | $\mathbf{s}$ | $\overline{\mathbf{g}_n}$ (conjugate row) |
+| $\mathbf{M}$ | $\mathbf{A}$ | $\mathbf{S}$ |
+| $\mathbf{u}$ | $\mathbf{s}$ | $\overline{\mathbf{g}_n}$ — row $n$ of $\mathbf{G}$, conjugated |
+| $\mathbf{b}$ | $\mathbf{b}$ | $\overline{\mathbf{B}_{n,:}}$ |
 | $\mathbf{z}$ | $\mathbf{z}$ | $\mathbf{Z}_{n,:}$ |
+| output | $\hat{\mathbf{s}}$ | $\hat{\mathbf{g}}_n = \overline{\hat{\mathbf{u}}}$ |
 
-The conjugation was verified by noiseless recovery: the estimator returns $\mathbf{G}$ to a relative error
-of $2.4\times10^{-15}$, and not $\overline{\mathbf{G}}$.
+This is Cui eq. (35) style: the *whole observation* is conjugated, so $\mathbf{M}$ is **not** conjugated
+while $\mathbf{u}$ and $\mathbf{b}$ are. The dual convention
+($\mathbf{M}=\overline{\mathbf{S}}$, $\mathbf{u}=\mathbf{g}_n$, $\mathbf{b}=\mathbf{B}_{n,:}$, no
+output conjugation) is equally valid. Conjugating $\mathbf{M}$ **and** $\mathbf{u}$ together does not
+satisfy the model — an earlier version of this table did exactly that, and
+`tests/test_report_corrections.py` now pins all three cases.
+
+Note that the identity closes only with the noise carried into the canonical $\mathbf{b}$ alongside
+$\mathbf{B}$, since $\mathbf{Z}=|\mathbf{GS}+\mathbf{B}+\mathbf{W}|$. The conjugation direction was
+separately verified by noiseless recovery: the estimator returns $\mathbf{G}$ to a relative error of
+$2.4\times10^{-15}$, and not $\overline{\mathbf{G}}$.
 
 ---
 
@@ -144,7 +157,23 @@ a factor-$K$ error. With $\beta_{\mathrm{ref}}=1$:
 $$|\alpha_b| = \sqrt{\mathrm{RSR}_{\mathrm{lin}}}\quad\text{(not }\sqrt{K\,\mathrm{RSR}_{\mathrm{lin}}}\text{, not }\sqrt{\mathrm{RSR}_{\mathrm{lin}}/K}\text{)} \tag{9}$$
 
 The audit tests that the implemented value differs from both incorrect alternatives, and measures achieved
-SNR and RSR empirically: **2.82 dB and 12.15 dB** against targets of 3 and 12 dB.
+SNR and RSR empirically. An earlier version of this report quoted **2.82 dB and 12.15 dB** against targets
+of 3 and 12 dB, with no sample size and no interval — a 0.18 dB gap is a 4% power error, which is too large
+to wave through in a section that depends on the calibration being exact. Re-measured on
+4,000 realizations per channel, as a ratio of summed energies (the §5.1 rule, never a
+mean of per-realization ratios), with a 2 000-resample bootstrap:
+
+| Channel | SNR (target 3.00 dB) | RSR (target 12.00 dB) |
+|---|---|---|
+| Track A — 38.901 | **2.978** [2.926, 3.031] | **12.025** [11.951, 12.096] |
+| Track B — geometric ULA | **3.009** [2.957, 3.060] | **11.962** [11.880, 12.044] |
+
+All four targets lie inside their intervals, so the calibration is unbiased and the earlier 2.82 dB was a
+small-sample artifact. The reason it is an artifact rather than a bias: row normalization holds *in
+expectation*, not per realization, so $\mathbb{E}|\mathbf{a}_n^H\mathbf{s}|^2$ has a per-realization
+standard deviation of 1.17 about its mean of
+3.007. A few hundred realizations can easily read
+0.2 dB low.
 
 ---
 
@@ -155,7 +184,24 @@ SNR and RSR empirically: **2.82 dB and 12.15 dB** against targets of 3 and 12 dB
 With $\bar{\mathbf{m}}_q=[\mathbf{m}_q;\,b_q]$:
 
 $$\mathbf{M}_{\mathrm{spec}} = \sum_q z_q\, \bar{\mathbf{m}}_q \bar{\mathbf{m}}_q^{H}
-\in\mathbb{C}^{(D+1)\times(D+1)},\qquad \bar{\mathbf{u}}_0 = \text{principal eigenvector} \tag{10}$$
+\in\mathbb{C}^{(D+1)\times(D+1)},\qquad \mathbf{v} = \text{principal eigenvector} \tag{10}$$
+
+The eigenvector fixes only a direction: its magnitude is arbitrary and its global phase is whatever the
+eigensolver returned. Two further steps, both in the implementation, resolve those:
+
+$$\bar r = \frac{\left|\bar{\mathbf{M}}^{H}\mathbf{v}\right|^{T}\mathbf{z}}
+{\left\|\bar{\mathbf{M}}^{H}\mathbf{v}\right\|_2^2}, \qquad
+\bar{\mathbf{u}}_0 = \bar r\,\mathbf{v} \tag{10a}$$
+
+$$\mathbf{u}_0 = \left[\, e^{-\jmath\angle(\bar{\mathbf{u}}_0)_{D+1}}\;\bar{\mathbf{u}}_0
+\,\right]_{1:D} \tag{10b}$$
+
+Eq. (10a) is a magnitude least-squares: it picks the scale that best matches the measured amplitudes.
+Eq. (10b) is the phase anchor, and it is the step most easily left out. The $(D+1)$-th entry of the
+augmented vector corresponds to the *known* reference $\mathbf{b}$, whose coefficient is 1 and whose phase
+is therefore zero by construction; de-rotating by it pins the otherwise arbitrary eigenvector phase, and
+only then is the last entry dropped. Removing this step measurably degrades the initializer at low SNR —
+pinned by a regression test rather than asserted.
 
 ### 4.2 Biased Gerchberg–Saxton (Cui Algorithm 1)
 
@@ -200,10 +246,17 @@ applies to estimators seeing only $\mathbf{z}$.
 
 ### 4.5 Exhaustive search — LS and ML
 
-$$J_{\mathrm{LS}}(\mathbf{u}) = \left\|\, \mathbf{z} - |\mathbf{M}^{H}\mathbf{u}+\mathbf{b}|\,\right\|_2^2 \tag{16}$$
+$$\hat{\mathbf{u}}_{\mathrm{LS}} = \arg\min_{\mathbf{u}}\;
+J_{\mathrm{LS}}(\mathbf{u}), \qquad
+J_{\mathrm{LS}}(\mathbf{u}) = \left\|\, \mathbf{z} - |\mathbf{M}^{H}\mathbf{u}+\mathbf{b}|\,\right\|_2^2 \tag{16}$$
 
-$$J_{\mathrm{ML}}(\mathbf{u}) = \sum_q \left[-\frac{|\lambda_q|^2}{\sigma^2}
+$$\hat{\mathbf{u}}_{\mathrm{ML}} = \arg\max_{\mathbf{u}}\;
+J_{\mathrm{ML}}(\mathbf{u}), \qquad
+J_{\mathrm{ML}}(\mathbf{u}) = \sum_q \left[-\frac{|\lambda_q|^2}{\sigma^2}
 + \log I_0\!\left(\frac{2 z_q|\lambda_q|}{\sigma^2}\right)\right] \tag{17}$$
+
+**(16) is minimised; (17) is a log-likelihood and is maximised.** They point in opposite directions, and the
+code follows exactly this.
 
 LS and ML are not assumed identical: (17) is the $\mathbf{u}$-dependent part of the exact Rician
 log-likelihood, evaluated in the log domain. Feasible for Figs. 7(a)/8 ($4^3=64$ candidates) but not for
@@ -259,6 +312,16 @@ are retained in the aggregate files.
 All five figures were generated from the paper's stated configuration. Where a curve disagrees with Cui,
 the disagreement is reported rather than tuned away.
 
+> **How the comparison numbers were obtained.** §0 says the reproduction was driven from the paper's
+> specification, not from curve extraction — and that is true of every *simulation input*: no parameter was
+> read off a published curve, and nothing was fitted, tuned or selected against Cui's plotted values.
+> The agreement figures quoted below ("BER ratios 0.78–0.97", "median ratio 0.82 vs 24.12") are a different
+> thing: they are *post-hoc* comparisons, and they do require reference values. Those were digitised from the
+> published figures by pixel-coordinate extraction, roughly 15–20 points per curve, stored in
+> `results/track_a/cui_fig78_extracted.json`. Read error is dominated by log-axis interpolation and is
+> approximately ±5% in BER, i.e. ±0.2 dB horizontally. The digitisation is used **only** to report agreement
+> after the fact; removing it entirely would change no simulation result in this document.
+
 | Figure | Configuration | Trials | Agreement with Cui |
 |---|---|---|---|
 | Fig. 5 — NMSE vs SNR | 36×3, 16-QAM, RSR 12 dB | 2 000/pt | qualitative, ≈2 dB offset |
@@ -285,8 +348,15 @@ annotation, and this full-range companion is kept alongside it.
 
 ![Fig. 7a](https://github.com/haatim10/Rydberg/raw/track-a-cui-reproduction/results/final_figures/fig7a_clean.png)
 
-**Fig. 7(a) — BER vs SNR, small scale.** 333 000 trials, 1 998 000 bits per algorithm. At 240 000 bits the
-one-sided 95% Wilson bound is $1.1\times10^{-5}$, below Cui's plotted floor of $\approx5\times10^{-5}$.
+**Fig. 7(a) — BER vs SNR, small scale.** 333,000 trials,
+1,998,000 bits per algorithm, at 6 bits/trial (4-QAM, $K=3$).
+
+The trial count is **not uniform across SNR** — it is escalated where errors get rare, so
+"240,000 bits" refers to the largest points, not to every point:
+3,000 trials at SNR -5, -4, -3, -2, -1, +0; 10,000 trials at SNR +1, +2, +3, +4; 25,000 trials at SNR +5, +6, +7; 40,000 trials at SNR +8, +9, +10, +11, +12. Those give 18,000 to 240,000 bits per point. At the
+240,000-bit points — which are exactly the high-SNR ones where zero errors occur — the
+one-sided 95% Wilson bound is $1.1\times10^{-5}$, below Cui's plotted floor of
+$\approx5\times10^{-5}$. Counts are read back from the stored Track-A aggregate, not retyped.
 
 ![Fig. 7b](https://github.com/haatim10/Rydberg/raw/track-a-cui-reproduction/results/final_figures/fig7b_clean.png)
 
@@ -318,8 +388,13 @@ unstructured sweep cannot see. HS-GS enforces that coupling without ever estimat
 
 ### 7.1 The constraint is exact, not a surrogate
 
-By **Kronecker's theorem**, a length-$N$ sequence is a sum of $L$ complex exponentials *if and only if* its
-Hankel matrix has rank $L$. So the feasible set is precisely the set of channels the ULA model can generate:
+By **Kronecker's theorem**, a length-$N$ sequence is a sum of $L$ complex exponentials $z_i^{\,n}$ *only
+if* its Hankel matrix has rank $\le L$, with the converse holding when $L$ is strictly below the rank cap of
+eq. (25). The ULA model of eq. (5) additionally requires $|z_i| = 1$ — the angles are real. Cadzow enforces
+no unit-modulus condition, so the rank constraint is a **relaxation** of the ULA feasible set, not an exact
+characterisation: it is necessary, and sufficient only up to the modulus of the recovered modes. The
+feasible set strictly *contains* the ULA set, admitting damped and growing modes. No attempt is made here to
+impose unit modulus.
 
 $$\min_{\mathbf{G}}\; J(\mathbf{G}) = \left\|\mathbf{Z} - |\mathbf{G}\mathbf{S}+\mathbf{B}|\right\|_F^2
 \quad\text{s.t.}\quad \mathrm{rank}\,\mathcal{H}(\mathbf{g}_k) \le L_k \tag{22}$$
@@ -341,10 +416,12 @@ Three candidates were built and measured before choosing:
 
 ### 7.3 The projection must live inside the iteration
 
-Projecting once then running GS to convergence does nothing, because GS is a contraction toward its own
-unstructured fixed point — the fixed points of $T_{\mathrm{GS}}^{\infty}\circ P_S$ are exactly those of
-$T_{\mathrm{GS}}$. Measured, not assumed: the gain decays monotonically with the number of unconstrained
-iterations after projection — **+1.30 dB at 1, +0.06 at 10, exactly 0.00 at 50**. Interleaving instead gives
+Projecting once and then running GS to convergence does nothing measurable: the gain decays monotonically
+with the number of unconstrained iterations after projection — **+1.30 dB at 1, +0.06 at 10, exactly 0.00 at
+50**. Empirically the unconstrained iteration returns to its own fixed point, which the projection then
+cannot influence. No contraction or convergence property is claimed — alternating-projection schemes of this
+kind are not contractions in general, and §11.2 disclaims any convergence guarantee. Interleaving instead
+gives
 
 $$T = P_S \circ T_{\mathrm{GS}}, \qquad \text{fixed points satisfy } \mathbf{g} = P_S(T_{\mathrm{GS}}(\mathbf{g})) \tag{23}$$
 
@@ -370,9 +447,20 @@ A length-$N$ Hankel matrix has rank at most
 $$\mathrm{cap}(N) = \max_{p}\min(N-p,\,p+1) = \lceil N/2 \rceil \tag{25}$$
 
 So when $L_k \ge \lceil N/2\rceil$ the true channel already saturates the achievable rank and **the
-constraint is vacuous**. At $N=8$ the cap is 4, so for $L_k\ge5$ — 60% of the $\mathcal{U}\{3..7\}$ prior —
-the structure carries no information at all. This is a property of the configuration, not of the algorithm,
-and it is why the array-size hypothesis is the right thing to test.
+constraint is vacuous** — the inequality $\mathrm{rank}\,\mathcal{H} \le L_k$ is then satisfied by every
+sequence, structured or not. At $N=8$ the cap is 4, so the constraint is vacuous for $L_k \ge 4$, which is
+**80%** of the $\mathcal{U}\{3..7\}$ prior. Only $L_k=3$ carries information, matching the
+$P(L_k<\mathrm{cap}) = 20\%$ column of the B5 table. This is a property of the configuration, not of the
+algorithm, and it is why the array-size hypothesis is the right thing to test.
+
+Two distinct things are easy to conflate here, and the report keeps them separate:
+
+- **Representational vacuity** — set by the *true* $L_k$ against $\mathrm{cap}(N)$. Governs whether the
+  constraint could ever carry information. At $N=8$: 80% vacuous. At $N=16$ and $N=32$: 0%.
+- **Projection inactivity** — set by the *selected* $\hat L$ against $\mathrm{cap}(N)$. Governs whether the
+  projection is a no-op on a given trial. This is what the "Active" column measures, and the flag is
+  `L_hat < cap`, strict — at $\hat L = \mathrm{cap}$ the projection does nothing, so those trials count as
+  inactive.
 
 > **Verified reduction.** When $\hat L$ reaches the rank cap the projection is a no-op and HS-GS reduces to
 > EM-GS **bit-for-bit** — checked at $(N=8, P=10)$ and $(N=16, P=30)$ with
@@ -387,6 +475,18 @@ Three estimators — biased GS, EM-GS and HS-GS — on **identical** common-rand
 exact model of eq. (2). Fixed throughout: $K=3$, $L_k\sim\mathcal{U}\{3..7\}$, RSR = 12 dB, $t_0=50$,
 $\beta=1$, $c=1$, $d=\lambda/2$, master seed 20250820.
 
+**Nesting across $N$.** The world is a deterministic function of $(\text{trial}, P, \mathrm{SNR},
+\mathrm{RSR})$ with no dependence on $N$ for the channel parameters, so the angles, path gains, pilots and
+reference are drawn identically at every array size and the array response is simply extended: $N=8$ is
+literally the first 8 rows of the $N=32$ realization, verified elementwise. The comparison across $N$ is
+therefore **paired in the channel**, which is a strength — it removes channel variability from the $N$
+sweep and is part of why the EM-GS baseline is flat in $N$ (test I).
+
+One qualification the phrase "deterministic function of $(\text{trial}, P, \mathrm{SNR})$" would otherwise
+hide: the **noise is not nested**. $\mathbf{W}$ is drawn with shape $(N,P)$, so the $N=8$ noise is not the
+first 8 rows of the $N=32$ noise. The pairing is exact for $\{\theta, \alpha, \mathbf{G}, \mathbf{S},
+\mathbf{B}\}$ and absent for $\mathbf{W}$.
+
 ### 8.1 Experiments and trial budget
 
 Per trial the store keeps the error numerator $\|\hat{\mathbf{G}}-\mathbf{G}\|_F^2$ for each estimator
@@ -397,8 +497,8 @@ CRN pairing is preserved, 2 000 resamples.
 | Experiment | Sweep | Points | Trials |
 |---|---|---|---|
 | B1 / B2 (frozen baseline) | SNR, then $P$, at $N=8$; GS and EM-GS only | 18 | 400/pt |
-| B3 | NMSE vs SNR, $N\in\{8,16,32\}\times P\in\{10,30\}$ | 36 | 21 700 |
-| B4 | NMSE vs pilot length $P$, at $N=16$ | 6 | 2 400 |
+| B3 | NMSE vs SNR, $N\in\{8,16,32\}\times P\in\{10,30\}$ | 36 | 18,400 (31×400 + 5×1 200) |
+| B4 | NMSE vs pilot length $P$, at $N=16$ | 6 | 2,400 (1,600 new + 800 copied from B3) |
 | B5 | scaling summary, derived from B3 | — | — |
 
 ![B1 baseline](results/track_b/b1_clean.png)
@@ -498,29 +598,78 @@ advantage does not wash out as pilots grow.
 | 20 | -8.11 | -8.22 | -8.66 | **+0.44** | [+0.30, +0.59] | 70% | 95% |
 | 30 | -10.59 | -10.70 | -11.17 | **+0.47** | [+0.32, +0.60] | 70% | 93% |
 | 40 | -12.13 | -12.23 | -12.70 | **+0.48** | [+0.36, +0.59] | 71% | 90% |
-All six CIs lie strictly above zero. Note $P=6$ ($=2K$, the minimum): the win rate is **48%**, below half,
-while the pooled gain is **+0.58 dB**. Not a contradiction — the pooled metric is a ratio of sums, moved by
+All six CIs lie strictly above zero.
+
+> **Caveat on the $P=6$ row.** The order-selection splitter uses $\lceil 0.3P\rceil$ held-out columns, so at
+> $P=6$ it trains on **4** columns and validates on 2 (not a 3/3 half split). Four columns give 4 real
+> magnitude measurements per receive row against $2K = 6$ real unknowns, so **the training half is
+> underdetermined** — it is below the identifiability floor, and $P=6$ is the only point in the sweep where
+> that happens ($P=10$ gives 7 ≥ 6). This is a shortage of measurements, not ill-conditioning: the median
+> condition number of the training pilot block is 3.37 at $P=6$, comparable to 2.33 at $P=10$. The final fit
+> still uses all $P$ columns; only the order search sees the split. The rule was **not** changed after seeing
+> these results.
+
+Note $P=6$ ($=2K$, the minimum): the win rate is **48%**, below half, while the pooled gain is
+**+0.58 dB**. Not a contradiction — the pooled metric is a ratio of sums, moved by
 *how much* HS-GS wins when it wins, not how often. At the shortest pilot the constraint is active in only
 68% of trials and the order selector has just 2 held-out columns, so it engages less often but pays off
 substantially when it does.
 
-### 8.5 B5 — scaling with array size
+### 8.5 What it costs
+
+"+2.85 dB at $N=32$" invites the question "at what price". Median wall-clock per trial, $P=30$, SNR = 5 dB:
+
+| N | cap | GS (ms) | EM-GS (ms) | EM-GS chained (ms) | HS-GS (ms) | HS-GS / EM-GS | order search | projection |
+|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 8 | 4 | 31 | 92 | 160 | 564 | **6.1×** | 58% | 13% |
+| 16 | 8 | 61 | 191 | 317 | 1621 | **8.5×** | 74% | 6% |
+| 32 | 16 | 119 | 369 | 632 | 5295 | **14.4×** | 86% | 3% |
+
+**The cost is dominated by the order search, not by the projection.** At $N=32$ the held-out search over
+$\hat L \in \{1..16\}$ accounts for 86% of HS-GS's runtime while the
+Cadzow projections account for 3%. That makes the cost largely *reducible*:
+fixing $\hat L$, coarsening the candidate grid, or warm-starting the search would recover most of it
+without touching the structural step.
+
+Analytic counts, for scale: HS-GS's SVDs cost
+$\text{iters}\times K\times|L\text{-grid}|\times O(\lceil N/2\rceil^3)$, against EM-GS's
+$\text{iters}\times N\times O(K^2P)$.
+
+*On the "EM-GS chained" column.* HS-GS must re-enter the solver every iteration so the projection can be
+interleaved (eq. 23), and that call structure alone costs
+1.71× a single `max_iter=50` call. The honest baseline for HS-GS is
+therefore 50 chained `max_iter=1` calls, and HS-GS with the projection disabled matches it to within
+3.8% at all three $N$ — which is what confirms
+the instrumentation measures the structural step rather than framework overhead.
+
+### 8.6 B5 — scaling with array size
 
 ![B5](results/track_b/final/b5_gain_scaling_vs_N.png)
 
 **B5 — the hypothesis test.** Both panels monotone in $N$, both crossing their neutral line between $N=8$
 and $N=16$.
 
-| N | cap $\lceil N/2\rceil$ | $P(L_k<\text{cap})$ | $2NK$ | $3\mathbb{E}[\sum L_k]$ | $\rho(N)$ | Mean gain | P=10 | P=30 | Win rate | Active |
-|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
-| 8 | 4 | 20% | 48 | 44.6 | 1.08× | −0.19 | −0.32 | −0.07 | 33.5% | 58% |
-| 16 | 8 | 100% | 96 | 44.6 | 2.15× | **+0.78** | **+0.80** | **+0.76** | 74.0% | 93% |
-| 32 | 16 | 100% | 192 | 44.6 | 4.30× | **+2.85** | **+3.17** | **+2.53** | 95.3% | 100% |
+| N | cap $\lceil N/2\rceil$ | $P(L_k<\text{cap})$ | $2NK$ | $3\mathbb{E}[\sum L_k]$ | $\rho(N)$ | Mean gain | P=10 | P=30 | Win (unwtd) | Win (trial-wtd) | Active |
+|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|
+| 8 | 4 | 20% | 48 | 44.66 | 1.075× | -0.192 | -0.319 | -0.066 | 33.50% | 31.50% | 57.5% |
+| 16 | 8 | 100% | 96 | 44.66 | 2.150× | +0.780 | +0.797 | +0.764 | 74.01% | 69.69% | 92.7% |
+| 32 | 16 | 100% | 192 | 44.64 | 4.301× | +2.851 | +3.171 | +2.531 | 95.35% | 94.07% | 99.6% |
 
-Structural redundancy $\rho(N) = 2NK / 3\sum L_k$: unstructured $\mathbf{G}$ has $2NK$ real parameters; the
-geometric model has 3 per path (one angle, one complex gain). Only $N$ moves with the array — the path
-budget does not — so $\rho$ grows linearly in $N$. Increment per doubling: −0.19 → +0.78 dB (+0.97), then
-+0.78 → +2.85 dB (+2.07).
+Structural redundancy $\rho(N) = 2NK / 3\sum L_k$: unstructured $\mathbf{G}$ has $2NK$ real parameters;
+the geometric model has 3 per path (one angle, one complex gain). Only $N$ moves with the array — the path
+budget does not — so $\rho$ grows linearly in $N$. Increment per doubling: -0.192 → +0.780 dB (+0.973), then +0.780 → +2.851 dB (+2.071).
+
+Every value in this table is emitted by `scripts/report_numbers.py` from the stored per-trial data, not
+typed. $\mathbb{E}[\sum_k L_k] = 14.8840$ ($\mathbb{E}[L_k] = 4.9613$) is measured on the 18,400 B3 trials
+themselves rather than on a fresh sample, so the same number appears here and in audit check 6 — an earlier
+version used three mutually inconsistent values (44.6, 45.0 and 45.1) for the same quantity.
+
+**Two win rates are reported, and they differ.** The unweighted mean treats each of the 12 $(P,\mathrm{SNR})$
+points equally; the trial-weighted mean weights by trial count. They diverge (e.g. 33.50% vs
+31.50% at $N=8$) because the five points carried to 1 200 trials are mostly high-SNR
+points where HS-GS does worst, so weighting by trials pulls the average down. The unweighted figure is the
+one plotted, since the design samples the $(P,\mathrm{SNR})$ grid uniformly and the extension was driven by CI
+width, not by importance.
 
 > **Terminology — read this before quoting $\rho(N)$.** It is a **parameter count**, and the rank cap is an
 > algebraic fact about Hankel matrices. Together they are a *structural redundancy* / *representational
@@ -529,7 +678,7 @@ budget does not — so $\rho$ grows linearly in $N$. Increment per doubling: −
 > estimator attains any bound. Three values of $N$ also cannot identify a functional form — no growth law
 > is fitted and none should be quoted.
 
-### 8.6 Interpretation tests A–H
+### 8.7 Interpretation tests A–H
 
 Eight adversarial checks, all evaluated numerically from the stored per-trial data rather than from
 expectation.
@@ -540,10 +689,11 @@ expectation.
 | B | Credible positive gain at $N=16$? | Yes — 10/12 points with CI entirely above 0 |
 | C | Is $N=32$ larger than $N=16$? | Yes — CI strictly above at **12/12** shared points |
 | D | Does win rate increase with $N$? | Yes, monotone — 33.5% → 74.0% → 95.3% |
-| E | Consistent with the redundancy argument? | Yes — both monotone; sign flip lands where cap first exceeds max $L_k$ |
+| E | Consistent with the redundancy argument? | Yes — both monotone in $N$. The sign change is bracketed to $(8, 16]$; the algebraic threshold $\lceil N/2\rceil > \max L_k$ first holds at $N=15$, inside that interval. Between $N=9$ and $N=14$ the constraint is *partially* vacuous, so the transition is gradual and three array sizes cannot locate it |
 | F | Driven by a few catastrophic EM-GS trials? | No — dropping the worst 5% of EM-GS trials moves the gain by a median of −0.05 dB |
 | G | Does HS-GS floor out at high SNR? | No at $P=30$ (slopes −1.03/−1.01/−1.04 dB/dB vs EM-GS −1.02/−1.01/−1.01). At $P=10$ both flatten together |
 | H | Stable pooled vs median? | 25/36 raw, **33/36 once exact ties are excluded** |
+| I | Is the EM-GS baseline itself $N$-dependent? | **No** — max spread across $N\in\{8,16,32\}$ is **0.133 dB** at every $(P,\mathrm{SNR})$. Estimation is row-separable, so every row has $K$ unknowns and $P$ measurements regardless of $N$; all $N$-dependence in the gain is therefore attributable to the structural constraint, not to the baseline moving underneath it |
 
 > **Two readings that need care.**
 >
@@ -573,8 +723,8 @@ the comparison falsifiable rather than flattering.
 | 2 | Generator implements the frozen ULA model | eq. (5) closed form vs generator: max\|diff\| 0.00e+00; $\theta\in[-\pi/2,\pi/2]$; $L\cdot\mathbb{E}\|\alpha\|^2 = 1.0002$ |
 | 3 | Observation is exact | $\mathbf{Z}=\|\mathbf{GS}+\mathbf{B}+\mathbf{W}\|$ bit-exact over 50 worlds, max dev 0.00e+00 |
 | 4 | Linearized-estimator tripwire | solver monkeypatched to raise → **0 calls** |
-| 5 | Identical CRN worlds across estimators | world is a deterministic function of (trial, $P$, SNR) |
-| 6 | $L_k$ per frozen spec | 6 000 draws: support {3..7}, mean 5.0111, uniformity cv 0.0190 |
+| 5 | Identical CRN worlds across estimators | world is a deterministic function of (trial, $P$, SNR, RSR). Channel parameters do not depend on $N$, so $N=8$ is the first 8 rows of the $N=32$ realization (verified elementwise) and the $N$ sweep is **paired in the channel**; the noise $\mathbf{W}$ is drawn at shape $(N,P)$ and is **not** nested |
+| 6 | $L_k$ per frozen spec | support {3..7}, uniformity cv 0.0190. $\mathbb{E}[L_k] = 4.9613$ measured on the 18,400 B3 trials themselves — the same number §8.6 uses for $\rho(N)$, not a separate sample |
 | 7 | HS-GS is the audited version | sha256 `59ea0d0a…`, byte-identical to HEAD and to the smoke-run commit |
 | 8 | Inactive constraint reduces to baseline | $\lVert\hat{\mathbf{G}}_{\mathrm{HS}}-\hat{\mathbf{G}}_{\mathrm{EM}}\rVert_\infty=0.00\mathrm{e}{+}00$ at two configurations |
 
@@ -615,7 +765,37 @@ successes is not a reproduction study. Several of these were mine.
 - **MDL order estimation was poor on clean data** (12–18 correct out of 40), so it was replaced by the
   held-out pilot residual.
 
-### 10.3 Process failures during the final run
+### 10.3 Corrections from external review
+
+A structured review of the first version of this report found twenty defects. The material ones, and what
+they were:
+
+- **The canonical-form table was wrong** (§1.3). It specified $\mathbf{M}=\overline{\mathbf{S}}$ *and*
+  $\mathbf{u}=\overline{\mathbf{g}}_n$ simultaneously, which does not satisfy the model, and it had no row
+  for $\mathbf{b}$ — precisely where the conjugate bites. The code was always right; the table was not.
+  Three regression tests now pin both valid conventions and the invalid mixture.
+- **The vacuity threshold was off by one** (§7.5): stated as $L_k\ge5$ / 60% of the prior, actually
+  $L_k\ge4$ / **80%**, and the report contradicted its own $P(L_k<\mathrm{cap})=20\%$ column.
+- **The trial count did not reconcile.** The header claimed B3 = 21 700; the table sums to
+  18,400. The grand total also double-counted the two B4 points copied from B3.
+  All counts are now reconstructed from the checkpoints by `scripts/report_numbers.py`.
+- **§7.1 overstated the constraint** as "precisely the set of channels the ULA model can generate". It is a
+  relaxation — see §11.2.
+- **$\rho(N)$ used three inconsistent denominators** (44.6, 45.0, 45.1) for one quantity.
+- **"The sign flips precisely where the algebra says"** was an overclaim: the threshold is $N=15$ and three
+  array sizes bracket the crossing without locating it.
+- **§7.3 asserted GS is a contraction**, which is false in general and contradicted §11.2.
+- **§4.1 omitted the magnitude rescaling and phase anchor** from the spectral initializer, in a document
+  that claims every equation is transcribed from the implementation.
+- **§4.5 never stated that (16) is minimised and (17) maximised.**
+- **The calibration read 2.82 dB against a 3.00 dB target** with no sample size or interval.
+
+Two review items turned out to be right about the symptom and wrong about the cause, and both are recorded
+that way rather than silently accepted: the B5 win-rate discrepancy was not a stale value but an unweighted
+-vs-trial-weighted ambiguity (both are now reported), and the Fig. 7(a) bit arithmetic did not close because
+the trial count is deliberately non-uniform across SNR, not because a number was wrong.
+
+### 10.4 Process failures during the final run
 
 - **I wrote into the frozen Track-A tree.** The Track-B plotting script had inherited an output path
   pointing at Track A's `final_figures/` and deposited five untracked figures there. No tracked file was
@@ -639,12 +819,14 @@ successes is not a reproduction study. Several of these were mine.
   ratio-of-sums.
 - A real **deficit** at $N=8$, systematic at high SNR — reported rather than hidden.
 - The gain is not outlier-driven (test F) and shows no high-SNR floor at adequate pilot length (test G).
-- Track A: Figs. 7(a), 7(b) and 8 reproduce Cui closely; Figs. 5–6 qualitatively with a documented, traced
-  ≈2 dB offset.
+- The EM-GS baseline does **not** move with $N$ (max spread 0.133 dB), so the $N$-dependence of the gain is attributable to the structural constraint rather than to the baseline shifting.
+- Track A: Figs. 7(a), 7(b) and 8 reproduce Cui closely; Figs. 5–6 qualitatively with a documented, traced ≈2 dB offset.
+- Calibration is unbiased: all four measured SNR/RSR values contain their target inside a bootstrap 95% CI.
 
 ### 11.2 Not established, and should not be claimed
 
 - **No identifiability theorem.** The redundancy argument is a parameter count.
+- **The Hankel constraint is a relaxation, not the ULA set.** Rank $\le L$ characterises sums of $L$ exponentials $z_i^{\,n}$ with arbitrary non-zero complex $z_i$; the ULA model additionally requires $|z_i|=1$. Cadzow enforces no unit-modulus condition, so the feasible set strictly contains the ULA set and admits damped and growing modes. The constraint is necessary, and sufficient only up to the modulus of the recovered modes.
 - **No convergence guarantee** for the alternating projection, and no claim that it attains any bound.
 - **No growth law.** Three values of $N$ cannot identify a functional form; nothing is fitted.
 - **Nothing about $N=64$** or any array size not tested.
