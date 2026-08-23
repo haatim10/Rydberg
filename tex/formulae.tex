@@ -1,0 +1,1197 @@
+% !TeX program = pdflatex
+%==============================================================================
+%  Rydberg Atomic MIMO --- Complete Formula Reference
+%  Every equation, convention and constant used in Track A and Track B.
+%
+%  Each formula is transcribed from the implementation, not from memory, and
+%  the source file is named beside it. Numerical verifications quoted here
+%  come from scripts/final_audit_track_b.py (51 checks) and
+%  scripts/deep_audit.py (141 checks).
+%
+%  Compile:  pdflatex formulae.tex   (twice, for cross-references)
+%==============================================================================
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[colorlinks=true,linkcolor=teal,citecolor=teal,urlcolor=teal]{hyperref}
+\usepackage{microtype}
+\usepackage{fancyhdr}
+\usepackage{caption}
+
+\definecolor{srcgray}{gray}{0.35}
+\newcommand{\src}[1]{{\footnotesize\color{srcgray}\texttt{#1}}}
+\newcommand{\note}[1]{\par\smallskip{\small\textit{#1}}\par\smallskip}
+
+% ---- notation macros -------------------------------------------------------
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\CN}{\mathcal{CN}}
+\newcommand{\Unif}{\mathcal{U}}
+\newcommand{\herm}{\mathsf{H}}
+\newcommand{\trans}{\mathsf{T}}
+\newcommand{\mat}[1]{\mathbf{#1}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+\newcommand{\jj}{\mathrm{j}}
+\newcommand{\Hop}{\mathcal{H}}
+\newcommand{\Tr}{\operatorname{Tr}}
+\newcommand{\rank}{\operatorname{rank}}
+\newcommand{\diag}{\operatorname{diag}}
+\newcommand{\vecop}{\operatorname{vec}}
+\newcommand{\NMSE}{\mathrm{NMSE}}
+\newcommand{\SNR}{\mathrm{SNR}}
+\newcommand{\RSR}{\mathrm{RSR}}
+\newcommand{\BER}{\mathrm{BER}}
+\newcommand{\SER}{\mathrm{SER}}
+\newcommand{\dB}{\mathrm{dB}}
+\newcommand{\lin}{\mathrm{lin}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\pagestyle{fancy}\fancyhf{}
+\fancyhead[L]{\small Rydberg atomic MIMO --- formula reference}
+\fancyhead[R]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\title{\textbf{Rydberg Atomic MIMO}\\[2mm]
+\large Complete Formula and Convention Reference\\[1mm]
+\normalsize Track A (Cui reproduction) and Track B (ULA channel estimation)}
+\author{}
+\date{Track A frozen at \texttt{ce118f0} \quad\textbullet\quad
+      Track B frozen at \texttt{b1aa085}\\[1mm]
+      \small Config fingerprint \texttt{46dbd9f1cf57d1cc}}
+
+\begin{document}
+\maketitle
+\thispagestyle{fancy}
+
+\begin{abstract}
+\noindent
+Every formula used anywhere in this project, with the convention attached to
+it and the source file it was transcribed from. Section~\ref{sec:notation}
+fixes notation. Sections~\ref{sec:obs}--\ref{sec:metrics} give the shared
+model, both channel models, the calibration, the estimators, the bounds and
+the aggregation rules. Section~\ref{sec:hankel} covers the structural
+machinery specific to Track~B. Section~\ref{sec:figures} then walks every
+figure produced in either track and states exactly which of these equations
+generated it, with its configuration.
+
+Two conventions are load-bearing and are stated wherever they apply, because
+both are common sources of silently wrong curves: all normalised errors are
+\emph{ratios of sums} rather than means of ratios, and all decibel
+conversions of power ratios use $10\log_{10}$, never $20\log_{10}$.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%==============================================================================
+\section{Notation and global conventions}\label{sec:notation}
+%==============================================================================
+
+\begin{longtable}{@{}ll@{}}
+\toprule
+\textbf{Symbol} & \textbf{Meaning}\\
+\midrule
+\endhead
+$N$ & number of atomic receive elements (sensors)\\
+$K$ & number of single-antenna users\\
+$P$ & pilot length (Track B), number of pilot instants\\
+$L_k$ & number of propagation paths of user $k$ (Track B)\\
+$M$ & QAM constellation order ($4$ or $16$)\\
+$t_0$ & solver iteration budget, $t_0 = 50$ throughout\\
+$\sigma^2$ & complex noise variance, $\vect{w}\sim\CN(0,\sigma^2\mat{I})$\\
+$\vect{b},\mat{B}$ & known local-oscillator reference (vector / matrix form)\\
+$\mat{A}$ & Track-A channel, $\mat{A}\in\C^{K\times N}$\\
+$\mat{G}$ & Track-B channel, $\mat{G}\in\C^{N\times K}$\\
+$\mat{S}$ & pilot matrix, $\mat{S}\in\C^{K\times P}$\\
+$\mat{Z},\vect{z}$ & measured magnitudes (real, nonnegative)\\
+$\boldsymbol{\lambda}$ & noiseless complex field $\mat{M}^{\herm}\vect{u}+\vect{b}$\\
+$\Hop(\cdot)$ & Hankel operator, Sec.~\ref{sec:hankel}\\
+$\rho(N)$ & structural redundancy ratio, Eq.~\eqref{eq:rho}\\
+$(\cdot)^{\herm},(\cdot)^{\trans},\overline{(\cdot)}$ & conjugate transpose, transpose, complex conjugate\\
+$\odot$ & elementwise (Hadamard) product\\
+$|\cdot|$ & elementwise \emph{amplitude}, never squared magnitude\\
+\bottomrule
+\end{longtable}
+
+\paragraph{Convention C1 --- amplitude, not intensity.}
+The atomic receiver measures $|\mathcal{E}|$, not $|\mathcal{E}|^2$. Every
+occurrence of $|\cdot|$ acting on a field is an amplitude.
+
+\paragraph{Convention C2 --- decibels.}
+All quantities converted to decibels in this project are \emph{power} ratios,
+so
+\begin{equation}
+X_{\dB} = 10\log_{10} X .
+\label{eq:db}
+\end{equation}
+Using $20\log_{10}$ would double every reported value. This is checked
+explicitly in the audit.
+
+\paragraph{Convention C3 --- ratio of sums.}
+Normalised errors are pooled as a ratio of summed energies over Monte-Carlo
+trials, never as a mean of per-trial ratios; see Eq.~\eqref{eq:nmse}. The two
+differ because the latter is a geometric rather than arithmetic mean of
+energies; the audit constructs a case where they differ by $7$~dB.
+
+\paragraph{Convention C4 --- noise is inside the magnitude.}
+In both tracks the additive noise enters \emph{before} the magnitude is taken.
+Writing $\vect{z}=|\mat{A}^{\herm}\vect{s}+\vect{b}|+\vect{w}$ would be a
+different and much easier problem.
+
+\paragraph{Convention C5 --- common random numbers.}
+Each operating point draws an independent world; within a point every
+estimator receives the bit-identical realisation. Streams are addressed by
+\[
+\text{SeedSequence}\bigl(\text{master\_seed},\ \text{trial index},\
+\SNR_{\dB},\ \RSR_{\dB}\bigr),
+\]
+with master seed $20250820$ in Track~B. Consequences: comparisons
+\emph{between estimators} are paired; comparisons \emph{across} SNR or RSR are
+not. \src{rydberg\_sim/rng.py}
+
+%==============================================================================
+\section{The observation model}\label{sec:obs}
+%==============================================================================
+
+A Rydberg atomic receiver measures the magnitude of the total electric field
+at each sensor; the phase is destroyed by the measurement. Both tracks are
+therefore \emph{biased phase retrieval} problems, biased by the known
+reference $\vect{b}$.
+
+\subsection{Detection (Track A)}
+For one channel use,
+\begin{equation}
+\vect{z} \;=\; \bigl|\,\mat{A}^{\herm}\vect{s} + \vect{b} + \vect{w}\,\bigr|,
+\qquad \vect{w}\sim\CN(0,\sigma^2\mat{I}),
+\label{eq:obsA}
+\end{equation}
+with $\mat{A}\in\C^{K\times N}$ known, $\vect{s}\in\C^{K}$ the unknown QAM
+vector with $\E|s_k|^2=1$, and $\vect{b}\in\C^{N}$ the known reference.
+
+\subsection{Channel estimation (Track B)}
+The unknown becomes the channel and the pilots are known. Over $P$ pilot
+instants,
+\begin{equation}
+\mat{Z} \;=\; \bigl|\,\mat{G}\mat{S} + \mat{B} + \mat{W}\,\bigr|,
+\qquad \vecop(\mat{W})\sim\CN(0,\sigma^2\mat{I}).
+\label{eq:obsB}
+\end{equation}
+This is the \emph{exact} nonlinear model. No strong-reference linearisation is
+used in any Track-B estimator; a runtime tripwire replaces the linearised
+solver with a function that raises and confirms it is called $0$ times across
+all three estimators at all three array sizes.
+
+\subsection{Canonical form}
+Both reduce to one canonical problem, which is why a single validated solver
+serves both. Per receive element,
+\begin{equation}
+\vect{z} \;=\; \bigl|\,\mat{M}^{\herm}\vect{u} + \vect{b} + \vect{w}\,\bigr| .
+\label{eq:canonical}
+\end{equation}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+ & \textbf{Detection} & \textbf{Channel estimation (row $n$)}\\
+\midrule
+$\mat{M}$ & $\mat{A}$ & $\mat{S}$\\
+$\vect{u}$ & $\vect{s}$ & $\overline{\vect{g}_n}$, row $n$ of $\mat{G}$, conjugated\\
+$\vect{b}$ & $\vect{b}$ & $\overline{\mat{B}_{n,:}}$\\
+$\vect{z}$ & $\vect{z}$ & $\mat{Z}_{n,:}$\\
+output & $\hat{\vect{s}}$ & $\hat{\vect{g}}_n = \overline{\hat{\vect{u}}}$\\
+\bottomrule
+\end{tabular}
+\caption{The canonical mapping actually implemented (Cui eq.~35 style: the
+\emph{whole observation} is conjugated, so $\mat{M}$ is \textbf{not}
+conjugated while $\vect{u}$ and $\vect{b}$ are).}
+\end{table}
+
+\paragraph{The conjugation, verified.}
+Two conventions satisfy \eqref{eq:obsB}; one plausible-looking hybrid does
+not. Writing $\vect{w}_n=\mat{W}_{n,:}$, all three were checked numerically
+per receive element:
+\begin{align}
+\bigl|\mat{S}^{\herm}\overline{\vect{g}_n}
+      + \overline{\mat{B}_{n,:}+\vect{w}_n}\bigr|
+  &= \mat{Z}_{n,:} && \text{max dev } 1.78\times10^{-15} \quad\checkmark
+  \label{eq:conv2}\\
+\bigl|\overline{\mat{S}}^{\herm}\vect{g}_n
+      + \mat{B}_{n,:}+\vect{w}_n\bigr|
+  &= \mat{Z}_{n,:} && \text{max dev } 1.78\times10^{-15} \quad\checkmark
+  \label{eq:conv1}\\
+\bigl|\overline{\mat{S}}^{\herm}\overline{\vect{g}_n}
+      + \mat{B}_{n,:}+\vect{w}_n\bigr|
+  &\neq \mat{Z}_{n,:} && \text{max dev } 4.043 \quad\times
+\end{align}
+The identity closes only when the noise is carried into the canonical
+$\vect{b}$ alongside $\mat{B}$. Conjugating \emph{both} $\mat{M}$ and
+$\vect{u}$ is invalid; an earlier draft of this reference stated exactly that
+pair, and three regression tests now pin all three cases.
+\src{rydberg\_sim/gs.py}, \src{tests/test\_report\_corrections.py}
+
+%==============================================================================
+\section{Channel models}\label{sec:channels}
+%==============================================================================
+
+\subsection{Track A --- 3GPP TR 38.901 clustered channel}
+Cui generates coefficients with the 3GPP TR~38.901 model but publishes only
+Table~I. Each user's row is a sum over clusters and rays:
+\begin{equation}
+a_{n,k} \;=\; \sum_{c=1}^{N_c}\sum_{r=1}^{M_r}
+  \alpha_{c,r}\;
+  e^{-\jj 2\pi f_c \tau_c}\;
+  \bigl(\boldsymbol{\mu}_{eg}^{\trans}\boldsymbol{\epsilon}_{n,c,r}\bigr)\;
+  e^{-\jj (n-1)\pi\sin\theta_{c,r}} .
+\label{eq:chA}
+\end{equation}
+
+\begin{table}[h]\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Table-I parameter & Value\\
+\midrule
+clusters $N_c$ / rays per cluster $M_r$ & $23$ / $20$\\
+path gains $\alpha_{c,r}$ & $\CN(0,1)$\\
+incident angles $\theta$ & $\Unif(-90^\circ,90^\circ)$\\
+max angle spread per cluster & $\Unif(-5^\circ,5^\circ)$\\
+max delay spread & $\Unif(0,30\,\mathrm{ns})$\\
+carrier $f_c$ & $5$~GHz\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Row normalisation.} Rows are scaled so that
+\begin{equation}
+\frac{1}{N}\sum_{n=1}^{N}|a_{n,k}|^2 \;=\; 1
+\qquad\text{(in expectation)},
+\label{eq:rownorm}
+\end{equation}
+which is what makes the calibration identities of
+Sec.~\ref{sec:calib} exact. Note this holds \emph{in expectation}, not per
+realisation: the per-realisation numerator of \eqref{eq:snr} has standard
+deviation $1.17$ about its mean of $3$, so a small-sample measurement of the
+achieved SNR carries genuine Monte-Carlo error.
+
+\paragraph{Polarisation.} Cui \S VI-A samples
+$\boldsymbol{\epsilon}_{n,c,r}$ \emph{per antenna element}. That choice
+whitens the array response and is the traced origin of the documented
+$\approx 2$~dB offset in Figs.~5--6: the implied channel of Cui has
+$\Tr\bigl((\mat{A}\mat{A}^{\herm})^{-1}\bigr)$ about $1.57\times$ larger than
+ours. It is a conditioning difference, not an algorithmic error, and the
+offset being constant across two independent sweeps is its signature.
+
+\subsection{Track B --- geometric ULA channel}
+A half-wavelength uniform linear array, $d=\lambda/2$, with resolvable
+specular paths. For user $k$,
+\begin{equation}
+\psi_{\ell,k} \;=\; \pi\sin\theta_{\ell,k},
+\qquad
+g_{n,k} \;=\; \sum_{\ell=1}^{L_k}
+  \alpha_{\ell,k}\, e^{-\jj (n-1)\psi_{\ell,k}} .
+\label{eq:chB}
+\end{equation}
+Equivalently $\vect{g}_k = \mat{A}(\boldsymbol{\theta}_k)\boldsymbol{\alpha}_k$
+with array manifold
+\begin{equation}
+\vect{a}(\theta) = \bigl[1,\;e^{-\jj\psi},\;\dots,\;e^{-\jj(N-1)\psi}\bigr]^{\trans},
+\qquad \|\vect{a}\|_2^2 = N .
+\label{eq:manifold}
+\end{equation}
+
+\begin{table}[h]\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+Quantity & Distribution / value\\
+\midrule
+angles & $\theta_{\ell,k}\sim\Unif[-\pi/2,\ \pi/2]$\\
+path gains & $\alpha_{\ell,k}\sim\CN\!\bigl(0,\ \beta_k/L_k\bigr)$\\
+per-element power & $\E|g_{n,k}|^2=\beta_k=1$\\
+path count & $L_k\sim\Unif\{3,\dots,7\}$, i.i.d.\ per user per realisation\\
+element spacing & $d=\lambda/2$ (so $\psi=\pi\sin\theta$, no grating lobes)\\
+scaling & $c=1$, i.e.\ $\mat{G}=c\mat{H}=\mat{H}$\\
+users & $K=3$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\note{The $\beta_k/L_k$ scaling is deliberate: it makes a 3-path and a 7-path
+user carry equal average power, so the array-size sweep is not confounded by
+path count. Verified: $L\cdot\E|\alpha|^2 = 0.9816$ over $600$ realisations
+against a target of $1$.}
+
+\paragraph{Nesting across $N$.} The channel parameters do not depend on $N$,
+so the array response is simply extended: the $N=8$ realisation is
+\emph{exactly} the first $8$ rows of the $N=32$ realisation (verified
+elementwise). The array-size sweep is therefore \textbf{paired in the
+channel}. The noise is \textbf{not} nested --- $\mat{W}$ is drawn at shape
+$(N,P)$ --- so pairing is exact for
+$\{\boldsymbol{\theta},\boldsymbol{\alpha},\mat{G},\mat{S},\mat{B}\}$ and
+absent for $\mat{W}$.
+
+%==============================================================================
+\section{SNR and RSR calibration}\label{sec:calib}
+%==============================================================================
+
+These two definitions set every operating point in every figure. Both contain
+a factor-$K$ trap.
+
+\subsection{SNR --- Cui eq.~(36)}
+\begin{equation}
+\SNR \;=\;
+\frac{\E\bigl(|\vect{a}_n^{\herm}\vect{s}|^2\bigr)}
+     {\E\bigl(|w_n|^2\bigr)} .
+\label{eq:snr}
+\end{equation}
+With row-normalised $\mat{A}$, unit-energy QAM and independent users the
+numerator is $\sum_k \E|a_{n,k}|^2\,\E|s_k|^2 = K$, so the noise variance
+actually used is
+\begin{equation}
+\boxed{\;\sigma^2 \;=\; \frac{K}{\SNR_{\lin}}\;},
+\qquad \SNR_{\lin}=10^{\SNR_{\dB}/10}.
+\label{eq:sigma2}
+\end{equation}
+This is \emph{total} signal power over all $K$ users, so fixing the SNR does
+not fix the per-user SNR: doubling $K$ at fixed SNR doubles $\sigma^2$.
+
+\subsection{RSR --- Cui eq.~(37)}
+\begin{equation}
+\RSR \;=\;
+\frac{\E\bigl(|b_n|^2\bigr)}
+     {\E\bigl(|a_{n,k}s_k|^2\bigr)} .
+\label{eq:rsr}
+\end{equation}
+The denominator is a \textbf{single user's} contribution, not the sum over
+$K$. With $\beta_{\mathrm{ref}}=1$ and $\E|s_b|^2=1$,
+\begin{equation}
+\boxed{\;|\alpha_b| \;=\; \sqrt{\RSR_{\lin}}\;}
+\qquad\text{not } \sqrt{K\,\RSR_{\lin}},\ \text{not } \sqrt{\RSR_{\lin}/K}.
+\label{eq:alphab}
+\end{equation}
+The audit tests that the implemented value differs from both incorrect
+alternatives, and verifies the amplitude scaling directly: the $|B|$ ratio
+between RSR $=24$ and $0$~dB is $15.85$ against $10^{24/20}=15.85$.
+
+\subsection{Measured calibration}
+Re-measured as a ratio of summed energies (Convention~C3), $4000$
+realisations per channel, $2000$-resample bootstrap:
+
+\begin{table}[h]\centering
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Channel & SNR (target $3.00$~dB) & RSR (target $12.00$~dB)\\
+\midrule
+Track A --- 38.901 & $2.978$ $[2.926,\,3.031]$ & $12.025$ $[11.951,\,12.096]$\\
+Track B --- geometric ULA & $3.009$ $[2.957,\,3.060]$ & $11.962$ $[11.880,\,12.044]$\\
+\bottomrule
+\end{tabular}
+\end{table}
+All four targets lie inside their intervals. An earlier draft quoted
+$2.82$~dB with no sample size; that was a small-sample artefact of
+\eqref{eq:rownorm} holding only in expectation.
+\src{scripts/recalibrate.py}
+
+%==============================================================================
+\section{QAM and bit mapping}\label{sec:qam}
+%==============================================================================
+
+Square $M$-QAM is built from two independent PAM axes with
+$n_{\mathrm{lev}}=\sqrt{M}$ levels each. With unnormalised integer levels
+$\{-(n_{\mathrm{lev}}-1),\dots,-1,+1,\dots,n_{\mathrm{lev}}-1\}$, the
+unnormalised mean energy per complex symbol is
+\begin{equation}
+E_{\mathrm{unnorm}} \;=\; \frac{2\bigl(n_{\mathrm{lev}}^2-1\bigr)}{3},
+\qquad
+\text{scale } = \frac{1}{\sqrt{E_{\mathrm{unnorm}}}},
+\label{eq:qamnorm}
+\end{equation}
+so that $\E|s_k|^2 = 1$. Concretely $1/\sqrt{2}$ for 4-QAM and $1/\sqrt{10}$
+for 16-QAM. \src{rydberg\_sim/qam.py}
+
+\paragraph{Gray mapping.} Adjacent constellation points differ in exactly one
+bit, which gives the sandwich
+\begin{equation}
+\frac{\SER}{\log_2 M} \;\le\; \BER \;\le\; \SER .
+\label{eq:gray}
+\end{equation}
+The audit verifies the Gray property by walking every adjacent pair in each
+constellation.
+
+%==============================================================================
+\section{Estimators and detectors}\label{sec:algos}
+%==============================================================================
+
+All iterative solvers act on the canonical form \eqref{eq:canonical} and run
+for $t_0=50$ iterations.
+
+\subsection{Spectral initialisation}
+With the augmented vectors
+$\bar{\vect{m}}_q=[\vect{m}_q;\,b_q]\in\C^{D+1}$ and
+$\bar{\mat{M}}^{\herm}=[\mat{M}^{\herm}\ \ \vect{b}]$,
+\begin{equation}
+\mat{M}_{\mathrm{spec}} \;=\;
+\sum_q z_q\,\bar{\vect{m}}_q\bar{\vect{m}}_q^{\herm}
+\;\in\;\C^{(D+1)\times(D+1)},
+\qquad
+\vect{v} = \text{principal eigenvector of } \mat{M}_{\mathrm{spec}} .
+\label{eq:spec}
+\end{equation}
+Note the weighting is by $z_q$, \emph{not} $z_q^2$. The eigenvector fixes only
+a direction; two further steps resolve its magnitude and global phase:
+\begin{align}
+\bar r &\;=\;
+  \frac{\bigl|\bar{\mat{M}}^{\herm}\vect{v}\bigr|^{\trans}\vect{z}}
+       {\bigl\|\bar{\mat{M}}^{\herm}\vect{v}\bigr\|_2^2},
+\qquad
+\bar{\vect{u}}_0 \;=\; \bar r\,\vect{v},
+\label{eq:specscale}\\[1mm]
+\vect{u}_0 &\;=\;
+  \Bigl[\;
+    e^{-\jj\angle(\bar{\vect{u}}_0)_{D+1}}\;\bar{\vect{u}}_0
+  \;\Bigr]_{1:D} .
+\label{eq:specanchor}
+\end{align}
+Equation~\eqref{eq:specscale} is a magnitude least squares: it picks the scale
+best matching the measured amplitudes. Equation~\eqref{eq:specanchor} is the
+\emph{phase anchor}: the $(D{+}1)$-th entry corresponds to the known reference
+$\vect{b}$, whose coefficient is $1$ and whose phase is therefore zero by
+construction, so de-rotating by it pins the otherwise arbitrary eigenvector
+phase. Only then is the last entry dropped. Removing this step measurably
+degrades the initialiser at low SNR (pinned by a regression test).
+\src{rydberg\_sim/spectral.py}
+
+\subsection{Biased Gerchberg--Saxton (Cui Algorithm 1)}
+At iteration $t$, keep the measured amplitude exactly and take the phase from
+the current iterate:
+\begin{align}
+\boldsymbol{\lambda}^{t-1} &= \mat{M}^{\herm}\vect{u}^{t-1}+\vect{b},
+& \boldsymbol{\theta}^{t} &= \angle\boldsymbol{\lambda}^{t-1},
+\label{eq:gs1}\\
+\vect{y}^{t} &= \vect{z}\odot e^{\jj\boldsymbol{\theta}^{t}},
+& \vect{r}^{t} &= \vect{y}^{t}-\vect{b},
+\label{eq:gs2}\\
+\bigl(\mat{M}\mat{M}^{\herm}\bigr)\vect{u}^{t}
+  &= \mat{M}\vect{r}^{t} .
+\label{eq:gs3}
+\end{align}
+Solved via the normal equations, never by forming an explicit inverse.
+
+\subsection{EM-GS (Cui Algorithm 2)}
+Identical phase and least-squares steps, but the restored observation is
+weighted by the Bessel ratio --- the conditional mean of a Rician amplitude,
+i.e.\ a soft, SNR-aware replacement for the hard magnitude substitution:
+\begin{equation}
+R(\kappa) \;=\; \frac{I_1(\kappa)}{I_0(\kappa)},
+\qquad
+\boldsymbol{\kappa} \;=\; \frac{2}{\sigma^2}\,\vect{z}\odot|\boldsymbol{\lambda}| ,
+\label{eq:bessel}
+\end{equation}
+so that \eqref{eq:gs2} becomes
+$\vect{y}^{t}=\vect{z}\odot R(\boldsymbol{\kappa})\odot e^{\jj\boldsymbol{\theta}^t}$.
+
+\paragraph{Numerics.} $R$ is evaluated with exponentially scaled Bessel
+functions (\texttt{scipy.special.ive}) so the shared $e^{-|x|}$ factor
+cancels; forming $I_1/I_0$ directly overflows at realistic high-SNR $\kappa$.
+For $\kappa>10^4$ the asymptotic expansion
+\begin{equation}
+R(\kappa)\;\approx\;1-\frac{1}{2\kappa}-\frac{1}{8\kappa^2}
+\label{eq:besselasym}
+\end{equation}
+is used, and $R(0)=0$ exactly. Output is confined to $[0,1]$. Checked against
+SciPy and against the quadrature definition
+$I_n(\kappa)=\frac1\pi\int_0^\pi e^{\kappa\cos t}\cos(nt)\,\mathrm{d}t$.
+
+\paragraph{Why GS and EM-GS coincide at strong reference.} $R$ is monotone
+increasing with $R(0)=0$ and $R(\kappa)\to1$. At high SNR or high RSR,
+$|\boldsymbol{\lambda}|$ is large, $\boldsymbol{\kappa}$ saturates, $R\to1$,
+and Algorithm~2 \emph{becomes} Algorithm~1. This is directly measured: the
+EM-GS advantage over GS is $+1.3$~dB at RSR $=0$~dB and $+0.00$~dB at
+RSR $=24$~dB.
+
+\subsection{Genie zero-forcing with known phase}
+Given the true noisy phase --- information a magnitude-only receiver never
+has --- the problem is linear:
+\begin{equation}
+\vect{r} \;=\; \vect{z}\odot e^{\jj\boldsymbol{\theta}}-\vect{b},
+\qquad
+\bigl(\mat{M}\mat{M}^{\herm}\bigr)\hat{\vect{u}} \;=\; \mat{M}\vect{r} .
+\label{eq:zf}
+\end{equation}
+A benchmark, not a valid estimator. It is \emph{allowed} to sit below the CRLB
+of Sec.~\ref{sec:crlb}, because that bound applies to estimators seeing only
+$\vect{z}$.
+
+\subsection{Exhaustive search --- LS and ML}
+Cui's two optimal-detector benchmarks, searched over $\mathcal{A}^K$ where
+$\mathcal{A}$ is the constellation:
+\begin{align}
+\hat{\vect{u}}_{\mathrm{LS}} &= \argmin_{\vect{u}\in\mathcal{A}^K}
+  J_{\mathrm{LS}}(\vect{u}),
+& J_{\mathrm{LS}}(\vect{u}) &=
+  \bigl\|\,\vect{z}-|\mat{M}^{\herm}\vect{u}+\vect{b}|\,\bigr\|_2^2,
+\label{eq:exls}\\[1mm]
+\hat{\vect{u}}_{\mathrm{ML}} &= \argmax_{\vect{u}\in\mathcal{A}^K}
+  J_{\mathrm{ML}}(\vect{u}),
+& J_{\mathrm{ML}}(\vect{u}) &=
+  \sum_q\Bigl[-\frac{|\lambda_q|^2}{\sigma^2}
+  +\log I_0\!\Bigl(\frac{2 z_q|\lambda_q|}{\sigma^2}\Bigr)\Bigr].
+\label{eq:exml}
+\end{align}
+\textbf{\eqref{eq:exls} is minimised; \eqref{eq:exml} is maximised} --- they
+point in opposite directions. LS and ML are not assumed identical:
+\eqref{eq:exml} is the $\vect{u}$-dependent part of the exact Rician
+log-likelihood, evaluated in the log domain. Feasible for Figs.~7(a) and~8
+($4^3=64$ candidates) but not for Fig.~7(b)
+($16^6\approx1.7\times10^7$), which is exactly why Cui omits it there and so
+do we.
+
+%==============================================================================
+\section{Cram\'er--Rao lower bound}\label{sec:crlb}
+%==============================================================================
+
+Each measured amplitude is Rician:
+\begin{equation}
+p(z\mid\lambda) \;=\; \frac{2z}{\sigma^2}
+  \exp\!\Bigl(-\frac{z^2+|\lambda|^2}{\sigma^2}\Bigr)
+  I_0\!\Bigl(\frac{2z|\lambda|}{\sigma^2}\Bigr),
+\label{eq:rician}
+\end{equation}
+giving the Fisher information and bound
+\begin{equation}
+\mat{F} \;=\; \sum_q \beta_q\,\vect{m}_q\vect{m}_q^{\herm},
+\qquad
+\beta_q \;=\;
+  \frac{\E\bigl[z_q^2R^2(\kappa_q)\bigr]-|\lambda_q|^2}{\sigma^4},
+\qquad
+\mathrm{CRLB} = \mat{F}^{-1}.
+\label{eq:crlb}
+\end{equation}
+
+\paragraph{Evaluation.} $\beta_q$ is computed by numerical quadrature of
+\eqref{eq:rician} over a two-sided window centred on $|\lambda|$ --- never
+clipped to its high-SNR limit. The integration is performed three times (mass,
+expectation, difference) and the mass integral is checked to confirm the
+high-SNR spike was not missed by the quadrature.
+\src{rydberg\_sim/crlb.py}
+
+\paragraph{The high-SNR limit --- the $3.0103$~dB phase-loss gap.}
+As $\SNR\to\infty$, $\beta_q\to 1/(2\sigma^2)$, so
+$\mat{F}\to\frac{1}{2\sigma^2}\mat{M}\mat{M}^{\herm}$ and
+\begin{equation}
+\mathrm{CRLB}\;\longrightarrow\;2\sigma^2\bigl(\mat{M}\mat{M}^{\herm}\bigr)^{-1},
+\label{eq:crlbhigh}
+\end{equation}
+which is exactly $10\log_{10}2 = 3.0103$~dB above the genie-ZF covariance
+$\sigma^2\Tr\bigl((\mat{M}\mat{M}^{\herm})^{-1}\bigr)$. That factor of two is
+the price of losing phase. Measured in both tracks at $3.0103$~dB.
+
+\paragraph{Normalisation for Track B.} For the estimation role the row-$n$
+bound is $\Tr(\mat{F}_n^{-1})$ with $\mat{M}=\mat{S}$,
+$\vect{b}=\overline{\mat{B}_{n,:}}$; the whole-array bound sums over receive
+elements and is normalised to share the $\NMSE_G$ axis:
+\begin{equation}
+\mathrm{CRLB}_{\dB}
+= 10\log_{10}\frac{\sum_{\text{trials}}\sum_{n=1}^{N}\Tr\bigl(\mat{F}_n^{-1}\bigr)}
+                  {\sum_{\text{trials}}\|\mat{G}\|_F^2},
+\qquad \E\|\mat{G}\|_F^2 = NK\beta .
+\label{eq:crlbB}
+\end{equation}
+
+\paragraph{Verified properties.} $\mat{F}$ is Hermitian, positive definite and
+$K\times K$; the bound scales by exactly $2.0000\times$ when $\sigma^2$ is
+doubled; the high-SNR gap reproduces at $3.0103$~dB; and EM-GS never falls
+below it at any of $36$ Track-B points.
+
+\paragraph{This is the UNCONSTRAINED CRLB.} It bounds estimators that use no
+structural prior --- biased GS and EM-GS. \textbf{HS-GS exploits a rank
+constraint and is not bounded by it}; a constrained bound would require the
+tangent space of the structured manifold and is \emph{not} computed anywhere
+in this project. HS-GS falls below it at $11/36$ points, $8$ of them at
+$N=32$. Every figure and caption says ``Unconstrained CRLB'' for this reason.
+
+%==============================================================================
+\section{Structural machinery (Track B2)}\label{sec:hankel}
+%==============================================================================
+
+\subsection{The Hankel operator}
+For a length-$N$ sequence $\vect{g}$ and a \emph{pencil parameter} $p$ with
+$1\le p\le N-1$, the Hankel matrix is the $(N-p)\times(p+1)$ matrix of
+overlapping windows,
+\begin{equation}
+\bigl[\Hop_p(\vect{g})\bigr]_{i,j} \;=\; g_{\,i+j},
+\qquad 0\le i< N-p,\quad 0\le j\le p ,
+\label{eq:hankel}
+\end{equation}
+i.e.\ constant along anti-diagonals. Its adjoint (used to return to a
+sequence) averages each anti-diagonal:
+\begin{equation}
+\bigl[\Hop_p^{\dagger}(\mat{X})\bigr]_m
+\;=\;
+\frac{1}{|\{(i,j):i+j=m\}|}\sum_{i+j=m} X_{i,j} .
+\label{eq:antidiag}
+\end{equation}
+This is the exact orthogonal projection onto the linear subspace of Hankel
+matrices. \src{rydberg\_sim/track\_b\_structure.py}
+
+\subsection{Kronecker's theorem, stated precisely}
+If $g_n=\sum_{\ell=1}^{L}\alpha_\ell z_\ell^{\,n}$ with distinct non-zero
+$z_\ell\in\C$, then $\Hop_p(\vect{g})=\mat{V}\diag(\boldsymbol{\alpha})\mat{W}^{\trans}$
+with $\mat{V},\mat{W}$ Vandermonde in the $z_\ell$, hence
+\begin{equation}
+\rank \Hop_p(\vect{g}) \;\le\; L ,
+\label{eq:kron}
+\end{equation}
+with equality --- and the converse --- when $L$ is strictly below the rank cap
+\eqref{eq:cap}.
+
+\paragraph{This is a relaxation, not a characterisation.} The ULA model
+\eqref{eq:chB} additionally requires $|z_\ell|=1$ (real angles). Low Hankel
+rank imposes no unit-modulus condition, so
+\begin{equation}
+\underbrace{\bigl\{\vect{g}:\ \rank\Hop(\vect{g})\le L\bigr\}}_{\text{feasible set of HS-GS}}
+\;\supsetneq\;
+\underbrace{\bigl\{\vect{g}:\ g_n=\textstyle\sum_\ell\alpha_\ell e^{-\jj(n-1)\psi_\ell}\bigr\}}_{\text{physical ULA channels}} .
+\label{eq:relaxation}
+\end{equation}
+Verified by construction: at $N=16$ a damped sequence with $|z|=0.75$ has
+Hankel rank $4$, identical to the physical channel's. The constraint is
+therefore \emph{necessary}, and sufficient only up to the modulus of the
+recovered modes. Correct wording throughout: a \textbf{grid-free low-rank
+Hankel relaxation of ULA structure}.
+
+\subsection{The rank cap and vacuity}
+\begin{equation}
+\mathrm{cap}(N) \;=\; \max_{1\le p\le N-1}\min(N-p,\;p+1)
+\;=\; \bigl\lceil N/2 \bigr\rceil .
+\label{eq:cap}
+\end{equation}
+Every length-$N$ sequence, structured or not, satisfies
+$\rank\Hop\le\mathrm{cap}(N)$. Hence when $L_k\ge\mathrm{cap}(N)$ the
+constraint $\rank\Hop(\vect{g}_k)\le L_k$ is satisfied automatically and is
+\textbf{vacuous}.
+
+\begin{table}[h]\centering
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+$N$ & $\mathrm{cap}(N)$ & vacuous when & $\Pr[\text{vacuous}]$ under $\Unif\{3..7\}$\\
+\midrule
+$8$  & $4$  & $L_k\ge4$  & $80\%$\\
+$16$ & $8$  & $L_k\ge8$  & $0\%$\\
+$32$ & $16$ & $L_k\ge16$ & $0\%$\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\note{Two distinct notions, kept separate throughout.
+\emph{Representational vacuity} is set by the \textbf{true} $L_k$ against the
+cap and governs whether the constraint could ever carry information.
+\emph{Projection inactivity} is set by the \textbf{selected} $\hat L$ against
+the cap and governs whether the projection is a no-op on a given trial. The
+latter is what the ``active'' column of every results table measures; the flag
+is $\hat L<\mathrm{cap}$, \emph{strict}, because at $\hat L=\mathrm{cap}$ the
+projection does nothing.}
+
+\subsection{Cadzow projection}
+One Cadzow step alternates the two exact projectors:
+\begin{equation}
+P_{\mathcal S}^{(L)}(\vect{g})
+\;=\;
+\Bigl(\Hop_p^{\dagger}\circ\mathcal{T}_L\circ\Hop_p\Bigr)^{\!n_{\mathrm{it}}}(\vect{g}),
+\qquad n_{\mathrm{it}}=4 ,
+\label{eq:cadzow}
+\end{equation}
+where $\mathcal{T}_L$ truncates to rank $L$ by SVD,
+\begin{equation}
+\mathcal{T}_L(\mat{X}) \;=\; \sum_{i=1}^{L}\varsigma_i\vect{u}_i\vect{v}_i^{\herm},
+\qquad \mat{X}=\sum_i\varsigma_i\vect{u}_i\vect{v}_i^{\herm},
+\label{eq:eym}
+\end{equation}
+which is the exact Frobenius-norm projection onto rank-$\le L$ matrices by
+Eckart--Young--Mirsky. If $L\ge\mathrm{cap}(N)$ the step returns $\vect{g}$
+unchanged --- a literal no-op, verified.
+
+\paragraph{Why Cadzow and not OMP or ESPRIT.} Three candidates were built and
+measured. \emph{Angular OMP} discretises $\psi$ onto a grid, leaving an
+irreducible off-grid bias measured at $\approx6.9\%$ residual even on
+noiseless, exactly-structured data. \emph{ESPRIT} is grid-free and exact in
+the noiseless case (angles to $7.6\times10^{-15}$) but is a \emph{parameter
+estimator}, not a projection: not idempotent, no variational
+characterisation, and it commits hard to $\hat L$ angles --- with the pencil
+bound exceeded it collapsed to $-3.45$~dB. Only Cadzow is simultaneously
+grid-free and a genuine alternating projection between two closed sets with
+exact projectors, which is what allows it to be composed into the iteration
+below.
+
+\subsection{HS-GS --- the proposed estimator}
+The optimisation being approximated is
+\begin{equation}
+\min_{\mat{G}}\;
+J(\mat{G}) = \bigl\|\,\mat{Z}-|\mat{G}\mat{S}+\mat{B}|\,\bigr\|_F^2
+\quad\text{s.t.}\quad
+\rank\Hop\bigl(\vect{g}_k\bigr)\le L_k,\ \ k=1..K .
+\label{eq:hsgsprob}
+\end{equation}
+HS-GS interleaves \emph{one} exact EM-GS measurement update with the
+projection, every iteration:
+\begin{equation}
+\boxed{\;
+\mat{G}^{t} \;=\;
+\bigl(P_{\mathcal S}^{(\hat L)}\circ T_{\mathrm{GS}}\bigr)\bigl(\mat{G}^{t-1}\bigr),
+\qquad t=1,\dots,t_0 \;}
+\label{eq:hsgs}
+\end{equation}
+where $T_{\mathrm{GS}}$ is a single validated EM-GS iteration
+\eqref{eq:gs1}--\eqref{eq:gs3} applied row-wise, and $P_{\mathcal S}$ is
+applied column-wise (per user). Fixed points satisfy
+$\vect{g}=P_{\mathcal S}(T_{\mathrm{GS}}(\vect{g}))$ --- simultaneously
+structured and consistent with the measurement update.
+
+\paragraph{Why the projection must live inside the loop.} Projecting once and
+then running GS to convergence does nothing measurable: the gain decays
+monotonically with the number of unconstrained iterations after projection ---
+$+1.30$~dB at $1$, $+0.06$ at $10$, exactly $0.00$ at $50$. Empirically the
+unconstrained iteration returns to its own fixed point, which the projection
+then cannot influence. \textbf{No contraction or convergence property is
+claimed}: alternating-projection schemes of this kind are not contractions in
+general.
+
+\paragraph{Exactness of the chaining.} Chaining $t$ calls with
+\texttt{max\_iter}$=1$ and warm start $\mat{G}_0$ reproduces one
+\texttt{max\_iter}$=t$ call \textbf{bit-for-bit}, and with the projection
+disabled ($\hat L=\mathrm{cap}$) HS-GS equals validated EM-GS to
+$0.00\times10^{0}$. So no GS mathematics is reimplemented.
+
+\subsection{Model-order selection from held-out pilots}
+The in-sample residual \emph{cannot} select $\hat L$: a projection constrains
+$\mat{G}$ to a smaller set, so it can only fit the fitted pilots worse, and
+the in-sample criterion therefore always prefers the largest $L$. Measured
+failure: $\Delta J>0$ while $\Delta\NMSE<0$, sign agreement $1$--$8$ out of
+$10$. The fix splits the pilot columns, $\mathcal{F}\cup\mathcal{V}=\{1..P\}$
+with $|\mathcal{V}|=\max(1,\lceil 0.3P\rceil)$, and scores on the held-out
+half using no ground truth:
+\begin{equation}
+\hat L \;=\; \argmin_{L\in\{1,\dots,\mathrm{cap}(N)\}}
+\Bigl\|\,\mat{Z}_{:,\mathcal{V}}
+      -\bigl|\hat{\mat{G}}^{(L)}\mat{S}_{:,\mathcal{V}}+\mat{B}_{:,\mathcal{V}}\bigr|
+\,\Bigr\|_F^2 ,
+\label{eq:order}
+\end{equation}
+where $\hat{\mat{G}}^{(L)}$ is HS-GS run on $\mathcal{F}$ only, for $20$
+iterations, at order $L$. Every quantity is observable.
+
+\note{At $P=6$ the split gives $|\mathcal{F}|=4$, $|\mathcal{V}|=2$. Four real
+magnitude measurements per receive row against $2K=6$ real unknowns means the
+\textbf{training half is underdetermined} --- the only point in the sweep
+where that happens ($P=10$ gives $7\ge6$). It is a shortage of measurements,
+not ill-conditioning: the median condition number of $\mat{S}_{:,\mathcal{F}}$
+is $3.37$ at $P=6$ against $2.33$ at $P=10$. The final fit uses all $P$
+columns; only the order search sees the split. The rule was not changed after
+seeing results.}
+
+\subsection{Structural redundancy}
+An unstructured $\mat{G}\in\C^{N\times K}$ carries $2NK$ real parameters. The
+geometric model carries $3$ per path (one angle, one complex gain), so
+$3\sum_k L_k$ in total. The redundancy ratio is
+\begin{equation}
+\rho(N) \;=\; \frac{2NK}{3\sum_k L_k} .
+\label{eq:rho}
+\end{equation}
+Only $N$ moves with the array --- the path budget does not --- so $\rho$ grows
+linearly in $N$. Measured on the $18\,400$ B3 trials themselves:
+$\E[\sum_k L_k]=14.8840$, i.e.\ $\E[L_k]=4.9613$, giving
+$\rho=1.075\times,\ 2.150\times,\ 4.301\times$ at $N=8,16,32$.
+
+\paragraph{This is a parameter count, not a theorem.} $\rho(N)$ together with
+the rank cap constitutes a \emph{structural redundancy} /
+\emph{representational informativeness} argument. It is \textbf{not an
+identifiability theorem}: nothing here proves the constrained problem has a
+unique solution, that the alternating projection converges to it, or that the
+estimator attains any bound.
+
+\subsection{Mode-modulus diagnostic}
+To measure how loose the relaxation \eqref{eq:relaxation} is in practice,
+ESPRIT is run on the converged $\hat{\vect{g}}_k$ to recover $\hat L$ modes
+$z_i$ via the shift-invariance of the Hankel range space,
+\begin{equation}
+\mat{U} = \text{first } \hat L \text{ left singular vectors of }\Hop_p(\hat{\vect{g}}_k),
+\qquad
+\{z_i\} = \operatorname{eig}\bigl(\mat{U}_{1:\text{end}-1}^{\dagger}\,\mat{U}_{2:\text{end}}\bigr),
+\label{eq:esprit}
+\end{equation}
+and the deviation $\bigl|\,|z_i|-1\,\bigr|$ is recorded. Running the same step
+on the \emph{true} channel gives the estimator floor, separating relaxation
+slack from ESPRIT error.
+
+%==============================================================================
+\section{Metrics, aggregation and uncertainty}\label{sec:metrics}
+%==============================================================================
+
+\subsection{NMSE --- ratio of sums}
+For detection,
+\begin{equation}
+\NMSE \;=\;
+\frac{\sum_{\text{trials}}\|\vect{s}-\tilde{\vect{s}}\|_2^2}
+     {\sum_{\text{trials}}\E\|\vect{s}\|_2^2},
+\qquad
+\NMSE_{\dB}=10\log_{10}\NMSE .
+\label{eq:nmse}
+\end{equation}
+For channel estimation the same rule with Frobenius energies,
+\begin{equation}
+\NMSE_G \;=\;
+\frac{\sum_{\text{trials}}\|\hat{\mat{G}}-\mat{G}\|_F^2}
+     {\sum_{\text{trials}}\|\mat{G}\|_F^2} .
+\label{eq:nmseG}
+\end{equation}
+Three points matter:
+\begin{enumerate}[leftmargin=1.4em,itemsep=1pt]
+\item $10\log_{10}$, not $20\log_{10}$ (Convention~C2).
+\item The detection denominator is the \emph{expected} symbol energy $K$ for
+      unit-energy QAM, not a per-trial $\|\vect{s}\|^2$.
+\item $\tilde{\vect{s}}$ is the \emph{continuous} solver output, before any
+      constellation demapping.
+\end{enumerate}
+
+\subsection{BER --- global bit errors over global bits}
+\begin{equation}
+\BER \;=\;
+\frac{\sum_{\text{trials}}(\text{bit errors})}
+     {\sum_{\text{trials}}(\text{bit count})} ,
+\label{eq:ber}
+\end{equation}
+not the mean of per-trial BERs. Demapping projects each recovered symbol to
+the nearest constellation point, then to Gray bits.
+
+\subsection{Wilson score interval for BER}
+With $k$ pooled bit errors in $n$ bits, $\hat p=k/n$, $z=1.645$ for a
+one-sided $95\%$ bound:
+\begin{equation}
+\text{centre}=\frac{\hat p+\frac{z^2}{2n}}{1+\frac{z^2}{n}},
+\qquad
+\text{radius}=\frac{z}{1+\frac{z^2}{n}}
+  \sqrt{\frac{\hat p(1-\hat p)+\frac{z^2}{4n}}{n}} ,
+\label{eq:wilson}
+\end{equation}
+and the interval is $\text{centre}\pm\text{radius}$, clipped to $[0,1]$. When
+$k=0$ the lower endpoint is set to exactly $0$ but the \emph{upper} endpoint
+is strictly positive --- a zero count is never treated as an exact rate of
+zero. Zero-error points are omitted from log axes rather than plotted at zero;
+at $240\,000$ bits the bound is $1.1\times10^{-5}$.
+\src{rydberg\_sim/confidence.py}
+
+\subsection{Paired bootstrap confidence intervals}
+Uncertainty on $\NMSE_G$ and on gains is obtained by resampling \emph{trials}
+with replacement, $B=2000$ resamples, seed $987654321$. The same resampled
+index set is applied to every estimator, so the common-random-number pairing
+is preserved:
+\begin{equation}
+\NMSE^{(b)}_{\dB}
+= 10\log_{10}
+\frac{\sum_{t\in\mathcal{I}_b}\|\hat{\mat{G}}_t-\mat{G}_t\|_F^2}
+     {\sum_{t\in\mathcal{I}_b}\|\mat{G}_t\|_F^2},
+\qquad
+\mathcal{I}_b\sim\text{Unif}\{1..n\}^{n} ,
+\label{eq:boot}
+\end{equation}
+and the reported interval is the $[2.5,\,97.5]$ percentile of
+$\{\NMSE^{(b)}_{\dB}\}$. The bootstrap recomputes the same ratio of sums, not
+a mean of per-trial values.
+
+\subsection{Comparison statistics}
+Let $e^{\mathrm{EM}}_t=\|\hat{\mat{G}}^{\mathrm{EM}}_t-\mat{G}_t\|_F^2$ and
+similarly $e^{\mathrm{HS}}_t$. Then:
+
+\begin{align}
+\text{pooled gain}\quad
+\Delta_{\dB} &= 10\log_{10}
+  \frac{\sum_t e^{\mathrm{EM}}_t}{\sum_t e^{\mathrm{HS}}_t}
+  \;=\;\NMSE^{\mathrm{EM}}_{\dB}-\NMSE^{\mathrm{HS}}_{\dB}
+  \label{eq:gain}\\[1mm]
+\text{win rate}\quad
+w &= \frac{1}{n}\bigl|\{t: e^{\mathrm{HS}}_t<e^{\mathrm{EM}}_t\}\bigr|
+  \label{eq:win}\\[1mm]
+\text{tie fraction}\quad
+\tau &= \frac{1}{n}\bigl|\{t: e^{\mathrm{HS}}_t=e^{\mathrm{EM}}_t\}\bigr|
+  \label{eq:tie}\\[1mm]
+\text{median per-trial gain}\quad
+\Delta^{\mathrm{med}}_{\dB}
+  &= 10\log_{10}\operatorname{median}_t\!\bigl(e^{\mathrm{EM}}_t/e^{\mathrm{HS}}_t\bigr)
+  \label{eq:medgain}\\[1mm]
+\text{trimmed gain}\quad
+\Delta^{95}_{\dB} &= 10\log_{10}
+  \frac{\sum_{t\in\mathcal{K}} e^{\mathrm{EM}}_t}
+       {\sum_{t\in\mathcal{K}} e^{\mathrm{HS}}_t},\quad
+  \mathcal{K}=\Bigl\{t:\tfrac{e^{\mathrm{EM}}_t}{\|\mat{G}_t\|_F^2}
+    \le Q_{95}\Bigr\}
+  \label{eq:trim}
+\end{align}
+
+\paragraph{Exact ties are structural, not numerical.} When the order selector
+reaches the rank cap the projection is a no-op and HS-GS \emph{is} EM-GS
+bit-for-bit, so $e^{\mathrm{HS}}_t=e^{\mathrm{EM}}_t$ \emph{exactly} and that
+trial contributes $0.00$~dB to the median. At $N=8$ these ties are the
+majority, and the tie fraction matches the constraint-inactive fraction to the
+trial. Reporting $\Delta^{\mathrm{med}}$ without acknowledging this is
+misleading, so both the tie fraction and a tie-free median are always
+reported.
+
+\subsection{Adaptive trial rule}
+Every point starts at $400$ trials. A point is extended to $1200$ if and only
+if the bootstrap $95\%$ CI on $\Delta_{\dB}$ satisfies
+\begin{equation}
+\underbrace{\bigl(\mathrm{lo}\le0\le\mathrm{hi}\bigr)}_{\text{sign undetermined}}
+\ \ \text{or}\ \
+\underbrace{\bigl(\mathrm{hi}-\mathrm{lo}>1.5\ \dB\bigr)}_{\text{magnitude undetermined}} .
+\label{eq:extend}
+\end{equation}
+The rule was fixed before the numbers were inspected and applied
+mechanically. In B3 it flagged $5$ of $36$ points; in B6 it flagged none.
+Completed trials are never recomputed.
+
+\subsection{Array-size control statistic}
+For the control experiment of Sec.~\ref{sec:figures},
+\begin{equation}
+\mathrm{spread}(P,\SNR) \;=\;
+\max_{N\in\{8,16,32\}}\NMSE^{\mathrm{EM}}_{\dB}
+-\min_{N\in\{8,16,32\}}\NMSE^{\mathrm{EM}}_{\dB} .
+\label{eq:spread}
+\end{equation}
+Measured maximum over all twelve $(P,\SNR)$ points: $0.133$~dB. The same
+statistic for HS-GS is $4.85$~dB.
+
+\subsection{Complexity accounting}
+Per channel realisation, with $t_0$ iterations:
+\begin{align}
+\text{EM-GS} &:\quad t_0\cdot N\cdot O(K^2P)
+\label{eq:cplxem}\\
+\text{HS-GS} &:\quad
+  \underbrace{t_0\cdot K\cdot O\bigl(\mathrm{cap}(N)^3\bigr)}_{\text{Cadzow SVDs}}
+  \;+\;
+  \underbrace{|\mathcal{L}|\cdot 20\cdot K\cdot O\bigl(\mathrm{cap}(N)^3\bigr)}_{\text{order search over }\mathcal{L}=\{1..\mathrm{cap}(N)\}}
+\label{eq:cplxhs}
+\end{align}
+Measured medians (deterministic benchmark, $P=30$, $\SNR=5$~dB, not Monte
+Carlo) are in Sec.~\ref{sec:figures}.
+
+%==============================================================================
+\section{Every figure and the equations behind it}\label{sec:figures}
+%==============================================================================
+
+Every figure in both tracks, with the equations that generated it and the
+configuration it was run at. No figure in this project draws error bars; all
+uncertainty lives in the tables and JSON aggregates. No smoothing or
+interpolation is applied anywhere --- every plotted marker is a computed
+value.
+
+\subsection{Track A --- detection}
+
+\begin{longtable}{@{}p{0.20\textwidth}p{0.30\textwidth}p{0.42\textwidth}@{}}
+\toprule
+\textbf{Figure} & \textbf{Configuration} & \textbf{Equations used}\\
+\midrule
+\endhead
+\texttt{fig5\_clean}\newline NMSE vs SNR
+& $N\times K=36\times3$, 16-QAM, RSR $12$~dB, SNR $-5..12$ (18 pts), $2000$ trials/pt
+& Channel \eqref{eq:chA},\eqref{eq:rownorm}; obs.\ \eqref{eq:obsA}; calib.\ \eqref{eq:sigma2},\eqref{eq:alphab}; QAM \eqref{eq:qamnorm}; init \eqref{eq:spec}--\eqref{eq:specanchor}; GS \eqref{eq:gs1}--\eqref{eq:gs3}; EM-GS \eqref{eq:bessel}; ZF \eqref{eq:zf}; CRLB \eqref{eq:rician},\eqref{eq:crlb}; metric \eqref{eq:nmse}\\
+\addlinespace
+\texttt{fig6\_clean}\newline NMSE vs RSR
+& $36\times3$, 16-QAM, SNR $3$~dB, RSR $0..25$ (26 pts), $500$ trials/pt
+& as Fig.~5, sweeping \eqref{eq:alphab} instead of \eqref{eq:sigma2}\\
+\addlinespace
+\texttt{fig6\_..\_fullrange}\newline companion
+& identical
+& identical; drawn over the full vertical range because genie ZF sits at $-13.6$~dB, below the $-12$~dB axis floor Cui uses. Kept so no curve is silently clipped.\\
+\addlinespace
+\texttt{fig7a\_clean}\newline BER vs SNR
+& $36\times3$, 4-QAM, RSR $12$~dB, 18 pts, $333\,000$ trials, $1\,998\,000$ bits/alg
+& obs.\ \eqref{eq:obsA}; GS/EM-GS as above; exhaustive \eqref{eq:exls},\eqref{eq:exml}; ZF \eqref{eq:zf}; metric \eqref{eq:ber}; Gray \eqref{eq:gray}; Wilson \eqref{eq:wilson}\\
+\addlinespace
+\texttt{fig7b\_clean}\newline BER vs SNR
+& $100\times6$, 16-QAM, 18 pts, $122\,000$ trials, $2\,928\,000$ bits/alg
+& as 7(a) \emph{without} \eqref{eq:exls},\eqref{eq:exml}: $16^6\approx1.7\times10^7$ candidates, excluded exactly as Cui excludes them\\
+\addlinespace
+\texttt{fig8\_clean}\newline BER vs RSR
+& $36\times3$, 4-QAM, SNR $3$~dB, 26 pts, $239\,000$ trials
+& as 7(a), sweeping \eqref{eq:alphab}\\
+\addlinespace
+\texttt{fig8\_16qam\_}\newline\texttt{diagnostic}
+& $36\times3$, \textbf{16-QAM}, 5 RSR pts, $15\,000$ trials
+& as Fig.~8. \textbf{Diagnostic only.} Cui's Fig.~8 caption says 16-QAM, the body says 4-QAM; both were run. Median BER ratio to Cui: $0.82$ at 4-QAM vs $24.12$ at 16-QAM, so the body is right and the caption is in error.\\
+\addlinespace
+\texttt{fig4\_bessel\_ratio}
+& --- (analytic)
+& \eqref{eq:bessel},\eqref{eq:besselasym}. Shows why GS and EM-GS coincide at high SNR: $R(\kappa)\to1$.\\
+\bottomrule
+\end{longtable}
+
+\paragraph{Per-point trial counts, Fig.~7(a).} The count is deliberately
+non-uniform, escalated where errors get rare: $3000$ at SNR $-5..0$, $10\,000$
+at $1..4$, $25\,000$ at $5..7$, $40\,000$ at $8..12$. At $6$ bits/trial that
+is $18\,000$ to $240\,000$ bits per point. The $240\,000$-bit Wilson bound
+therefore applies to the highest-SNR points, which are exactly the ones with
+zero observed errors.
+
+\subsection{Track B1 --- Cui algorithms on the ULA, no Hankel}
+
+Every figure here plots only biased GS and EM-GS (plus the unconstrained CRLB
+where relevant). No structural prior appears.
+
+\begin{longtable}{@{}p{0.26\textwidth}p{0.26\textwidth}p{0.40\textwidth}@{}}
+\toprule
+\textbf{Figure} & \textbf{Configuration} & \textbf{Equations / what it shows}\\
+\midrule
+\endhead
+\texttt{b1\_clean}\newline NMSE vs SNR
+& $N=8$, $K=3$, $P\in\{10,30\}$, RSR $12$~dB, $400$ trials/pt
+& \eqref{eq:chB},\eqref{eq:obsB},\eqref{eq:canonical},\eqref{eq:conv2},\eqref{eq:gs1}--\eqref{eq:bessel},\eqref{eq:nmseG}. Slopes $\approx-1$~dB/dB.\\
+\addlinespace
+\texttt{b2\_clean}\newline NMSE vs $P$
+& $N=8$, SNR $5$~dB, $P\in\{6,10,14,20,30,40\}$
+& as above, sweeping $P$. $P=2K=6$ marked. Diminishing returns, consistent with $1/P$ averaging.\\
+\addlinespace
+\texttt{b1\_baseline\_}\newline\texttt{no\_hankel}
+& both of the above, three panels
+& consolidated Track-B1 baseline figure\\
+\addlinespace
+\texttt{b1\_em\_gs\_vs\_}\newline\texttt{array\_size}
+& $N\in\{8,16,32\}$, $P\in\{10,30\}$
+& EM-GS only, \eqref{eq:nmseG}. \textbf{The three curves coincide.}\\
+\addlinespace
+\texttt{b1\_em\_gs\_}\newline\texttt{spread\_across\_N}
+& same data
+& \eqref{eq:spread}. Max $0.133$~dB, never reaching the $0.2$~dB reference line.\\
+\addlinespace
+\texttt{b1\_baseline\_vs\_}\newline\texttt{unconstrained\_crlb}
+& $N=8$, $P\in\{10,30\}$
+& GS, EM-GS and \eqref{eq:crlbB}. Bound labelled ``Unconstrained CRLB''.\\
+\addlinespace
+\texttt{b1\_em\_gs\_}\newline\texttt{gap\_to\_bound}
+& all $N$, all $P$
+& $\NMSE^{\mathrm{EM}}_{\dB}-\mathrm{CRLB}_{\dB}$. $0.23$--$1.62$~dB at $P=30$; $1.59$--$5.53$~dB at $P=10$, widening with SNR.\\
+\addlinespace
+\texttt{b1\_gs\_vs\_em\_gs\_}\newline\texttt{across\_rsr}
+& $N\in\{8,32\}$, $P=30$, SNR $5$~dB, RSR $0..24$
+& \eqref{eq:bessel} in action across reference strength\\
+\addlinespace
+\texttt{b1\_em\_gs\_}\newline\texttt{advantage\_vs\_rsr}
+& same data
+& $\NMSE^{\mathrm{GS}}_{\dB}-\NMSE^{\mathrm{EM}}_{\dB}$: $+1.3$~dB at RSR $0$, $+0.00$~dB at RSR $24$. Direct evidence of $R(\kappa)\to1$.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Track B2 --- structure-aware (HS-GS)}
+
+\begin{longtable}{@{}p{0.24\textwidth}p{0.28\textwidth}p{0.40\textwidth}@{}}
+\toprule
+\textbf{Figure} & \textbf{Configuration} & \textbf{Equations / what it shows}\\
+\midrule
+\endhead
+\texttt{b3\_nmse\_vs\_}\newline\texttt{snr\_P10}, \texttt{\_P30}
+& $N\in\{8,16,32\}$, $P\in\{10,30\}$, SNR $-5..20$, $400$/pt ($1200$ at 5 flagged pts)
+& all of Track B1 plus \eqref{eq:cadzow},\eqref{eq:hsgs},\eqref{eq:order}; bound \eqref{eq:crlbB}; CIs \eqref{eq:boot}\\
+\addlinespace
+\texttt{b3\_gain\_vs\_snr}
+& same data
+& \eqref{eq:gain}, one curve per $N$, two panels by $P$\\
+\addlinespace
+\texttt{b4\_nmse\_vs\_}\newline\texttt{pilots\_N16}
+& $N=16$, SNR $5$~dB, $P\in\{6..40\}$, $400$/pt
+& as B3. $N=16$ fixed \emph{a priori} as the smallest tested $N$ with $\mathrm{cap}(N)>\max L_k$, i.e.\ \eqref{eq:cap} non-vacuous across the whole prior --- not chosen from the curves.\\
+\addlinespace
+\texttt{b5\_gain\_}\newline\texttt{scaling\_vs\_N}
+& derived from B3
+& \eqref{eq:gain},\eqref{eq:win} against $N$; interpreted with \eqref{eq:cap},\eqref{eq:rho}\\
+\addlinespace
+\texttt{b6\_rsr\_sweep}
+& $N\in\{8,32\}$, $P=30$, SNR $5$~dB, RSR $\in\{0,6,12,18,24\}$, $400$/pt
+& as B3 across reference strength. Three panels; a two-panel version needed a six-entry legend that covered the data.\\
+\addlinespace
+\texttt{b2\_mode\_modulus}
+& $N=32$, $P=30$, SNR $5$~dB, $80$ active trials
+& \eqref{eq:esprit}. Quantifies the looseness of \eqref{eq:relaxation}.\\
+\bottomrule
+\end{longtable}
+
+\subsection{Key measured results}
+
+\begin{table}[h]\centering
+\begin{tabular}{@{}rrrrrrr@{}}
+\toprule
+$N$ & $\mathrm{cap}$ & $\Pr[L_k<\mathrm{cap}]$ & $\rho(N)$ & mean $\Delta_{\dB}$ & win rate & active\\
+\midrule
+$8$  & $4$  & $20\%$  & $1.075\times$ & $-0.192$ & $33.5\%$ & $57.5\%$\\
+$16$ & $8$  & $100\%$ & $2.150\times$ & $+0.780$ & $74.0\%$ & $92.7\%$\\
+$32$ & $16$ & $100\%$ & $4.301\times$ & $+2.851$ & $95.3\%$ & $99.6\%$\\
+\bottomrule
+\end{tabular}
+\caption{B5 scaling. Mean of per-point gains \eqref{eq:gain}; pooling across
+SNR would be dominated by the low-SNR points, whose error energy is orders of
+magnitude larger, and is \emph{not} used.}
+\end{table}
+
+\begin{table}[h]\centering
+\begin{tabular}{@{}rrrrrrrr@{}}
+\toprule
+$N$ & GS (ms) & EM-GS (ms) & EM chained (ms) & HS-GS (ms) & HS/EM & order & proj.\\
+\midrule
+$8$  & $30.7$  & $91.9$  & $159.7$ & $563.7$  & $6.1\times$  & $58\%$ & $13\%$\\
+$16$ & $60.9$  & $190.9$ & $317.3$ & $1620.6$ & $8.5\times$  & $74\%$ & $6\%$\\
+$32$ & $118.6$ & $368.9$ & $631.6$ & $5295.4$ & $14.4\times$ & $86\%$ & $3\%$\\
+\bottomrule
+\end{tabular}
+\caption{Median wall-clock per realisation, $P=30$, SNR $5$~dB. ``EM chained''
+is $t_0$ separate one-iteration calls --- the honest baseline for
+\eqref{eq:hsgs}, since interleaving forces re-entry every iteration and that
+call structure alone costs $1.7\times$. The dominant overhead is the order
+search \eqref{eq:order}, not the projection \eqref{eq:cadzow}.}
+\end{table}
+
+\begin{table}[h]\centering
+\begin{tabular}{@{}lrrrr@{}}
+\toprule
+& median & p90 & p99 & max\\
+\midrule
+HS-GS projected channel & $0.0124$ & $0.0566$ & $0.1773$ & $0.7198$\\
+true channel (estimator floor) & $0.0000$ & $0.0432$ & --- & ---\\
+\bottomrule
+\end{tabular}
+\caption{Mode-modulus deviation $\bigl|\,|z_i|-1\,\bigr|$ from
+\eqref{eq:esprit}. $87.2\%$ of recovered modes lie within $0.05$ of the unit
+circle and $96.3\%$ within $0.10$, so the relaxation \eqref{eq:relaxation} is
+tight in practice --- but the tail is real, and that is where the remaining
+slack lives.}
+\end{table}
+
+%==============================================================================
+\section{What the formulae do and do not establish}
+%==============================================================================
+
+\paragraph{Established.} The monotone growth of $\Delta_{\dB}$ with $N$;
+credible positive gain at $N=16$ ($10/12$ points) and $N=32$ ($12/12$); a real
+deficit at $N=8$ ($8/12$ points credibly negative); insensitivity to outliers
+via \eqref{eq:trim}; no high-SNR floor at $P=30$; the flatness \eqref{eq:spread}
+of the baseline in $N$; the empirical tightness of \eqref{eq:relaxation}.
+
+\paragraph{Not established, and not claimed anywhere.}
+That low Hankel rank characterises a physical ULA channel --- \eqref{eq:relaxation}
+says otherwise, and it is verified by counterexample. That \eqref{eq:hsgs}
+converges. That HS-GS is statistically efficient --- no constrained bound was
+computed, and \eqref{eq:crlbB} does not bound it. That $\Delta_{\dB}$ follows
+any particular function of $N$ --- three array sizes cannot identify a
+functional form, and nothing is fitted. Any behaviour outside
+$N\in\{8,16,32\}$, $P\in\{6..40\}$, $\SNR\in[-5,20]$~dB, $\RSR\in[0,24]$~dB,
+$K=3$, $L_k\sim\Unif\{3..7\}$. And $\rho(N)$ is a parameter count, not an
+identifiability theorem.
+
+\end{document}
