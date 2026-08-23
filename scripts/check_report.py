@@ -32,7 +32,8 @@ NUM, CAL, TIM = load("report_numbers.json"), load("calibration.json"), load("tim
 # --- trial counts ---------------------------------------------------------
 t = NUM["trials"]
 assert sum(t["b3_per_point"].values()) == t["b3_total"]
-assert t["grand_total_unique"] == t["b3_total"] + t["b4_new_only"]
+assert (t["grand_total_unique"] == t["b3_total"] + t["b4_new_only"]
+        + t.get("b6_total", 0))
 want(f"{t['grand_total_unique']:,}", "grand total")
 want(f"{t['b3_total']:,}", "B3 total")
 

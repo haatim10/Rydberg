@@ -8,7 +8,7 @@
 | Track A branch | `track-a-cui-reproduction` @ `ce118f0` (frozen) |
 | Track B branch | `track-b-ula-channel-estimation` @ `786df67` |
 | Config fingerprint | `46dbd9f1cf57d1cc` |
-| Track B trials | **20,000** unique (B3 18,400 + B4 1,600 new; B4's other 800 are B3 points reused, not recomputed) |
+| Track B trials | **24,000** unique (B3 18,400 + B4 1,600 new + B6 4,000; B4's other 800 are B3 points reused, not recomputed) |
 | Audit checks | 141 (deep) + 21 (Step-0), 0 failures |
 | Linearizations used | **0** |
 
@@ -500,6 +500,7 @@ CRN pairing is preserved, 2 000 resamples.
 | B3 | NMSE vs SNR, $N\in\{8,16,32\}\times P\in\{10,30\}$ | 36 | 18,400 (31×400 + 5×1 200) |
 | B4 | NMSE vs pilot length $P$, at $N=16$ | 6 | 2,400 (1,600 new + 800 copied from B3) |
 | B5 | scaling summary, derived from B3 | — | — |
+| B6 | NMSE vs RSR, $N\in\{8,32\}$ at $P=30$, SNR 5 dB | 10 | 4,000 |
 
 ![B1 baseline](results/track_b/b1_clean.png)
 
@@ -525,6 +526,23 @@ qualified and went to 1 200 trials; the other 31 stayed at 400. Nothing already 
 ### 8.3 B3 — channel NMSE vs SNR
 
 ![B3 gain](results/track_b/final/b3_gain_vs_snr.png)
+
+**A bound is now drawn on the NMSE panels.** For each $(N,P,\mathrm{SNR})$ the per-element Rician CRLB of
+eq. (19) is evaluated using the canonical mapping of §1.3 — $\mathbf{M}=\mathbf{S}$,
+$\mathbf{b}=\overline{\mathbf{B}_{n,:}}$ — summed over receive elements and normalised by
+$\mathbb{E}\|\mathbf{G}\|_F^2 = NK\beta$, so it sits on the same axis as NMSE$_G$.
+
+> **This is the *unconstrained* CRLB.** It bounds GS and EM-GS, which use no structural prior. **HS-GS
+> exploits a rank constraint and is not bounded by it** — a constrained bound would require the tangent
+> space of the structured manifold and is not computed here. Read HS-GS falling below the curve as evidence
+> the prior is doing work, not as a violation.
+
+Two checks make the bound trustworthy. Track A's own test reproduces: at high SNR the computed CRLB sits
+**3.0103 dB** above the genie-ZF covariance, against the required
+$10\log_{10}2 = 3.0103$ dB — so the estimation-role Fisher information carries no real-vs-complex
+convention error. And **EM-GS never falls below it at any of the 36 points** (0 violations), which is
+what the bound demands. HS-GS falls below at 11/36 points, 8 of them at $N=32$ — exactly where
+the structural constraint is most informative.
 
 **B3 — HS-GS gain over EM-GS.** The array-size ordering is clean and never crosses at either pilot length.
 At $P=30$ the curves are flat in SNR; at $P=10$ all three slope downward and $N=8$ and $16$ cross into
@@ -678,7 +696,48 @@ width, not by importance.
 > estimator attains any bound. Three values of $N$ also cannot identify a functional form — no growth law
 > is fitted and none should be quoted.
 
-### 8.7 Interpretation tests A–H
+### 8.7 B6 — does the advantage survive a weak reference?
+
+Every experiment above fixes RSR = 12 dB. But RSR is the atomic receiver's defining design parameter and
+the reason this is *biased* phase retrieval rather than ordinary phase retrieval, so a result that only
+holds at one reference strength is a result with a hole in it. B6 sweeps it, using the same CRN world
+function, the same estimators and the same adaptive rule — none of which were altered for this sweep.
+
+Fixed: $P=30$, SNR = 5 dB, $K=3$, $L_k\sim\mathcal{U}\{3..7\}$, $t_0=50$. Swept: RSR $\in$
+{0, 6, 12, 18, 24} dB at $N\in\{8,32\}$ — the two ends, where the effect sign differs. 400 trials/point,
+4 000 trials total. The adaptive rule flagged **no** point for extension: all ten CIs already exclude zero,
+the widest being 0.72 dB.
+
+![B6](results/track_b/final/b6_rsr_sweep.png)
+
+| N | RSR | GS | EM-GS | HS-GS | Gain | Gain 95% CI | Win | Active | L̂ |
+|--:|--:|--:|--:|--:|--:|:--|--:|--:|--:|
+| 8 | 0 | -4.41 | -5.69 | -5.11 | -0.58 | [-0.88, -0.32] | 16% | 44% | 3.36 |
+| 8 | 6 | -8.85 | -9.69 | -9.21 | -0.48 | [-0.67, -0.29] | 23% | 53% | 3.24 |
+| 8 | 12 | -10.63 | -10.74 | -10.34 | -0.41 | [-0.55, -0.26] | 27% | 59% | 3.20 |
+| 8 | 18 | -10.94 | -10.96 | -10.38 | -0.58 | [-0.78, -0.41] | 26% | 58% | 3.15 |
+| 8 | 24 | -10.74 | -10.74 | -10.27 | -0.47 | [-0.61, -0.33] | 21% | 55% | 3.23 |
+| 32 | 0 | -4.34 | -5.66 | -7.11 | **+1.45** | [+1.08, +1.80] | 78% | 92% | 7.81 |
+| 32 | 6 | -8.91 | -9.71 | -12.27 | **+2.55** | [+2.38, +2.74] | 97% | 100% | 5.21 |
+| 32 | 12 | -10.58 | -10.69 | -12.96 | **+2.27** | [+2.12, +2.40] | 96% | 100% | 5.02 |
+| 32 | 18 | -10.91 | -10.93 | -13.34 | **+2.42** | [+2.28, +2.56] | 98% | 100% | 5.08 |
+| 32 | 24 | -10.77 | -10.77 | -13.03 | **+2.26** | [+2.10, +2.42] | 96% | 100% | 4.84 |
+
+**The advantage survives, but it is weakest exactly where the problem is hardest.** At $N=32$ the gain holds
+across the whole sweep and is credibly positive at every point, but at RSR = 0 dB it drops to
++1.45 dB [+1.08, +1.80]
+against +2.26 to +2.55 dB from RSR = 6 dB upward — roughly 40% of its strong-reference
+value. The $N=8$ deficit, by contrast, is essentially flat in RSR (-0.58
+to -0.41 dB), so it is a property of the vacuous
+constraint rather than of the reference strength.
+
+Two mechanisms are visible in the diagnostic columns at RSR = 0, $N=32$: the order selector jumps to
+$\hat L = 7.81$ (against ≈5 elsewhere), and the constraint-active fraction falls to
+92% from 100%. With a weak reference the held-out residual is a
+noisier model-order criterion, so the selector over-orders and the projection engages less often. That is a
+limitation of the *order rule* at low RSR, not evidence that the structural prior itself fails there.
+
+### 8.8 Interpretation tests A–H
 
 Eight adversarial checks, all evaluated numerically from the stored per-trial data rather than from
 expectation.
@@ -822,6 +881,10 @@ the trial count is deliberately non-uniform across SNR, not because a number was
 - The EM-GS baseline does **not** move with $N$ (max spread 0.133 dB), so the $N$-dependence of the gain is attributable to the structural constraint rather than to the baseline shifting.
 - Track A: Figs. 7(a), 7(b) and 8 reproduce Cui closely; Figs. 5–6 qualitatively with a documented, traced ≈2 dB offset.
 - Calibration is unbiased: all four measured SNR/RSR values contain their target inside a bootstrap 95% CI.
+- The advantage **survives a weak reference** at $N=32$ — credibly positive at every RSR from 0 to 24 dB —
+  though it weakens to roughly 40% of its strong-reference value at RSR = 0 dB.
+- EM-GS never falls below the unconstrained CRLB at any of the 36 B3 points, and the bound reproduces the
+  $10\log_{10}2$ high-SNR gap to four decimal places.
 
 ### 11.2 Not established, and should not be claimed
 
@@ -830,6 +893,9 @@ the trial count is deliberately non-uniform across SNR, not because a number was
 - **No convergence guarantee** for the alternating projection, and no claim that it attains any bound.
 - **No growth law.** Three values of $N$ cannot identify a functional form; nothing is fitted.
 - **Nothing about $N=64$** or any array size not tested.
+- **No constrained bound.** The CRLB drawn is the unconstrained one; HS-GS is not bounded by it, and how
+  much headroom actually remains for a structure-aware estimator is not established here.
+- **Nothing about RSR outside 0–24 dB**, or about weak reference at $N=16$, which was not swept.
 - **Two points remain sign-undetermined** after 1 200 trials: $(N{=}8, P{=}10, \mathrm{SNR}\,5)$ at
   +0.10 [−0.01, +0.20] and $(N{=}16, P{=}10, \mathrm{SNR}\,15)$ at −0.15 [−0.42, +0.10]. Both CIs bound the
   effect tightly near zero, so the magnitude is determined and only the sign of a ≈0 effect is open;

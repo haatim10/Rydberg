@@ -23,6 +23,7 @@ from rydberg_sim.track_b_proposed import hankel_rank_cap
 
 B3 = REPO / "results/track_b/b3"
 B4 = REPO / "results/track_b/b4"
+B6 = REPO / "results/track_b/b6"
 EST = ("biased_gs", "em_gs", "hs_gs")
 
 
@@ -32,8 +33,8 @@ def load(p: Path) -> dict:
 
 
 def parse(name: str):
-    N, P, s = name.replace(".npz", "").split("_")
-    return int(N[1:]), int(P[1:]), float(s[3:])
+    parts = name.replace(".npz", "").split("_")
+    return int(parts[0][1:]), int(parts[1][1:]), float(parts[2][3:])
 
 
 def counts(store: Path) -> dict:
@@ -51,6 +52,7 @@ def main() -> None:
 
     # ---- Fix 3: trial counts reconstructed from the checkpoints ----------
     c3, c4 = counts(B3), counts(B4)
+    c6 = counts(B6) if B6.exists() else {}
     # B4 reuses two B3 points verbatim (identical CRN worlds, copied not rerun)
     copied = [n for n in c4 if n in c3 and c4[n] == c3[n]]
     b4_new = {k: v for k, v in c4.items() if k not in copied}
@@ -61,13 +63,17 @@ def main() -> None:
         "b4_copied_points": sorted(copied),
         "b4_copied_trials": sum(c4[n] for n in copied),
         "b4_new_only": sum(b4_new.values()),
-        "grand_total_unique": sum(c3.values()) + sum(b4_new.values()),
+        "b6_per_point": c6, "b6_total": sum(c6.values()),
+        "n_points_b6": len(c6),
+        "grand_total_unique": (sum(c3.values()) + sum(b4_new.values())
+                               + sum(c6.values())),
         "n_points_b3": len(c3), "n_points_b4": len(c4),
         "b3_at_400": sum(1 for v in c3.values() if v == 400),
         "b3_at_1200": sum(1 for v in c3.values() if v == 1200),
     }
     assert (out["trials"]["grand_total_unique"]
-            == out["trials"]["b3_total"] + out["trials"]["b4_new_only"])
+            == out["trials"]["b3_total"] + out["trials"]["b4_new_only"]
+            + out["trials"]["b6_total"])
 
     # ---- Fix 5: E[L] measured on the ACTUAL B3 trials --------------------
     tot_sum, tot_n, per_N = 0.0, 0, {}
@@ -176,6 +182,7 @@ def main() -> None:
     print(f"      of which copied from B3: {t['b4_copied_trials']} "
           f"({', '.join(t['b4_copied_points'])})")
     print(f"      new work only: {t['b4_new_only']}")
+    print(f"  B6: {t['n_points_b6']} points, {t['b6_total']} total")
     print(f"  GRAND TOTAL (deduplicated): {t['grand_total_unique']}")
     print()
     print("=" * 74)

@@ -46,6 +46,12 @@ STYLE = {
     "hs_gs":     dict(label="HS-GS (proposed)", c="#1F6FB4", ls="-", m="^"),
 }
 ORDER = ["biased_gs", "em_gs", "hs_gs"]
+CRLB_STYLE = dict(color="#2E7D32", ls="-.", lw=1.1, label="CRLB (unconstrained)")
+
+
+def crlb():
+    f = TB / "crlb.json"
+    return json.loads(f.read_text()) if f.exists() else None
 NCOL = {8: "#8C8C8C", 16: "#C4451C", 32: "#1F6FB4"}
 
 
@@ -90,6 +96,11 @@ def b3():
                         color=st["c"], ls=st["ls"], marker=st["m"],
                         markerfacecolor="none", markeredgewidth=0.9,
                         label=st["label"])
+            C = crlb()
+            if C:
+                xs = [r["snr_db"] for r in sub]
+                ax.plot(xs, [C["b3"][f"N{N}_P{P}_snr{x:+.0f}"] for x in xs],
+                        **CRLB_STYLE)
             style_axes(ax, xstep=5)
             ax.set_xlabel("SNR (dB)")
             ax.set_title(f"$N = {N}$", fontsize=9)
@@ -128,6 +139,10 @@ def b4():
         ax.plot([r["P"] for r in rows], [r["pooled_db"][alg] for r in rows],
                 color=st["c"], ls=st["ls"], marker=st["m"],
                 markerfacecolor="none", markeredgewidth=0.9, label=st["label"])
+    C = crlb()
+    if C:
+        ax.plot([r["P"] for r in rows],
+                [C["b4"][f"P{r['P']}"] for r in rows], **CRLB_STYLE)
     K = 3
     ax.axvline(2 * K, color="0.6", lw=0.7, ls=":")
     ax.annotate(f"$P = 2K = {2*K}$", xy=(2 * K, ax.get_ylim()[1]),
@@ -171,9 +186,51 @@ def b5():
     save(fig, "b5_gain_scaling_vs_N")
 
 
+
+
+# ------------------------------------------------------------------ B6 ----
+def b6():
+    """RSR sweep: does the structural advantage survive a weak reference?
+
+    Three panels rather than two: overlaying both array sizes on one NMSE
+    axis needed a six-entry legend that covered the data.
+    """
+    rows = sorted(json.loads((TB / "b6/summary.json").read_text()),
+                  key=lambda r: (r["N"], r["rsr_db"]))
+    Ns = sorted({r["N"] for r in rows})
+    fig, axes = plt.subplots(1, 3, figsize=(9.2, 2.85))
+    for ax, N in zip(axes[:2], Ns):
+        sub = [r for r in rows if r["N"] == N]
+        xs = [r["rsr_db"] for r in sub]
+        for alg in ORDER:
+            st = STYLE[alg]
+            ax.plot(xs, [r["pooled_db"][alg] for r in sub], color=st["c"],
+                    ls=st["ls"], marker=st["m"], markerfacecolor="none",
+                    markeredgewidth=0.9, label=st["label"])
+        style_axes(ax, xstep=6)
+        ax.set_xlabel("RSR (dB)")
+        ax.set_title(f"$N = {N}$", fontsize=9)
+    axes[0].set_ylabel("Channel NMSE$_G$ (dB)")
+    axes[0].legend(loc="best")
+    ax2 = axes[2]
+    for N in Ns:
+        sub = [r for r in rows if r["N"] == N]
+        ax2.plot([r["rsr_db"] for r in sub],
+                 [r["gain_hs_vs_em_db"] for r in sub], color=NCOL[N],
+                 marker="o", markerfacecolor="none", markeredgewidth=0.9,
+                 label=f"$N = {N}$")
+    ax2.axhline(0.0, color="0.55", lw=0.7, ls=":")
+    style_axes(ax2, xstep=6)
+    ax2.set_xlabel("RSR (dB)")
+    ax2.set_ylabel("HS-GS gain over EM-GS (dB)")
+    ax2.legend(loc="best")
+    fig.tight_layout()
+    save(fig, "b6_rsr_sweep")
+
+
 if __name__ == "__main__":
     import sys
-    which = sys.argv[1:] or ["b3", "b4", "b5"]
+    which = sys.argv[1:] or ["b3", "b4", "b5", "b6"]
     for w in which:
         print(f"{w}:")
         globals()[w]()

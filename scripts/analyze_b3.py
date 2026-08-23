@@ -82,21 +82,25 @@ def summarize(path: Path, n_boot: int = NBOOT) -> dict:
     return out
 
 
-def parse(name: str) -> tuple[int, int, float]:
+def parse(name: str):
     body = name.replace(".npz", "")
-    N, P, snr = body.split("_")
-    return int(N[1:]), int(P[1:]), float(snr[3:])
+    parts = body.split("_")
+    N, P, snr = int(parts[0][1:]), int(parts[1][1:]), float(parts[2][3:])
+    rsr = float(parts[3][3:]) if len(parts) > 3 else None
+    return N, P, snr, rsr
 
 
 def main() -> None:
     store = Path(sys.argv[1]) if len(sys.argv) > 1 else REPO / "results/track_b/b3"
     rows = []
     for f in sorted(store.glob("N*.npz")):
-        N, P, snr = parse(f.name)
+        N, P, snr, rsr = parse(f.name)
         r = summarize(f)
         r.update(N=N, P=P, snr_db=snr)
+        if rsr is not None:
+            r["rsr_db"] = rsr
         rows.append(r)
-    rows.sort(key=lambda r: (r["N"], r["P"], r["snr_db"]))
+    rows.sort(key=lambda r: (r["N"], r["P"], r.get("rsr_db", 0.0), r["snr_db"]))
     (store / "summary.json").write_text(json.dumps(rows, indent=2))
 
     hdr = (f"{'N':>3}{'P':>4}{'SNR':>6} {'n':>5} | {'GS':>7} {'EM-GS':>7} "
@@ -107,7 +111,8 @@ def main() -> None:
     for r in rows:
         p, m = r["pooled_db"], r["median_per_trial_db"]
         lo, hi = r["gain_ci95_db"]
-        print(f"{r['N']:3d}{r['P']:4d}{r['snr_db']:6.1f} {r['n_trials']:5d} | "
+        x = r.get("rsr_db", r["snr_db"])
+        print(f"{r['N']:3d}{r['P']:4d}{x:6.1f} {r['n_trials']:5d} | "
               f"{p['biased_gs']:7.2f} {p['em_gs']:7.2f} {p['hs_gs']:7.2f} | "
               f"{r['gain_hs_vs_em_db']:+6.2f} [{lo:+6.2f},{hi:+6.2f}] "
               f"{r['win_rate_vs_em']:5.0%} {r['constraint_active_frac']:5.0%} "
