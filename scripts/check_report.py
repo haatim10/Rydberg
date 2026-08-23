@@ -82,7 +82,7 @@ for r in TIM:
 # Sec. 10 deliberately QUOTES the superseded wrong claims in order to record
 # them, so the ban applies to the body of the report, not to that section.
 _i = MD_TEXT.index("## 10. Corrections")
-_j = MD_TEXT.index("## 11. What is and is not")
+_j = MD_TEXT.index("## 11. Final claim audit")
 BODY = MD_TEXT[:_i] + MD_TEXT[_j:]
 for banned, why in (
     ("precisely the set of channels", "Fix 4: the constraint is a relaxation"),

@@ -46,7 +46,7 @@ STYLE = {
     "hs_gs":     dict(label="HS-GS (proposed)", c="#1F6FB4", ls="-", m="^"),
 }
 ORDER = ["biased_gs", "em_gs", "hs_gs"]
-CRLB_STYLE = dict(color="#2E7D32", ls="-.", lw=1.1, label="CRLB (unconstrained)")
+CRLB_STYLE = dict(color="#2E7D32", ls="-.", lw=1.1, label="Unconstrained CRLB")
 
 
 def crlb():
@@ -228,9 +228,67 @@ def b6():
     save(fig, "b6_rsr_sweep")
 
 
+# ------------------------------------------------------- B1 baseline ----
+def b1():
+    """Track B1: what Cui's estimators alone achieve on the ULA channel.
+
+    Frozen 400-trial baseline, N = 8, GS and EM-GS only -- no Hankel
+    constraint anywhere. Regenerated from baseline_preliminary.json.
+    """
+    rows = json.loads((TB / "baseline_preliminary.json").read_text())["rows"]
+    fig, axes = plt.subplots(1, 3, figsize=(9.2, 2.85))
+    known = sorted({r["sweep"] for r in rows})
+    for ax, sweep, xl, xs, ttl in (
+            (axes[0], "B1 (P=10)", "SNR (dB)", 5, "$N=8$, $P=10$"),
+            (axes[1], "B1 (P=30)", "SNR (dB)", 5, "$N=8$, $P=30$"),
+            (axes[2], "B2 (SNR=5.0 dB)", "Pilot length $P$", 10,
+             "$N=8$, SNR = 5 dB")):
+        assert sweep in known, f"sweep {sweep!r} not in store: {known}"
+        sub = [r for r in rows if r["sweep"] == sweep]
+        assert sub, f"no rows for {sweep!r}"
+        for alg in ("biased_gs", "em_gs"):
+            pts = sorted((r for r in sub if r["algorithm"] == alg),
+                         key=lambda r: r["x"])
+            st = STYLE[alg]
+            ax.plot([p["x"] for p in pts], [p["nmse_db"] for p in pts],
+                    color=st["c"], ls=st["ls"], marker=st["m"],
+                    markerfacecolor="none", markeredgewidth=0.9,
+                    label=st["label"])
+        style_axes(ax, xstep=xs)
+        ax.set_xlabel(xl)
+        ax.set_title(ttl, fontsize=9)
+    axes[0].set_ylabel("Channel NMSE$_G$ (dB)")
+    axes[0].legend(loc="best")
+    fig.tight_layout()
+    save(fig, "b1_baseline_no_hankel")
+
+
+def modulus():
+    """Mode-modulus diagnostic: how tight is the Hankel relaxation?"""
+    d = json.loads((TB / "modulus_tightness.json").read_text())
+    pj, tr, cf = d["projected"], d["true_channel_reference"], d["config"]
+    fig, ax = plt.subplots(figsize=(4.4, 2.9))
+    stats = ["median", "p90", "p99", "max"]
+    xs = np.arange(len(stats))
+    ax.bar(xs - 0.19, [pj[k] for k in stats], 0.38, color=STYLE["hs_gs"]["c"],
+           label="HS-GS projected", edgecolor="none")
+    ax.bar(xs[:2] + 0.19, [tr[k] for k in stats[:2]], 0.38, color="0.62",
+           label="true channel (floor)", edgecolor="none")
+    ax.axhline(0.05, color="0.45", lw=0.7, ls=":")
+    ax.annotate("0.05", xy=(len(stats) - 0.5, 0.05), fontsize=7.5,
+                color="0.4", va="bottom", ha="right")
+    ax.set_xticks(xs); ax.set_xticklabels(stats)
+    ax.set_ylabel(r"$\left|\,|z_i| - 1\,\right|$")
+    ax.set_xlabel("distribution statistic")
+    style_axes(ax)
+    ax.legend(loc="upper left")
+    fig.tight_layout()
+    save(fig, "b2_mode_modulus")
+
+
 if __name__ == "__main__":
     import sys
-    which = sys.argv[1:] or ["b3", "b4", "b5", "b6"]
+    which = sys.argv[1:] or ["b1", "b3", "b4", "b5", "b6", "modulus"]
     for w in which:
         print(f"{w}:")
         globals()[w]()

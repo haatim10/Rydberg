@@ -401,6 +401,11 @@ $$\min_{\mathbf{G}}\; J(\mathbf{G}) = \left\|\mathbf{Z} - |\mathbf{G}\mathbf{S}+
 
 No angle grid is introduced and no angle is ever estimated — $\theta$ and $\alpha$ do not appear.
 
+![Mode modulus](results/track_b/final/b2_mode_modulus.png)
+
+**Mode-modulus diagnostic.** How far the recovered modes sit from the unit circle the ULA model
+requires. The true-channel bars are the estimator floor.
+
 **How loose is the relaxation in practice?** This is measurable rather than merely arguable, so it was
 measured. After HS-GS converges, ESPRIT is run on the projected $\hat{\mathbf{g}}_k$ to extract the
 $\hat L$ modes $z_i$, and $\bigl||z_i|-1\bigr|$ is recorded — the distance of each recovered mode from the
@@ -489,6 +494,29 @@ Two distinct things are easy to conflate here, and the report keeps them separat
 ---
 
 ## 8. Track B — results
+
+Track B splits into two subtracks. The distinction is organizational and scientific; no data was
+re-labelled or re-run to fit it.
+
+**Track B1 — exact-model ULA CSI estimation with Cui's algorithms.** Apply biased GS and EM-GS,
+unchanged, to the geometric ULA channel while keeping the exact magnitude observation
+$\mathbf{Z}=|\mathbf{GS}+\mathbf{B}+\mathbf{W}|$. **No Hankel constraint anywhere.** B1 establishes what
+Cui's machinery achieves on this channel and is the baseline everything else is measured against.
+Experiments: the frozen B1/B2 sweeps (NMSE vs SNR at $P\in\{10,30\}$, NMSE vs $P$ at SNR = 5 dB, both
+at $N=8$, 400 trials/point, GS and EM-GS only).
+
+![B1 baseline](results/track_b/final/b1_baseline_no_hankel.png)
+
+**B1 — Cui's estimators on the ULA channel, no structural constraint.** GS and EM-GS converge as SNR
+rises, exactly as $R(\kappa)\to1$ predicts; EM-GS's advantage over plain GS is visible only at low SNR
+and low RSR.
+
+**Track B2 — structure-aware ULA CSI estimation.** Extend the exact-model EM-GS estimator with a
+grid-free low-rank Hankel relaxation of the ULA structure. Estimator: **HS-GS**. Experiments: B3
+(array size × SNR), B4 (pilot length), B5 (scaling summary), B6 (reference strength), plus the
+mode-modulus diagnostic, the complexity analysis, and the unconstrained-CRLB comparison.
+
+Everything from §8.2 onward is Track B2.
 
 Three estimators — biased GS, EM-GS and HS-GS — on **identical** common-random-number worlds, all on the
 exact model of eq. (2). Fixed throughout: $K=3$, $L_k\sim\mathcal{U}\{3..7\}$, RSR = 12 dB, $t_0=50$,
@@ -887,45 +915,86 @@ the trial count is deliberately non-uniform across SNR, not because a number was
 
 ---
 
-## 11. What is and is not established
+## 11. Final claim audit
 
-### 11.1 Supported by the data
+Three lists. Conservative by construction: a claim is "supported" only if the stored data establishes it
+across the tested grid, "qualified" if it holds with a stated restriction, and "do not claim" otherwise.
 
-- The HS-GS advantage over EM-GS **grows monotonically with $N$**, and the sign of the effect flips between
-  $N=8$ and $N=16$ — precisely where $\lceil N/2\rceil$ first exceeds max $L_k$.
-- Credible positive gain at $N=16$ (10/12 points) and $N=32$ (12/12), by bootstrap CI on the pooled
-  ratio-of-sums.
-- A real **deficit** at $N=8$, systematic at high SNR — reported rather than hidden.
-- The gain is not outlier-driven (test F) and shows no high-SNR floor at adequate pilot length (test G).
-- The EM-GS baseline does **not** move with $N$ (max spread 0.133 dB), so the $N$-dependence of the gain is attributable to the structural constraint rather than to the baseline shifting.
-- Track A: Figs. 7(a), 7(b) and 8 reproduce Cui closely; Figs. 5–6 qualitatively with a documented, traced ≈2 dB offset.
-- Calibration is unbiased: all four measured SNR/RSR values contain their target inside a bootstrap 95% CI.
-- The advantage **survives a weak reference** at $N=32$ — credibly positive at every RSR from 0 to 24 dB —
-  though it weakens to roughly 40% of its strong-reference value at RSR = 0 dB.
-- EM-GS never falls below the unconstrained CRLB at any of the 36 B3 points, and the bound reproduces the
-  $10\log_{10}2$ high-SNR gap to four decimal places.
+### 11.1 Supported
 
-### 11.2 Not established, and should not be claimed
+- **HS-GS improves CSI estimation at sufficiently large $N$.** At $N=32$, all 12/12 points have a
+  bootstrap 95% CI strictly above zero; mean gain +2.851 dB, win rate 95.3%.
+- **The improvement increases from $N=8\to16\to32$.** Mean gains −0.192 → +0.780 → +2.851 dB, monotone;
+  the $N=32$ CI lies strictly above the $N=16$ CI at 12/12 shared points.
+- **$N=8$ is a weak regime for the Hankel relaxation.** 8/12 points credibly negative, 1 unresolved,
+  mean −0.192 dB. Restricted to trials where the projection is actually active it is worse: −0.59 dB.
+- **HS-GS remains useful across the tested RSR range at $N=32$.** All five RSR points credibly positive,
+  +1.45 to +2.55 dB.
+- **The improvement is not driven solely by outliers.** Dropping the worst 5% of EM-GS trials moves the
+  gain by a median of −0.05 dB (max |change| 0.72 dB).
+- **HS-GS has no high-SNR error floor at adequate pilot length.** At $P=30$, slopes −1.03/−1.01/−1.04
+  dB/dB against EM-GS's −1.02/−1.01/−1.01.
+- **The EM-GS baseline is not $N$-dependent**, max spread 0.133 dB — so the $N$-dependence of the gain is
+  attributable to HS-GS exploiting cross-array structure, not to the baseline degrading.
+- **The Hankel relaxation is empirically tight at $N=32$**: 96.3% of recovered modes
+  within 0.10 of the unit circle, median deviation 0.0124.
+- **HS-GS costs 6.1–14.4× EM-GS**, dominated by the order search (86% at
+  $N=32$), not the projection (3%).
 
-- **No identifiability theorem.** The redundancy argument is a parameter count.
-- **The Hankel constraint is a relaxation, not the ULA set.** Measured slack: median mode-modulus
-  deviation 0.0124, 96.3% within 0.10 of the unit circle, but a tail
-  reaching 0.72. Tight in practice, not tight by construction. Rank $\le L$ characterises sums of $L$ exponentials $z_i^{\,n}$ with arbitrary non-zero complex $z_i$; the ULA model additionally requires $|z_i|=1$. Cadzow enforces no unit-modulus condition, so the feasible set strictly contains the ULA set and admits damped and growing modes. The constraint is necessary, and sufficient only up to the modulus of the recovered modes.
-- **No convergence guarantee** for the alternating projection, and no claim that it attains any bound.
-- **No growth law.** Three values of $N$ cannot identify a functional form; nothing is fitted.
-- **Nothing about $N=64$** or any array size not tested.
-- **No constrained bound.** The CRLB drawn is the unconstrained one; HS-GS is not bounded by it, and how
-  much headroom actually remains for a structure-aware estimator is not established here.
-- **Nothing about RSR outside 0–24 dB**, or about weak reference at $N=16$, which was not swept.
-- **Two points remain sign-undetermined** after 1 200 trials: $(N{=}8, P{=}10, \mathrm{SNR}\,5)$ at
-  +0.10 [−0.01, +0.20] and $(N{=}16, P{=}10, \mathrm{SNR}\,15)$ at −0.15 [−0.42, +0.10]. Both CIs bound the
-  effect tightly near zero, so the magnitude is determined and only the sign of a ≈0 effect is open;
-  extension was stopped rather than burn hours refining a conclusive null.
+### 11.2 Qualified
 
-### 11.3 Status
+- **"HS-GS helps when pilots are limited"** — qualified. At $N=16$ it helps at *every* tested $P$ from 6
+  to 40 (6/6 CIs above zero), so the benefit is not specific to short pilots. The gain is largest at
+  $P=10$–14 (+0.82 to +0.85 dB) and smaller at both ends, and at $P=6$ the training half of the order
+  split is underdetermined (4 real equations, 6 real unknowns).
+- **"Useful across the tested RSR range"** — qualified to $N=32$. At $N=8$ HS-GS is *worse* at every RSR
+  (−0.41 to −0.58 dB). The benefit is also weakest at RSR = 0 dB (+1.45 dB, ~40% of its value above
+  6 dB), where the order selector over-orders ($\hat L$ = 7.81 vs ≈5).
+- **"Improves at large $N$"** — two exceptions inside the tested grid, both at $N=16$, $P=10$, high SNR:
+  SNR = 20 is credibly *negative* (−0.68 dB) and SNR = 15 is unresolved (−0.15 [−0.42, +0.10]).
+- **The Hankel constraint is informative** — only where $L_k < \lceil N/2\rceil$. At $N=8$ that is 20% of
+  the prior; the constraint is vacuous for the other 80%.
+- **HS-GS falls below the unconstrained CRLB** at 11/36 points — legitimate, since that bound governs
+  prior-free estimators, but it means the unconstrained CRLB does **not** bound HS-GS and no valid bound
+  for HS-GS has been computed.
 
-Track A is frozen. Track B is ready to freeze, with the two null points flagged above. No Track C,
-machine-learning, or unrolling work has been started.
+### 11.3 Do not claim
+
+- **"Low Hankel rank exactly characterizes a physical ULA channel."** False. Rank $\le L$ admits any
+  non-zero complex modes; the ULA model needs $|z_i|=1$. Verified by construction: a damped sequence with
+  $|z|=0.75$ has the same Hankel rank as the physical channel. It is a **relaxation**.
+- **"HS-GS is guaranteed to converge."** No convergence proof exists. Alternating-projection schemes of
+  this kind are not contractions in general.
+- **"HS-GS is statistically efficient."** No efficiency claim is supported; no constrained bound was
+  computed.
+- **"The gain follows a particular function of $N$."** Three values of $N$ cannot identify a functional
+  form. No growth law is fitted and none should be quoted.
+- **"Results generalize beyond the tested grid."** Nothing is established outside
+  $N\in\{8,16,32\}$, $P\in\{6..40\}$, SNR $\in[-5,20]$ dB, RSR $\in[0,24]$ dB, $K=3$,
+  $L_k\sim\mathcal{U}\{3..7\}$. In particular nothing about $N=64$, about weak reference at $N=16$
+  (not swept), or about any other path-count prior.
+- **"An identifiability theorem."** The redundancy argument $\rho(N)$ is a parameter count. It bounds
+  nothing on its own.
+
+### 11.4 Failure and null regimes, preserved
+
+| Regime | What happens | Evidence |
+|---|---|---|
+| $N=8$, all $P$, SNR ≥ 0 | HS-GS **loses** | 8/12 points CI < 0, worst −2.23 dB at $P=10$, SNR 20 |
+| $N=8$, $P=10$, SNR = 5 | **unresolved** | +0.10 [−0.01, +0.20] after 1 200 trials |
+| $N=16$, $P=10$, SNR = 20 | HS-GS **loses** | −0.68 [−1.09, −0.26] after 1 200 trials |
+| $N=16$, $P=10$, SNR = 15 | **unresolved** | −0.15 [−0.42, +0.10] after 1 200 trials |
+| $N=8$, all RSR | HS-GS **loses** | −0.41 to −0.58 dB, all five CIs below zero |
+| $P=6$ | training half underdetermined | 4 real equations vs 6 real unknowns |
+
+Two points remain sign-undetermined after 1 200 trials. Both CIs bound the effect tightly near zero, so
+the magnitude is determined and only the sign of a ≈0 effect is open; extension was stopped rather than
+spend hours refining a conclusive null.
+
+### 11.5 Status
+
+Track A is frozen. Track B is ready to freeze, with the failure and null regimes above preserved. No
+Track C, machine-learning, or unrolling work has been started.
 
 ---
 

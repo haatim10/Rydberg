@@ -148,5 +148,13 @@ def test_trial_counts_reconcile():
         pytest.skip("run scripts/report_numbers.py first")
     t = json.loads(p.read_text())["trials"]
     assert sum(t["b3_per_point"].values()) == t["b3_total"]
-    assert t["grand_total_unique"] == t["b3_total"] + t["b4_new_only"]
+    assert sum(t["b4_per_point"].values()) == t["b4_total"]
     assert t["b4_total"] == t["b4_new_only"] + t["b4_copied_trials"]
+    # B4's copied points are B3 points reused verbatim, so they must NOT be
+    # counted twice in the grand total; B6 is entirely new work.
+    assert t["grand_total_unique"] == (t["b3_total"] + t["b4_new_only"]
+                                       + t.get("b6_total", 0))
+    if t.get("b6_per_point"):
+        assert sum(t["b6_per_point"].values()) == t["b6_total"]
+        assert not (set(t["b6_per_point"]) & set(t["b3_per_point"])), \
+            "B6 point names collide with B3 — risk of double counting"
