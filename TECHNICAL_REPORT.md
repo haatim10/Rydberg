@@ -401,6 +401,25 @@ $$\min_{\mathbf{G}}\; J(\mathbf{G}) = \left\|\mathbf{Z} - |\mathbf{G}\mathbf{S}+
 
 No angle grid is introduced and no angle is ever estimated — $\theta$ and $\alpha$ do not appear.
 
+**How loose is the relaxation in practice?** This is measurable rather than merely arguable, so it was
+measured. After HS-GS converges, ESPRIT is run on the projected $\hat{\mathbf{g}}_k$ to extract the
+$\hat L$ modes $z_i$, and $\bigl||z_i|-1\bigr|$ is recorded — the distance of each recovered mode from the
+unit circle the ULA model requires. At $N=32$, $P=30$, SNR = 5 dB over
+80 trials with the constraint active:
+
+| | median | p90 | p99 | max |
+|---|--:|--:|--:|--:|
+| HS-GS projected channel | 0.0124 | 0.0566 | 0.1773 | 0.7198 |
+| true channel (estimator floor) | 0.0000 | 0.0432 | — | — |
+
+The true-channel row is the floor: it is what this ESPRIT step reports on data lying exactly on the ULA
+manifold, so it separates relaxation slack from estimator error. **87.2% of recovered
+modes sit within 0.05 of the unit circle and 96.3% within 0.10**, with a median
+deviation of 0.0124. So the relaxation is tight in practice — Cadzow is not, in the main,
+exploiting the damped and growing modes it is formally permitted. The tail is real though
+(p99 = 0.177, max = 0.720): a small fraction of modes drift well off the circle, and
+that is where the remaining slack lives.
+
 ### 7.2 Why Cadzow rather than OMP or ESPRIT
 
 Three candidates were built and measured before choosing:
@@ -889,7 +908,9 @@ the trial count is deliberately non-uniform across SNR, not because a number was
 ### 11.2 Not established, and should not be claimed
 
 - **No identifiability theorem.** The redundancy argument is a parameter count.
-- **The Hankel constraint is a relaxation, not the ULA set.** Rank $\le L$ characterises sums of $L$ exponentials $z_i^{\,n}$ with arbitrary non-zero complex $z_i$; the ULA model additionally requires $|z_i|=1$. Cadzow enforces no unit-modulus condition, so the feasible set strictly contains the ULA set and admits damped and growing modes. The constraint is necessary, and sufficient only up to the modulus of the recovered modes.
+- **The Hankel constraint is a relaxation, not the ULA set.** Measured slack: median mode-modulus
+  deviation 0.0124, 96.3% within 0.10 of the unit circle, but a tail
+  reaching 0.72. Tight in practice, not tight by construction. Rank $\le L$ characterises sums of $L$ exponentials $z_i^{\,n}$ with arbitrary non-zero complex $z_i$; the ULA model additionally requires $|z_i|=1$. Cadzow enforces no unit-modulus condition, so the feasible set strictly contains the ULA set and admits damped and growing modes. The constraint is necessary, and sufficient only up to the modulus of the recovered modes.
 - **No convergence guarantee** for the alternating projection, and no claim that it attains any bound.
 - **No growth law.** Three values of $N$ cannot identify a functional form; nothing is fitted.
 - **Nothing about $N=64$** or any array size not tested.
