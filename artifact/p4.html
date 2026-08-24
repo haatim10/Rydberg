@@ -1,0 +1,182 @@
+<section id="s7">
+<span class="snum">Part VII</span>
+<h2>Track B1 — baseline exact-model methods</h2>
+<div class="col">
+<p class="lede">Both methods in this part are Cui's, applied unchanged. The only new work is the
+adapter that maps a ULA channel-estimation problem into Cui's detection-shaped solver. Verified:
+<code>gs.py</code> has not been modified since commit <code>c8bc288</code>, which predates all
+Track-B work.</p>
+
+<h3>7.1 Canonical formulation and the conjugation</h3>
+<p>Cui's solver addresses the canonical problem <code>z = |M<sup>H</sup>u + b + w|</code> with
+<var>M</var> known, <var>u</var> unknown. Our problem is a matrix equation; the adapter works
+<strong>one receive element at a time</strong>. Row <var>n</var> of eq. (8) reads
+<code>Z<sub>n,:</sub> = |g<sub>n</sub>S + B<sub>n,:</sub> + W<sub>n,:</sub>|</code> where
+<code>g<sub>n</sub></code> is row <var>n</var> of <var>G</var> — a length-<var>K</var> row vector.
+The difficulty is that <code>g<sub>n</sub>S</code> is a row-times-matrix product whereas the solver
+expects <code>M<sup>H</sup>u</code>, a matrix-times-column product.</p>
+<p>Transposing gives <code>(g<sub>n</sub>S)<sup>T</sup> = S<sup>T</sup>g<sub>n</sub><sup>T</sup></code>,
+and <code>S<sup>T</sup> = (S<sup>H</sup>)*</code>. Conjugating the whole equation turns
+<code>S<sup>T</sup>g<sub>n</sub><sup>T</sup></code> into
+<code>S<sup>H</sup>conj(g<sub>n</sub>)</code>, which is exactly the required form — at the price of
+conjugating <em>everything else in the same equation</em>. Since <code>|conj(·)| = |·|</code>, the
+measurement <var>Z</var> is untouched. Hence:</p>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Solver slot</th><th class="l">Detection (Cui)</th><th class="l">Channel estimation, row n</th><th class="l">Why</th></tr></thead>
+<tbody>
+<tr><td class="l"><var>M</var></td><td><var>A</var></td><td><b><var>S</var></b></td><td class="t">NOT conjugated — the conjugation was applied to the observation, which turns S<sup>T</sup> into S<sup>H</sup></td></tr>
+<tr><td class="l"><var>u</var></td><td><var>s</var></td><td><b>conj(g<sub>n</sub>)</b></td><td class="t">conjugated, as a column</td></tr>
+<tr><td class="l"><var>b</var></td><td><var>b</var></td><td><b>conj(B<sub>n,:</sub>)</b></td><td class="t">conjugated — same equation, same operation</td></tr>
+<tr><td class="l"><var>z</var></td><td><var>z</var></td><td><var>Z</var><sub>n,:</sub></td><td class="t">unchanged: |conj(x)| = |x|</td></tr>
+<tr><td class="l">output</td><td>ŝ</td><td><b>ĝ<sub>n</sub> = conj(û)</b></td><td class="t">undo the conjugation on the way out</td></tr>
+</tbody>
+<caption>Verified numerically per receive element: max deviation <b>8.88e-16</b>. Dimensions:
+<span class="mono">S ∈ ℂ<sup>K×P</sup></span>, <span class="mono">u ∈ ℂ<sup>K</sup></span>,
+<span class="mono">b, z ∈ ℂ<sup>P</sup>, ℝ<sup>P</sup></span>. The loop runs N times per iteration.</caption>
+</table></div>
+<div class="note bad"><div class="t">A trap that an earlier draft of this document fell into</div>
+<p>The dual convention (<var>M</var> = conj(<var>S</var>), <var>u</var> = <var>g<sub>n</sub></var>,
+<var>b</var> = <var>B<sub>n,:</sub></var>, no output conjugation) is <em>equally valid</em> — also
+verified at 8.88e-16. What is <strong>not</strong> valid is conjugating <em>both</em> <var>M</var>
+and <var>u</var>: that fails at a deviation of <b>4.043</b>. An earlier version of this write-up
+printed exactly that invalid pair. Three regression tests now pin all three cases. Note also that the
+identity only closes when the noise is carried into the canonical <var>b</var> alongside <var>B</var>.</p></div>
+
+<div class="col">
+<h3>7.2 Biased Gerchberg–Saxton</h3>
+<p><strong>Step 1 — initialisation.</strong> A spectral initialiser, weighted by <var>z<sub>q</sub></var>
+(not <var>z<sub>q</sub></var>²), on the augmented vectors
+<code>m̄<sub>q</sub> = [m<sub>q</sub>; b<sub>q</sub>]</code>:</p>
+</div>
+<div class="eq"><span class="b"><var>M</var><sub>spec</sub> = Σ<sub><var>q</var></sub>
+  <var>z<sub>q</sub></var> m̄<sub><var>q</var></sub>m̄<sub><var>q</var></sub><sup>H</sup>,
+  &nbsp;&nbsp; <var>v</var> = principal eigenvector</span><span class="n">(13)</span></div>
+<div class="col"><p>The eigenvector fixes only a direction. Two further steps, both present in the
+code and both easy to omit, fix its magnitude and its global phase:</p></div>
+<div class="eq"><span class="b">r̄ = |M̄<sup>H</sup><var>v</var>|<sup>T</sup><var>z</var> /
+  ‖M̄<sup>H</sup><var>v</var>‖²,&nbsp;&nbsp; ū<sub>0</sub> = r̄ <var>v</var></span><span class="n">(14)</span></div>
+<div class="eq"><span class="b"><var>u</var><sub>0</sub> = [ e<sup>−j∠(ū<sub>0</sub>)<sub><var>D</var>+1</sub></sup>
+  ū<sub>0</sub> ]<sub>1:<var>D</var></sub></span><span class="n">(15)</span></div>
+<div class="col">
+<p>Eq. (14) is a magnitude least squares picking the scale that best matches the measured amplitudes.
+Eq. (15) is the <strong>phase anchor</strong>: the (<var>D</var>+1)-th entry corresponds to the
+<em>known</em> reference, whose coefficient is 1 and whose phase is therefore zero by construction,
+so de-rotating by it pins the otherwise arbitrary eigenvector phase. Only then is the last entry
+dropped. A regression test confirms removing this step measurably degrades the initialiser at low SNR.</p>
+
+<p><strong>Steps 2–6 — the iteration.</strong> At iteration <var>t</var>:</p>
+</div>
+<div class="eq"><span class="b">(2) λ<sup><var>t</var>−1</sup> = <var>M</var><sup>H</sup><var>u</var><sup><var>t</var>−1</sup> + <var>b</var>
+  &nbsp;&nbsp;&nbsp; (3) θ<sup><var>t</var></sup> = ∠λ<sup><var>t</var>−1</sup></span><span class="n">(16)</span></div>
+<div class="eq"><span class="b">(4) <var>y</var><sup><var>t</var></sup> = <var>z</var> ⊙ e<sup>jθ<sup><var>t</var></sup></sup>
+  &nbsp;&nbsp;&nbsp; (5) <var>r</var><sup><var>t</var></sup> = <var>y</var><sup><var>t</var></sup> − <var>b</var></span><span class="n">(17)</span></div>
+<div class="eq"><span class="b">(6) (<var>M</var><var>M</var><sup>H</sup>) <var>u</var><sup><var>t</var></sup>
+  = <var>M</var><var>r</var><sup><var>t</var></sup></span><span class="n">(18)</span></div>
+<div class="col">
+<p><strong>Interpretation.</strong> The algorithm alternates between two things it believes. It
+believes the <em>measured magnitude</em> — so it keeps <var>z</var> exactly and never modifies it.
+It does not know the phase, so it borrows the phase from its current channel estimate (step 3),
+pastes it onto the measured magnitude (step 4) to synthesise a complex field it can work with,
+subtracts the known reference (step 5), and re-solves an ordinary linear least squares (step 6). Then
+it repeats: a better channel gives a better phase guess, which gives a better synthetic field.</p>
+<p><strong>Step 7 — stopping.</strong> No convergence test. A fixed budget of
+<code>t₀ = 50</code> iterations, matching Cui. Eq. (18) is solved via the normal equations, never by
+forming an explicit inverse.</p>
+
+<h3>7.3 EM-GS</h3>
+<p>Same phase and least-squares steps; the difference is step 4. Instead of pasting the raw measured
+magnitude onto the guessed phase, EM-GS uses the <em>conditional mean</em> of the true amplitude
+given the measurement — a soft, SNR-aware replacement for the hard magnitude substitution:</p>
+</div>
+<div class="eq"><span class="b"><var>R</var>(κ) = <var>I</var><sub>1</sub>(κ)/<var>I</var><sub>0</sub>(κ),
+  &nbsp;&nbsp; κ = (2/σ²) <var>z</var> ⊙ |λ|,&nbsp;&nbsp;
+  <var>y</var><sup><var>t</var></sup> = <var>z</var> ⊙ <var>R</var>(κ) ⊙ e<sup>jθ<sup><var>t</var></sup></sup></span><span class="n">(19)</span></div>
+<div class="col">
+<p><strong>Statistical motivation.</strong> Conditional on the noiseless field λ, the measured
+amplitude <var>z</var> is <strong>Rice-distributed</strong>. The posterior mean of the underlying
+complex field, given <var>z</var> and λ, involves the ratio of modified Bessel functions
+<var>I</var><sub>1</sub>/<var>I</var><sub>0</sub>. Plain GS is the limiting case that trusts
+<var>z</var> completely; EM-GS shrinks it toward the model prediction by a factor
+<var>R</var>(κ) ∈ [0,1] that measures how reliable the measurement is.</p>
+<p><strong>Behaviour at the two limits.</strong> <var>R</var> is monotone increasing with
+<var>R</var>(0) = 0 and <var>R</var>(κ) → 1. At <em>low</em> SNR or low RSR, κ is small,
+<var>R</var> &lt; 1, and the measurement is discounted — this is where EM-GS wins. At <em>high</em>
+SNR or high RSR, κ saturates, <var>R</var> → 1, and <strong>EM-GS becomes GS</strong>. This is not a
+conjecture: measured EM-GS advantage over GS is <b>+1.3 dB at RSR = 0 dB</b> and <b>+0.00 dB at
+RSR = 24 dB</b> (Figure A3).</p>
+<p><strong>Numerical stabilisation.</strong> <var>R</var> is computed with exponentially scaled
+Bessel functions (<code>scipy.special.ive</code>) so the shared <code>e<sup>−|κ|</sup></code> factor
+cancels; forming <code>I₁/I₀</code> directly overflows at realistic high-SNR κ. Above κ = 10⁴ the
+asymptotic expansion <code>R(κ) ≈ 1 − 1/(2κ) − 1/(8κ²)</code> is used, and <code>R(0) = 0</code>
+exactly. Output is confined to [0,1]. Checked against SciPy and against the quadrature definition of
+<var>I<sub>n</sub></var>.</p>
+<p><strong>Check against Cui.</strong> <span class="chip c-ok">verified</span> The Bessel-ratio form,
+the κ definition and the <code>t₀ = 50</code> budget match Cui's Algorithm 2 as published in the
+supplied paper. Track A independently reproduced Cui's own figures with this code.</p>
+
+<h3>7.4 Computational complexity</h3>
+<p>Per channel realisation, with <var>t</var><sub>0</sub> iterations and the adapter looping over
+<var>N</var> receive elements:</p>
+</div>
+<div class="eq"><span class="b">GS, EM-GS: &nbsp; <var>t</var><sub>0</sub> · <var>N</var> ·
+  <var>O</var>(<var>K</var>²<var>P</var>)</span><span class="n">(20)</span></div>
+<div class="col">
+<p>The <code>K×K</code> Gram matrix <code>SS<sup>H</sup></code> is shared across rows and across
+iterations, so the per-iteration cost is dominated by forming <code>M r</code> and one
+<code>K×K</code> solve. EM-GS adds one Bessel evaluation per measurement, which is
+<code>O(NP)</code> and cheap relative to the algebra. Measured medians at
+<var>P</var> = 30, SNR = 5 dB: GS <b>30.7 / 60.9 / 118.6 ms</b> and EM-GS
+<b>91.9 / 190.9 / 368.9 ms</b> at <var>N</var> = 8 / 16 / 32 — both scaling linearly in <var>N</var>,
+as eq. (20) predicts.</p>
+</div>
+</section>
+
+<section id="s8">
+<span class="snum">Part VIII</span>
+<h2>The linearised (Xu-type) method — related work</h2>
+<div class="col">
+<div class="note bad"><div class="t">Status: RELATED WORK ONLY — not part of finalised Track B</div>
+<p>The code contains <code>linearised_closed_form_ls</code>, but a runtime tripwire confirms it is
+called <strong>0 times</strong> by any Track-B estimator across all array sizes. It appears in no
+Track-B result. <span class="chip c-nv">not verified</span> <strong>The Xu paper was not
+supplied.</strong> The derivation below is from first principles and from the code's own docstrings;
+the code explicitly states its constants are <em>derived, not copied from Xu</em>. Do not attribute
+any specific prefactor, algorithm variant or figure to Xu on the strength of this section.</p></div>
+
+<p>Start from the scalar biased magnitude measurement <code>z = |b + x|</code> and square it:</p>
+</div>
+<div class="eq"><span class="b"><var>z</var>² = |<var>b</var>|² + 2|<var>b</var>|
+  ℜ{e<sup>−j∠<var>b</var></sup><var>x</var>} + |<var>x</var>|²</span><span class="n">(21)</span></div>
+<div class="col">
+<p>Now impose the <strong>strong-reference assumption</strong> <code>|b| ≫ |x|</code>. The three
+terms scale as <code>|b|²</code>, <code>|b||x|</code> and <code>|x|²</code>. The last is smaller
+than the middle one by the factor <code>|x|/|b| ≪ 1</code>, so <strong>the quadratic term
+<code>|x|²</code> is discarded</strong>, leaving</p>
+</div>
+<div class="eq"><span class="b"><var>z</var>² − |<var>b</var>|² ≈ 2|<var>b</var>|
+  ℜ{e<sup>−j∠<var>b</var></sup><var>x</var>}</span><span class="n">(22)</span></div>
+<div class="col">
+<p><strong>What has happened.</strong> The right-hand side is <em>linear</em> in <var>x</var> — but
+only in one real direction. What is measured is the projection of <var>x</var> onto the reference
+phase axis <code>e<sup>j∠b</sup></code>; the orthogonal component is invisible to first order. So
+each measurement supplies <strong>one real linear equation</strong>, and with enough pilot instants
+the collection becomes an ordinary real linear least-squares (or a gradient-descent) problem in the
+real and imaginary parts of <var>G</var>. That is why linearisation permits GD or LS where the exact
+model does not.</p>
+<p><strong>When it breaks.</strong> The discarded term is <code>|x|²</code>. Its relative size is
+governed by RSR: at high RSR it is negligible and the approximation is excellent; as RSR falls it
+becomes comparable to the retained term and the model is simply wrong. So the linearisation is
+accurate exactly where the problem is easy, and fails exactly where exact methods are needed.</p>
+<p><strong>Why exact GS/EM-GS can beat it.</strong> GS and EM-GS never discard <code>|x|²</code> —
+they work with eq. (8) as written. At low RSR that retained term carries real information about
+<var>G</var>. <span class="chip c-nv">not verified</span> A direct head-to-head comparison of exact
+versus linearised on this ULA channel <strong>has not been run</strong> in Track B, so this
+paragraph is a statement about the models, not a measured result. Producing that comparison is a
+recommended experiment (§XX).</p>
+<p><strong>Exact vs approximate, stated plainly.</strong> Exact model: <code>Z = |GS+B+W|</code>,
+nonlinear, non-convex, solved iteratively. Xu-type approximation:
+<code>Z² − |B|² ≈ 2|B|ℜ{e<sup>−j∠B</sup>GS}</code>, linear, convex, solved in closed form —
+valid only for <code>|B| ≫ |GS|</code>.</p>
+</div>
+</section>

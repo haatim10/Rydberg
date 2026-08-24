@@ -1,0 +1,153 @@
+<section id="s10">
+<span class="snum">Part X</span>
+<h2>Cramér–Rao lower bound</h2>
+<div class="col">
+<p class="lede">Derived for this measurement model, not adapted from a linear-Gaussian MIMO result.
+The derivation below also uncovered a defect in the bound previously plotted.</p>
+
+<h3>10.1 Likelihood <span class="chip c-ok">verified</span></h3>
+<p>Conditional on <var>G</var>, <var>S</var>, <var>B</var>, the noiseless field at
+(<var>n</var>,<var>p</var>) is <code>λ = (GS+B)<sub>n,p</sub></code>, a known complex constant. The
+measurement is <code>z = |λ + w|</code> with <code>w ~ 𝒞𝒩(0,σ²)</code>: the modulus of a complex
+Gaussian with non-zero mean. That is by definition <strong>Rice-distributed</strong> with
+non-centrality |λ| and scale σ:</p>
+</div>
+<div class="eq"><span class="b"><var>p</var>(<var>z</var> | λ) = (2<var>z</var>/σ²)
+  exp(−(<var>z</var>²+|λ|²)/σ²) <var>I</var><sub>0</sub>(2<var>z</var>|λ|/σ²)</span><span class="n">(29)</span></div>
+<div class="col">
+<p>Measurements are independent across (<var>n</var>,<var>p</var>) because <var>W</var> is i.i.d.,
+so the joint log-likelihood is the sum. <strong>Critically, eq. (29) depends on λ only through
+|λ|</strong> — the phase of λ does not appear. This single fact drives everything in §10.3.</p>
+
+<h3>10.2 Parameterisation</h3>
+<p>Two parameterisations are needed, for two different bounds.</p>
+<p><strong>Unconstrained.</strong> Treat <var>G</var> as free:
+<code>η = [vec(ℜG); vec(ℑG)] ∈ ℝ<sup>2NK</sup></code>. At <var>N</var> = 32, <var>K</var> = 3 that is
+192 real parameters.</p>
+<p><strong>Structural.</strong> Use the generative parameters:
+<code>φ = {ψ<sub>ℓ,k</sub>, ℜα<sub>ℓ,k</sub>, ℑα<sub>ℓ,k</sub>} ∈ ℝ<sup>3ΣL<sub>k</sub></sup></code>
+— three real numbers per path, ≈45 in total, <em>independent of N</em>. §10.7 uses this.</p>
+
+<h3>10.3 Fisher information — and a defect in the previously plotted bound</h3>
+<p>Since eq. (29) depends only on <code>a = |λ|</code>, differentiate the log-likelihood with respect
+to <var>a</var>, using <code>d/dx log I₀(x) = I₁(x)/I₀(x) = R(x)</code>:</p>
+</div>
+<div class="eq"><span class="b">∂ log <var>p</var> / ∂<var>a</var> = (2/σ²)
+  [ <var>z</var> <var>R</var>(κ) − <var>a</var> ],&nbsp;&nbsp; κ = 2<var>z</var><var>a</var>/σ²</span><span class="n">(30)</span></div>
+<div class="col">
+<p>The score has zero mean, which immediately gives the identity <code>E[z R(κ)] = a</code>. Hence
+the scalar Fisher information of <em>one</em> measurement is</p>
+</div>
+<div class="eq"><span class="b"><var>I</var>(<var>a</var>) = (4/σ⁴)
+  ( E[<var>z</var>²<var>R</var>²(κ)] − <var>a</var>² ) = 4β</span><span class="n">(31)</span></div>
+<div class="col">
+<p>with β the quantity the existing code already computes by quadrature. Now the chain rule to the
+real channel coordinates. With <code>c<sub>k</sub> = e<sup>−j∠λ</sup>S<sub>k,p</sub></code>:</p>
+</div>
+<div class="eq"><span class="b">∂<var>a</var>/∂ℜ<var>G</var><sub><var>n</var>,<var>k</var></sub>
+  = ℜ(<var>c<sub>k</sub></var>),&nbsp;&nbsp;
+  ∂<var>a</var>/∂ℑ<var>G</var><sub><var>n</var>,<var>k</var></sub>
+  = −ℑ(<var>c<sub>k</sub></var>)</span><span class="n">(32)</span></div>
+<div class="eq"><span class="b"><var>J</var> = Σ<sub><var>n</var>,<var>p</var></sub>
+  <var>I</var>(<var>a</var><sub><var>n</var><var>p</var></sub>)
+  (∇<var>a</var>)(∇<var>a</var>)<sup>T</sup>,&nbsp;&nbsp; block diagonal across
+  <var>n</var></span><span class="n">(33)</span></div>
+<div class="note bad"><div class="t">Defect: each magnitude measurement contributes rank 1, not rank 2</div>
+<p>Eq. (33) gives each measurement a <strong>rank-1</strong> contribution in real coordinates —
+correct, because a magnitude measurement yields <em>one real number</em>. The implementation
+inherited from Track A uses <code>F = Σ β m m<sup>H</sup></code>, whose real embedding has
+<strong>rank 2</strong> per measurement, crediting each measurement with constraining both
+quadratures. Two independent tests:</p>
+<p><strong>(i) Rank / identifiability.</strong> With <var>K</var> = 3 (6 real unknowns) and
+<var>P</var> = 3 measurements the problem is manifestly unidentifiable. Eq. (33) gives Fisher rank 3
+— correctly singular. The old construction claims real-equivalent rank 6.</p>
+<p><strong>(ii) Empirical.</strong> ML is asymptotically efficient. Measured over 4 000 noise
+realisations at <var>K</var> = 1, <var>P</var> = 8: ML MSE / rank-1 bound = <b>0.961× at 25 dB</b> and
+<b>0.990× at 35 dB</b> — converging onto it; ML MSE / old bound = 1.035× and 1.066×, i.e. ML sits
+<em>above</em> the old bound, which is therefore valid but <strong>loose by up to 4.2 dB</strong>,
+worst as <var>P</var> approaches 2<var>K</var>.</p>
+<p><strong>Why the standard check missed it.</strong> Both constructions satisfy the 10log₁₀2
+high-SNR gap asymptotically, because a sum of rank-1 terms with spread phases averages to ½·SS<sup>H</sup>.
+That check validates the σ² convention and scaling, <em>not</em> the rank structure. Every bound in
+this document uses eq. (33). <strong>No estimator result changes.</strong></p></div>
+
+<div class="col">
+<h3>10.4 Identifiability</h3>
+<ul>
+<li><strong>Without a reference (<var>B</var> = 0)</strong> the likelihood depends only on
+<code>|GS|</code>. Any global phase rotation <code>G → Ge<sup>jφ</sup></code> leaves every
+measurement unchanged, so the FIM is singular along that direction and <var>G</var> is at best
+recoverable up to a phase. With per-row independence the ambiguity is per-row, which is worse.</li>
+<li><strong>With <var>B</var> ≠ 0</strong> the cross term of eq. (7) ties ∠<var>G</var> to the known
+∠<var>B</var>, breaking the ambiguity. This is the <em>reason</em> the reference exists.</li>
+<li><strong>Residual singularity conditions.</strong> Eq. (33) is a sum of <var>P</var> rank-1 terms
+in a 2<var>K</var>-dimensional space per row, so <var>J</var> is singular whenever
+<code>P &lt; 2K</code> — which is exactly the <code>P ≥ 2K</code> floor the pilot generator enforces.
+It can also be singular if the <code>∇a</code> directions fail to span, which happens if the pilot
+matrix is rank-deficient (prevented by rejection sampling) or if λ ≈ 0 at many measurements
+(prevented by a strong reference).</li>
+<li><strong>Roles.</strong> <var>P</var> supplies the measurements per row and must exceed
+2<var>K</var>. <var>K</var> sets the unknowns per row. <strong><var>N</var> adds rows, and — for the
+unconstrained bound — adds unknowns at exactly the same rate</strong>, which is why that bound is
+flat in <var>N</var>. Only under the structural parameterisation does <var>N</var> help (§10.7).</li>
+</ul>
+
+<h3>10.5 Numerical procedure — and which averaging is correct</h3>
+<p>No useful closed form exists: β requires quadrature of eq. (29). The implemented procedure is:</p>
+<ol class="l">
+<li>For each channel realisation, compute λ = GS+B and β at every (<var>n</var>,<var>p</var>).</li>
+<li>Assemble <var>J</var> per receive element, eq. (33). Invert per block.</li>
+<li>Accumulate <code>Tr(J<sup>−1</sup>)</code> and <code>‖G‖<sub>F</sub>²</code> <em>separately</em>.</li>
+<li>Take the ratio of the accumulated sums, then convert to dB.</li>
+</ol>
+<p><strong>This ordering matters and it is the theoretically correct one.</strong> The CRLB is
+<em>conditional on <var>G</var></em>: for a given channel it bounds
+<code>E[‖Ĝ−G‖²|G] ≥ Tr(J(G)<sup>−1</sup>)</code>. Averaging over channels, the valid statement is
+<code>E<sub>G</sub>E[‖Ĝ−G‖²] ≥ E<sub>G</sub>[Tr(J<sup>−1</sup>)]</code> — a ratio of expectations,
+matching the ratio-of-sums NMSE definition in §XII. Averaging <em>dB values</em> of per-realisation
+bounds would be a geometric mean and would <strong>not</strong> bound the arithmetic-mean NMSE.</p>
+<p>β is tabulated once per operating point (σ² is fixed there and β is smooth in <var>a</var>);
+measured table accuracy is max relative error 2.7e−4, three orders of magnitude below the sampling
+noise it removes. The bound depends only on (<var>G</var>,<var>S</var>,<var>B</var>,σ²) — no noise
+realisation — so the only variability is the channel draw, and all bounds here are averaged over the
+<strong>same 400 trial indices the estimators saw</strong>.</p>
+
+<h3>10.6 NMSE-normalised bound</h3>
+</div>
+<div class="eq"><span class="b">CRLB<sub>dB</sub> = 10 log<sub>10</sub>
+  ( Σ<sub>trials</sub> Σ<sub><var>n</var></sub> Tr(<var>J<sub>n</sub></var><sup>−1</sup>) /
+  Σ<sub>trials</sub> ‖<var>G</var>‖<sub>F</sub>² )</span><span class="n">(34)</span></div>
+<div class="col">
+<p>Both numerator and denominator are real energies, so the ratio is directly comparable to
+NMSE<sub>G</sub>. Note <code>‖Ĝ−G‖<sub>F</sub>²</code> for complex <var>G</var> equals the sum of
+squared errors over <em>all</em> real coordinates, which is exactly what <code>Tr</code> of the real
+covariance returns — the factor of 2 is already handled, and <code>E‖G‖<sub>F</sub>² = NKβ</code>.</p>
+
+<h3>10.7 Which bound applies to HS-GS</h3>
+<p>The CRLB is a property of the <em>observation model plus the parameter set</em>, not of an
+estimator. GS and EM-GS estimate 2<var>NK</var> free parameters, so the unconstrained bound governs
+them. HS-GS constrains <var>G</var> to the geometric manifold, so <strong>the unconstrained bound
+does not govern it</strong> and placing HS-GS against it is invalid. The correct object is the
+constrained (Gorman–Hero / Stoica–Ng) bound. With <code>D = ∂g/∂φ</code> the manifold Jacobian:</p>
+</div>
+<div class="eq"><span class="b">CCRB = <var>U</var>(<var>U</var><sup>T</sup><var>J</var><var>U</var>)<sup>−1</sup><var>U</var><sup>T</sup>,
+  &nbsp;&nbsp; <var>U</var> = orthonormal basis of range(<var>D</var>)</span><span class="n">(35)</span></div>
+<div class="col">
+<div class="note"><div class="t">Why the orthonormal form, not (D<sup>T</sup>JD)<sup>+</sup></div>
+<p>The path parameterisation is <strong>overcomplete</strong> whenever 3Σ<var>L<sub>k</sub></var>
+exceeds the ambient dimension 2<var>NK</var>: at <var>N</var> = 8 that occurs in
+<strong>42.5%</strong> of trials (3Σ<var>L<sub>k</sub></var> reaches 63 against 2<var>NK</var> = 48).
+There the map φ → <var>G</var> is not injective and <code>D<sup>T</sup>JD</code> is genuinely
+singular. The bound is still well defined — it depends on the tangent space range(<var>D</var>), not
+on φ being identifiable — but pseudo-inverting gave condition numbers up to <b>6.8e17</b>. The
+orthonormal form brings that to a worst case of <b>80</b> (median 5.3) and <em>changes the answer</em>
+where the overcompleteness bites: at <var>N</var> = 8, <var>P</var> = 10, SNR = 5 the bound moves
+from −4.41 to <b>−3.40 dB</b>.</p></div>
+<p><strong>Other candidate bounds, and why they are not used.</strong> A sparse/parametric CRLB on
+(α, θ) alone is what eq. (35) already is, pushed forward to the channel. A <em>biased</em>-estimator
+bound would be the strictly correct object for HS-GS, which is biased — but it requires knowing the
+bias gradient, which is not available in closed form. This is stated as a limitation rather than
+papered over: §XIII shows two <var>N</var> = 8 points sitting slightly below the constrained bound,
+and that is the expected consequence.</p>
+</div>
+</section>

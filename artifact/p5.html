@@ -1,0 +1,208 @@
+<section id="s9">
+<span class="snum">Part IX</span>
+<h2>Proposed structure-aware extension — HS-GS</h2>
+<div class="col">
+<div class="note info"><div class="t">Attribution</div>
+<p>Everything in this Part is <strong>proposed work</strong>, not Cui's. Cui supplies the exact
+measurement update (§VII) and nothing else here. The structural prior, the projection, the placement
+of the projection inside the iteration, and the order-selection rule are all new. HS-GS should never
+be described as “Cui's method with a tweak”.</p></div>
+
+<h3>9.1 Motivation</h3>
+<p>Write the ULA channel column of eq. (4) with <code>z<sub>ℓ,k</sub> = e<sup>−jψ<sub>ℓ,k</sub></sup></code>:</p>
+</div>
+<div class="eq"><span class="b"><var>g<sub>k</sub></var>[<var>n</var>] =
+  Σ<sub>ℓ=1</sub><sup><var>L<sub>k</sub></var></sup> α<sub>ℓ,<var>k</var></sub>
+  <var>z</var><sub>ℓ,<var>k</var></sub><sup><var>n</var></sup></span><span class="n">(23)</span></div>
+<div class="col">
+<p>The channel across the array is a <strong>sum of <var>L<sub>k</sub></var> geometric
+sequences</strong>. A length-<var>N</var> vector of that form occupies a set of dimension
+<code>3L<sub>k</sub></code> (one angle, one complex gain per path) inside an ambient
+<code>2N</code>-real-dimensional space. At <var>N</var> = 32 that is roughly 45 real parameters
+inside 192 — a factor of 4.3 of redundancy that an unstructured estimator ignores entirely.</p>
+<p><strong>The key observation:</strong> Cui's estimator is <em>row-separable</em> — element
+<var>n</var> is recovered from <code>z<sub>n</sub></code> alone. The structure in eq. (23) is a
+coupling <em>along</em> <var>n</var>, i.e. exactly the direction an unstructured row-wise sweep
+cannot see. This is verified, not asserted: perturbing one row of <var>Z</var> leaves every other
+row's estimate <strong>bit-identical</strong>. It is also why the EM-GS baseline is flat in
+<var>N</var> to 0.012 dB (§XIII).</p>
+
+<h3>9.2 Hankel construction <span class="chip c-ok">verified</span></h3>
+<p>For a length-<var>N</var> sequence and a <em>pencil parameter</em> <var>p</var>, the implemented
+Hankel operator takes overlapping windows:</p>
+</div>
+<div class="eq"><span class="b">[ℋ<sub><var>p</var></sub>(<var>g</var>)]<sub><var>i</var>,<var>j</var></sub>
+  = <var>g</var><sub><var>i</var>+<var>j</var></sub>,&nbsp;&nbsp; shape
+  (<var>N</var>−<var>p</var>) × (<var>p</var>+1)</span><span class="n">(24)</span></div>
+<div class="col"><p>Explicitly, for <code>g = [g₀, g₁, g₂, g₃, g₄, …]</code>:</p></div>
+<div class="eq"><span class="b">ℋ(<var>g</var>) =
+  [ <var>g</var><sub>0</sub> <var>g</var><sub>1</sub> <var>g</var><sub>2</sub> ⋯ ;
+  &nbsp; <var>g</var><sub>1</sub> <var>g</var><sub>2</sub> <var>g</var><sub>3</sub> ⋯ ;
+  &nbsp; <var>g</var><sub>2</sub> <var>g</var><sub>3</sub> <var>g</var><sub>4</sub> ⋯ ; ⋯ ]</span><span class="n">(25)</span></div>
+<div class="col"><p>Constant along anti-diagonals. The implementation chooses <var>p</var> to
+maximise the achievable rank:</p></div>
+<div class="tw"><table>
+<thead><tr><th>N</th><th>pencil p</th><th class="l">ℋ shape</th><th>rank cap ⌈N/2⌉</th></tr></thead>
+<tbody>
+<tr><td>8</td><td>3</td><td class="l">5 × 4</td><td>4</td></tr>
+<tr><td>16</td><td>7</td><td class="l">9 × 8</td><td>8</td></tr>
+<tr><td>32</td><td>15</td><td class="l">17 × 16</td><td>16</td></tr>
+</tbody></table></div>
+<div class="col">
+<p>The adjoint used to return to a sequence averages each anti-diagonal — the exact orthogonal
+projection onto the Hankel subspace.</p>
+
+<h3>9.3 Rank derivation</h3>
+<p><strong>One exponential.</strong> If <code>g[n] = α z<sup>n</sup></code>, then
+<code>ℋ(g)<sub>i,j</sub> = α z<sup>i+j</sup> = (α z<sup>i</sup>)(z<sup>j</sup>)</code>, an outer
+product of two vectors. <strong>Rank exactly 1.</strong></p>
+<p><strong>L exponentials.</strong> Superposition of eq. (23) gives, with
+<code>v<sub>ℓ</sub> = [1, z<sub>ℓ</sub>, …, z<sub>ℓ</sub><sup>N−p−1</sup>]<sup>T</sup></code> and
+<code>w<sub>ℓ</sub> = [1, z<sub>ℓ</sub>, …, z<sub>ℓ</sub><sup>p</sup>]<sup>T</sup></code>:</p>
+</div>
+<div class="eq"><span class="b">ℋ(<var>g</var>) = Σ<sub>ℓ=1</sub><sup><var>L</var></sup>
+  α<sub>ℓ</sub> <var>v</var><sub>ℓ</sub> <var>w</var><sub>ℓ</sub><sup>T</sup>
+  ⟹ rank ℋ(<var>g</var>) ≤ <var>L</var></span><span class="n">(26)</span></div>
+<div class="col">
+<p><strong>Assumptions required, stated explicitly.</strong> (i) The <code>z<sub>ℓ</sub></code> are
+<em>distinct</em> — two coincident angles collapse two rank-1 terms into one and the rank drops.
+(ii) All <code>α<sub>ℓ</sub> ≠ 0</code>. (iii) Equality (rather than ≤) additionally requires
+<var>L</var> to be strictly below the pencil bound, so that <code>v<sub>ℓ</sub></code> and
+<code>w<sub>ℓ</sub></code> are each linearly independent Vandermonde families.</p>
+
+<div class="note bad"><div class="t">This is a RELAXATION, not a characterisation of a ULA channel</div>
+<p>Eq. (26) admits any distinct non-zero complex <code>z<sub>ℓ</sub></code>. The ULA model requires
+<code>|z<sub>ℓ</sub>| = 1</code> — the angles are real. The rank constraint imposes no unit-modulus
+condition, so the feasible set <em>strictly contains</em> the set of physical ULA channels and admits
+damped and growing modes. <strong>Verified by counterexample:</strong> at <var>N</var> = 16 a
+sequence built from modes with <code>|z| = 0.75</code> has Hankel rank 4 — identical to a physical
+channel with 4 paths. Correct wording throughout: a <em>grid-free low-rank Hankel relaxation of ULA
+structure</em>.</p>
+<p>How loose is it in practice? Measured by running ESPRIT on the converged estimate at
+<var>N</var> = 32 and recording <code>||z<sub>i</sub>|−1|</code>: median <b>0.0124</b>, with
+<b>87.2%</b> of modes within 0.05 of the unit circle and <b>96.3%</b> within 0.10 — against a
+true-channel floor of median 0.0000. So the relaxation is tight in practice, but the tail is real
+(p99 = 0.177, max = 0.720).</p></div>
+
+<h3>9.4 Cadzow — exactly what is implemented</h3>
+<p>Audited step by step. One call performs <code>n<sub>it</sub> = 4</code> passes of:</p>
+<ol class="l">
+<li><strong>Hankelisation</strong> — form <code>ℋ<sub>p</sub>(g)</code>, eq. (24).</li>
+<li><strong>SVD</strong> of that matrix.</li>
+<li><strong>Rank truncation</strong> to <var>L̂</var>: keep the top <var>L̂</var> singular triplets.</li>
+<li><strong>Reconstruction</strong> of the truncated matrix.</li>
+<li><strong>Anti-diagonal averaging</strong> back to a length-<var>N</var> sequence.</li>
+<li><strong>Iterate</strong> — steps 1–5 repeated 4 times.</li>
+</ol>
+<p><strong>What each projection accomplishes.</strong> Step 3 is the exact Frobenius-norm projection
+onto the set of rank-≤<var>L̂</var> matrices (Eckart–Young–Mirsky). Step 5 is the exact orthogonal
+projection onto the linear subspace of Hankel matrices. Neither set is convex-and-affine
+simultaneously, so a single pass lands in neither; alternating between two exact projectors drives
+the iterate toward their intersection — which is precisely the set of length-<var>N</var> sequences
+expressible as <var>L̂</var> exponentials. If <code>L̂ ≥ cap(N)</code> the routine returns
+<var>g</var> unchanged: a literal no-op, verified.</p>
+<p><strong>Why Cadzow and not OMP or ESPRIT.</strong> All three variants exist in the codebase
+(<code>track_b_prototype.py</code> exposes <code>angular</code> / <code>hankel</code> /
+<code>esprit</code>) and the choice is structural rather than empirical. Angular OMP discretises ψ
+onto a grid, so it carries an irreducible off-grid bias even on noiseless, exactly-structured data.
+ESPRIT is grid-free and is near-exact on data that lies exactly on the ULA manifold — measured:
+its recovered modes deviate from the unit circle by a median of <b>4.0 × 10<sup>−6</sup></b> on the
+true channel — but it is a <em>parameter estimator</em>, not a projection: it is not idempotent and
+has no variational characterisation, so composing it into an alternating scheme has no fixed-point
+theory at all. On estimated (rather than exact) channels the same measurement gives a median mode
+deviation of <b>0.012</b> with a p90 of <b>0.057</b> and a worst case of <b>0.72</b>, i.e. its output
+is frequently far off the manifold it is supposed to parameterise. Only Cadzow is simultaneously
+grid-free and a genuine alternating projection between two closed sets with exact projectors, which
+is what allows it to be composed into the iteration below.</p>
+<p class="src">Mode-deviation figures: <code>results/track_b/modulus_tightness.json</code>
+(<var>N</var> = 32, <var>P</var> = 30, SNR = 5 dB, 80 trials, 1,146 modes).</p>
+
+<h3>9.5 HS-GS pipeline <span class="chip c-ok">verified</span></h3>
+<p>Audited: the projection is applied <strong>after every exact measurement update</strong>
+(<code>project_every = 1</code>), not as post-processing and not on a separate schedule.</p>
+</div>
+<div class="eq"><span class="b"><var>G</var><sup><var>t</var></sup> =
+  (<var>P</var><sub>𝒮</sub><sup>(<var>L̂</var>)</sup> ∘ <var>T</var><sub>EM-GS</sub>)
+  (<var>G</var><sup><var>t</var>−1</sup>),&nbsp;&nbsp;
+  <var>t</var> = 1 … <var>t</var><sub>0</sub></span><span class="n">(27)</span></div>
+<div class="col">
+<pre style="font-family:var(--mono);font-size:12.5px;background:var(--sunken);padding:14px 16px;border-radius:2px;overflow-x:auto;line-height:1.6">Algorithm HS-GS  (as implemented)
+  input   Z, S, B, sigma2
+  1  L_hat, _ <- select_order_heldout(Z, S, B, sigma2)     # sec 9.6
+  2  G <- None                                             # spectral init on first call
+  3  active <- (L_hat &lt; cap(N))                            # strict
+  4  for t = 1 .. 50:
+  5      G <- em_gs_channel_rows(S, Z, B, sigma2,
+                                 max_iter=1, G0=G)         # ONE exact Cui update
+  6      if active:
+  7          for k = 1 .. K:
+  8              G[:,k] <- cadzow_project(G[:,k], L_hat,
+                                          n_iter=4)        # sec 9.4
+  9      record residual  || Z - |G S + B| ||_F^2
+ 10  return G, L_hat, active</pre>
+<p><strong>Exactness of the chaining.</strong> Calling the validated solver 25 times with
+<code>max_iter=1</code> and a warm start reproduces one <code>max_iter=25</code> call
+<strong>bit-for-bit</strong>, and with the projection disabled HS-GS equals validated EM-GS to
+<b>0.00e+00</b>. So no GS mathematics is reimplemented.</p>
+<p><strong>Why the projection must be inside the loop.</strong> Projecting once and then running GS
+to convergence does nothing measurable: the gain decays monotonically with the number of
+unconstrained iterations after projection — <b>+1.30 dB at 1, +0.06 at 10, exactly 0.00 at 50</b>.
+Empirically the unconstrained iteration returns to its own fixed point, which the projection then
+cannot influence. <strong>No contraction or convergence property is claimed</strong>;
+alternating-projection schemes of this kind are not contractions in general.</p>
+
+<h3>9.6 Rank selection — mandatory disclosure</h3>
+<div class="note ok"><div class="t">HS-GS does NOT use oracle rank</div>
+<p>Audited directly: <code>hs_gs_auto</code> never receives, reads or references the true
+<var>L<sub>k</sub></var>. The order is chosen from a <strong>held-out pilot residual</strong> using
+only observable quantities. In the audit run the selector returned <var>L̂</var> = 5 while the true
+path counts were (7, 4, 6) — it is estimating, and imperfectly. <strong>These experiments are NOT
+oracle-rank HS-GS.</strong></p></div>
+<div class="col">
+<p>The in-sample residual <em>cannot</em> be used as the criterion: a projection constrains
+<var>G</var> to a smaller set, so it can only fit the fitted pilots worse, and the in-sample
+criterion therefore always prefers the largest <var>L</var>. Measured failure of that approach:
+<code>ΔJ &gt; 0</code> while <code>ΔNMSE &lt; 0</code>, with sign agreement of only 1–8 out of 10.
+The implemented rule splits the pilot columns, <code>|𝒱| = max(1, ⌈0.3P⌉)</code>, and scores on the
+held-out half:</p>
+</div>
+<div class="eq"><span class="b"><var>L̂</var> = argmin<sub><var>L</var>∈{1…cap(<var>N</var>)}</sub>
+  ‖ <var>Z</var><sub>:,𝒱</sub> − |Ĝ<sup>(<var>L</var>)</sup><var>S</var><sub>:,𝒱</sub>
+  + <var>B</var><sub>:,𝒱</sub>| ‖<sub>F</sub>²</span><span class="n">(28)</span></div>
+<div class="col">
+<div class="note"><div class="t">A limitation of the current design, found in this audit</div>
+<p><strong><var>L̂</var> is a single scalar shared by all <var>K</var> users.</strong> The true path
+counts differ per user — in the audited trial they were (7, 4, 6) — but one order is selected and
+applied to every column. A per-user order would match the generative model; the current
+implementation does not do this. This is a plausible part of why HS-GS sits 1–9 dB above the
+constrained bound (§X.7), and it is the cheapest concrete improvement available (§XX).</p></div>
+<p>Realistic alternatives that were <strong>not</strong> implemented, and must not be described as
+if they were: singular-value thresholding on ℋ(ĝ), MDL, AIC. MDL was in fact tried early and
+performed poorly on this problem (12–18 correct out of 40 on clean data), which is why the held-out
+rule was adopted.</p>
+
+<h3>9.7 Fairness and ablation</h3>
+<p>What is already established about the source of the gain:</p>
+<ul>
+<li><span class="chip c-ok">verified</span> <strong>Not oracle rank</strong> — §9.6.</li>
+<li><span class="chip c-ok">verified</span> <strong>Not a baseline artefact</strong> — EM-GS is flat
+in <var>N</var> to 0.012 dB, so the <var>N</var>-dependence is not the baseline degrading.</li>
+<li><span class="chip c-ok">verified</span> <strong>Not outlier-driven</strong> — removing the worst
+5% of EM-GS trials moves the gain by a median of −0.05 dB.</li>
+<li><span class="chip c-ok">verified</span> <strong>Structural, not incidental</strong> — when the
+constraint is inactive HS-GS is EM-GS bit-for-bit. Restricting to active trials does <em>not</em>
+rescue the <var>N</var> = 8 deficit into a clean win either way: the deficit is a per-operating-point
+average (§16.2), and it is concentrated at high SNR. This is what a genuinely structural
+mechanism should do.</li>
+</ul>
+<p><span class="chip c-nv">not verified</span> What is <strong>not</strong> separated: how much of
+the gain is improved phase retrieval (better fixed point) versus structural denoising (variance
+reduction on a fixed estimate). The ablation that would settle it — run Cadzow as pure
+post-processing on a converged EM-GS estimate (<code>project_every = 50</code>) and compare against
+the interleaved configuration — <strong>has not been run</strong>. No <code>project_every</code>
+ablation data exists in the repository. Until it is run, "the gain comes from interleaving rather
+than from post-hoc denoising" is an argument (§Q11), not a measurement. Recommended, ranked 3, in
+§20.2.</p>
+</div>
+</div>
+</section>

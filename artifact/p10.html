@@ -1,0 +1,105 @@
+<section id="s18">
+<span class="snum">Part XVIII</span>
+<h2>Claim audit — provenance of every assertion</h2>
+<div class="col">
+<p class="lede">Each substantive claim, classified by where it comes from and how it was checked.
+"Verified" means a script in this repository tests it and the test passes; it does not mean the claim
+is important, only that it is true of this code.</p>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Claim</th><th class="l">Status</th><th class="l">Evidence</th></tr></thead>
+<tbody>
+<tr><td class="l">Observation is exactly <code>Z = |GS+B+W|</code>, never linearised</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">identity holds to exact float equality (dev 0.0); every trial asserts <code>not linearised_model_used</code></td></tr>
+<tr><td class="l">Noise added inside the modulus</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">implied by the identity above; <code>W_circular</code>, <code>W_var_*</code> checked</td></tr>
+<tr><td class="l"><code>σ² = K/SNR<sub>lin</sub></code> (Cui eq. 36)</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">σ²=0.94868 = K/SNR<sub>lin</sub>; measured SNR 5.079 dB vs nominal 5.0</td></tr>
+<tr><td class="l">RSR uses the single-user denominator (Cui eq. 37)</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">measured 11.503 dB vs nominal 12.0 single-user; 7.154 dB vs total</td></tr>
+<tr><td class="l"><var>B</var> constant across (<var>n</var>,<var>p</var>), ∠<var>b</var> = 0</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">unique |B| values = 1; |b| = 3.9811 = √(RSR<sub>lin</sub>)</td></tr>
+<tr><td class="l">AoAs uniform in θ, not sin θ</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">KS over 4465 samples: p = 0.150 vs uniform-θ, p = 0.0000 vs uniform-sinθ</td></tr>
+<tr><td class="l"><var>L<sub>k</sub></var> ~ 𝒰{3..7} i.i.d. per user per realization</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">observed (7,4,6) vs (6,7,3) on consecutive trials</td></tr>
+<tr><td class="l"><var>c</var> = 1, so <var>G</var> ≡ <var>H</var></td><td class="l"><span class="chip c-ok">verified</span></td><td class="l"><code>c_scaling: G == H exactly</code></td></tr>
+<tr><td class="l">Pilots are <em>not</em> orthogonal</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">max off-diagonal <code>|SS<sup>H</sup>|/P</code> = 0.2328</td></tr>
+<tr><td class="l">Canonical row mapping <code>M(S) → (u, conj g, b, conj B)</code></td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">max deviation 8.88 × 10<sup>−16</sup></td></tr>
+<tr><td class="l">Hankel rank cap = ⌈<var>N</var>/2⌉ = 4 / 8 / 16</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">pencil p = 3/7/15, shapes (5,4)/(9,8)/(17,16)</td></tr>
+<tr><td class="l">HS-GS does <strong>not</strong> use oracle <var>L<sub>k</sub></var></td><td class="l"><span class="chip c-ok">verified</span></td><td class="l"><code>hs_gs_auto_uses_true_L = False</code>; held-out pilot residual selector</td></tr>
+<tr><td class="l"><var>L̂</var> is a single scalar shared across all <var>K</var> users</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">true (7,4,6) → selected <var>L̂</var> = 5 applied to every column</td></tr>
+<tr><td class="l">NMSE = ratio of sums, 10 log<sub>10</sub>, never mean-of-dB</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l"><code>analyze_b3.pooled_db</code>; module docstring states it explicitly</td></tr>
+<tr><td class="l">CRN pairs estimators within a point, not across points</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">RNG keyed <code>(seed, trial, snr, rsr)</code>; an earlier audit expectation to the contrary was wrong</td></tr>
+<tr><td class="l">Gain scales monotonically with <var>N</var></td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">−0.19/+0.78/+2.85 dB; <var>N</var>=32 CI above <var>N</var>=16 CI at 12/12 points</td></tr>
+<tr><td class="l">EM-GS flat in <var>N</var></td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">−8.8456 / −8.8484 / −8.8360 dB — range 0.012 dB</td></tr>
+<tr><td class="l">Gain decays to zero as <var>L</var> → cap(<var>N</var>)</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">B7, hypothesis pre-recorded in the script; §16.8</td></tr>
+<tr><td class="l">Unconstrained CRLB is flat in <var>N</var></td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">row-block-diagonal Fisher; matches EM-GS flatness</td></tr>
+<tr><td class="l">Each magnitude measurement gives <strong>rank-1</strong> Fisher information</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">direct rank test on Fisher blocks + empirical ML; genie-ZF gap 3.0103 dB after fix</td></tr>
+<tr><td class="l">Previously shipped CRLB was defective by up to 4.19 dB</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">two independent tests; defective bound described but never plotted</td></tr>
+<tr><td class="l">CRLB crossings explained by shrinkage bias</td><td class="l"><span class="chip c-fu">supported</span></td><td class="l"><var>c</var> = 0.756 at −5 dB, 0.957 at +5 dB; crossing magnitude tracks <var>c</var>. Consistent, not proven</td></tr>
+<tr><td class="l">HS-GS's advantage comes from the structural projection, not from EM</td><td class="l"><span class="chip c-fu">supported</span></td><td class="l">EM-over-GS collapses to 0.002 dB at RSR 24 while HS-GS gain stays ≈2.3 dB. Inferential</td></tr>
+<tr><td class="l">The <var>N</var>=8 high-SNR loss is a bias-dominated floor</td><td class="l"><span class="chip c-fu">supported</span></td><td class="l">gain monotone in SNR (+1.47 → −2.23 dB); mechanism consistent. No bias/variance decomposition was computed</td></tr>
+<tr><td class="l">ρ(<var>N</var>) = 2<var>NK</var>/(3Σ<var>L<sub>k</sub></var>) is a parameter count, not an identifiability theorem</td><td class="l"><span class="chip c-ok">verified</span></td><td class="l">counterexample in-hand: 42.5% of <var>N</var>=8 trials have a rank-deficient Jacobian</td></tr>
+<tr><td class="l">Cadzow / <code>T = P<sub>S</sub>∘T<sub>GS</sub></code> converges</td><td class="l"><span class="chip c-no">not established</span></td><td class="l">non-convex variety, approximate projection, no merit function. Only "no non-finite output in 28,000 trials"</td></tr>
+<tr><td class="l">Results transfer to clustered (SV / 38.901) channels</td><td class="l"><span class="chip c-no">not established</span></td><td class="l">never tested. §14.4</td></tr>
+<tr><td class="l">Anything about the Xu linearised estimator's published form</td><td class="l"><span class="chip c-nv">not verified</span></td><td class="l"><strong>paper not supplied.</strong> Part VIII is from implementation + first principles only</td></tr>
+<tr><td class="l">Anything about URformer (Xiao et al.)</td><td class="l"><span class="chip c-nv">not verified</span></td><td class="l"><strong>paper not supplied.</strong> No learned estimator exists in this repository (zero framework imports)</td></tr>
+<tr><td class="l">Physical units: carrier, bandwidth, aperture in metres</td><td class="l"><span class="chip c-nv">not verified</span></td><td class="l">model is in normalised electrical angle; no carrier is ever instantiated</td></tr>
+<tr><td class="l">Rydberg atomic constants (species, <var>n</var>, Rabi frequencies)</td><td class="l"><span class="chip c-nv">not verified</span></td><td class="l">receiver enters only via <var>c</var>=1 and the modulus. This is a signal-model abstraction, not atomic physics</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="s19">
+<span class="snum">Part XIX</span>
+<h2>Status of the work</h2>
+<div class="col">
+<h3>19.1 Established — safe to state in a review</h3>
+<ul>
+<li>The full simulation chain matches the frozen system model: exact modulus observation, Cui's SNR
+and RSR conventions, constant zero-phase reference, uniform-in-θ AoAs, non-orthogonal Gaussian
+pilots. All verified against code, not description.</li>
+<li>Cui's biased-GS and EM-GS are reproduced as row adapters and behave as theory predicts: EM-GS
+above GS by an RSR-dependent margin that collapses to 0.002 dB as <code>R(κ) → 1</code>.</li>
+<li>HS-GS's advantage over EM-GS scales monotonically with array size: −0.19 / +0.78 / +2.85 dB at
+<var>N</var> = 8/16/32, with non-overlapping paired CIs between <var>N</var> = 16 and 32 at all 12
+shared operating points.</li>
+<li>The mechanism is the one claimed: the gain decays monotonically to zero as the path count
+approaches the Hankel rank cap, in a controlled experiment whose hypothesis was recorded first.</li>
+<li>The unconstrained CRLB is flat in <var>N</var>, EM-GS nearly attains it at high SNR, and the
+constrained CRLB is 0.88–9.85 dB below it. Both bounds were re-derived for this measurement model.</li>
+<li>A real defect in the previously shipped CRLB was found and corrected (rank-2 → rank-1 per
+magnitude measurement), and the corrected bound is the one used everywhere.</li>
+</ul>
+
+<h3>19.2 Partially established — state with the caveat attached</h3>
+<ul>
+<li>That the gain is attributable to the projection rather than the EM step. Strongly suggested by
+the RSR sweep; no direct ablation with <code>exact_step = "gs"</code> across the full grid was run.</li>
+<li>That shrinkage bias explains the CRLB crossings. The pattern matches on every axis tested, but no
+formal bias/variance decomposition was computed per operating point.</li>
+<li>That <var>N</var> = 8's failure is a bias floor. Consistent with the monotone SNR trend and with
+the rank cap of 4, but inferred from the trend rather than measured directly.</li>
+<li>That HS-GS costs no more than EM-GS. True at these dimensions (0.5–3.8% against a chained
+baseline) and false asymptotically, where the <var>N</var>³ SVD term dominates.</li>
+</ul>
+
+<h3>19.3 Not established — do not claim</h3>
+<ul>
+<li><strong>Any behaviour under a clustered channel.</strong> Never tested. §14.4.</li>
+<li><strong>Convergence of the HS-GS iteration.</strong> No proof, no merit function, non-convex
+constraint set, approximate projection.</li>
+<li><strong>Any comparison against a learned estimator.</strong> None exists in this repository.</li>
+<li><strong>Optimality of any hyperparameter.</strong> <code>cadzow_iter = 4</code>,
+<code>select_iter = 20</code>, <code>val_frac = 0.3</code>, <code>project_every = 1</code> were fixed
+at their initial values and never tuned — deliberately, since tuning them would have made the
+comparison against untuned baselines unfair. No claim is made that they are good choices.</li>
+<li><strong>Unequal-power users.</strong> All β<sub>k</sub> = 1; no near-far effect tested.</li>
+<li><strong>Wideband / frequency-selective operation.</strong> The model is flat and narrowband.</li>
+</ul>
+
+<h3>19.4 Known to be missing</h3>
+<ul>
+<li>The Xu paper and the Xiao/URformer paper. Parts VIII, XV are written from implementation and
+first principles only and are marked <strong>NOT VERIFIED</strong> throughout.</li>
+<li>Per-user model-order selection. The shared scalar <var>L̂</var> is a genuine limitation (§9.6, Q7).</li>
+<li>A compiled PDF of <code>tex/formulae.tex</code>. The file is 1,197 lines / 57 equations and was
+structurally validated, but no TeX distribution is available in this environment, so it has never
+been compiled. <strong>NOT VERIFIED — NEEDS CONFIRMATION</strong> that it typesets cleanly.</li>
+<li>BCa bootstrap intervals (percentile intervals only, Q17).</li>
+</ul>
+</div>
+</section>

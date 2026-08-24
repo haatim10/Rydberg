@@ -63,11 +63,14 @@ def main():
     ax[1].set_ylabel("gain over EM-GS  (dB)")
     ax[1].set_title("(b) gain vanishes as $L$ reaches the rank cap")
 
-    for a in ax:
+    # place the cap label where it cannot collide with the data in each panel:
+    # panel (a) curves rise to the top-right, panel (b) descends to zero bottom-right.
+    for a, yfrac in zip(ax, (0.06, 0.92)):
         a.axvline(CAP, color="0.3", ls=":", lw=1.2)
-        a.annotate("Hankel rank cap\n$\\lceil N/2\\rceil = 16$", xy=(CAP, 0.02),
-                   xycoords=("data", "axes fraction"), xytext=(-6, 6),
-                   textcoords="offset points", ha="right", fontsize=8.5, color="0.3")
+        a.annotate("Hankel rank cap\n$\\lceil N/2\\rceil = 16$", xy=(CAP, yfrac),
+                   xycoords=("data", "axes fraction"), xytext=(-8, 0),
+                   textcoords="offset points", ha="right", va="top",
+                   fontsize=8.5, color="0.3")
         a.set_xticks(L)
         a.grid(True, alpha=0.3, lw=0.6)
         a.legend(fontsize=9, framealpha=1.0)

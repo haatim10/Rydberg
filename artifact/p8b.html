@@ -1,0 +1,126 @@
+<section id="s16">
+<span class="snum">Part XVI</span>
+<h2>Numerical results in full</h2>
+<div class="col">
+<p class="lede">Every number that appears in a figure, printed. Nothing important in this document
+exists only as pixels. All values are recomputed from the per-trial <code>.npz</code> stores by
+<code>scripts/artifact_tables.py</code>; the CSVs are committed alongside the figures.</p>
+
+<h3>16.1 Master table — B3, NMSE vs SNR, all 36 operating points</h3>
+<p>NMSE in dB, ratio of sums, 10 log<sub>10</sub> (§12.1). <b>gain</b> = EM-GS − HS-GS in dB, eq. (39);
+positive means HS-GS is better. <b>CI</b> is the 95% paired bootstrap interval on the gain.
+<b>win</b> is the per-trial win rate, <b>tie</b> the exact-tie fraction that must be read with it
+(§12.5). <var>L̂</var> is the mean selected order. Rows where HS-GS <em>loses</em> are marked.</p>
+</div>
+<div class="tw"><table>
+<thead><tr>
+<th><var>N</var></th><th><var>P</var></th><th>SNR<br>dB</th><th>trials</th>
+<th>GS<br>dB</th><th>EM-GS<br>dB</th><th>HS-GS<br>dB</th>
+<th>gain<br>dB</th><th>gain CI<sub>95</sub></th>
+<th>win<br>%</th><th>tie<br>%</th><th>mean <var>L̂</var></th>
+<th>CRLB<br>uncon.</th><th>CRLB<br>con.</th>
+</tr></thead>
+<tbody>
+<tr><td>8</td><td>10</td><td>-5</td><td>400</td><td>6.92</td><td>6.59</td><td>5.13</td><td>1.47</td><td>[1.30, 1.64]</td><td>76.2</td><td>14.5</td><td>1.86</td><td>9.20</td><td>7.60</td></tr>
+<tr><td>8</td><td>10</td><td>0</td><td>400</td><td>2.29</td><td>2.20</td><td>1.35</td><td>0.85</td><td>[0.61, 1.07]</td><td>61.3</td><td>17.0</td><td>2.06</td><td>3.26</td><td>1.63</td></tr>
+<tr><td>8</td><td>10</td><td>5</td><td>1200</td><td>-2.31</td><td>-2.42</td><td>-2.52</td><td>0.10</td><td>[-0.01, 0.20]</td><td>39.7</td><td>29.8</td><td>2.53</td><td>-2.15</td><td>-3.71</td></tr>
+<tr class="neg"><td>8</td><td>10</td><td>10</td><td>400</td><td>-7.18</td><td>-7.26</td><td>-6.48</td><td>-0.78</td><td>[-1.12, -0.47]</td><td>22.5</td><td>41.2</td><td>3.00</td><td>-7.02</td><td>-8.59</td></tr>
+<tr class="neg"><td>8</td><td>10</td><td>15</td><td>400</td><td>-11.62</td><td>-11.66</td><td>-10.34</td><td>-1.32</td><td>[-1.77, -0.88]</td><td>17.2</td><td>53.0</td><td>3.35</td><td>-11.95</td><td>-13.60</td></tr>
+<tr class="neg"><td>8</td><td>10</td><td>20</td><td>1200</td><td>-15.48</td><td>-15.50</td><td>-13.27</td><td>-2.23</td><td>[-2.70, -1.77]</td><td>11.3</td><td>59.9</td><td>3.47</td><td>-16.97</td><td>-18.67</td></tr>
+<tr><td>8</td><td>30</td><td>-5</td><td>400</td><td>1.57</td><td>0.41</td><td>-0.37</td><td>0.78</td><td>[0.66, 0.91]</td><td>68.5</td><td>13.2</td><td>1.93</td><td>0.20</td><td>-0.69</td></tr>
+<tr class="neg"><td>8</td><td>30</td><td>0</td><td>400</td><td>-4.88</td><td>-5.22</td><td>-4.96</td><td>-0.26</td><td>[-0.39, -0.12]</td><td>35.2</td><td>25.2</td><td>2.55</td><td>-5.49</td><td>-6.38</td></tr>
+<tr class="neg"><td>8</td><td>30</td><td>5</td><td>400</td><td>-10.63</td><td>-10.74</td><td>-10.34</td><td>-0.41</td><td>[-0.55, -0.26]</td><td>27.0</td><td>41.0</td><td>3.20</td><td>-10.79</td><td>-11.67</td></tr>
+<tr class="neg"><td>8</td><td>30</td><td>10</td><td>400</td><td>-15.76</td><td>-15.80</td><td>-15.57</td><td>-0.23</td><td>[-0.34, -0.12]</td><td>19.2</td><td>59.5</td><td>3.54</td><td>-15.75</td><td>-16.64</td></tr>
+<tr class="neg"><td>8</td><td>30</td><td>15</td><td>400</td><td>-20.73</td><td>-20.74</td><td>-20.58</td><td>-0.17</td><td>[-0.27, -0.08]</td><td>12.5</td><td>74.2</td><td>3.72</td><td>-20.75</td><td>-21.62</td></tr>
+<tr class="neg"><td>8</td><td>30</td><td>20</td><td>400</td><td>-26.00</td><td>-26.00</td><td>-25.89</td><td>-0.11</td><td>[-0.22, -0.02]</td><td>11.2</td><td>81.0</td><td>3.80</td><td>-25.95</td><td>-26.83</td></tr>
+<tr class="sep"><td colspan="14"></td></tr>
+<tr><td>16</td><td>10</td><td>-5</td><td>400</td><td>6.91</td><td>6.62</td><td>4.21</td><td>2.41</td><td>[2.22, 2.62]</td><td>91.5</td><td>2.8</td><td>2.34</td><td>9.25</td><td>3.55</td></tr>
+<tr><td>16</td><td>10</td><td>0</td><td>400</td><td>2.21</td><td>2.10</td><td>0.07</td><td>2.03</td><td>[1.84, 2.23]</td><td>87.2</td><td>4.2</td><td>2.40</td><td>3.26</td><td>-2.38</td></tr>
+<tr><td>16</td><td>10</td><td>5</td><td>400</td><td>-2.40</td><td>-2.50</td><td>-3.36</td><td>0.85</td><td>[0.67, 1.03]</td><td>68.5</td><td>7.0</td><td>3.43</td><td>-2.15</td><td>-7.68</td></tr>
+<tr><td>16</td><td>10</td><td>10</td><td>400</td><td>-7.17</td><td>-7.22</td><td>-7.54</td><td>0.32</td><td>[0.07, 0.55]</td><td>61.3</td><td>10.5</td><td>4.61</td><td>-7.03</td><td>-12.65</td></tr>
+<tr class="neg"><td>16</td><td>10</td><td>15</td><td>1200</td><td>-11.61</td><td>-11.64</td><td>-11.49</td><td>-0.15</td><td>[-0.42, 0.10]</td><td>57.0</td><td>11.7</td><td>4.97</td><td>-12.04</td><td>-17.63</td></tr>
+<tr class="neg"><td>16</td><td>10</td><td>20</td><td>1200</td><td>-15.52</td><td>-15.54</td><td>-14.86</td><td>-0.68</td><td>[-1.09, -0.26]</td><td>56.4</td><td>12.2</td><td>5.09</td><td>-16.96</td><td>-22.70</td></tr>
+<tr><td>16</td><td>30</td><td>-5</td><td>400</td><td>1.63</td><td>0.54</td><td>-1.06</td><td>1.60</td><td>[1.45, 1.75]</td><td>89.8</td><td>3.2</td><td>2.56</td><td>0.24</td><td>-3.49</td></tr>
+<tr><td>16</td><td>30</td><td>0</td><td>400</td><td>-4.95</td><td>-5.25</td><td>-5.87</td><td>0.61</td><td>[0.48, 0.75]</td><td>71.5</td><td>3.5</td><td>3.64</td><td>-5.49</td><td>-9.22</td></tr>
+<tr><td>16</td><td>30</td><td>5</td><td>400</td><td>-10.59</td><td>-10.70</td><td>-11.17</td><td>0.47</td><td>[0.32, 0.60]</td><td>70.2</td><td>7.0</td><td>4.55</td><td>-10.79</td><td>-14.52</td></tr>
+<tr><td>16</td><td>30</td><td>10</td><td>400</td><td>-15.80</td><td>-15.84</td><td>-16.46</td><td>0.62</td><td>[0.48, 0.75]</td><td>79.0</td><td>7.8</td><td>4.92</td><td>-15.78</td><td>-19.51</td></tr>
+<tr><td>16</td><td>30</td><td>15</td><td>400</td><td>-20.78</td><td>-20.79</td><td>-21.44</td><td>0.65</td><td>[0.56, 0.75]</td><td>78.8</td><td>7.5</td><td>5.25</td><td>-20.77</td><td>-24.48</td></tr>
+<tr><td>16</td><td>30</td><td>20</td><td>400</td><td>-25.94</td><td>-25.95</td><td>-26.58</td><td>0.63</td><td>[0.54, 0.73]</td><td>77.0</td><td>10.5</td><td>5.46</td><td>-25.92</td><td>-29.63</td></tr>
+<tr class="sep"><td colspan="14"></td></tr>
+<tr><td>32</td><td>10</td><td>-5</td><td>400</td><td>6.93</td><td>6.62</td><td>2.30</td><td>4.33</td><td>[4.10, 4.55]</td><td>99.0</td><td>0.5</td><td>2.07</td><td>9.23</td><td>-0.72</td></tr>
+<tr><td>32</td><td>10</td><td>0</td><td>400</td><td>2.26</td><td>2.17</td><td>-1.66</td><td>3.83</td><td>[3.62, 4.01]</td><td>98.2</td><td>0.0</td><td>2.28</td><td>3.25</td><td>-6.56</td></tr>
+<tr><td>32</td><td>10</td><td>5</td><td>400</td><td>-2.42</td><td>-2.53</td><td>-5.23</td><td>2.70</td><td>[2.48, 2.91]</td><td>92.0</td><td>0.8</td><td>3.95</td><td>-2.09</td><td>-11.83</td></tr>
+<tr><td>32</td><td>10</td><td>10</td><td>400</td><td>-7.16</td><td>-7.21</td><td>-10.08</td><td>2.87</td><td>[2.55, 3.19]</td><td>94.0</td><td>0.5</td><td>5.08</td><td>-7.02</td><td>-16.83</td></tr>
+<tr><td>32</td><td>10</td><td>15</td><td>400</td><td>-11.71</td><td>-11.75</td><td>-14.34</td><td>2.59</td><td>[2.21, 2.96]</td><td>89.0</td><td>1.2</td><td>5.71</td><td>-12.03</td><td>-21.83</td></tr>
+<tr><td>32</td><td>10</td><td>20</td><td>1200</td><td>-15.39</td><td>-15.41</td><td>-18.12</td><td>2.71</td><td>[2.25, 3.18]</td><td>86.4</td><td>0.8</td><td>5.78</td><td>-16.99</td><td>-26.97</td></tr>
+<tr><td>32</td><td>30</td><td>-5</td><td>400</td><td>1.64</td><td>0.53</td><td>-2.51</td><td>3.04</td><td>[2.90, 3.17]</td><td>99.0</td><td>0.0</td><td>2.45</td><td>0.23</td><td>-6.80</td></tr>
+<tr><td>32</td><td>30</td><td>0</td><td>400</td><td>-4.91</td><td>-5.25</td><td>-7.67</td><td>2.42</td><td>[2.27, 2.57]</td><td>97.2</td><td>0.0</td><td>4.05</td><td>-5.49</td><td>-12.49</td></tr>
+<tr><td>32</td><td>30</td><td>5</td><td>400</td><td>-10.58</td><td>-10.69</td><td>-12.96</td><td>2.27</td><td>[2.12, 2.40]</td><td>96.0</td><td>0.2</td><td>5.02</td><td>-10.74</td><td>-17.74</td></tr>
+<tr><td>32</td><td>30</td><td>10</td><td>400</td><td>-15.78</td><td>-15.81</td><td>-18.16</td><td>2.35</td><td>[2.21, 2.50]</td><td>96.8</td><td>0.0</td><td>5.51</td><td>-15.79</td><td>-22.80</td></tr>
+<tr><td>32</td><td>30</td><td>15</td><td>400</td><td>-20.75</td><td>-20.76</td><td>-23.27</td><td>2.51</td><td>[2.38, 2.63]</td><td>98.0</td><td>0.2</td><td>5.88</td><td>-20.77</td><td>-27.77</td></tr>
+<tr><td>32</td><td>30</td><td>20</td><td>400</td><td>-25.93</td><td>-25.94</td><td>-28.54</td><td>2.60</td><td>[2.47, 2.74]</td><td>98.5</td><td>0.0</td><td>5.95</td><td>-25.93</td><td>-32.91</td></tr>
+</tbody></table></div>
+<div class="col">
+<p class="src">Source: <code>results/track_b/artifact/table_B3_nmse_vs_snr.csv</code> (36 rows,
+22 columns — the CSV additionally carries median, trimmed-gain, worst-share and active-fraction
+columns used in §12.4).</p>
+
+<h3>16.2 Scaling summary — the headline claim in one table</h3>
+</div>
+<div class="tw"><table>
+<thead><tr><th><var>N</var></th><th>rank cap<br>⌈<var>N</var>/2⌉</th><th>mean gain<br>dB</th>
+<th>gain @ <var>P</var>=10<br>dB</th><th>gain @ <var>P</var>=30<br>dB</th>
+<th>win rate</th><th>constraint<br>active</th>
+<th>EM-GS mean<br>dB</th><th>HS-GS mean<br>dB</th></tr></thead>
+<tbody>
+<tr class="neg"><td>8</td><td>4</td><td>−0.19</td><td>−0.32</td><td>−0.07</td><td>33.5%</td><td>57.5%</td><td>−8.85</td><td>−8.65</td></tr>
+<tr><td>16</td><td>8</td><td>+0.78</td><td>+0.80</td><td>+0.76</td><td>74.0%</td><td>92.7%</td><td>−8.85</td><td>−9.63</td></tr>
+<tr><td>32</td><td>16</td><td>+2.85</td><td>+3.17</td><td>+2.53</td><td>95.4%</td><td>99.6%</td><td>−8.84</td><td>−11.69</td></tr>
+</tbody></table></div>
+<div class="col">
+<p>Two facts to read off this table, both of which are more important than the headline gain:</p>
+<ul>
+<li><strong>EM-GS is flat in <var>N</var> to 0.013 dB</strong> (−8.8456, −8.8484, −8.8360). This is
+not a coincidence or a well-behaved simulation; it is the row-separability of the exact-model
+estimators (§7) showing up in the data exactly as the theory says it must. It also serves as a
+strong internal consistency check: if the three <var>N</var> sweeps had a bug in the channel
+normalisation, this column would not be flat.</li>
+<li><strong>The constraint-active fraction tracks the gain.</strong> 57.5% → 92.7% → 99.6% against
+−0.19 → +0.78 → +2.85 dB. At <var>N</var> = 8 the projection is inactive in 43% of trials because
+<var>L̂</var> hits the rank cap of 4, so at that array size HS-GS frequently <em>is</em> EM-GS.</li>
+</ul>
+
+<div class="note"><div class="t">The two poolings disagree in sign at N = 8 — both are correct</div>
+<p>The <b>mean gain</b> column above is the <em>unweighted mean of the twelve per-operating-point
+gains</em>, i.e. "the average advantage at a typical operating point". At <var>N</var> = 8 it is
+<strong>−0.19 dB</strong>. If instead all 12 points' trials are pooled into a single ratio of sums,
+the same data gives <strong>+0.81 dB</strong> (and +1.04 dB restricted to constraint-active trials;
+median over active trials +0.21 dB). Neither number is wrong and neither is the "real" one.</p>
+<p>The disagreement <em>is</em> the finding. Energy pooling weights each trial by its squared error,
+so it is dominated by the low-SNR points — where HS-GS wins by 0.78–1.47 dB. The unweighted mean
+gives the high-SNR points equal say — where HS-GS loses by up to 2.23 dB. At <var>N</var> = 8, HS-GS
+<strong>wins at low SNR and loses at high SNR</strong> (it is negative at 8 of the 12 points, all of
+them the higher-SNR ones), so any single scalar summary is a weighted vote between two opposite
+regimes. §16.6 identifies the mechanism: a bias-dominated error floor. Quoting either scalar alone,
+in either direction, would misrepresent the result; the per-point table in §16.1 is the honest
+report and is why it is printed in full.</p></div>
+
+<h3>16.3 Gap to the constrained CRLB, all 36 points</h3>
+<p>HS-GS minus the constrained bound, in dB. Positive = above the bound (expected).</p>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">SNR dB</th><th>−5</th><th>0</th><th>5</th><th>10</th><th>15</th><th>20</th></tr></thead>
+<tbody>
+<tr><td class="l"><var>N</var>=8, <var>P</var>=10</td><td class="neg">−2.47</td><td class="neg">−0.28</td><td>+1.19</td><td>+2.12</td><td>+3.26</td><td>+5.40</td></tr>
+<tr><td class="l"><var>N</var>=8, <var>P</var>=30</td><td>+0.32</td><td>+1.41</td><td>+1.34</td><td>+1.07</td><td>+1.05</td><td>+0.94</td></tr>
+<tr><td class="l"><var>N</var>=16, <var>P</var>=10</td><td>+0.66</td><td>+2.45</td><td>+4.32</td><td>+5.12</td><td>+6.14</td><td>+7.85</td></tr>
+<tr><td class="l"><var>N</var>=16, <var>P</var>=30</td><td>+2.44</td><td>+3.35</td><td>+3.35</td><td>+3.05</td><td>+3.04</td><td>+3.05</td></tr>
+<tr><td class="l"><var>N</var>=32, <var>P</var>=10</td><td>+3.02</td><td>+4.90</td><td>+6.61</td><td>+6.75</td><td>+7.48</td><td>+8.85</td></tr>
+<tr><td class="l"><var>N</var>=32, <var>P</var>=30</td><td>+4.29</td><td>+4.82</td><td>+4.79</td><td>+4.63</td><td>+4.50</td><td>+4.37</td></tr>
+</tbody></table></div>
+<div class="col">
+<p>The gap grows monotonically with <var>N</var> at every SNR. Restated: as the array grows, HS-GS
+recovers more of the structural gain in absolute terms (§16.2) while recovering a
+<em>smaller share</em> of what the structure makes available. Whatever is left on the table is
+growing, and §20 argues it lives in the estimator's two known weak points rather than in tuning.</p>
+</div>

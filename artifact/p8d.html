@@ -1,0 +1,69 @@
+<div class="col">
+<h3>16.8 B7 — the mechanism tested directly (controlled path count)</h3>
+<p>Every other experiment draws <code>L<sub>k</sub> ~ 𝒰{3..7}</code> at random, so none of them
+isolates path count. B7 fixes <var>L<sub>k</sub></var> = <var>L</var> identically across users and
+sweeps it from very sparse up to the Hankel rank cap, at <var>N</var> = 32, <var>P</var> = 30,
+SNR = 5 dB, RSR = 12 dB, 400 trials per point, with the identical CRN world function,
+estimators and hyperparameters as B3.</p>
+<div class="note info"><div class="t">Hypothesis, recorded in the script before the run</div>
+<p style="font-family:var(--mono);font-size:12.5px">"L increases → Hankel rank increases → the
+strict low-rank prior carries less information → the HS-GS advantage should shrink, and should
+vanish once L reaches cap(N) = ⌈N/2⌉, where the constraint is vacuous."</p></div>
+</div>
+<div class="tw"><table>
+<thead><tr><th><var>L</var></th><th>trials</th><th>GS dB</th><th>EM-GS dB</th><th>HS-GS dB</th>
+<th>gain dB</th><th>gain CI<sub>95</sub></th><th>win %</th><th>active %</th>
+<th>mean <var>L̂</var></th></tr></thead>
+<tbody>
+<tr><td>2</td><td>400</td><td>-10.61</td><td>-10.73</td><td>-17.86</td><td>+7.13</td><td>[+6.89, +7.37]</td><td>100.0</td><td>100.0</td><td>2.12</td></tr>
+<tr><td>4</td><td>400</td><td>-10.51</td><td>-10.62</td><td>-14.20</td><td>+3.58</td><td>[+3.43, +3.72]</td><td>99.2</td><td>100.0</td><td>4.03</td></tr>
+<tr><td>6</td><td>400</td><td>-10.65</td><td>-10.76</td><td>-12.59</td><td>+1.84</td><td>[+1.70, +1.96]</td><td>95.0</td><td>99.8</td><td>5.70</td></tr>
+<tr><td>8</td><td>400</td><td>-10.53</td><td>-10.65</td><td>-11.67</td><td>+1.03</td><td>[+0.92, +1.13]</td><td>89.8</td><td>99.5</td><td>7.29</td></tr>
+<tr><td>10</td><td>400</td><td>-10.62</td><td>-10.73</td><td>-11.32</td><td>+0.59</td><td>[+0.49, +0.69]</td><td>80.2</td><td>98.2</td><td>8.41</td></tr>
+<tr><td>12</td><td>400</td><td>-10.56</td><td>-10.66</td><td>-10.94</td><td>+0.27</td><td>[+0.21, +0.34]</td><td>71.5</td><td>95.8</td><td>9.85</td></tr>
+<tr><td>14</td><td>400</td><td>-10.57</td><td>-10.69</td><td>-10.72</td><td>+0.04</td><td>[-0.05, +0.12]</td><td>59.2</td><td>96.8</td><td>10.70</td></tr>
+<tr class="neg"><td>16</td><td>400</td><td>-10.50</td><td>-10.62</td><td>-10.50</td><td>-0.12</td><td>[-0.19, -0.04]</td><td>45.2</td><td>90.2</td><td>11.55</td></tr>
+</tbody></table></div>
+<div class="col">
+<p><strong>The prediction is confirmed, with one refinement that is worth more than the
+confirmation.</strong> The gain decays strictly monotonically across all eight points —
+<span class="mono">+7.13 → +3.58 → +1.84 → +1.03 → +0.59 → +0.27 → +0.04 → −0.12 dB</span> — and the
+win rate falls from 100.0% to 45.3%, i.e. through a coin flip. The null is reached at
+<var>L</var> = 14, where the gain is +0.04 dB with a confidence interval [−0.05, +0.12] that
+straddles zero. That is <em>one grid point before</em> the predicted <var>L</var> = cap(32) = 16, and
+at the cap itself the gain is mildly but significantly <strong>negative</strong>: −0.12 dB, CI
+[−0.195, −0.041], excluding zero.</p>
+<p>The refinement is not a failure of the prediction; it is the same shrinkage mechanism appearing a
+third time, and it is quantitatively accounted for by the selector column. Mean <var>L̂</var> rises
+from 2.12 at <var>L</var> = 2 to only <strong>11.55</strong> at <var>L</var> = 16 — it tracks the
+true order but increasingly <em>under</em>-selects, falling 4.5 short at the top of the sweep. So at
+<var>L</var> = 16 the constraint is not vacuous as the naive reading of "L reaches the cap" assumes:
+it is still active in 90.3% of trials, and what it is doing there is truncating away real signal.
+A projection that removes true channel energy costs a little accuracy, which is exactly the −0.12 dB
+observed. The theoretical prediction concerns <var>L̂</var> = cap; the experiment sweeps the true
+<var>L</var>, and the two coincide only if the selector is unbiased, which §16.4 already established
+it is not.</p>
+<p>Why this is nonetheless the cleanest evidence in the study:</p>
+<ul>
+<li><strong>It is a controlled experiment, not an observational trend.</strong> <var>L</var> is set,
+not drawn, and everything else — <var>N</var>, <var>P</var>, SNR, RSR, seeds, hyperparameters — is
+held fixed. Nothing else in Track B has this property.</li>
+<li><strong>The prediction was quantitative and pre-recorded</strong>, in the script's docstring
+before the run. Not merely "the gain should fall" but "it should reach zero near
+<var>L</var> = 16". A mechanism that was really something else — better initialisation, incidental
+regularisation, a lucky hyperparameter — had no reason to produce a null anywhere near that
+value.</li>
+<li><strong>It eliminates the main rival explanation.</strong> If HS-GS's advantage were generic
+denoising, it would persist at large <var>L</var>, where the estimate is just as noisy and the
+denoising opportunity just as large. Instead it disappears and then reverses. Generic denoising
+cannot produce that.</li>
+<li><strong>The baselines confirm the control worked.</strong> EM-GS is flat across the sweep
+(−10.62 to −10.76 dB, range 0.14 dB): path count does not affect an estimator that ignores
+structure. Had EM-GS moved, the sweep would have been confounded.</li>
+</ul>
+<p class="src">Source: <code>results/track_b/b7/L*.npz</code> · driver
+<code>scripts/run_b7_pathcount.py</code> · figure <code>scripts/plot_b7.py</code> ·
+table <code>results/track_b/artifact/table_B7_pathcount.csv</code></p>
+</div>
+
+</section>

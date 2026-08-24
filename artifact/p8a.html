@@ -1,0 +1,130 @@
+<section id="s14">
+<span class="snum">Part XIV</span>
+<h2>Relation to clustered channel models (Saleh–Valenzuela / 3GPP TR 38.901)</h2>
+<div class="col">
+<p class="lede">Track B does not use a clustered channel. This section states precisely what it does
+use, how that relates to the clustered models, and — the part that matters for defending the
+result — which conclusions would survive a change of channel model and which would not.</p>
+
+<div class="note"><div class="t">Verification status</div>
+<p>The Saleh–Valenzuela paper was <strong>not supplied</strong> and is not in the repository. The
+statements below about SV are standard textbook properties of the model, not readings of a source
+document; anything requiring the original paper's exact parameterisation is
+<strong>NOT VERIFIED — NEEDS CONFIRMATION</strong>. 3GPP TR 38.901 <em>was</em> supplied and is
+implemented — but in <strong>Track A</strong>, not Track B.</p></div>
+
+<h3>14.1 What Track B actually uses <span class="chip c-ok">verified</span></h3>
+<p>A flat, narrowband, unclustered geometric multipath model: <var>L<sub>k</sub></var> resolvable
+paths per user, each with an i.i.d. uniform AoA on [−π/2, π/2] and an independent
+<code>𝒞𝒩(0, β<sub>k</sub>/L<sub>k</sub>)</code> gain (Part II, eq. 4). There is no delay dimension,
+no cluster grouping, no intra-cluster angular spread, no per-cluster shadowing, and no
+polarisation. Every path is an independent draw.</p>
+
+<h3>14.2 Where a clustered model differs</h3>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Property</th><th class="l">Track B geometric</th><th class="l">Saleh–Valenzuela / TR 38.901</th></tr></thead>
+<tbody>
+<tr><td class="l">Path arrival structure</td><td class="l">flat list of <var>L<sub>k</sub></var> paths</td><td class="l">clusters of rays; two-level (cluster, ray) indexing</td></tr>
+<tr><td class="l">AoA distribution</td><td class="l">i.i.d. 𝒰[−π/2, π/2]</td><td class="l">cluster centres spread widely; rays tightly grouped around the centre (38.901: 𝒰(−5°, 5°) offsets in the Track-A implementation)</td></tr>
+<tr><td class="l">Power profile</td><td class="l">equal average power per path</td><td class="l">exponentially decaying PDP across clusters and within cluster</td></tr>
+<tr><td class="l">Effective angular rank</td><td class="l">= <var>L<sub>k</sub></var>, all distinct</td><td class="l">≪ number of rays: rays inside a cluster are nearly collinear in ψ</td></tr>
+<tr><td class="l">Delay</td><td class="l">absent (flat, narrowband)</td><td class="l">central to the model</td></tr>
+</tbody></table></div>
+
+<div class="col">
+<h3>14.3 What this means for the Hankel low-rank assumption</h3>
+<p>This is the load-bearing question, and the answer is more favourable to HS-GS than one might
+fear, for a reason worth stating carefully.</p>
+<p>Kronecker's theorem says the Hankel matrix of a channel column has rank exactly equal to the
+number of <em>distinct</em> complex exponentials <code>e<sup>jψ</sup></code> present. Under Track B's
+model that count is <var>L<sub>k</sub></var>, because the AoAs are i.i.d. continuous draws and are
+almost surely distinct. Under a clustered model the number of <em>rays</em> is much larger — 23
+clusters × 20 rays = 460 in the Track-A 38.901 configuration — but the rays within a cluster occupy
+a ±5° window, so their ψ values are tightly packed. The Hankel matrix is then not exactly low rank,
+but its singular values decay rapidly: it is <strong>numerically</strong> low rank with an effective
+order close to the number of clusters, not the number of rays.</p>
+<p>So the qualitative mechanism (§9, Figure C1) survives; the exact rank cliff does not. Three
+consequences follow, and they cut in different directions:</p>
+<ul>
+<li><strong>Favourable:</strong> the effective rank under clustering is governed by cluster count,
+which is typically smaller than 460 and can be comparable to <var>L<sub>k</sub></var> ∈ {3,…,7}. The
+low-rank prior is not obviously weaker.</li>
+<li><strong>Unfavourable:</strong> Cadzow's hard SVD truncation to rank <var>L̂</var> is exactly
+right for an exactly-low-rank signal and is a <em>bias-inducing approximation</em> for a
+rapidly-decaying one. Truncating discards the intra-cluster angular spread, which is real signal.
+The shrinkage bias already visible at <var>N</var> = 8 (§16.4) would get worse.</li>
+<li><strong>Unknown:</strong> the held-out-pilot order selector (§9.6) chooses <var>L̂</var> by
+predictive residual, so it might adapt to the effective rank on its own. It might equally chase the
+slowly-decaying tail and over-select. <strong>NOT VERIFIED — NEEDS CONFIRMATION</strong>: this has
+not been tested and cannot be inferred from the present results.</li>
+</ul>
+
+<h3>14.4 Honest scope statement</h3>
+<div class="note bad"><div class="t">Do not over-claim</div>
+<p>Every Track-B number in this document was produced under an i.i.d. uniform-AoA geometric model
+with equal per-path power. <strong>No result here establishes anything about HS-GS under a clustered
+channel.</strong> The correct claim is: "under a sparse geometric multipath model, exploiting the
+Hankel low-rank structure of the ULA response yields up to 2.85 dB over EM-GS at <var>N</var> = 32."
+The claim "HS-GS improves RAQR channel estimation" is not supported by this evidence and should not
+be made. Running B3 under the Track-A 38.901 generator is the single highest-value next experiment
+(§20) precisely because it is the experiment that could falsify the result.</p></div>
+</div>
+</section>
+
+<section id="s15">
+<span class="snum">Part XV</span>
+<h2>Relation to learning-based estimators (URformer, Xiao et al.)</h2>
+<div class="col">
+<div class="note bad"><div class="t">Paper not available — this entire section is NOT VERIFIED</div>
+<p>The Xiao et al. URformer paper was listed as an input but <strong>was not supplied</strong>. The
+uploads directory contains only: Cui et al. "Towards Atomic MIMO Receivers" (two copies), 3GPP
+TR 38.901, the system-model document, and the ULA implementation plan. The Xu paper referenced in
+Part VIII is likewise absent.</p>
+<p>Nothing in this section is a reading of the URformer paper. It states only (a) what is verifiably
+true about the present codebase, and (b) what can be said from first principles about the class of
+method. <strong>Every specific claim about what URformer does, its architecture, its training setup,
+or its reported numbers is NOT VERIFIED — NEEDS CONFIRMATION.</strong> No URformer result should be
+quoted, compared against, or cited on the basis of this document.</p></div>
+
+<h3>15.1 What is verifiable <span class="chip c-ok">verified</span></h3>
+<p>There is <strong>no learned estimator anywhere in this repository</strong>. A grep for any deep
+learning framework returns nothing; the three estimators are biased-GS, EM-GS and HS-GS, all
+model-based and all deterministic given the realization. No training data was generated, no network
+was trained, and no comparison against a learned baseline was run. Any figure or table in this
+document that appeared to compare against URformer would be fabricated; none does.</p>
+
+<h3>15.2 What can be said from first principles</h3>
+<p>Two structural observations about where a learned estimator would and would not have an
+advantage on this problem, both of which follow from the analysis already done and neither of which
+requires the paper:</p>
+<ul>
+<li><strong>The information-theoretic ceiling is the same.</strong> The constrained CRLB of §10.7 is a
+property of the likelihood and the structural manifold, not of the estimator. A learned estimator
+trained on this exact generative model is subject to it in the same asymptotic sense that HS-GS is,
+and cannot beat it while unbiased. The 0.32–8.85 dB gap between HS-GS and that bound (§16.3) is
+therefore an upper bound on what <em>any</em> method — learned or not — could gain over HS-GS on
+this model, and it is the number that determines whether pursuing a learned estimator is
+worthwhile.</li>
+<li><strong>Where a learned method would plausibly win.</strong> HS-GS's two weakest links are both
+things a network could sidestep: the single shared scalar <var>L̂</var> imposed on all
+<var>K</var> users (§9.6, a real limitation — the true orders were (7,4,6) and the selector chose 5),
+and Cadzow's hard rank truncation, which is the wrong operator for a numerically-rather-than-exactly
+low-rank signal (§14.3). A learned prior has neither constraint. That is an argument for why the
+comparison is interesting, not evidence about its outcome.</li>
+<li><strong>Where it would plausibly lose.</strong> A network trained on 𝒰[−π/2, π/2] i.i.d. AoAs
+inherits that training distribution. HS-GS's assumption — "the column is a sum of <var>L</var>
+exponentials" — is weaker and model-agnostic in a way a trained prior is not.</li>
+</ul>
+
+<h3>15.3 What would be required to make a real comparison</h3>
+<p>Recorded so the scope of the missing work is explicit, not so it is proposed: the URformer
+paper itself; its exact observation model (in particular whether it estimates from the non-linear
+modulus <code>Z</code> or from a linearised/complex observation — if the latter, the comparison is
+not like-for-like and this document's central no-linearisation constraint would make a direct
+NMSE-vs-NMSE plot misleading); its training/test split; and matched SNR, RSR, <var>N</var>,
+<var>K</var>, <var>P</var> and <var>L<sub>k</sub></var> conventions. Absent all of these, the correct
+statement in a review is: <em>"a learned baseline was not run; the constrained CRLB bounds what one
+could achieve on this model."</em></p>
+</div>
+</section>

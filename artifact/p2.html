@@ -1,0 +1,228 @@
+<section id="s0">
+<span class="snum">Part I</span>
+<h2>Executive research summary</h2>
+<div class="col">
+<p class="lede">Every equation, constant and distribution in this document was read out of the
+implementation by executing it, not transcribed from notes. Claims that could not be verified are
+marked <span class="chip c-nv">not verified</span> and say what is missing. Two of the five source
+papers were not supplied, and the sections depending on them are marked accordingly rather than
+written from memory.</p>
+
+<h3>Research problem</h3>
+<p>A Rydberg atomic receiver with <var>N</var> sensing elements serves <var>K</var> single-antenna
+users over a multipath channel. The receiver measures only the <em>magnitude</em> of the total RF
+field at each element. Given known pilots <var>S</var> and a known reference field <var>B</var>,
+estimate the complex channel matrix <var>G</var> from the real, non-negative measurement
+<var>Z</var>. This is <strong>biased phase retrieval</strong>: nonlinear, non-convex, and not
+solvable by pilot inversion.</p>
+
+<h3>Physical motivation</h3>
+<p>The atomic transduction chain terminates in an optical readout whose response depends on the RF
+electric-field amplitude, not its phase (§IV). The phase is therefore destroyed at the sensor. A
+known reference field is deliberately superposed so that relative phase re-enters the measurement
+through the cross term of <code>|x+b|²</code>; without it the problem has severe ambiguities (§X.4).</p>
+
+<h3>Main system model <span class="chip c-ok">verified</span></h3>
+</div>
+<div class="eq"><span class="b"><var>Z</var> = | <var>G</var><var>S</var> + <var>B</var> +
+  <var>W</var> |,&nbsp;&nbsp; <var>W</var> ~ 𝒞𝒩(0, σ²<var>I</var>)</span><span class="n">(1)</span></div>
+<div class="col">
+<p>Verified by executing the generator: <code>max|·|</code> deviation between the stored
+<var>Z</var> and a recomputed <code>|GS+B+W|</code> is <strong>exactly 0.00e+00</strong> over 240
+worlds spanning all three array sizes. The noise enters <em>before</em> the magnitude, which is what
+makes the problem hard. No linearised observation is used anywhere on this path: a runtime tripwire
+replaced the linearised solver with a function that raises and confirmed <strong>0 calls</strong>
+across all three estimators at all three array sizes.</p>
+
+<h3>Track B1 — literature baseline</h3>
+<p>Cui's biased Gerchberg–Saxton (GS) and EM-GS, applied unchanged to this ULA channel while
+retaining the exact observation (1). No structural prior. These establish what existing
+magnitude-only machinery achieves here, and everything else is measured against them.</p>
+
+<h3>Track B2 — proposed structure-aware extension</h3>
+<p>A ULA channel column is a sum of <var>L<sub>k</sub></var> spatial exponentials, so its Hankel
+matrix has rank ≤ <var>L<sub>k</sub></var>. <strong>HS-GS</strong> interleaves a Cadzow
+rank-truncation projection with every exact EM-GS measurement update, enforcing that structure
+without any angle grid and without estimating any angle. The model order is selected from held-out
+pilot residual — <strong>not</strong> from oracle <var>L<sub>k</sub></var>.</p>
+
+<h3>Main results — only what the simulations support</h3>
+<ul>
+<li>The HS-GS advantage over EM-GS is <span class="mono">−0.19 / +0.78 / +2.85 dB</span> at
+<var>N</var> = 8 / 16 / 32 — the unweighted mean over the twelve operating points at each array size
+— monotone in <var>N</var>, with the <var>N</var> = 32 confidence interval strictly above the
+<var>N</var> = 16 interval at 12/12 shared operating points.</li>
+<li>At <var>N</var> = 8 the method <strong>loses at 8 of 12 points</strong>, all of them the
+higher-SNR ones, while winning at low SNR. The sign of any single <var>N</var> = 8 summary therefore
+depends on the pooling: energy-pooling the same trials gives <span class="mono">+0.81 dB</span>.
+Both numbers are reported in §16.2 rather than one being chosen. The <var>N</var> = 16 and
+<var>N</var> = 32 results carry no such ambiguity — every pooling agrees in sign there.</li>
+<li><strong>The mechanism was tested directly and confirmed.</strong> In a controlled experiment
+(B7, 3,200 trials) with path count <var>L</var> fixed rather than drawn, the gain decays strictly
+monotonically from <span class="mono">+7.13 dB</span> at <var>L</var> = 2 to
+<span class="mono">+0.04 dB</span> at <var>L</var> = 14 and <span class="mono">−0.12 dB</span> at the
+Hankel rank cap, while the baselines stay flat. The hypothesis was written into the script before
+the run.</li>
+<li>The EM-GS baseline is flat in <var>N</var> to <span class="mono">0.012 dB</span>, so the
+<var>N</var>-dependence belongs to the structural prior and not to the baseline degrading.</li>
+<li>Against a correctly constructed <em>constrained</em> CRLB, HS-GS is <strong>0.3–8.9 dB above
+the bound at 34 of 36 operating points</strong>, and the gap <em>grows</em> with <var>N</var>
+(§X.7, §16.3). At the two remaining points it falls below the bound — as biased estimators are
+permitted to (§16.4) — and those two are reported, not cropped.</li>
+</ul>
+
+<h3>Theoretical benchmark</h3>
+<p>Two bounds are computed, and they answer different questions. The <strong>unconstrained</strong>
+CRLB governs estimators that treat <var>G</var> as <span class="mono">2NK</span> free real
+parameters — GS and EM-GS. The <strong>constrained</strong> CRLB governs estimators that know
+<var>G</var> lies on the <span class="mono">3ΣL<sub>k</sub></span>-parameter geometric manifold —
+the only bound against which HS-GS may fairly be judged. Placing HS-GS against the unconstrained
+bound is invalid, and §X.7 explains why.</p>
+
+<div class="note bad"><div class="t">Defect found during this audit, not yet corrected in the frozen report</div>
+<p>The CRLB implementation inherited from Track A credits each magnitude measurement with
+constraining <em>both</em> quadratures — its Fisher contribution has real-equivalent rank 2, where a
+magnitude measurement yields one real number and must contribute rank 1. It is therefore optimistic
+by up to <strong>4.2 dB</strong>. Two independent tests establish this (§X.3), including a
+simulation in which the maximum-likelihood estimator converges onto the rank-1 bound
+(<span class="mono">0.990×</span> at 35 dB) while sitting above the old one. Every bound in this
+document uses the corrected construction. <strong>No estimator result changes</strong> — the CRLB
+enters no NMSE, gain, confidence interval or win rate.</p></div>
+
+<div class="note info"><div class="t">Source material actually available</div>
+<p>Supplied and read: <strong>Cui et al., “Towards Atomic MIMO Receivers”</strong>; 3GPP TR 38.901;
+the frozen SystemModel and ULA implementation-plan documents. <strong>Not supplied: the Xu paper and
+the Xiao et al. URformer paper.</strong> Parts VIII, XIV and XV are therefore written from the
+implementation and from first principles only, with every paper-specific attribution marked
+<span class="chip c-nv">not verified</span>. Nothing about those two papers is asserted from memory.</p></div>
+</div>
+</section>
+
+<section id="s2">
+<span class="snum">Part II</span>
+<h2>Physical system model</h2>
+
+<h3 class="col">2.1 Multi-user uplink</h3>
+<div class="col">
+<p><var>K</var> = 3 single-antenna users transmit to an <var>N</var>-element Rydberg receiver whose
+sensing elements form a uniform linear array. <span class="chip c-nv">not verified</span> The number
+of transmit antennas per user is not represented in the code beyond “one complex symbol stream per
+user”; the simulator has no per-user antenna dimension, so “single-antenna user” is an
+interpretation of the data structure rather than an explicitly modelled array.</p>
+</div>
+<figure>
+<svg viewBox="0 0 760 240" role="img" aria-label="Three users transmitting plane waves to an N-element uniform linear array of Rydberg sensors, with a reference field applied to the array." style="width:100%;height:auto;background:var(--surface);border:1px solid var(--soft);border-radius:2px">
+<g font-family="IBM Plex Mono, monospace" font-size="11">
+<circle cx="60" cy="46" r="13" fill="none" stroke="currentColor" stroke-width="1.3"/>
+<circle cx="60" cy="118" r="13" fill="none" stroke="currentColor" stroke-width="1.3"/>
+<circle cx="60" cy="190" r="13" fill="none" stroke="currentColor" stroke-width="1.3"/>
+<text x="60" y="50" text-anchor="middle" fill="currentColor">1</text>
+<text x="60" y="122" text-anchor="middle" fill="currentColor">2</text>
+<text x="60" y="194" text-anchor="middle" fill="currentColor">3</text>
+<text x="60" y="222" text-anchor="middle" fill="currentColor" font-size="10">K users</text>
+<g stroke="currentColor" stroke-width="0.9" opacity="0.55">
+<line x1="76" y1="46" x2="470" y2="70"/><line x1="76" y1="46" x2="470" y2="150"/>
+<line x1="76" y1="118" x2="470" y2="60"/><line x1="76" y1="118" x2="470" y2="185"/>
+<line x1="76" y1="190" x2="470" y2="105"/></g>
+<text x="250" y="36" fill="currentColor" font-size="10" opacity="0.75">L_k specular paths per user</text>
+<g stroke="currentColor" stroke-width="1.4">
+<line x1="500" y1="40" x2="500" y2="205"/></g>
+<g fill="none" stroke="currentColor" stroke-width="1.3">
+<circle cx="500" cy="52" r="7"/><circle cx="500" cy="84" r="7"/><circle cx="500" cy="116" r="7"/>
+<circle cx="500" cy="148" r="7"/><circle cx="500" cy="180" r="7"/></g>
+<text x="522" y="56" fill="currentColor" font-size="10">n = 1</text>
+<text x="522" y="88" fill="currentColor" font-size="10">n = 2</text>
+<text x="522" y="184" fill="currentColor" font-size="10">n = N</text>
+<path d="M 470 84 L 496 84" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2 2"/>
+<text x="452" y="120" fill="currentColor" font-size="10" text-anchor="end">plane wave, angle θ</text>
+<line x1="500" y1="52" x2="500" y2="84" stroke="currentColor" stroke-width="3" opacity="0.35"/>
+<text x="462" y="212" fill="currentColor" font-size="10">d = λ/2</text>
+<rect x="596" y="86" width="112" height="44" fill="none" stroke="currentColor" stroke-width="1.2" rx="2"/>
+<text x="652" y="104" text-anchor="middle" fill="currentColor" font-size="10">reference B</text>
+<text x="652" y="120" text-anchor="middle" fill="currentColor" font-size="10">(known, |B| fixed)</text>
+<path d="M 596 108 L 512 108" stroke="currentColor" stroke-width="1" marker-end="url(#ah)"/>
+<defs><marker id="ah" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+<path d="M0,0 L7,3.5 L0,7 z" fill="currentColor"/></marker></defs>
+<text x="652" y="160" text-anchor="middle" fill="currentColor" font-size="11">Z = |GS+B+W|</text>
+<text x="652" y="176" text-anchor="middle" fill="currentColor" font-size="10" opacity="0.7">magnitude only</text>
+</g></svg>
+<figcaption><b>System geometry.</b> <var>K</var> users, each reaching the array over
+<var>L<sub>k</sub></var> specular paths; an <var>N</var>-element ULA at half-wavelength spacing; a
+known reference field superposed at the array; and a magnitude-only readout. The reference is what
+lets relative phase survive the magnitude operation.</figcaption>
+</figure>
+
+<h3 class="col">2.2 ULA geometry — derivation</h3>
+<div class="col">
+<p>A plane wave arriving at angle <var>θ</var> from array broadside reaches element <var>n</var>
+after an extra path length of <code>(n−1) d sin θ</code> relative to element 1. Converting path
+length to phase at wavelength <var>λ</var> gives a phase lag of <code>(2π/λ)(n−1) d sin θ</code>, so
+the per-element phase increment is</p>
+</div>
+<div class="eq"><span class="b">ψ = (2π<var>d</var>/λ) sin θ</span><span class="n">(2)</span></div>
+<div class="col"><p>and at half-wavelength spacing <var>d</var> = λ/2 this reduces to</p></div>
+<div class="eq"><span class="b">ψ = π sin θ,&nbsp;&nbsp; θ ∈ [−π/2, π/2] ⟹ ψ ∈ [−π, π]</span><span class="n">(3)</span></div>
+<div class="col">
+<p><strong>Physical meaning.</strong> <var>θ</var> is the physical angle of arrival measured from
+broadside. <var>ψ</var> is the <em>electrical</em> angle — the phase step between adjacent sensors.
+The choice <var>d</var> = λ/2 is what makes the map θ → ψ a bijection onto exactly one period of
+the complex exponential: any wider spacing folds distinct physical angles onto the same electrical
+angle (grating lobes / spatial aliasing), and any narrower spacing wastes aperture. Verified in the
+code: <code>psi = pi * sin(theta)</code> and the drawn <var>θ</var> lie inside
+<span class="mono">[−1.5579, 1.5310]</span> against a permitted <span class="mono">[−1.5708,
+1.5708]</span>.</p>
+</div>
+
+<h3 class="col">2.3 Sparse geometric multipath channel <span class="chip c-ok">verified</span></h3>
+<div class="col"><p>Reconstructed by executing the generator and comparing against a closed form
+written independently; agreement is exact (<span class="mono">max|diff| = 0.00e+00</span>):</p></div>
+<div class="eq"><span class="b"><var>g<sub>k</sub></var>[<var>n</var>] = <var>c</var>
+  Σ<sub>ℓ=1</sub><sup><var>L<sub>k</sub></var></sup> α<sub>ℓ,<var>k</var></sub>
+  e<sup>−j(<var>n</var>−1)ψ<sub>ℓ,<var>k</var></sub></sup>,&nbsp;&nbsp;
+  ψ<sub>ℓ,<var>k</var></sub> = π sin θ<sub>ℓ,<var>k</var></sub></span><span class="n">(4)</span></div>
+<div class="tw"><table>
+<thead><tr><th class="l">Term</th><th class="l">Meaning</th><th class="l">Verified value / distribution</th></tr></thead>
+<tbody>
+<tr><td class="l"><var>k</var></td><td class="t">user index</td><td class="t">1…<var>K</var>, <var>K</var> = 3</td></tr>
+<tr><td class="l"><var>n</var></td><td class="t">receive element index</td><td class="t">1…<var>N</var>; <var>N</var> ∈ {8, 16, 32} tested</td></tr>
+<tr><td class="l">ℓ</td><td class="t">path index within a user</td><td class="t">1…<var>L<sub>k</sub></var></td></tr>
+<tr><td class="l"><var>L<sub>k</sub></var></td><td class="t">path count</td><td class="t"><b>𝒰{3,…,7}</b>, drawn i.i.d. <b>per user, per realisation</b>. Verified: two users in one trial drew (7, 4, 6); a different trial drew (6, 7, 3)</td></tr>
+<tr><td class="l">θ<sub>ℓ,<var>k</var></sub></td><td class="t">angle of arrival</td><td class="t"><b>𝒰[−π/2, π/2]</b>, uniform in <b>θ</b> not in sin θ. KS test over 4 465 samples: p = 0.150 against uniform-in-θ, p = 0.0000 against uniform-in-sin θ. Independent across paths and users</td></tr>
+<tr><td class="l">ψ<sub>ℓ,<var>k</var></sub></td><td class="t">electrical angle</td><td class="t">π sin θ, eq. (3)</td></tr>
+<tr><td class="l">α<sub>ℓ,<var>k</var></sub></td><td class="t">complex path gain</td><td class="t"><b>𝒞𝒩(0, β<sub>k</sub>/L<sub>k</sub>)</b>, circularly symmetric (measured E[α²] = 0.0026 − 0.0016j ≈ 0), zero mean</td></tr>
+<tr><td class="l">β<sub>k</sub></td><td class="t">per-element channel power</td><td class="t">1. Verified: <span class="mono">L·E|α|² = 1.0002</span>; mean |g|² per element 0.9737</td></tr>
+<tr><td class="l"><var>c</var></td><td class="t">normalisation constant</td><td class="t"><b>c = 1</b> exactly (<var>G</var> and the raw <var>H</var> are bit-identical)</td></tr>
+</tbody>
+<caption>Every entry established by executing the generator, not read from a docstring. The
+<span class="mono">β<sub>k</sub>/L<sub>k</sub></span> scaling is deliberate: a 3-path and a 7-path
+user carry equal average power, so the array-size sweep is not confounded by path count.</caption>
+</table></div>
+
+<div class="col">
+<h4>A worked numerical example</h4>
+<p>Take <var>N</var> = 4, <var>L</var> = 2, θ₁ = 0 (broadside) and θ₂ = 30° = π/6. Then ψ₁ = π·sin 0
+= 0 and ψ₂ = π·sin(π/6) = π/2. With α₁ = 1 and α₂ = j:</p>
+</div>
+<div class="eq"><span class="b"><var>g</var> = 1·[1, 1, 1, 1] + j·[1, e<sup>−jπ/2</sup>,
+  e<sup>−jπ</sup>, e<sup>−j3π/2</sup>] = [1+j, 1+1, 1−j, 1−1]
+  = [1+j, 2, 1−j, 0]</span><span class="n">(5)</span></div>
+<div class="col">
+<p>Two paths, four elements: the broadside path contributes a constant, the 30° path a
+quarter-turn per element, and their interference produces a channel that varies along the array
+while living in a 2-dimensional subspace of ℂ⁴. That confinement is precisely what §IX exploits.</p>
+
+<h3>2.4 Channel matrix and dimensions</h3>
+<p>Users are generated independently and stacked as columns,
+<code>G = [g₁, …, g_K] ∈ ℂ^{N×K}</code>.</p>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Symbol</th><th class="l">Dimension</th><th class="l">Field</th><th class="l">Known to the receiver?</th></tr></thead>
+<tbody>
+<tr><td class="l"><var>G</var></td><td>N × K</td><td>ℂ</td><td class="t">no — this is the estimand</td></tr>
+<tr><td class="l"><var>S</var></td><td>K × P</td><td>ℂ</td><td class="t">yes — pilots</td></tr>
+<tr><td class="l"><var>B</var></td><td>N × P</td><td>ℂ</td><td class="t">yes — reference field</td></tr>
+<tr><td class="l"><var>W</var></td><td>N × P</td><td>ℂ</td><td class="t">no — statistics known (σ²)</td></tr>
+<tr><td class="l"><var>Z</var></td><td>N × P</td><td>ℝ₊</td><td class="t">yes — the measurement</td></tr>
+<tr><td class="l">θ, α</td><td>L<sub>k</sub> each</td><td>ℝ, ℂ</td><td class="t">no — never estimated by any method here</td></tr>
+</tbody></table></div>
+</section>

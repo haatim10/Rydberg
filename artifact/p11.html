@@ -1,0 +1,157 @@
+<style>
+.fix{margin:0 0 22px;padding:16px 18px;background:var(--surface);border:1px solid var(--soft);
+  border-left:3px solid var(--bad);border-radius:2px;max-width:var(--measure)}
+.fix.m{border-left-color:var(--warn)}.fix.l{border-left-color:var(--info)}
+.fix .h{font-family:var(--serif);font-size:16.5px;font-weight:600;color:var(--ink);margin:0 0 4px}
+.fix .sev{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--bad);font-weight:600;margin-bottom:6px}
+.fix.m .sev{color:var(--warn)}.fix.l .sev{color:var(--info)}
+.fix p{margin:0 0 8px;font-size:15px}
+.fix p:last-child{margin-bottom:0}
+</style>
+<section id="s20">
+<span class="snum">Part XX</span>
+<h2>Must fix, and what to run next</h2>
+<div class="col">
+<h3>20.1 MUST FIX BEFORE PROFESSOR REVIEW — ordered by seriousness</h3>
+<p>Ordered by how badly each would damage the work if raised by a reviewer before you raised it.</p>
+</div>
+
+<div class="fix">
+<div class="sev">1 — critical · scope</div>
+<p class="h">The frozen technical report still carries the defective CRLB</p>
+<p>The corrected bound (rank-1 per magnitude measurement, §10.3) and the constrained bound
+(orthonormal tangent basis, §10.7) exist as <code>constrained_crlb_fast.py</code> and
+<code>constrained_crlb.json</code>, and every figure and table in <em>this</em> artifact uses them.
+<code>TECHNICAL_REPORT.md</code> and any figure generated before the correction do not. The two
+disagree by up to <strong>4.19 dB</strong>. Any reviewer comparing the two documents will find the
+discrepancy. <strong>Action:</strong> regenerate or explicitly supersede the frozen report's CRLB
+sections before circulating either.</p>
+</div>
+
+<div class="fix">
+<div class="sev">2 — critical · over-claim risk</div>
+<p class="h">No result here supports a general claim about RAQR channel estimation</p>
+<p>Every Track-B number was produced under an i.i.d. uniform-AoA, equal-power, flat, narrowband
+geometric model. The defensible claim is <em>"under a sparse geometric multipath model, exploiting
+Hankel low-rank structure yields up to 2.85 dB over EM-GS at <var>N</var> = 32."</em> The claim
+<em>"HS-GS improves RAQR channel estimation"</em> is not supported. <strong>Action:</strong> fix the
+scope sentence in the abstract, the report, and any slide, before review — not after.</p>
+</div>
+
+<div class="fix m">
+<div class="sev">3 — major · presentation</div>
+<p class="h">The <var>N</var> = 8 result must never be quoted as a single number</p>
+<p>It is −0.19 dB per-operating-point-averaged and +0.81 dB energy-pooled — opposite signs from the
+same data (§16.2, Q4). Both are correct; the disagreement is the finding. A reviewer who computes
+the other one will conclude the number was chosen. <strong>Action:</strong> wherever <var>N</var> = 8
+is summarised, quote both with the one-line explanation, or quote the per-point behaviour ("wins at
+low SNR, loses at high SNR").</p>
+</div>
+
+<div class="fix m">
+<div class="sev">4 — major · disclosure</div>
+<p class="h">The shared scalar <var>L̂</var> must be stated wherever HS-GS is described</p>
+<p>A single order is imposed on all <var>K</var> users; the true orders were (7, 4, 6) and 5 was
+selected. This is disclosed in §9.6 and Q7 here, but it is the kind of thing that reads as
+concealment if a reviewer discovers it in the code first. <strong>Action:</strong> put it in the
+method description, not only in the limitations.</p>
+</div>
+
+<div class="fix m">
+<div class="sev">5 — major · correctness of presentation</div>
+<p class="h">The <var>P</var> = 6 CRLB of +46.87 dB must never appear unexplained</p>
+<p>It is correct — 48 unknowns, 48 rank-1 measurements, a near-singular Fisher matrix — and it is
+useless as a bound. On a plot it looks like a bug. <strong>Action:</strong> either annotate it as a
+degenerate point or exclude <var>P</var> = 6 from CRLB overlays, and say which was done (§16.5).</p>
+</div>
+
+<div class="fix l">
+<div class="sev">6 — moderate · missing sources</div>
+<p class="h">Two of the five input papers were never supplied</p>
+<p>The Xu paper and the Xiao/URformer paper are absent from the uploads. Parts VIII and XV are
+written from implementation and first principles and are labelled <strong>NOT VERIFIED</strong>
+throughout. <strong>Action:</strong> supply them, or remove every comparative statement that
+references them. Do not cite either paper's results on the strength of this document.</p>
+</div>
+
+<div class="fix l">
+<div class="sev">7 — moderate · reproducibility</div>
+<p class="h"><code>tex/formulae.tex</code> has never been compiled</p>
+<p>1,197 lines, 57 equations, structurally validated but no TeX distribution exists in this
+environment. <strong>Action:</strong> compile it once somewhere that has LaTeX before shipping it as
+a reference.</p>
+</div>
+
+<div class="fix l">
+<div class="sev">8 — moderate · theory gap</div>
+<p class="h">HS-GS has no convergence result of any kind</p>
+<p>Non-convex constraint set, approximate (4-sweep Cadzow) projection, no merit function, no descent
+guarantee. <strong>Action:</strong> state this in the method section as a known gap. Do not describe
+the iteration as "converged"; describe it as run to a fixed 50-iteration budget.</p>
+</div>
+
+<div class="col">
+<h3>20.2 Recommended next experiments — ranked by scientific value</h3>
+<p>Ranked by how much each would change what is known, not by how many figures it would produce.
+Three are listed. Experiments that would only add plots are deliberately excluded, and §20.3 says
+which those are.</p>
+</div>
+
+<div class="fix">
+<div class="sev">rank 1 — could falsify the result</div>
+<p class="h">Run B3 under the Track-A 3GPP TR 38.901 clustered generator</p>
+<p><strong>Why it matters most:</strong> it is the only proposed experiment that can overturn the
+work. Under clustering the Hankel matrix is <em>numerically</em> low rank rather than exactly low
+rank (§14.3), and Cadzow's hard truncation — which is exactly right for an exact rank cliff — becomes
+a bias-inducing approximation. The <var>N</var> = 8 high-SNR failure mode (Q18) is the warning sign
+that this could get much worse. <strong>Cost:</strong> low. The 38.901 generator already exists in
+Track A and is validated; only the channel call in <code>track_b_spec</code> changes. No new
+estimator, no new mathematics. <strong>Decision rule stated in advance:</strong> if the
+<var>N</var> = 32 gain drops below roughly +1 dB, the scope claim in §20.1(2) must narrow from
+"sparse geometric multipath" to a statement about resolvable-path channels specifically.</p>
+</div>
+
+<div class="fix m">
+<div class="sev">rank 2 — targets the largest known deficiency</div>
+<p class="h">Per-user model-order selection</p>
+<p><strong>Why:</strong> the shared scalar <var>L̂</var> is the single most obviously wrong thing
+about the estimator (Q7). The selector is already column-agnostic; making it per-user is a change to
+the selector, not to the estimator or its validated mathematics. <strong>What it would settle:</strong>
+how much of the 0.3–8.9 dB gap to the constrained CRLB (§16.3) is attributable to order
+misspecification rather than to the projection itself — the gap decomposition is currently unknown,
+and this is the cheapest way to split it. <strong>Cost:</strong> moderate; it multiplies selection
+cost by <var>K</var>, and the per-user selector is noisier since it sees one column instead of
+<var>K</var>.</p>
+</div>
+
+<div class="fix m">
+<div class="sev">rank 3 — isolates the mechanism</div>
+<p class="h">Ablation: <code>exact_step = "gs"</code> and <code>project_every ∈ {1, 5, 50}</code> across the full grid</p>
+<p><strong>Why:</strong> §19.2 lists "the gain comes from the projection, not the EM step" as only
+<em>partially</em> established — inferred from the RSR sweep rather than measured. Two ablations
+settle it directly: swapping the exact step to plain GS isolates EM's contribution, and setting
+<code>project_every = 50</code> reduces HS-GS to post-hoc Cadzow denoising, which is precisely the
+"this is just denoising" objection (Q11). Answering that objection with data rather than argument is
+worth one grid. <strong>Cost:</strong> low — no new code, just two configurations of the existing
+driver. <strong>Caveat:</strong> this is an ablation of the proposed method, <em>not</em> a
+hyperparameter search; the reported configuration stays fixed regardless of the outcome.</p>
+</div>
+
+<div class="col">
+<h3>20.3 Experiments deliberately not recommended</h3>
+<ul>
+<li><strong>More SNR points, more <var>N</var> values, finer RSR grids.</strong> The trends are
+established and monotone; denser grids would add figures and no knowledge.</li>
+<li><strong>More Monte Carlo on already-decided points.</strong> The five ambiguous points were
+already extended to 1,200 trials. Extending points whose CIs are far from zero buys nothing.</li>
+<li><strong>Hyperparameter sweeps over <code>cadzow_iter</code>, <code>select_iter</code>,
+<code>val_frac</code>.</strong> These were fixed at their initial values and never tuned, which is
+what makes the comparison against untuned baselines fair. Tuning them now would convert a clean
+comparison into a contaminated one, and would improve the reported gain for the wrong reason.</li>
+<li><strong>A fourth estimator.</strong> Out of scope by instruction, and the constrained CRLB
+already bounds what any estimator could achieve on this model — which is the more informative
+answer.</li>
+</ul>
+</div>
+</section>

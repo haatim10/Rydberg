@@ -1,0 +1,352 @@
+<style>
+.qa{margin:0 0 30px;padding:0 0 0 20px;border-left:2px solid var(--soft);max-width:var(--measure)}
+.qa .q{font-family:var(--serif);font-size:17.5px;font-weight:600;color:var(--ink);
+  margin:0 0 10px;line-height:1.45}
+.qa .q .qn{font-family:var(--mono);font-size:11px;color:var(--accent);font-weight:600;
+  letter-spacing:.08em;display:block;margin-bottom:5px}
+.qa p{margin:0 0 10px}
+.qa.hard{border-left-color:var(--warn)}
+</style>
+<section id="s17">
+<span class="snum">Part XVII</span>
+<h2>Questions a professor will ask, and the answers</h2>
+<div class="col">
+<p class="lede">Twenty-four questions, chosen because each one is a place where this work could
+actually be wrong. Answers cite the numbers rather than asserting confidence. Where the honest answer
+is "this is a genuine weakness", it says so.</p>
+</div>
+
+<div class="qa"><p class="q"><span class="qn">Q1 — the bound</span>
+Your unconstrained CRLB is flat in <var>N</var>. More antennas must give more information. Isn't the
+bound simply wrong?</p>
+<p>No, and the flatness is the strongest evidence that it is <em>right</em>. The metric is
+<strong>normalised</strong> MSE: <code>E‖Ĝ−G‖²/E‖G‖²</code>. Adding a row adds <var>P</var> new
+measurements and <var>2K</var> new unknowns, and — this is the crucial part — the Fisher information
+matrix is <strong>block diagonal across rows</strong>, because row <var>n</var> of <code>GS</code>
+enters only measurement row <var>n</var>. There is no coupling to share information across rows. So
+the per-row estimation problem is identical at every <var>N</var>, the total error grows exactly in
+proportion to the total energy, and the ratio is constant. The empirical check is decisive: EM-GS,
+an actual estimator, is flat to <strong>0.012 dB</strong> across <var>N</var> ∈ {8,16,32}. A bound
+that moved while the estimator did not would be the broken one.</p></div>
+
+<div class="qa hard"><p class="q"><span class="qn">Q2 — the crossings</span>
+Sixty-three of your 108 estimator/operating-point combinations sit <em>below</em> your CRLB, one by
+6.94 dB. Why should I believe any bound in this document?</p>
+<p>Because the CRLB bounds <strong>unbiased</strong> estimators, and none of these three is unbiased.
+The measured shrinkage coefficient <code>c = ⟨Ĝ,G⟩/‖G‖²</code> is 0.756 at SNR = −5 dB and 0.957 at
+SNR = +5 dB: the estimates are systematically pulled toward zero. A shrunk estimator trades bias for
+variance and can have strictly smaller MSE than <em>any</em> unbiased estimator — James–Stein is the
+textbook case. The prediction that follows is testable and it holds: crossings are largest exactly
+where <var>c</var> is smallest (low SNR, up to 2.6 dB for the baselines), and vanish where
+<var>c</var> → 1 (at SNR = 20 dB, <var>P</var> = 30 the baselines are 0.006–0.049 dB below the bound
+— numerically <em>on</em> it, within Monte Carlo error). HS-GS crosses by more because Cadzow's hard
+rank truncation is <em>additional deliberate shrinkage</em>. A bound that were merely miscomputed
+would not produce that ordered, SNR-dependent, estimator-dependent pattern. Separately: the
+originally shipped bound <em>was</em> wrong (Q20), was found, and is never plotted.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q3 — units</span>
+Why 10 log<sub>10</sub> and not 20 log<sub>10</sub>? Half the channel-estimation literature uses 20.</p>
+<p>Because the argument is already a power ratio. The numerator is
+<code>‖Ĝ−G‖²<sub>F</sub></code> and the denominator <code>‖G‖²<sub>F</sub></code> — both squared
+norms, i.e. energies. 20 log<sub>10</sub> is for <em>amplitude</em> ratios, where the squaring has
+not yet been applied. Papers using 20 log<sub>10</sub> are reporting <code>‖Ĝ−G‖/‖G‖</code>
+unsquared. Applying 20 log<sub>10</sub> here would double every dB figure in this document, including
+the CRLB, so the comparison would remain internally consistent but every absolute number would be
+wrong by 2×. Verified in code: <code>artifact_audit.json → db_factor</code>.</p></div>
+
+<div class="qa hard"><p class="q"><span class="qn">Q4 — pooling</span>
+Your <var>N</var> = 8 result is −0.19 dB under one pooling and +0.81 dB under another. That is a sign
+change. Are you choosing whichever supports your story?</p>
+<p>The opposite: both are printed, in §16.2, with the explanation. The disagreement is not a defect
+of the analysis, it <em>is</em> the <var>N</var> = 8 finding. HS-GS at <var>N</var> = 8 wins at low
+SNR (+0.78 to +1.47 dB) and loses at high SNR (down to −2.23 dB). Energy pooling weights each trial
+by its squared error, so it is dominated by the low-SNR points and returns +0.81 dB. The unweighted
+per-operating-point mean gives each SNR equal say and returns −0.19 dB. Any scalar summary is a
+weighted vote between two opposite regimes, so no scalar should be quoted alone — which is precisely
+why all 36 points are tabulated in §16.1 rather than summarised. Note that <var>N</var> = 16 and
+<var>N</var> = 32 have no such ambiguity: every pooling agrees in sign, and the headline claim is the
+<em>scaling in <var>N</var></em>, which is pooling-invariant.</p></div>
+
+<div class="qa hard"><p class="q"><span class="qn">Q5 — convergence</span>
+HS-GS is an alternating map <code>T = P<sub>S</sub> ∘ T<sub>GS</sub></code> where
+<code>P<sub>S</sub></code> is a projection onto a <em>non-convex</em> set. What do you actually know
+about its convergence?</p>
+<p>Very little, and the document says so rather than dressing it up. Specifically: (i) the fixed-rank
+Hankel variety is non-convex, so <code>P<sub>S</sub></code> is not a projection onto a convex set and
+the standard alternating-projection convergence theory does not apply; (ii) Cadzow's inner loop is
+itself only an <em>approximate</em> projection — 4 sweeps of SVD truncation and anti-diagonal
+averaging, which is not the exact nearest point on the variety; (iii) <code>T<sub>GS</sub></code>
+has no descent guarantee on the biased phase-retrieval objective either. There is no monotone merit
+function and no proof of convergence to a stationary point. What is known empirically: over all
+28,000 Track-B trials at a fixed 50-iteration budget, no output was non-finite, and the iterate norm
+never diverged. That is a much weaker statement than convergence and should not be quoted as one.
+This is a real theoretical gap and it is listed in §20 as such.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q6 — Kronecker's converse</span>
+Kronecker's theorem gives rank = <var>L</var> only when the <var>L</var> exponentials are distinct.
+Your AoAs are continuous draws, so two can be arbitrarily close. What happens then?</p>
+<p>Rank is a discontinuous function of the AoAs but the <em>singular values</em> are continuous. Two
+paths at ψ<sub>1</sub> ≈ ψ<sub>2</sub> give a Hankel matrix of algebraic rank <var>L</var> whose
+<var>L</var>-th singular value is small — it scales like the angular separation times the array
+aperture. So the exact rank statement survives (probability of exact coincidence is zero) but the
+<em>numerical</em> rank is <var>L</var>−1, and Cadzow truncating to <var>L̂</var> = <var>L</var>−1
+loses one path. This is not merely hypothetical: it is one mechanism by which the held-out selector
+picks <var>L̂</var> below the true order, which it demonstrably does (§9.6: true (7,4,6), selected 5).
+Under a <em>clustered</em> channel this stops being an edge case and becomes the norm (§14.3), which
+is why the 38.901 experiment is the top-ranked next step.</p></div>
+
+<div class="qa hard"><p class="q"><span class="qn">Q7 — the shared order</span>
+You impose a single scalar <var>L̂</var> on all <var>K</var> users when the true orders were
+(7, 4, 6) and you selected 5. Every user's model is wrong. How is the method not simply invalid?</p>
+<p>It is a real limitation and it is disclosed in §9.6 rather than buried. Three points in mitigation,
+none of which is a defence of the design: (i) the constraint applied is
+<code>rank ≤ L̂</code>, an inequality, so the user with <var>L<sub>k</sub></var> = 4 is not harmed —
+its Hankel matrix already has rank 4 ≤ 5 and passes through the projection nearly unchanged; (ii)
+the users with <var>L<sub>k</sub></var> = 7 and 6 are genuinely over-truncated, and that is exactly
+the shrinkage bias that shows up as high-SNR degradation (§16.6) and as CRLB crossings (Q2); (iii)
+the projection operates column-wise, so nothing couples the users except the shared choice of
+<var>L̂</var> — making it per-user is a change to the <em>selector</em>, not to the estimator, and is
+the second-ranked next experiment in §20. The honest statement is: the reported gains are achieved
+<em>despite</em> a misspecified shared order, so they are a lower bound on what the structure can
+deliver, not an upper one.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q8 — the handicap</span>
+Order selection holds out 30% of the pilots. You never charged that cost to EM-GS. Isn't the
+comparison rigged in HS-GS's favour?</p>
+<p>It is rigged in the opposite direction. EM-GS uses <strong>all</strong> <var>P</var> pilots for
+estimation. HS-GS uses all <var>P</var> for its final estimate too, but must first spend
+<code>select_iter = 20</code> short inner runs on a 70/30 split to choose <var>L̂</var> — extra
+computation and a noisier order estimate, with no extra data. There is no configuration in which
+HS-GS sees information EM-GS does not. The one thing HS-GS <em>does</em> get is the structural prior
+itself, which is the hypothesis under test. Had oracle <var>L<sub>k</sub></var> been used the
+comparison <em>would</em> have been unfair, which is why <code>hs_gs_auto_uses_true_L</code> was
+audited explicitly and is <code>False</code>; these are not ORACLE-RANK experiments.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q9 — pilots</span>
+Your pilots are i.i.d. Gaussian with off-diagonal <code>|SS<sup>H</sup>|/P</code> up to 0.233 — not
+orthogonal. Orthogonal pilots are standard and strictly better. Why?</p>
+<p>Because the model here is <em>not</em> linear in the pilots. Under a linear observation
+<code>Y = GS + W</code>, orthogonal pilots decorrelate the users and are provably MMSE-optimal. Under
+<code>Z = |GS + B + W|</code> that argument does not go through: the modulus mixes users
+non-linearly, and pilot orthogonality no longer implies user separation at the estimator's input.
+Gaussian pilots are also what Cui uses, so the baselines are being run in their native regime — a
+requirement of reproducing rather than "improving" the reference. The generator does enforce
+<var>P</var> ≥ 2<var>K</var> and rejection-samples to guarantee full row rank, so the pilot matrix is
+never degenerate. Whether orthogonal pilots help under the modulus model is an open and interesting
+question; it is not one this study answers, and no claim about it is made.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q10 — the operating point</span>
+RSR = 12 dB is a very specific choice. How do I know it wasn't tuned until HS-GS won?</p>
+<p>Three independent reasons, and the data settles it. (i) <strong>Provenance:</strong> 12 dB comes
+from Cui §VI-B's physical argument — an LO closer than a quarter of the user distance gives
+RSR > 10log<sub>10</sub>(4²) ≈ 12 dB — and is the value used throughout Cui's Figs. 5/7/8. It was
+inherited, not searched. (ii) <strong>It is the adversarial choice for the baselines, not for
+HS-GS.</strong> §16.7 shows the EM-GS-over-GS advantage collapsing from 1.285 dB at RSR = 0 to
+0.002 dB at RSR = 24. At the 30 dB used in early scratch testing, <code>R(κ) → 1</code> and Cui's two
+algorithms become numerically identical — the comparison would have been vacuous. 12 dB keeps them
+separable. (iii) <strong>The result does not depend on it.</strong> §16.7 sweeps RSR across five
+values at both <var>N</var> = 8 and <var>N</var> = 32: HS-GS loses at <em>every</em> RSR when
+<var>N</var> = 8 and wins at <em>every</em> RSR when <var>N</var> = 32, with the gain flat in RSR
+above 6 dB. The sign is set by <var>N</var>, not by RSR. Tuning RSR could not have produced this
+result.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q11 — relevance of the non-linearity</span>
+Cadzow denoising of a Hankel matrix is a 1980s technique. What does any of this have to do with the
+Rydberg modulus non-linearity? Isn't HS-GS just denoising bolted onto an unrelated problem?</p>
+<p>The prior is indeed classical; the difficulty is where it is applied. The point is that the
+structural projection is interleaved <em>inside</em> the exact non-linear iteration —
+<code>project_every = 1</code>, so <code>P<sub>S</sub></code> is applied after every EM-GS update,
+not once at the end as post-processing. That matters because the EM-GS update's quality depends on
+its current iterate through the Bessel-ratio phase estimate <code>R(κ)</code>, <code>κ = (2/σ²) z ⊙
+|λ|</code>: a structurally cleaner iterate produces a better phase estimate, which produces a better
+next iterate. The coupling runs both ways, which is exactly why the naive "denoise afterwards"
+framing does not describe what is implemented. Post-hoc denoising is a legitimate ablation and it is
+not the configuration reported. The <em>novel</em> content of this work is not Cadzow; it is (a)
+placing a hard structural projection inside a biased phase-retrieval iteration without linearising
+the measurement, and (b) the constrained CRLB that says how much such a thing could ever be
+worth.</p></div>
+
+<div class="qa hard"><p class="q"><span class="qn">Q12 — the shortfall</span>
+The constrained CRLB says 9.85 dB of structural gain is available at <var>N</var> = 32,
+<var>P</var> = 10. You deliver 2.85 dB. Your method captures under a third of what it targets. Why
+present it?</p>
+<p>Because the shortfall is a reported result, not a hidden one — §16.3 tabulates all 36 gaps and
+§13.3 plots them, showing the gap <em>growing</em> with <var>N</var> (+0.32 to +8.85 dB). Two things
+are worth separating. First, the CCRB is a bound for an estimator that knows the parameterisation
+and is unbiased; HS-GS knows only "rank ≤ <var>L̂</var>", uses a misspecified shared <var>L̂</var>
+(Q7), and applies an approximate projection (Q5). It is not a parametric estimator and should not be
+expected to attain a parametric bound. Second, the growing gap is the most <em>useful</em> output of
+this analysis: it localises where the remaining gain lives — in per-user order selection and in
+replacing hard truncation with a genuinely parametric step — and it says the payoff for going there
+grows with array size. A study that reported only "+2.85 dB, good" would have thrown that
+away.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q13 — cost</span>
+HS-GS runs an SVD of an ⌈<var>N</var>/2⌉-square Hankel matrix at every one of 50 iterations, times 4
+Cadzow sweeps, times <var>K</var> columns, plus 20 selection runs per candidate order. Is 2.85 dB
+worth that?</p>
+<p>State the cost honestly first. Per iteration EM-GS costs <code>O(NPK)</code>; the projection adds
+<code>O(K · cadzow_iter · N³)</code> — at <var>N</var> = 32 that is 4 SVDs of a 17×16 matrix per
+column per iteration. Measured against a <em>chained</em> EM-GS baseline (the correct comparison —
+HS-GS makes 50 separate <code>max_iter=1</code> calls, which alone carries 1.77× call overhead)
+HS-GS matches EM-GS to within 0.5–3.8% at these dimensions, because <var>N</var> is small enough that
+the <var>N</var>³ term does not yet dominate <var>NPK</var>. Order selection is the real cost: it
+multiplies the whole estimation by the number of candidate orders. At larger <var>N</var> the
+<var>N</var>³ term would dominate and the answer would change. Whether 2.85 dB justifies it is an
+application question this document does not answer; the numbers to make that judgement are
+given.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q14 — is EM-GS worth anything?</span>
+At RSR = 12 dB, EM-GS beats plain GS by 0.117 dB. That is nothing. Why carry the EM machinery at
+all, and why build HS-GS on top of it?</p>
+<p>The 0.117 dB is real and it is RSR-specific: at RSR = 0 dB the same comparison gives
+<strong>1.285 dB</strong> (§16.7). The Bessel-ratio soft phase estimate matters precisely when the
+reference does <em>not</em> dominate — which is the physically interesting, low-reference regime. As
+RSR grows, <code>R(κ) → 1</code>, EM-GS's soft estimate becomes GS's hard modulus substitution, and
+the two provably coincide; the collapse to 0.002 dB at RSR = 24 is that limit being reached
+numerically. So the honest statement is that at the chosen operating point the choice of exact step
+inside HS-GS is nearly immaterial, and HS-GS's gain is attributable to the structural projection
+rather than to EM. That is a point <em>against</em> over-claiming for EM, and it is why
+<code>exact_step</code> is recorded as a hyperparameter (§11.3) rather than presented as a
+contribution.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q15 — the redundancy ratio</span>
+You define ρ(<var>N</var>) = 2<var>NK</var>/(3Σ<var>L<sub>k</sub></var>) and use it to explain why
+larger arrays help. Is that an identifiability theorem?</p>
+<p>No, and §9 says so explicitly. It is a <strong>parameter count</strong>: real measurements-worth
+of unknowns in the unstructured parameterisation, divided by real unknowns in the structural one. It
+is suggestive, not sufficient — a favourable count does not establish that the structural
+parameterisation is identifiable, that the map is injective, or that any algorithm attains it. The
+concrete counterexample is in this document: at <var>N</var> = 8, 42.5% of trials have
+3Σ<var>L<sub>k</sub></var> > 2<var>NK</var>, so the map φ → <var>G</var> is <em>not</em> injective and
+its Jacobian is rank-deficient (condition numbers to 6.8 × 10<sup>17</sup>). That is what forced the
+orthonormal tangent-basis construction in the constrained CRLB (Q20). ρ is used as intuition for
+<em>why</em> the gain should scale with <var>N</var>, and the scaling is then demonstrated
+empirically (§16.2) and tested directly against path count (§16.8); ρ is never the evidence.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q16 — the angle prior</span>
+Your AoAs are uniform in θ, not in sin θ. Which is physically correct, and does the choice change
+your conclusions?</p>
+<p>Verified rather than assumed: a KS test over 4,465 samples gives p = 0.150 against uniform-in-θ
+and p = 0.0000 against uniform-in-sin θ, so the implementation is uniform in θ. Physically, uniform
+in sin θ (equivalently, uniform in electrical angle ψ) is what a spatially isotropic scatterer
+distribution produces in the far field; uniform in θ over-weights broadside. The choice matters for
+the <em>constant</em> in the CCRB, because the density of ψ affects how well-separated the Hankel
+modes typically are, but it does not touch the rank argument — Kronecker's theorem counts distinct
+exponentials regardless of their distribution — nor the <var>N</var>-scaling, which comes from the
+cap ⌈<var>N</var>/2⌉ growing while <var>L<sub>k</sub></var> does not. It is recorded as a verified
+model property, not defended as the better choice.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q17 — the bootstrap</span>
+You bootstrap a ratio of sums, which is a non-linear statistic, and report percentile intervals. Is
+that valid?</p>
+<p>Reasonably, with a stated caveat. The ratio of sums is a smooth function of two sample means, so
+it is a standard smooth-function-of-means statistic for which the nonparametric bootstrap is
+consistent; trials are i.i.d. by construction, which is the assumption the bootstrap needs. The
+<em>percentile</em> interval (as opposed to BCa) can undercover when the statistic is skewed. Two
+things keep that from mattering here: the resample is <strong>paired</strong> across estimators, so
+for the gain statistic the shared channel realization cancels and the sampling distribution is close
+to symmetric; and the intervals are far from the decision boundary in the cases that carry the claim
+(at <var>N</var> = 32, <var>P</var> = 30 the gain CI is [2.12, 2.40] dB — nowhere near zero). Where
+intervals <em>do</em> straddle zero (several <var>N</var> = 8 and <var>N</var> = 16, <var>P</var> = 10
+points) no claim is made from them. A BCa interval was not computed; that is a minor open item, not a
+load-bearing one.</p></div>
+
+<div class="qa hard"><p class="q"><span class="qn">Q18 — the failure mode</span>
+Why does HS-GS lose at <em>high</em> SNR when <var>N</var> = 8? Structure should help more when there
+is less noise to hide behind.</p>
+<p>It is a bias-dominated error floor, and the pattern is diagnostic. Total error decomposes into
+variance (falling with SNR) and squared bias (constant in SNR). Cadzow's truncation to
+<var>L̂</var> < <var>L<sub>k</sub></var> removes real signal energy, contributing a bias term that
+does <em>not</em> shrink as noise falls. At low SNR variance dominates and the trade is worth it;
+as SNR rises, variance falls below the bias floor and HS-GS stops improving while EM-GS keeps going.
+The numbers follow that exactly: at <var>N</var> = 8, <var>P</var> = 10 the gain goes
++1.47 → +0.85 → +0.10 → −0.78 → −1.32 → −2.23 dB monotonically as SNR goes −5 → 20 dB. The reason
+this is an <var>N</var> = 8 problem specifically is the rank cap: at <var>N</var> = 8 the cap is 4
+while <var>L<sub>k</sub></var> ∈ {3,…,7}, so truncation is often severe and the bias floor is high.
+At <var>N</var> = 32 the cap is 16 ≫ <var>L<sub>k</sub></var>, truncation is mild, and the gain is
+roughly flat in SNR (+3.04 → +2.60 dB). Same mechanism, opposite regime.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q19 — the linearisation constraint</span>
+You insist nothing is linearised, but EM-GS replaces the modulus with a Bessel-ratio expression.
+Isn't <code>R(κ)</code> a linearisation in disguise?</p>
+<p>No. A linearisation would replace <code>z = |λ + w|</code> with an approximate <em>linear</em>
+observation of <var>G</var> — e.g. <code>z ≈ ℜ{λ e<sup>−j∠b</sup>} + const</code>, valid for
+|<var>b</var>| ≫ |λ| — and then run linear least squares. That is what the Xu-style baseline in
+Part VIII does, which is why it is labelled LINEARIZED MODEL BASELINE and never used for any claim.
+<code>R(κ) = I<sub>1</sub>(κ)/I<sub>0</sub>(κ)</code> is something else: it is the exact conditional
+posterior mean of the phase factor under the <em>true</em> Rician likelihood, i.e. the exact E-step
+of EM for the exact model. No Taylor expansion is taken and no small-parameter regime is assumed.
+The audit checks this structurally: every trial asserts
+<code>not r.linearised_model_used</code>, and the data identity
+<code>Z ≡ |GS+B+W|</code> is verified to 0.0 (exact float equality) in
+<code>artifact_audit.json</code>.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q20 — the constrained bound</span>
+Why an orthonormal tangent basis? The textbook constrained CRLB is
+<code>D(D<sup>T</sup>JD)<sup>−1</sup>D<sup>T</sup></code>. Why not just use that?</p>
+<p>Because <var>D</var> is rank-deficient here, so <code>(D<sup>T</sup>JD)<sup>−1</sup></code> does
+not exist and <code>pinv</code> silently returns garbage. Concretely: at <var>N</var> = 8, 42.5% of
+trials have 3Σ<var>L<sub>k</sub></var> > 2<var>NK</var> — more structural parameters than real
+channel coefficients — so the map φ → <var>G</var> is not injective and its Jacobian loses rank. The
+observed condition numbers reached 6.8 × 10<sup>17</sup>, i.e. numerically singular. The fix is
+Gorman–Hero / Stoica–Ng in its proper form: take <var>U</var> an <strong>orthonormal basis of
+range(<var>D</var>)</strong> via SVD with a relative tolerance of 10<sup>−9</sup>, and evaluate
+<code>CCRB = U(U<sup>T</sup>JU)<sup>−1</sup>U<sup>T</sup></code>. This is invariant to
+over-parameterisation because it depends on the tangent <em>space</em>, not on the coordinates. Worst
+condition number after the fix: 80. The bound changed materially — at <var>N</var> = 8,
+<var>P</var> = 10, SNR = 5 dB it moved from −4.41 dB to −3.40 dB — so this was a correctness fix, not
+a cosmetic one.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q21 — sample size</span>
+400 trials per point. How do you know that is enough?</p>
+<p>From the intervals themselves rather than from a rule of thumb. The paired-bootstrap gain CI at
+the headline point (<var>N</var> = 32, <var>P</var> = 30, SNR = 5) is [2.12, 2.40] dB — a ±0.14 dB
+half-width on a 2.27 dB effect. Pairing is what makes that tight: the shared channel realization
+cancels, so the CI on the <em>difference</em> is far narrower than the marginal CIs. Where 400 was
+not enough the budget was extended rather than the claim weakened: five flagged points were run to
+1,200 trials, all of them points where the gain CI straddled or nearly straddled zero
+(<var>N</var> = 8/16/32, <var>P</var> = 10, SNR = 5–20). Points whose conclusions are unambiguous
+were not extended, because more trials on an already-decided point buys nothing.</p></div>
+
+<div class="qa hard"><p class="q"><span class="qn">Q22 — falsifiability</span>
+What result would have made you abandon this?</p>
+<p>Three, stated as commitments rather than in hindsight. (i) <strong>If the gain did not scale with
+<var>N</var></strong> — the entire mechanism claims the rank cap ⌈<var>N</var>/2⌉ growing relative to
+<var>L<sub>k</sub></var> is what creates the advantage, so a flat or non-monotone gain would kill it.
+Observed: −0.19 / +0.78 / +2.85 dB, monotone, with the <var>N</var> = 32 CI strictly above the
+<var>N</var> = 16 CI at 12/12 points. (ii) <strong>If the gain persisted when the constraint was
+vacuous</strong> — at <var>L</var> ≥ cap the projection provably does nothing, so a gain there would
+mean the improvement came from somewhere other than the claimed mechanism. This is what experiment
+B7 tests directly, with the hypothesis recorded in the script <em>before</em> the run (§16.8).
+(iii) <strong>If EM-GS were not flat in <var>N</var></strong> — a moving baseline would mean the
+<var>N</var>-dependence was an artefact of normalisation. Observed flat to 0.012 dB.</p></div>
+
+<div class="qa hard"><p class="q"><span class="qn">Q23 — post-hoc experiments</span>
+B7 was designed after you had seen B3's results. Isn't that a post-hoc test of a hypothesis you
+already knew the answer to?</p>
+<p>Partly, and the distinction matters, so here is exactly what is and is not pre-registered. What
+was known from B3: the gain increases with <var>N</var>. What was <em>not</em> known and could not be
+read off B3: what happens as <var>L</var> increases at fixed <var>N</var> — B3–B6 all draw
+<code>L<sub>k</sub> ~ U{3..7}</code> at random, so no controlled-<var>L</var> data existed at all.
+The prediction that the gain decays to zero at <var>L</var> = cap(<var>N</var>) = 16 is a
+quantitative, falsifiable consequence of the mechanism, and it was written into
+<code>run_b7_pathcount.py</code>'s docstring before the run was launched — it is in the file's git
+history, not merely asserted here. That is as close to pre-registration as this setting allows. It
+is not a substitute for the model-class test (clustered channels, §14.4), which remains the
+experiment most able to falsify the work and has not been run.</p></div>
+
+<div class="qa"><p class="q"><span class="qn">Q24 — the two tracks</span>
+Track A uses 3GPP TR 38.901 clustered channels; Track B uses an unclustered geometric model. Why
+should I trust conclusions from a codebase that models the same physics two different ways?</p>
+<p>They answer different questions and the separation is deliberate. Track A reproduces Cui's
+published figures and therefore must use Cui's channel model; it is frozen at commit
+<code>ce118f0</code> and nothing in Track B touches it. Track B asks whether ULA structure can be
+exploited, which requires a model in which "structure" is well defined — a sparse geometric model
+with an exact Hankel rank. Using 38.901 for Track B would have confounded the structural question
+with clustering effects from the outset. The cost of that choice is precisely the scope limit stated
+in §14.4: no Track-B result says anything about clustered channels. The right way to close the gap is
+to run B3 under the Track-A generator, which is the top-ranked next experiment in §20 — and it is
+ranked top because it is the one that could overturn the result, not because it would produce another
+figure.</p></div>
+</section>

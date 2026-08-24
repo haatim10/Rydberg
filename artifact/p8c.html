@@ -1,0 +1,120 @@
+<div class="col">
+<h3>16.4 Crossings of the CRLB — the full count, and why they happen</h3>
+<div class="note bad"><div class="t">This is the result most likely to be challenged, so it is reported in full</div>
+<p>Estimators in this study go <strong>below</strong> the unconstrained CRLB at
+<strong>63 of the 108</strong> (estimator, operating-point) combinations in B3. This is not a
+handful of borderline cases and it is not presented as one. The largest excursion is
+<strong>6.94 dB</strong> (HS-GS, <var>N</var>=32, <var>P</var>=10, SNR = −5 dB).</p></div>
+
+<p>A CRLB bounds the covariance of an <strong>unbiased</strong> estimator. None of the three
+estimators here is unbiased, and the direction of their bias is known and is towards zero. Writing
+the shrinkage coefficient</p>
+</div>
+<div class="eq"><span class="b"><var>c</var> = ⟨Ĝ, <var>G</var>⟩ / ‖<var>G</var>‖²</span><span class="n">(40)</span></div>
+<div class="col">
+<p>the measured values are <var>c</var> = 0.756 at SNR = −5 dB and <var>c</var> = 0.957 at
+SNR = +5 dB. An estimator that shrinks trades variance for bias; a sufficiently shrunk estimator has
+smaller mean-squared error than any unbiased estimator can achieve, and the CRLB simply does not
+apply to it. This is textbook (James–Stein is the canonical example) and it fully accounts for the
+pattern in the data:</p>
+<ul>
+<li><strong>The crossings are largest at low SNR and shrink at high SNR</strong>, exactly tracking
+<var>c</var> → 1. At SNR = −5 dB, GS/EM-GS are 2.28–2.62 dB below the bound at every <var>N</var>; by
+SNR = 20 dB with <var>P</var> = 30 the same estimators are below by 0.006–0.049 dB, i.e. numerically
+at the bound.</li>
+<li><strong>HS-GS crosses by more than the baselines, and by more at larger <var>N</var></strong>
+(up to 6.94 dB at <var>N</var>=32). Cadzow's hard rank truncation is an additional, deliberate
+shrinkage: discarding singular values below the <var>L̂</var>-th removes energy. More shrinkage,
+larger permitted excursion.</li>
+<li><strong>At high SNR with <var>P</var> = 30 the baselines sit essentially exactly on the bound</strong>
+(0.006–0.049 dB below, within Monte Carlo error at 400 trials). EM-GS is close to efficient for the
+unstructured problem in that regime. That agreement is what makes the corrected bound credible.</li>
+</ul>
+
+<div class="note info"><div class="t">What was done about it, and what was deliberately not done</div>
+<p>The bound plotted in Figure B2 is the <strong>corrected</strong> one. The originally shipped
+unconstrained CRLB had a genuine defect — it treated each magnitude measurement as contributing
+rank-2 Fisher information when eq. (29) depends on λ only through |λ| and therefore contributes
+<strong>rank 1</strong> (§10.3) — and disagreed with the corrected bound by up to 4.19 dB. It was
+found by an independent check (the genie-ZF gap read 3.54 dB where theory demands 3.0103 dB) and
+confirmed two ways: a direct rank test on the Fisher blocks, and an empirical ML simulation. The
+defective bound is described in the text but is <strong>never plotted</strong>. No estimator was
+changed, no parameter was tuned, and no crossing was hidden by rescaling an axis.</p>
+<p>Worth stating explicitly: the correction moved the bound <em>up</em> (rank-1 credits each
+measurement with less information than rank-2 did), so it <strong>increased</strong> the number of
+apparent crossings. The defective bound would have made this document look better. It was replaced
+anyway.</p>
+<p>This supersedes a line in the frozen audit. <code>results/track_b/final_audit.json</code> records
+the check <em>"EM-GS never falls below the unconstrained CRLB — 0/36 violations"</em>, and that was
+true <strong>against the old bound</strong>. Against the corrected bound EM-GS falls below it at 19
+of 36 points, by 0.009–2.62 dB. The audit check is not wrong; it is answering the question about a
+bound that has since been replaced. Any reader comparing the two documents will hit this, so it is
+stated here rather than left to be discovered.</p></div>
+
+<h3>16.5 A degenerate operating point that must not be quoted <span class="chip c-nv">flagged</span></h3>
+<p>In the B4 pilot sweep, the point <var>P</var> = 6 reports an unconstrained CRLB of
+<strong>+46.87 dB</strong>. This is not a typographical error and it is not a bug: at
+<var>P</var> = 6, <var>K</var> = 3, <var>N</var> = 8 the unconstrained problem has 2<var>NK</var> = 48
+real unknowns and <var>NP</var> = 48 magnitude measurements, each contributing rank-1 information.
+The Fisher matrix is on the edge of singularity and its inverse trace blows up. The bound is
+<em>correct</em> and <em>useless</em>: it says the unstructured problem is essentially unidentifiable
+there. Note that the constrained bound at the same point is a perfectly ordinary −1.46 dB, because
+the structural parameterisation has only ≈45 real parameters and is nowhere near degenerate — which
+is itself a clean illustration of what the structure buys. The +46.87 dB number should never be
+quoted as "the CRLB at <var>P</var> = 6" without this explanation.</p>
+
+<h3>16.6 B4 — NMSE vs pilot length (<var>N</var> = 8, SNR = 5 dB)</h3>
+</div>
+<div class="tw"><table>
+<thead><tr><th><var>P</var></th><th>trials</th><th>GS dB</th><th>EM-GS dB</th><th>HS-GS dB</th>
+<th>gain dB</th><th>gain CI<sub>95</sub></th><th>win %</th><th>active %</th><th>mean <var>L̂</var></th>
+<th>CRLB uncon.</th><th>CRLB con.</th></tr></thead>
+<tbody>
+<tr><td>6</td><td>400</td><td>1.65</td><td>1.65</td><td>1.07</td><td>+0.58</td><td>[0.42, 0.75]</td><td>47.8</td><td>68.3</td><td>4.64</td><td class="neg">+46.87 ⚠</td><td>−1.46</td></tr>
+<tr><td>10</td><td>400</td><td>−2.40</td><td>−2.50</td><td>−3.36</td><td>+0.85</td><td>[0.67, 1.03]</td><td>68.5</td><td>93.0</td><td>3.43</td><td>−2.15</td><td>−7.68</td></tr>
+<tr><td>14</td><td>400</td><td>−5.30</td><td>−5.41</td><td>−6.23</td><td>+0.82</td><td>[0.65, 1.00]</td><td>73.3</td><td>94.5</td><td>3.83</td><td>−5.63</td><td>−10.09</td></tr>
+<tr><td>20</td><td>400</td><td>−8.11</td><td>−8.22</td><td>−8.66</td><td>+0.44</td><td>[0.30, 0.59]</td><td>69.5</td><td>94.8</td><td>4.25</td><td>−8.31</td><td>−12.30</td></tr>
+<tr><td>30</td><td>400</td><td>−10.59</td><td>−10.70</td><td>−11.17</td><td>+0.47</td><td>[0.32, 0.60]</td><td>70.3</td><td>93.0</td><td>4.55</td><td>−10.79</td><td>−14.52</td></tr>
+<tr><td>40</td><td>400</td><td>−12.13</td><td>−12.23</td><td>−12.70</td><td>+0.48</td><td>[0.36, 0.59]</td><td>71.0</td><td>90.3</td><td>4.92</td><td>−12.34</td><td>−15.94</td></tr>
+</tbody></table></div>
+<div class="col">
+<p>Note this sweep is at <var>N</var> = 8, where §16.2 reports a mean gain of −0.19 dB — yet every
+row here is a <em>positive</em> gain. There is no contradiction: B4 is at SNR = 5 dB only, and the
+<var>N</var> = 8 mean in §16.2 averages over all six SNRs including the high-SNR points where HS-GS
+loses badly (−2.23 dB at SNR = 20, <var>P</var> = 10). The <var>N</var> = 8 failure is a
+<strong>high-SNR</strong> failure, which is the signature of a bias-dominated error floor: as noise
+falls, the shrinkage bias stops being a good trade. This is the single most diagnostic fact about
+HS-GS's weakness at small <var>N</var>, and it is visible only because the sweep is reported per
+point rather than as an average.</p>
+
+<h3>16.7 B6 — NMSE vs RSR</h3>
+</div>
+<div class="tw"><table>
+<thead><tr><th><var>N</var></th><th>RSR dB</th><th>GS dB</th><th>EM-GS dB</th><th>HS-GS dB</th>
+<th>gain dB</th><th>gain CI<sub>95</sub></th><th>EM-GS over GS<br>dB</th><th>win %</th><th>mean <var>L̂</var></th></tr></thead>
+<tbody>
+<tr class="neg"><td>8</td><td>0</td><td>−4.41</td><td>−5.69</td><td>−5.11</td><td>−0.58</td><td>[−0.88, −0.32]</td><td>1.285</td><td>16.5</td><td>3.36</td></tr>
+<tr class="neg"><td>8</td><td>6</td><td>−8.85</td><td>−9.69</td><td>−9.21</td><td>−0.48</td><td>[−0.67, −0.29]</td><td>0.838</td><td>23.0</td><td>3.24</td></tr>
+<tr class="neg"><td>8</td><td>12</td><td>−10.63</td><td>−10.74</td><td>−10.34</td><td>−0.41</td><td>[−0.55, −0.26]</td><td>0.117</td><td>27.0</td><td>3.20</td></tr>
+<tr class="neg"><td>8</td><td>18</td><td>−10.94</td><td>−10.96</td><td>−10.38</td><td>−0.58</td><td>[−0.78, −0.41]</td><td>0.021</td><td>25.8</td><td>3.15</td></tr>
+<tr class="neg"><td>8</td><td>24</td><td>−10.74</td><td>−10.74</td><td>−10.27</td><td>−0.47</td><td>[−0.61, −0.33]</td><td>0.003</td><td>21.3</td><td>3.23</td></tr>
+<tr class="sep"><td colspan="10"></td></tr>
+<tr><td>32</td><td>0</td><td>−4.34</td><td>−5.66</td><td>−7.11</td><td>+1.45</td><td>[1.08, 1.80]</td><td>1.314</td><td>78.0</td><td>7.81</td></tr>
+<tr><td>32</td><td>6</td><td>−8.91</td><td>−9.71</td><td>−12.27</td><td>+2.55</td><td>[2.38, 2.74]</td><td>0.802</td><td>96.8</td><td>5.22</td></tr>
+<tr><td>32</td><td>12</td><td>−10.58</td><td>−10.69</td><td>−12.96</td><td>+2.27</td><td>[2.12, 2.40]</td><td>0.113</td><td>96.0</td><td>5.02</td></tr>
+<tr><td>32</td><td>18</td><td>−10.91</td><td>−10.93</td><td>−13.34</td><td>+2.42</td><td>[2.28, 2.56]</td><td>0.018</td><td>97.5</td><td>5.08</td></tr>
+<tr><td>32</td><td>24</td><td>−10.77</td><td>−10.77</td><td>−13.03</td><td>+2.26</td><td>[2.10, 2.42]</td><td>0.002</td><td>96.3</td><td>4.84</td></tr>
+</tbody></table></div>
+<div class="col">
+<p>The <b>EM-GS over GS</b> column is the quantitative justification for operating at RSR = 12 dB
+rather than the 30 dB used in early scratch testing. It collapses from 1.285 dB at RSR = 0 to
+<strong>0.002 dB</strong> at RSR = 24: as the reference grows, <code>R(κ) → 1</code>, the EM soft
+phase estimate becomes the hard modulus substitution, and Cui's two algorithms become the same
+algorithm. Had the study been run at 30 dB, "EM-GS vs GS" would have been an empty comparison and
+the choice of exact step inside HS-GS would have been unfalsifiable.</p>
+<p>Note also that HS-GS's sign is determined by <var>N</var>, not by RSR: it loses at every RSR when
+<var>N</var> = 8 and wins at every RSR when <var>N</var> = 32. The gain is essentially flat in RSR
+above 6 dB. Whatever HS-GS is exploiting, it is not reference strength.</p>
+<p class="src">Sources: <code>table_B4_nmse_vs_pilots.csv</code>, <code>table_B6_nmse_vs_rsr.csv</code>,
+<code>table_B5_scaling_vs_N.csv</code>.</p>
+</div>

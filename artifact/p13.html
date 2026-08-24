@@ -1,0 +1,74 @@
+<section id="sD">
+<span class="snum">Appendix D</span>
+<h2>Reproduction record</h2>
+<div class="col">
+<h3>D.1 Repository state</h3>
+<dl class="kv">
+<dt>Track B branch</dt><dd><code>report-corrections</code>, HEAD <code>4efe08d</code></dd>
+<dt>Track A</dt><dd>frozen at <code>ce118f0</code> — not read, written, rerun or reformatted by any Track-B work</dd>
+<dt>Config fingerprint</dt><dd><code>46dbd9f1cf57d1cc</code> (SHA-256 over seed, <var>K</var>, <var>L</var> range, RSR, iteration budgets, HS-GS kwargs, estimator list, model string, and SHA-256 of the five core source modules)</dd>
+<dt>Master seed</dt><dd><code>20250820</code></dd>
+<dt>Bootstrap seed</dt><dd><code>987654321</code>, 2000 resamples</dd>
+<dt>BLAS threads</dt><dd>pinned to 1 per worker, so parallelism cannot change reduction order</dd>
+</dl>
+
+<h3>D.2 Order of operations</h3>
+<p>Recorded because the order matters for whether a result counts as pre-registered:</p>
+<ol>
+<li>Step-0 audit of the frozen model (21 checks) — before any Track-B estimator was run.</li>
+<li>B3 (36 points, 18,400 trials), B4 (6 points), B6 (10 points), with five ambiguous B3 points
+extended from 400 to 1,200 trials by a rule fixed in advance.</li>
+<li>External review; 20 fixes applied.</li>
+<li>Adversarial final audit — 51 checks, 0 failures. Three checks failed on first run and in all
+three cases <strong>the expectation was wrong, not the code</strong>: a trailing-newline comparison,
+a CRN-pairing assumption the frozen RNG design never provided, and a trial-count identity that
+predated B6.</li>
+<li>CRLB re-derivation. Found a real defect in the shipped unconstrained bound (rank-2 where the
+likelihood gives rank-1), confirmed two independent ways, corrected. Added the constrained bound with
+an orthonormal tangent basis after discovering Jacobian rank deficiency at <var>N</var> = 8.</li>
+<li>Artifact audit (59 facts read out of running code) — the basis for this document.</li>
+<li>B7 designed, hypothesis written into the script, <em>then</em> launched.</li>
+</ol>
+
+<h3>D.3 How to reproduce</h3>
+</div>
+<div class="eq"><span class="b">python scripts/run_b3.py&nbsp;&nbsp;→ results/track_b/b3/N{N}_P{P}_snr{s}.npz</span><span class="n">1</span></div>
+<div class="eq"><span class="b">python scripts/run_b7_pathcount.py&nbsp;&nbsp;→ results/track_b/b7/L{L}.npz</span><span class="n">2</span></div>
+<div class="eq"><span class="b">python scripts/constrained_crlb_fast.py&nbsp;&nbsp;→ results/track_b/constrained_crlb.json</span><span class="n">3</span></div>
+<div class="eq"><span class="b">python scripts/artifact_tables.py&nbsp;&nbsp;→ results/track_b/artifact/table_*.csv</span><span class="n">4</span></div>
+<div class="eq"><span class="b">python scripts/plot_artifact.py ; python scripts/plot_b7.py&nbsp;&nbsp;→ figures</span><span class="n">5</span></div>
+<div class="col">
+<p>All drivers checkpoint per point and skip completed trial indices, so a rerun is idempotent and an
+interrupted run resumes without recomputing. Every stored <code>.npz</code> holds the per-trial
+numerator and denominator separately, so any pooling, subset or bootstrap in this document can be
+recomputed from the stores without rerunning the Monte Carlo.</p>
+
+<h3>D.4 Where a reader should be most sceptical</h3>
+<p>Stated plainly, because a document that lists only its strengths is not an audit. In descending
+order of how much they should worry a reviewer:</p>
+<ol>
+<li><strong>Model class.</strong> One channel model, never varied. §14.4 and the rank-1 next
+experiment. This is the largest unquantified risk in the work.</li>
+<li><strong>The <var>N</var> = 8 sign ambiguity.</strong> Real, reported, and explained (§16.2), but
+it does mean the smallest array size does not support the headline claim.</li>
+<li><strong>No convergence theory.</strong> §19.3. The estimator is defined by what the code does at
+a fixed budget, not by a fixed point it provably reaches.</li>
+<li><strong>Shared model order.</strong> A known misspecification present in every reported number
+(§9.6, Q7).</li>
+<li><strong>Two papers never supplied.</strong> Parts VIII and XV rest on implementation and first
+principles alone and are labelled as such.</li>
+</ol>
+<p>None of these is fatal to the central result — that the HS-GS advantage scales with array size and
+vanishes exactly when the structural constraint becomes vacuous — because that result is established
+by a controlled experiment against a pre-recorded hypothesis, and is corroborated by an independent
+bound. All of them constrain how widely it may be stated.</p>
+</div>
+</section>
+<footer>
+<div class="wrap">
+Track B — structured channel estimation for Rydberg atomic quantum receivers.<br>
+Every number recomputed from per-trial stores; every model claim read out of running code.<br>
+Repository <code>report-corrections</code> @ <code>4efe08d</code> · Track A frozen @ <code>ce118f0</code> · fingerprint <code>46dbd9f1cf57d1cc</code>
+</div>
+</footer>
+</div>

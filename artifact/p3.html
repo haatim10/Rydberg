@@ -1,0 +1,215 @@
+<section id="s3">
+<span class="snum">Part III</span>
+<h2>Pilot transmission model</h2>
+<div class="col">
+<p class="lede">The pilot design turned out to differ from what a reader might assume, in a way that
+matters for §VI: the pilots are <strong>not orthogonal</strong>.</p>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Property</th><th class="l">Verified value</th></tr></thead>
+<tbody>
+<tr><td class="l">dimensions</td><td class="t"><var>S</var> ∈ ℂ<sup>K×P</sup>, K = 3</td></tr>
+<tr><td class="l">distribution</td><td class="t">i.i.d. <b>𝒞𝒩(0,1)</b>, drawn elementwise. <b>Not</b> QAM, not a Hadamard or DFT design</td></tr>
+<tr><td class="l">scaling / power</td><td class="t">E|s|² = 1 per entry (measured 1.09 on one 3×20 draw; the population value is 1)</td></tr>
+<tr><td class="l">orthogonality</td><td class="t"><b>NOT orthogonal.</b> Max off-diagonal of <span class="mono">SS<sup>H</sup>/P</span> = <b>0.233</b> on a representative draw; exact orthogonality would give 0</td></tr>
+<tr><td class="l">rank condition</td><td class="t">full row rank enforced by <b>rejection sampling</b> (redrawn until satisfied)</td></tr>
+<tr><td class="l">identifiability floor</td><td class="t"><span class="mono">P ≥ 2K</span> enforced at construction and raises otherwise</td></tr>
+<tr><td class="l">per-trial redraw</td><td class="t"><b>yes</b> — <var>S</var> is redrawn for every Monte Carlo trial, addressed by a dedicated pilot substream</td></tr>
+</tbody></table></div>
+<div class="col">
+<p>Before the receiver operation, the noiseless multi-user field is</p>
+</div>
+<div class="eq"><span class="b"><var>Y</var> = <var>G</var><var>S</var> ∈ ℂ<sup><var>N</var>×<var>P</var></sup>,
+  &nbsp;&nbsp;&nbsp; (<var>GS</var>)<sub><var>n</var>,<var>p</var></sub> =
+  Σ<sub><var>k</var>=1</sub><sup><var>K</var></sup>
+  <var>g</var><sub><var>n</var>,<var>k</var></sub> <var>s</var><sub><var>k</var>,<var>p</var></sub></span><span class="n">(6)</span></div>
+<div class="col">
+<p><strong>Meaning of one entry.</strong> <code>(GS)<sub>n,p</sub></code> is the complex RF field
+that sensor <var>n</var> sees at pilot instant <var>p</var>: the <em>coherent superposition</em> of
+all <var>K</var> users' contributions. Each user's signal arrives with its own channel coefficient
+and its own pilot symbol, and they add as complex numbers — constructively or destructively. The
+receiver never observes the users separately; it observes one scalar field per sensor per instant,
+and then only its magnitude.</p>
+</div>
+</section>
+
+<section id="s4">
+<span class="snum">Part IV</span>
+<h2>Rydberg measurement physics</h2>
+
+<h3 class="col">4.1 Atomic receiver interpretation</h3>
+<div class="col">
+<div class="note info"><div class="t">Scope boundary — read this before quoting anything in §4.1</div>
+<p><strong>The simulator does not model atomic physics.</strong> It contains no Rabi frequency, no
+energy levels, no Autler–Townes splitting, no optical probe, and no vapour cell. What it implements
+is the <em>effective digital-domain consequence</em> of the atomic readout: that the observation is
+the magnitude of a complex field, eq. (1). Everything in this subsection is physical justification
+drawn from the literature for <em>why</em> that effective model is the right one; none of it is
+simulated.</p></div>
+
+<p>The physical chain, as described in the Rydberg atomic-receiver literature, runs: an incident RF
+electric field couples a pair of Rydberg states; the coupling strength is the Rabi frequency, which
+is proportional to the RF field amplitude; that coupling splits the optical transition
+(Autler–Townes), and the splitting is read out through the transmission of a probe laser. The
+observable at the end of the chain therefore tracks <strong>|E<sub>RF</sub>|</strong>. The optical
+readout is not phase-coherent with the RF carrier, so the RF phase does not survive to the
+photodetector.</p>
+
+<p><span class="chip c-nv">not verified</span> The Xiao et al. URformer paper was <strong>not
+supplied</strong>, so the specific chain described in that paper — and any citation to it for the
+Rabi → Autler–Townes → optical-response sequence — cannot be checked. The account above is the
+standard description and is consistent with Cui et al., which was supplied. <strong>Attribute this
+paragraph to Cui or to a Rydberg-sensing reference you have actually read, not to Xiao, until the
+paper is available.</strong></p>
+
+<h3>4.2 The reference field — why it recovers phase</h3>
+<p>Superpose a known reference <var>b</var> on the unknown field <var>x</var>. The squared magnitude
+expands as</p>
+</div>
+<div class="eq"><span class="b">|<var>x</var> + <var>b</var>|² = |<var>x</var>|² + |<var>b</var>|²
+  + 2 ℜ{<var>x</var> <var>b</var>*}</span><span class="n">(7)</span></div>
+<div class="col">
+<p>The first term is the phase-blind intensity we would have measured anyway. The second is a known
+constant. <strong>The third is the payload:</strong> <code>2ℜ{x b*} = 2|x||b| cos(∠x − ∠b)</code>
+depends on the phase of <var>x</var> <em>relative to the known</em> ∠<var>b</var>. So a magnitude
+measurement of the superposition encodes relative phase, even though a magnitude measurement of
+<var>x</var> alone would not. This is the same principle as holography and as a homodyne receiver.</p>
+
+<p>Verified properties of <var>B</var> in the implementation, and one of them is a real
+simplification worth stating plainly:</p>
+<dl class="kv">
+<dt>shape</dt><dd>N × P, same as the measurement</dd>
+<dt>magnitude</dt><dd><b>constant</b> — exactly one unique |B| value across all N·P entries</dd>
+<dt>phase</dt><dd><b>exactly 0 rad</b> for every entry</dd>
+<dt>value at RSR = 12 dB</dt><dd>|B| = 3.9811 = √(10<sup>1.2</sup>) ✓</dd>
+</dl>
+<p><span class="chip c-nv">not verified</span> A physical local oscillator would have spatial and
+temporal structure. Here <var>B</var> is a <strong>constant, real, positive</strong> field identical
+at every sensor and every instant. This is a modelling choice, not a derived result; whether a real
+Rydberg array can present a uniform-phase reference across the aperture is outside what this code
+establishes.</p>
+
+<h3>4.3 Noise <span class="chip c-ok">verified</span></h3>
+<dl class="kv">
+<dt>convention</dt><dd>circularly-symmetric complex Gaussian, measured E[W²] ≈ 0</dd>
+<dt>total variance</dt><dd>Var(W) = 0.94630 against σ² = 0.94868 ✓</dd>
+<dt>per real component</dt><dd>Var(ℜW) = 0.4548, Var(ℑW) = 0.4915, against σ²/2 = 0.4743 ✓</dd>
+<dt>insertion point</dt><dd><b>before</b> the magnitude — confirmed by the exact <var>Z</var> identity</dd>
+<dt>scaling</dt><dd>σ² = K / SNR<sub>lin</sub>, §V</dd>
+</dl>
+<p><strong>Factor-of-two check.</strong> The convention is that σ² is the <em>total</em> complex
+variance and each real component carries σ²/2. This matters twice over: it sets the noise floor, and
+it is what makes the high-SNR CRLB sit exactly 10log₁₀2 = 3.0103 dB above a phase-aware bound
+(§X). Both were checked numerically and both hold.</p>
+
+<h3>4.4 Final measurement model</h3>
+</div>
+<div class="eq"><span class="b"><var>Z</var> = |<var>G</var><var>S</var> + <var>B</var> +
+  <var>W</var>| ∈ ℝ₊<sup><var>N</var>×<var>P</var></sup></span><span class="n">(8)</span></div>
+<div class="col">
+<p><var>G</var>, <var>S</var>, <var>B</var> and <var>W</var> are complex because they represent
+baseband field quantities carrying amplitude <em>and</em> phase. <var>Z</var> is real and
+non-negative because the sensor reports a field <em>magnitude</em> — the elementwise modulus, which
+maps ℂ → ℝ₊ and is where the information is lost. Verified: <var>Z</var> is <code>float64</code>,
+all entries ≥ 0, and matches <code>|GS+B+W|</code> to 0.00e+00.</p>
+</div>
+</section>
+
+<section id="s5">
+<span class="snum">Part V</span>
+<h2>SNR and RSR as implemented</h2>
+<div class="col">
+<p class="lede">Both definitions were re-derived from the code rather than assumed, because both
+contain a factor-<var>K</var> trap and the two use <em>different denominators</em>.</p>
+
+<h3>5.1 SNR</h3>
+<p>The implemented definition compares total received signal power against noise power per sensor:</p>
+</div>
+<div class="eq"><span class="b">SNR = E{|<var>a<sub>n</sub></var><sup>H</sup><var>s</var>|²} /
+  E{|<var>w<sub>n</sub></var>|²}</span><span class="n">(9)</span></div>
+<div class="col">
+<p>With per-element channel power β = 1, unit-energy pilots and independent users, the numerator is
+<code>Σ_k E|g_{n,k}|² E|s_k|² = K</code>. Hence the noise variance actually set by the code is</p>
+</div>
+<div class="eq"><span class="b">σ² = <var>K</var> / SNR<sub>lin</sub>,&nbsp;&nbsp;
+  SNR<sub>lin</sub> = 10<sup>SNR<sub>dB</sub>/10</sup></span><span class="n">(10)</span></div>
+<div class="col">
+<p>Verified numerically: at a nominal 5 dB the code sets σ² = 0.94868 and <code>K/SNR_lin</code> =
+0.94868 — identical. Measured achieved SNR on a generated world: <strong>5.079 dB</strong>. Over
+4 000 realisations with a bootstrap: <strong>3.009 dB [2.957, 3.060]</strong> against a 3.00 dB
+target, i.e. unbiased.</p>
+<p><strong>Consequence worth stating:</strong> this is <em>total</em> power over all <var>K</var>
+users. Fixing SNR does not fix per-user SNR — doubling <var>K</var> at fixed SNR doubles σ².</p>
+
+<h3>5.2 RSR</h3>
+</div>
+<div class="eq"><span class="b">RSR = E{|<var>b<sub>n</sub></var>|²} /
+  E{|<var>a</var><sub><var>n</var>,<var>k</var></sub><var>s<sub>k</sub></var>|²}
+  ⟹ |α<sub><var>b</var></sub>| = √(RSR<sub>lin</sub>)</span><span class="n">(11)</span></div>
+<div class="col">
+<div class="note"><div class="t">The denominator is a single user, not the K-user sum</div>
+<p>Measured on a generated world: RSR against the <b>single-user</b> denominator = <b>11.50 dB</b>
+(nominal 12); against the <b>total K-user</b> power = 7.15 dB. The code implements the single-user
+convention (Cui eq. 37). Using the total would be wrong by 10log₁₀K = 4.77 dB, which is exactly the
+gap observed. The reference amplitude scaling was checked independently: |B| ratio between
+RSR = 24 dB and 0 dB is 15.85 against 10<sup>24/20</sup> = 15.85.</p></div>
+
+<h3>5.3 Why RSR matters physically</h3>
+<ul>
+<li><strong>Weak reference (RSR → 0 dB).</strong> The cross term <code>2ℜ{xb*}</code> in eq. (7) is
+comparable to the phase-blind <code>|x|²</code> term. Phase information is present but poorly
+conditioned, and the observation is strongly nonlinear in <var>G</var>. This is where the problem is
+hardest and least like conventional channel estimation.</li>
+<li><strong>Useful interference (moderate RSR).</strong> The reference is strong enough to make the
+cross term dominant but not so strong that it swamps the signal. Measured: this is exactly where
+EM-GS's statistical weighting earns its advantage over plain GS — <b>+1.3 dB at RSR = 0</b>, decaying
+to <b>+0.00 dB at RSR = 24</b> (§XIII, Figure A3).</li>
+<li><strong>Excessively strong reference (RSR ≫ 0).</strong> <code>|b|² </code> dominates,
+<code>|x|²</code> becomes negligible, and the observation becomes approximately <em>linear</em> in
+<var>G</var>. Statistically, the Bessel weighting saturates and EM-GS degenerates into plain GS.</li>
+<li><strong>Relation to the Xu approximation.</strong> The strong-reference limit is precisely the
+regime in which a linearised estimator becomes valid (§VIII). High RSR makes the problem easier but
+also makes the exact-model machinery unnecessary; low RSR is where exact methods should pay.</li>
+</ul>
+</div>
+</section>
+
+<section id="s6">
+<span class="snum">Part VI</span>
+<h2>The estimation problem</h2>
+<div class="col">
+<p>Given <var>Z</var>, <var>S</var> and <var>B</var>, recover <var>G</var>. The implemented
+objective corresponding to the exact model is</p>
+</div>
+<div class="eq"><span class="b">minimise<sub><var>G</var></sub> &nbsp; <var>J</var>(<var>G</var>)
+  = ‖ <var>Z</var> − |<var>G</var><var>S</var> + <var>B</var>| ‖<sub>F</sub>²</span><span class="n">(12)</span></div>
+<div class="col">
+<h3>Why the problem is nonlinear</h3>
+<p>The map <code>G ↦ |GS+B|</code> is a composition of a linear map with the elementwise modulus.
+The modulus is not linear, not holomorphic, and not even differentiable at zero. Consequently
+<var>J</var> is <strong>non-convex</strong> in <var>G</var>, has multiple stationary points, and
+admits no closed-form minimiser.</p>
+
+<h3>Why linear pilot inversion fails</h3>
+<p>If we observed <code>Y = GS + B + W</code> we would simply form <code>(Y−B)S<sup>H</sup>(SS<sup>H</sup>)<sup>−1</sup></code>
+and be done — a linear least squares with a unique solution. But we observe <var>Z</var> = |·|. The
+phase of every entry has been destroyed, so <code>Y</code> is not available and there is nothing to
+invert. Recovering <var>Y</var> from <var>Z</var> is itself the phase-retrieval problem. Inverting
+<var>Z</var> directly against <var>S</var> is meaningless: it treats a magnitude as if it were a
+complex field.</p>
+
+<h3>Why orthogonal pilots would not decouple the users</h3>
+<p>This point is worth making carefully, because it is a natural assumption and it is false here.</p>
+<p>With orthogonal pilots and a <em>linear</em> observation, right-multiplying by
+<code>S<sup>H</sup></code> separates users exactly, because <code>SS<sup>H</sup> ∝ I</code>. But
+orthogonality is a property of an <em>inner product</em>, and the magnitude operation destroys the
+linear structure that inner product acts on. Concretely, at instant <var>p</var> the sensor sees the
+scalar superposition <code>Σ_k g_{n,k} s_{k,p}</code>, takes its modulus, and discards the phase.
+Once that has happened, no linear post-processing can undo the sum: the users are entangled inside
+a nonlinear function, and <code>|Σ_k …|</code> ≠ Σ_k |…|. Orthogonality would help a linear
+receiver; it cannot help here.</p>
+<p>Two supporting facts from the implementation: the pilots are in fact <strong>not</strong>
+orthogonal (§III, max off-diagonal 0.233), and the solvers never attempt user separation — they
+operate per receive element on all <var>K</var> users jointly (§VII).</p>
+</div>
+</section>

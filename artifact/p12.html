@@ -1,0 +1,110 @@
+<section id="sA">
+<span class="snum">Appendix A</span>
+<h2>Symbols and dimensions</h2>
+<div class="col">
+<p class="lede">Every symbol used in this document, with its dimension at the default configuration
+<var>N</var> = 8, <var>K</var> = 3, <var>P</var> = 30.</p>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Symbol</th><th class="l">Meaning</th><th class="l">Type / dimension</th><th class="l">Example value</th></tr></thead>
+<tbody>
+<tr><td class="l"><var>N</var></td><td class="l">RAQR array elements</td><td class="l">ℤ<sub>+</sub></td><td class="l">8, 16, 32</td></tr>
+<tr><td class="l"><var>K</var></td><td class="l">single-antenna users</td><td class="l">ℤ<sub>+</sub></td><td class="l">3</td></tr>
+<tr><td class="l"><var>P</var></td><td class="l">pilot symbols</td><td class="l">ℤ<sub>+</sub>, ≥ 2<var>K</var></td><td class="l">10, 30</td></tr>
+<tr><td class="l"><var>L<sub>k</sub></var></td><td class="l">paths of user <var>k</var></td><td class="l">ℤ<sub>+</sub></td><td class="l">𝒰{3..7}, e.g. (7,4,6)</td></tr>
+<tr><td class="l"><var>H</var>, <var>G</var></td><td class="l">channel (identical, <var>c</var>=1)</td><td class="l">ℂ<sup><var>N</var>×<var>K</var></sup></td><td class="l">8×3</td></tr>
+<tr><td class="l"><var>S</var></td><td class="l">pilot matrix</td><td class="l">ℂ<sup><var>K</var>×<var>P</var></sup></td><td class="l">3×30, 𝒞𝒩(0,1)</td></tr>
+<tr><td class="l"><var>B</var></td><td class="l">LO reference</td><td class="l">ℂ<sup><var>N</var>×<var>P</var></sup>, constant</td><td class="l">|b| = 3.9811, ∠b = 0</td></tr>
+<tr><td class="l"><var>W</var></td><td class="l">noise</td><td class="l">ℂ<sup><var>N</var>×<var>P</var></sup>, 𝒞𝒩(0,σ²)</td><td class="l">σ² = 0.94868</td></tr>
+<tr><td class="l"><var>Z</var></td><td class="l">observation <code>= |GS+B+W|</code></td><td class="l">ℝ<sub>≥0</sub><sup><var>N</var>×<var>P</var></sup></td><td class="l">8×30 float64</td></tr>
+<tr><td class="l">λ</td><td class="l">noiseless field <code>(GS+B)<sub>n,p</sub></code></td><td class="l">ℂ</td><td class="l">—</td></tr>
+<tr><td class="l">θ<sub>ℓ,k</sub></td><td class="l">angle of arrival</td><td class="l">ℝ, 𝒰[−π/2, π/2]</td><td class="l">—</td></tr>
+<tr><td class="l">ψ<sub>ℓ,k</sub></td><td class="l">electrical angle <code>= π sin θ</code></td><td class="l">ℝ, [−π, π]</td><td class="l">—</td></tr>
+<tr><td class="l">α<sub>ℓ,k</sub></td><td class="l">path gain</td><td class="l">ℂ, 𝒞𝒩(0, β<sub>k</sub>/<var>L<sub>k</sub></var>)</td><td class="l">β<sub>k</sub> = 1</td></tr>
+<tr><td class="l">σ²</td><td class="l">noise power <code>= K/SNR<sub>lin</sub></code></td><td class="l">ℝ<sub>+</sub></td><td class="l">0.94868 at SNR 5 dB</td></tr>
+<tr><td class="l"><var>R</var>(κ)</td><td class="l">Bessel ratio <code>I<sub>1</sub>(κ)/I<sub>0</sub>(κ)</code></td><td class="l">[0,1)</td><td class="l">→1 as κ→∞</td></tr>
+<tr><td class="l">κ</td><td class="l"><code>= (2/σ²) z ⊙ |λ|</code></td><td class="l">ℝ<sub>≥0</sub><sup><var>N</var>×<var>P</var></sup></td><td class="l">—</td></tr>
+<tr><td class="l"><var>L̂</var></td><td class="l">selected model order</td><td class="l">ℤ<sub>+</sub>, <strong>one scalar for all <var>K</var></strong></td><td class="l">5 when true = (7,4,6)</td></tr>
+<tr><td class="l">cap(<var>N</var>)</td><td class="l">Hankel rank cap <code>= ⌈N/2⌉</code></td><td class="l">ℤ<sub>+</sub></td><td class="l">4 / 8 / 16</td></tr>
+<tr><td class="l"><var>p</var></td><td class="l">pencil parameter <code>= ⌊(N−1)/2⌋</code></td><td class="l">ℤ<sub>+</sub></td><td class="l">3 / 7 / 15</td></tr>
+<tr><td class="l"><code>P<sub>S</sub></code></td><td class="l">Cadzow structural projection</td><td class="l">ℂ<sup><var>N</var></sup> → ℂ<sup><var>N</var></sup></td><td class="l">4 sweeps</td></tr>
+<tr><td class="l"><code>T<sub>GS</sub></code></td><td class="l">one exact EM-GS update</td><td class="l">ℂ<sup><var>N</var>×<var>K</var></sup> → ℂ<sup><var>N</var>×<var>K</var></sup></td><td class="l">—</td></tr>
+<tr><td class="l">η</td><td class="l">unconstrained parameter vector</td><td class="l">ℝ<sup>2<var>NK</var></sup></td><td class="l">48 (N=8) … 192 (N=32)</td></tr>
+<tr><td class="l">φ</td><td class="l">structural parameter vector</td><td class="l">ℝ<sup>3Σ<var>L<sub>k</sub></var></sup></td><td class="l">≈45, independent of <var>N</var></td></tr>
+<tr><td class="l"><var>J</var></td><td class="l">Fisher information</td><td class="l">ℝ<sup>2<var>NK</var>×2<var>NK</var></sup>, row-block-diag</td><td class="l">rank 1 per measurement</td></tr>
+<tr><td class="l"><var>D</var></td><td class="l">Jacobian ∂<var>G</var>/∂φ</td><td class="l">ℝ<sup>2<var>NK</var>×3Σ<var>L<sub>k</sub></var></sup></td><td class="l">rank-deficient at <var>N</var>=8</td></tr>
+<tr><td class="l"><var>U</var></td><td class="l">orthonormal basis of range(<var>D</var>)</td><td class="l">ℝ<sup>2<var>NK</var>×<var>r</var></sup></td><td class="l">tol 10<sup>−9</sup></td></tr>
+<tr><td class="l"><var>c</var></td><td class="l">shrinkage <code>⟨Ĝ,G⟩/‖G‖²</code></td><td class="l">ℝ</td><td class="l">0.756 (−5 dB), 0.957 (+5 dB)</td></tr>
+<tr><td class="l">ρ(<var>N</var>)</td><td class="l">redundancy <code>2NK/(3ΣL<sub>k</sub>)</code></td><td class="l">ℝ<sub>+</sub></td><td class="l">a count, not a theorem</td></tr>
+<tr><td class="l"><var>e<sub>t</sub></var>, <var>d<sub>t</sub></var></td><td class="l"><code>‖Ĝ−G‖²<sub>F</sub></code>, <code>‖G‖²<sub>F</sub></code></td><td class="l">ℝ<sub>≥0</sub></td><td class="l">stored per trial</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="sB">
+<span class="snum">Appendix B</span>
+<h2>Code-to-equation traceability</h2>
+<div class="col">
+<p class="lede">Where each piece of mathematics lives. Repository state at the time of writing:
+branch <code>report-corrections</code>, HEAD <code>4efe08d</code>. Track A is frozen at
+<code>ce118f0</code> and is not touched by anything below.</p>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Equation / concept</th><th class="l">§</th><th class="l">Implemented in</th></tr></thead>
+<tbody>
+<tr><td class="l">ULA steering vector, <code>ψ = π sin θ</code></td><td class="l">2.2, eq. 2–3</td><td class="l"><code>rydberg_sim/channel.py</code></td></tr>
+<tr><td class="l">Geometric channel <code>G</code>, eq. 4</td><td class="l">2.3</td><td class="l"><code>rydberg_sim/channel.py</code> · <code>generate_ula_channel</code></td></tr>
+<tr><td class="l"><var>L<sub>k</sub></var> ~ 𝒰{3..7} draw</td><td class="l">2.3, 11.1</td><td class="l"><code>track_b_drivers.draw_L_k</code></td></tr>
+<tr><td class="l">Gaussian pilots, <var>P</var> ≥ 2<var>K</var>, full row rank</td><td class="l">III</td><td class="l"><code>rydberg_sim/pilots.py</code> · <code>generate_gaussian_pilots</code></td></tr>
+<tr><td class="l">Reference <var>B</var>, |b| = √RSR<sub>lin</sub></td><td class="l">IV</td><td class="l"><code>rydberg_sim/reference.py</code></td></tr>
+<tr><td class="l">Observation <code>Z = |GS+B+W|</code></td><td class="l">IV</td><td class="l"><code>rydberg_sim/forward.py</code></td></tr>
+<tr><td class="l">SNR eq. 36 → <code>σ² = K/SNR<sub>lin</sub></code></td><td class="l">V</td><td class="l"><code>rydberg_sim/config.py</code></td></tr>
+<tr><td class="l">RSR eq. 37, single-user denominator</td><td class="l">V</td><td class="l"><code>rydberg_sim/reference.py</code></td></tr>
+<tr><td class="l">Trial generation, CRN keying</td><td class="l">11.4</td><td class="l"><code>monte_carlo.generate_channel_estimation_trial</code>, <code>rng.py</code></td></tr>
+<tr><td class="l">Biased GS (Cui Alg. 1), row adapter</td><td class="l">7.2</td><td class="l"><code>gs.biased_gs_channel_rows</code></td></tr>
+<tr><td class="l">EM-GS (Cui Alg. 2), Bessel ratio <code>R(κ)</code></td><td class="l">7.3</td><td class="l"><code>gs.em_gs_channel_rows</code></td></tr>
+<tr><td class="l">Canonical row mapping <code>M(S)</code></td><td class="l">7.1</td><td class="l"><code>gs.py</code> (verified to 8.88e−16)</td></tr>
+<tr><td class="l">Hankel build, pencil <var>p</var>, rank cap</td><td class="l">9.2–9.3</td><td class="l"><code>track_b_structure.py</code> · <code>hankel_rank_cap</code></td></tr>
+<tr><td class="l">Cadzow alternating projection</td><td class="l">9.5</td><td class="l"><code>track_b_structure.py</code></td></tr>
+<tr><td class="l">HS-GS iteration <code>T = P<sub>S</sub>∘T<sub>GS</sub></code></td><td class="l">9.5</td><td class="l"><code>track_b_proposed.hs_gs</code></td></tr>
+<tr><td class="l">Held-out pilot order selection</td><td class="l">9.6</td><td class="l"><code>track_b_proposed.hs_gs_auto</code>, <code>select_order_heldout</code></td></tr>
+<tr><td class="l">Linearised LS baseline (never used for a claim)</td><td class="l">VIII</td><td class="l"><code>track_b_drivers</code> · <code>linearised_ls</code></td></tr>
+<tr><td class="l">Rician likelihood, eq. 29</td><td class="l">10.1</td><td class="l"><code>scripts/constrained_crlb_fast.py</code></td></tr>
+<tr><td class="l">Fisher information, eqs. 30–33 (rank-1)</td><td class="l">10.3</td><td class="l"><code>scripts/constrained_crlb_fast.py</code> · β table</td></tr>
+<tr><td class="l">Constrained CRLB <code>U(U<sup>T</sup>JU)<sup>−1</sup>U<sup>T</sup></code>, eq. 35</td><td class="l">10.7</td><td class="l"><code>scripts/constrained_crlb_fast.py</code></td></tr>
+<tr><td class="l">NMSE ratio-of-sums, eq. 36</td><td class="l">12.1</td><td class="l"><code>analyze_b3.pooled_db</code>, <code>metrics.channel_nmse</code></td></tr>
+<tr><td class="l">Paired bootstrap CI</td><td class="l">12.3</td><td class="l"><code>analyze_b3.summarize</code> (NBOOT 2000, seed 987654321)</td></tr>
+<tr><td class="l">Shrinkage coefficient, eq. 40</td><td class="l">16.4</td><td class="l"><code>scripts/diag_highsnr.py</code></td></tr>
+<tr><td class="l">B3 driver (36 points)</td><td class="l">XVI</td><td class="l"><code>scripts/run_b3.py</code></td></tr>
+<tr><td class="l">B7 controlled-<var>L</var> driver</td><td class="l">16.8</td><td class="l"><code>scripts/run_b7_pathcount.py</code></td></tr>
+<tr><td class="l">Model/parameter audit (59 facts)</td><td class="l">throughout</td><td class="l"><code>scripts/artifact_audit.py</code> → <code>artifact_audit.json</code></td></tr>
+<tr><td class="l">Adversarial final audit (51 checks)</td><td class="l">XVIII</td><td class="l"><code>scripts/final_audit_track_b.py</code></td></tr>
+<tr><td class="l">Figures</td><td class="l">XIII</td><td class="l"><code>scripts/plot_artifact.py</code></td></tr>
+<tr><td class="l">Tables (4 CSVs)</td><td class="l">XVI</td><td class="l"><code>scripts/artifact_tables.py</code></td></tr>
+<tr><td class="l">LaTeX formula reference (57 eqs, uncompiled)</td><td class="l">19.4</td><td class="l"><code>tex/formulae.tex</code></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="sC">
+<span class="snum">Appendix C</span>
+<h2>Glossary</h2>
+<div class="col">
+<dl class="kv">
+<dt>Biased phase retrieval</dt><dd>Recovering complex <var>x</var> from <code>z = |Ax + b + w|</code> where the bias <var>b</var> is known. The bias is what makes the phase recoverable at all.</dd>
+<dt>Cadzow denoising</dt><dd>Alternating projection between "rank ≤ <var>L</var>" (SVD truncation, exact by Eckart–Young–Mirsky) and "Hankel" (anti-diagonal averaging). Approximates the nearest fixed-rank Hankel matrix; not the exact projection.</dd>
+<dt>CCRB</dt><dd>Constrained Cramér–Rao bound. The bound for an estimator that knows the parameters lie on a manifold. Computed here in Gorman–Hero / Stoica–Ng tangent-space form.</dd>
+<dt>CRN</dt><dd>Common random numbers. Here: all estimators at one operating point see bit-identical realizations, which makes the paired bootstrap valid. <em>Not</em> shared across operating points.</dd>
+<dt>Constraint active</dt><dd>A trial in which <var>L̂</var> &lt; cap(<var>N</var>), so the projection actually changes the iterate. When inactive, HS-GS returns EM-GS bit-for-bit.</dd>
+<dt>EM-GS</dt><dd>Cui's Algorithm 2. Gerchberg–Saxton with the hard modulus substitution replaced by the exact Rician posterior mean of the phase factor, via the Bessel ratio <var>R</var>(κ).</dd>
+<dt>Efficient</dt><dd>An unbiased estimator attaining the CRLB. EM-GS is close to efficient against the corrected unconstrained bound at high SNR with <var>P</var> = 30.</dd>
+<dt>Hankel matrix</dt><dd>Constant along anti-diagonals. Built here from one channel column with pencil parameter <var>p</var>, giving shape (<var>N</var>−<var>p</var>) × (<var>p</var>+1).</dd>
+<dt>HS-GS</dt><dd>Hankel-Structured GS. The proposed estimator: EM-GS with a Cadzow rank projection applied after every iteration. Order selected from held-out pilots, not oracle.</dd>
+<dt>Kronecker's theorem</dt><dd>A length-<var>N</var> sequence is a sum of <var>L</var> complex exponentials iff its Hankel matrix has rank <var>L</var> (subject to converse conditions). The basis of the structural prior.</dd>
+<dt>Rank cap</dt><dd><code>⌈N/2⌉</code> — the largest rank the Hankel matrix can have, maximised over pencil choice. When <var>L<sub>k</sub></var> ≥ cap the low-rank constraint is vacuous.</dd>
+<dt>Ratio of sums</dt><dd>The pooling used throughout: <code>10 log₁₀(Σe<sub>t</sub>/Σd<sub>t</sub>)</code>. Estimates the ensemble NMSE, which is the quantity a CRLB bounds.</dd>
+<dt>RSR</dt><dd>Reference-to-signal ratio, Cui eq. 37, <strong>single-user</strong> denominator. 12 dB nominal here corresponds to 7.15 dB against the <var>K</var>-user total.</dd>
+<dt>Row separability</dt><dd>Row <var>n</var> of <code>GS</code> affects only measurement row <var>n</var>, so the Fisher matrix is block diagonal across rows. This is why the unconstrained bound and the exact-model estimators are flat in <var>N</var>.</dd>
+<dt>Shrinkage bias</dt><dd>Systematic pull of an estimate toward zero, <code>c = ⟨Ĝ,G⟩/‖G‖² &lt; 1</code>. Permits MSE below the CRLB, which is why 63 of 108 combinations cross it.</dd>
+<dt>Tie</dt><dd>A trial where HS-GS and EM-GS produce bit-identical output because the constraint was inactive. Dominates the raw win rate at <var>N</var> = 8 and must be quoted alongside it.</dd>
+</dl>
+</div>
+</section>

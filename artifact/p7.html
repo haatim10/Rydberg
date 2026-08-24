@@ -1,0 +1,413 @@
+<style>
+figure{margin:26px 0}
+/* The plots are matplotlib PNGs on white -- that is deliberate (the brief asks for
+   plain, unstyled figures). On a dark ground they are seated on an explicit white
+   mat with a slightly stronger rule so they read as plates, not as blown-out gaps. */
+figure img{width:100%;height:auto;display:block;background:#fff;
+  border:1px solid var(--rule);border-radius:2px}
+:root:not([data-theme="light"]) figure img{padding:6px;background:#fff}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) figure img{padding:0}}
+:root[data-theme="dark"] figure img{padding:6px;background:#fff}
+:root[data-theme="light"] figure img{padding:0}
+figcaption{font-size:13.5px;color:var(--muted);margin-top:10px;line-height:1.6;
+  max-width:var(--measure)}
+figcaption .fid{font-family:var(--mono);font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--accent);font-weight:600;margin-right:8px}
+figcaption .gen{display:block;margin-top:6px;font-family:var(--mono);font-size:11px;
+  color:var(--faint)}
+figcaption b,figcaption strong{color:var(--ink)}
+</style>
+
+<section id="s11">
+<span class="snum">Part XI</span>
+<h2>Complete reproducibility parameters</h2>
+<div class="col">
+<p class="lede">Every constant needed to re-run Track B from scratch. Values are read out of the
+source, not from memory; the "where" column names the file that defines each one so a reader can
+check it. Anything the code does not fix is marked as such rather than guessed.</p>
+
+<h3>11.1 System and channel</h3>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Symbol</th><th class="l">Meaning</th><th class="l">Value</th><th class="l">Defined in</th></tr></thead>
+<tbody>
+<tr><td class="l"><var>N</var></td><td class="l">RAQR array elements (ULA)</td><td class="l">8 (default); swept over {8, 16, 32}</td><td class="l"><code>track_b_drivers.TRACK_B_N</code>, <code>run_b3.N_GRID</code></td></tr>
+<tr><td class="l"><var>K</var></td><td class="l">Single-antenna users</td><td class="l">3</td><td class="l"><code>track_b_drivers.TRACK_B_K</code></td></tr>
+<tr><td class="l"><var>L<sub>k</sub></var></td><td class="l">Paths per user</td><td class="l">i.i.d. <code>U{3,…,7}</code> per user per realization</td><td class="l"><code>track_b_drivers.draw_L_k</code></td></tr>
+<tr><td class="l"><var>d</var></td><td class="l">Element spacing</td><td class="l">λ/2 ⟹ <code>ψ = π sin θ</code></td><td class="l">ULA generator</td></tr>
+<tr><td class="l">θ<sub>ℓ,k</sub></td><td class="l">Angle of arrival</td><td class="l">Uniform in <strong>θ</strong> on [−π/2, π/2]</td><td class="l">verified by KS test, §2.3</td></tr>
+<tr><td class="l">α<sub>ℓ,k</sub></td><td class="l">Path gain</td><td class="l"><code>𝒞𝒩(0, β<sub>k</sub>/L<sub>k</sub>)</code>, β<sub>k</sub> = 1</td><td class="l">ULA generator</td></tr>
+<tr><td class="l"><var>c</var></td><td class="l">Atomic gain constant</td><td class="l">1 (so <code>G ≡ H</code> exactly)</td><td class="l">verified, audit key <code>c_scaling</code></td></tr>
+<tr><td class="l"><var>P</var></td><td class="l">Pilot length</td><td class="l">{10, 30} in B3; {6,10,14,20,30,40} in B4</td><td class="l"><code>run_b3.P_GRID</code>, <code>B2_P</code></td></tr>
+<tr><td class="l"><var>S</var></td><td class="l">Pilot matrix</td><td class="l"><code>𝒞𝒩(0,1)</code> i.i.d., redrawn per trial, rejection-sampled to full row rank; <strong>not</strong> orthogonal</td><td class="l"><code>generate_gaussian_pilots</code></td></tr>
+</tbody></table></div>
+
+<div class="col">
+<h3>11.2 Measurement, noise and operating points</h3>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Symbol</th><th class="l">Meaning</th><th class="l">Value</th><th class="l">Defined in</th></tr></thead>
+<tbody>
+<tr><td class="l"><var>B</var></td><td class="l">Local-oscillator reference</td><td class="l">Constant across (<var>n</var>,<var>p</var>); |<var>b</var>| = √(RSR<sub>lin</sub>), ∠<var>b</var> = 0</td><td class="l">verified, audit keys <code>B_constant_across_np</code>, <code>B_value</code></td></tr>
+<tr><td class="l">σ²</td><td class="l">Noise power</td><td class="l"><code>σ² = K / SNR<sub>lin</sub></code> (Cui eq. 36)</td><td class="l">verified, <code>sigma2_formula</code></td></tr>
+<tr><td class="l"><var>W</var></td><td class="l">Noise</td><td class="l"><code>𝒞𝒩(0,σ²)</code> i.i.d., added <strong>inside</strong> the modulus</td><td class="l">verified, <code>Z_equals_abs_GS_B_W = 0.0</code></td></tr>
+<tr><td class="l">SNR</td><td class="l">Signal-to-noise ratio</td><td class="l">{−5, 0, 5, 10, 15, 20} dB</td><td class="l"><code>track_b_drivers.B1_SNR_DB</code></td></tr>
+<tr><td class="l">RSR</td><td class="l">Reference-to-signal ratio</td><td class="l">12 dB fixed (B3–B5); swept in B6</td><td class="l"><code>TRACK_B_RSR_DB</code></td></tr>
+<tr><td class="l">—</td><td class="l">RSR denominator convention</td><td class="l"><strong>Single user</strong> (Cui eq. 37), not the <var>K</var>-user sum</td><td class="l">verified, <code>RSR_denominator_convention</code></td></tr>
+</tbody></table></div>
+
+<div class="note info"><div class="t">Convention consequence — read this before comparing to any other paper</div>
+<p>Because RSR uses the <em>single-user</em> denominator while <var>K</var> = 3 users are transmitting,
+the <em>measured</em> reference-to-total ratio is ≈ 7.15 dB when the nominal RSR is 12 dB
+(audit: <code>measured_RSR_vs_total_dB = 7.154</code>). Both numbers are correct; they answer different
+questions. Every RSR value in this document is the nominal, single-user, Cui-eq.-37 one.</p></div>
+
+<div class="col">
+<h3>11.3 Estimator hyperparameters</h3>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Parameter</th><th class="l">Value</th><th class="l">Applies to</th><th class="l">Provenance</th></tr></thead>
+<tbody>
+<tr><td class="l"><code>max_iter</code> (GS / EM-GS)</td><td class="l">50</td><td class="l">biased-GS, EM-GS</td><td class="l">Cui's <var>t</var><sub>0</sub> = 50</td></tr>
+<tr><td class="l"><code>ridge</code></td><td class="l">0.0</td><td class="l">all</td><td class="l">no regularisation anywhere</td></tr>
+<tr><td class="l"><code>exact_step</code></td><td class="l"><code>"em_gs"</code></td><td class="l">HS-GS</td><td class="l">HS-GS wraps EM-GS, not plain GS</td></tr>
+<tr><td class="l"><code>max_iter</code> (HS-GS)</td><td class="l">50</td><td class="l">HS-GS</td><td class="l">matched to the baselines</td></tr>
+<tr><td class="l"><code>project_every</code></td><td class="l">1</td><td class="l">HS-GS</td><td class="l">project after every exact step</td></tr>
+<tr><td class="l"><code>cadzow_iter</code></td><td class="l">4</td><td class="l">HS-GS</td><td class="l">alternating-projection sweeps</td></tr>
+<tr><td class="l"><code>select_iter</code></td><td class="l">20</td><td class="l">order selection</td><td class="l">short inner runs during selection</td></tr>
+<tr><td class="l"><code>val_frac</code></td><td class="l">0.3</td><td class="l">order selection</td><td class="l">held-out pilot fraction</td></tr>
+<tr><td class="l">pencil <var>p</var></td><td class="l">⌊(<var>N</var>−1)/2⌋ → 3 / 7 / 15</td><td class="l">Hankel build</td><td class="l">maximises the rank cap ⌈<var>N</var>/2⌉</td></tr>
+<tr><td class="l">rank cap</td><td class="l">4 / 8 / 16 for <var>N</var> = 8/16/32</td><td class="l">HS-GS</td><td class="l">verified, <code>hankel_N*</code></td></tr>
+</tbody></table></div>
+
+<div class="col">
+<h3>11.4 Randomness and Monte Carlo</h3>
+<p>The master seed is <code>TRACK_B_MASTER_SEED = 20250820</code>. Each trial's world is generated by
+a <code>SeedSequence</code> keyed by <code>(master_seed, trial_index, snr, rsr)</code>, so:</p>
+<ul>
+<li><strong>Paired across estimators</strong> — within one operating point all three estimators see
+bit-identical <code>{θ, α, G, S, B, W, Z}</code>. This is what makes the paired bootstrap valid.</li>
+<li><strong>Independent across operating points</strong> — the worlds at SNR = 0 dB and SNR = 5 dB are
+<em>not</em> the same channel at two noise levels. Common random numbers are provided across
+estimators, not along the sweep axis. A reader who expects CRN along SNR will misread the
+point-to-point wiggle as an estimator effect; it is not.</li>
+<li><var>L<sub>k</sub></var> comes from a dedicated stream keyed <code>(master_seed, trial, 0x4C4B)</code>,
+independent of the channel/pilot/noise streams.</li>
+</ul>
+</div>
+<div class="tw"><table>
+<thead><tr><th class="l">Experiment</th><th class="l">Grid</th><th>Points</th><th>Trials/pt</th><th>Total trials</th></tr></thead>
+<tbody>
+<tr><td class="l">B3 — NMSE vs SNR</td><td class="l"><var>N</var>∈{8,16,32} × <var>P</var>∈{10,30} × 6 SNR</td><td>36</td><td>400 (5 extended to 1200)</td><td>18,400</td></tr>
+<tr><td class="l">B4 — NMSE vs <var>P</var></td><td class="l"><var>P</var>∈{6,10,14,20,30,40}, SNR = 5 dB</td><td>6</td><td>400</td><td>2,400 (800 reused)</td></tr>
+<tr><td class="l">B6 — NMSE vs RSR</td><td class="l">10 RSR values</td><td>10</td><td>400</td><td>4,000</td></tr>
+<tr><td class="l">B7 — NMSE vs <var>L</var></td><td class="l"><var>L</var>∈{2,…,16}, <var>N</var>=32, <var>P</var>=30, SNR=5</td><td>8</td><td>400</td><td>3,200</td></tr>
+<tr><td class="l">CRLB (unconstrained + constrained)</td><td class="l">52 operating points</td><td>52</td><td>400</td><td>20,800 β-evaluations</td></tr>
+</tbody></table></div>
+
+<div class="col">
+<p>Bootstrap: 2000 paired resamples, seed <code>987654321</code>, resampling <em>trials</em> (not
+residuals), recomputing the same ratio-of-sums statistic on each resample.</p>
+<p>Threading is pinned to one BLAS thread per worker (<code>OMP/OPENBLAS/MKL_NUM_THREADS = 1</code>)
+so that parallel Monte Carlo does not change floating-point reduction order.</p>
+
+<h3>11.5 What is <em>not</em> fixed by the code <span class="chip c-nv">not verified</span></h3>
+<ul>
+<li><strong>Carrier frequency, absolute bandwidth, physical array aperture in metres.</strong> The model
+is written in normalised electrical angle <code>ψ = π sin θ</code>; no carrier is ever instantiated.
+Any statement of the form "this is a 28 GHz system" would be invented. <strong>NOT VERIFIED — NEEDS
+CONFIRMATION</strong> if a physical-units claim is required.</li>
+<li><strong>Rydberg-specific constants</strong> — atomic species, principal quantum number, Rabi
+frequencies, LO detuning. The receiver enters only through <var>c</var> = 1 and the modulus
+non-linearity. The simulation is a <em>signal-model</em> abstraction of a RAQR, not an atomic-physics
+simulation, and should be described that way.</li>
+<li><strong>β<sub>k</sub> path loss spread.</strong> All users have β<sub>k</sub> = 1: equal average
+power, no near-far effect. Unequal-β behaviour is untested.</li>
+</ul>
+</div>
+</section>
+
+<section id="s12">
+<span class="snum">Part XII</span>
+<h2>NMSE definition and the statistics reported</h2>
+<div class="col">
+<p class="lede">The single most common way to make two estimators look different when they are not is
+to change how per-trial errors are pooled. This section states exactly which pooling the code uses,
+why, and what the alternatives would have shown.</p>
+
+<h3>12.1 Three different quantities, all called "NMSE in dB"</h3>
+<p>For trial <var>t</var> write the numerator <code>e<sub>t</sub> = ‖Ĝ<sub>t</sub> − G<sub>t</sub>‖²<sub>F</sub></code>
+and the denominator <code>d<sub>t</sub> = ‖G<sub>t</sub>‖²<sub>F</sub></code>. Three estimators of
+"the NMSE" exist:</p>
+</div>
+<div class="eq"><span class="b">(a) ratio of sums:&nbsp; 10 log<sub>10</sub>( Σ<sub>t</sub> <var>e</var><sub>t</sub> / Σ<sub>t</sub> <var>d</var><sub>t</sub> )</span><span class="n">(36)</span></div>
+<div class="eq"><span class="b">(b) mean of ratios:&nbsp; 10 log<sub>10</sub>( (1/<var>T</var>) Σ<sub>t</sub> <var>e</var><sub>t</sub>/<var>d</var><sub>t</sub> )</span><span class="n">(37)</span></div>
+<div class="eq"><span class="b">(c) mean of dB:&nbsp; (1/<var>T</var>) Σ<sub>t</sub> 10 log<sub>10</sub>( <var>e</var><sub>t</sub>/<var>d</var><sub>t</sub> )</span><span class="n">(38)</span></div>
+<div class="col">
+<p><strong>The code uses (a), the ratio of sums.</strong> This is verified directly in
+<code>scripts/analyze_b3.py</code>:</p>
+</div>
+<div class="eq"><span class="b">def pooled_db(num, den): return float(10 * np.log10(num.sum() / den.sum()))</span><span class="n">code</span></div>
+<div class="col">
+<p>and the module docstring states it explicitly: <em>"never a mean of per-trial dB values."</em>
+The dB factor is <strong>10</strong>, not 20, throughout — <code>e</code> and <code>d</code> are already
+energies (squared Frobenius norms), so 10 log<sub>10</sub> is the correct power-ratio conversion.
+Applying 20 log<sub>10</sub> would double every dB number in this document.</p>
+
+<div class="note info"><div class="t">Why (a) and not (b) or (c)</div>
+<p>(a) is the estimator of the <em>ensemble</em> NMSE <code>E‖Ĝ−G‖²/E‖G‖²</code>, which is the
+quantity a CRLB bounds. A CRLB is a bound on a variance, i.e. on an <em>expected squared error</em>,
+so any comparison against a bound must pool in the squared-error domain. (c) is a bound-incompatible
+statistic: Jensen's inequality makes it strictly smaller than (a), so an estimator plotted with (c)
+can appear to cross a CRLB that it does not actually violate. (b) is defensible but weights every
+trial equally regardless of how much channel energy it carries; because β<sub>k</sub> = 1 and
+<var>L<sub>k</sub></var> varies, <code>d<sub>t</sub></code> fluctuates trial to trial, and (a) is the
+version that corresponds to total energy delivered.</p></div>
+
+<h3>12.2 The median is reported, but never as the headline</h3>
+<p><code>median_per_trial_db</code> = <code>10 log₁₀(median(e<sub>t</sub>/d<sub>t</sub>))</code> is stored
+at every point as a robustness diagnostic. It answers a different question — "what does a typical
+trial look like" — and it is <em>not</em> comparable to a CRLB. It is used in exactly one place with
+consequence: §12.4, to check that a pooled gain is not driven by outliers.</p>
+
+<h3>12.3 Confidence intervals</h3>
+<p>All intervals are 95% <strong>paired</strong> bootstrap percentile intervals over 2000 resamples.
+"Paired" matters: the resample index vector is drawn once and applied to all three estimators, so
+the interval on the <em>gain</em></p>
+</div>
+<div class="eq"><span class="b">gain<sub>dB</sub> = 10 log<sub>10</sub>( Σ<sub>t</sub> <var>e</var><sup>EM-GS</sup><sub>t</sub> / Σ<sub>t</sub> <var>e</var><sup>HS-GS</sup><sub>t</sub> )</span><span class="n">(39)</span></div>
+<div class="col">
+<p>is far tighter than the difference of the two marginal intervals would suggest, because the
+shared channel realization cancels. Reporting overlapping marginal CIs and concluding "no
+difference" would be the wrong test here; the gain CI is the correct one, and it is the interval
+quoted whenever a claim about HS-GS vs EM-GS is made.</p>
+<p>Note the intervals are on the <em>Monte Carlo</em> uncertainty only. They do not cover model
+misspecification, hyperparameter choice, or the fact that <var>L<sub>k</sub></var> is drawn from an
+assumed distribution.</p>
+
+<h3>12.4 Catastrophic trials — checked, and not what is driving the result</h3>
+<p>A pooled ratio of sums is vulnerable to a single bad trial. Two guards are computed at every
+point:</p>
+<ul>
+<li><code>em_worst_share</code> = the largest single trial's share of Σ<var>e</var><sup>EM-GS</sup>.
+Across all 36 B3 points the maximum is <strong>0.0361</strong> (3.6%) and the minimum 0.0031. No point
+is dominated by one trial.</li>
+<li><code>gain_trimmed95_db</code> = the pooled gain recomputed after dropping the worst 5% of EM-GS
+trials. The largest discrepancy anywhere in B3 is <strong>0.72 dB</strong>, at
+(<var>N</var>=16, <var>P</var>=10, SNR=20), where the pooled gain is −0.683 dB and the trimmed gain
+−1.403 dB — i.e. trimming makes HS-GS look <em>worse</em>, not better. At the headline point
+(<var>N</var>=32) trimming reduces the gain from 2.71 to 2.04 dB: the advantage survives trimming.</li>
+</ul>
+<p>Conclusion: the reported gains are not outlier artefacts, and the trimming direction is
+adverse-to-HS-GS at every point where it matters, which is the honest direction for the check to
+fail in.</p>
+
+<h3>12.5 Win rate and the tie problem</h3>
+<p><code>win_rate_vs_em</code> = fraction of trials with
+<code>e<sup>HS-GS</sup><sub>t</sub> &lt; e<sup>EM-GS</sup><sub>t</sub></code>. This looked alarming at
+<var>N</var> = 8 (33.5%) until the cause was identified: <strong>exact ties</strong>. When the order
+selector picks <var>L̂</var> ≥ the rank cap, the Hankel projection is a no-op and HS-GS returns
+EM-GS's output <em>bit for bit</em>, so the strict inequality is false. The tie fraction matches the
+constraint-inactive fraction trial for trial (57.8% tied vs 42.2% active at <var>N</var>=8), which is
+the arithmetic identity one expects if — and only if — that explanation is right. Both
+<code>tie_frac</code> and a tie-free median gain are therefore stored alongside the raw win rate, and
+the raw win rate at <var>N</var> = 8 should never be quoted without the tie fraction beside it.</p>
+<p>At <var>N</var> = 32 ties essentially vanish (0–0.25%) because the rank cap is 16 and
+<var>L̂</var> ≈ 5, so the constraint is active in ≥ 99.75% of trials and the win rate of 95.3% is
+a genuine per-trial statistic.</p>
+
+<h3>12.6 Convergence failures <span class="chip c-ok">verified</span></h3>
+<p>None were observed. Every estimator runs a fixed iteration budget (50) with no early stopping and
+no divergence test, so "convergence failure" here can only mean a non-finite output; the stores
+contain no NaN or Inf numerators across all 28,000 Track-B trials. This is a weaker statement than
+"the algorithms converged" — a fixed-budget iteration that has not converged still returns a finite
+number. The 50-iteration budget is inherited from Cui and was not tuned.</p>
+</div>
+</section>
+
+<section id="s13">
+<span class="snum">Part XIII</span>
+<h2>Figure set</h2>
+<div class="col">
+<p class="lede">Nine figures. Plain style by instruction: white plot background, default line plots,
+readable markers, units on every axis, and no decoration that is not carrying information. Every
+figure is regenerated from the per-trial <code>.npz</code> stores by
+<code>scripts/plot_artifact.py</code>; no figure contains hand-entered data.</p>
+
+<h3>13.1 Baselines on the exact non-linear model (Figures A1–A3)</h3>
+</div>
+
+<figure>
+<img src="@@FIG:A1_nmse_vs_snr_baselines@@" alt="NMSE versus SNR for GS and EM-GS at N=8, P=30, with the unconstrained CRLB overlaid; EM-GS lies on the bound">
+<figcaption><span class="fid">Figure A1</span> Channel NMSE vs SNR for the two Cui baselines on
+<code>Z = |GS+B+W|</code> at <var>N</var> = 8, <var>P</var> = 30, with the corrected unconstrained
+CRLB overlaid. Both estimators show the expected ≈ −1 dB/dB high-SNR slope. The substantive content
+is the overlay: <strong>EM-GS lies essentially on the bound across the entire range</strong>,
+separating from it only at SNR = −5 dB. Biased-GS sits above EM-GS at low SNR and merges with it
+from about 5 dB upward, which is the <code>R(κ) → 1</code> saturation of §7.3 seen along the SNR
+axis rather than the RSR axis.
+<span class="gen">plot_artifact.py → A1_nmse_vs_snr_baselines.png · source: results/track_b/b3/*.npz</span></figcaption>
+</figure>
+
+<figure>
+<img src="@@FIG:A2_nmse_vs_pilots_baselines@@" alt="NMSE versus pilot length P at SNR 5 dB">
+<figcaption><span class="fid">Figure A2</span> NMSE vs pilot length <var>P</var> at SNR = 5 dB,
+<var>N</var> = 8. The dotted line marks <var>P</var> = 2<var>K</var> = 6, the minimum the pilot
+generator permits. Monotone decreasing with the diminishing return characteristic of 1/<var>P</var>
+averaging, and no anomaly at the lower boundary because the generator rejection-samples away
+rank-deficient pilots. GS and EM-GS are visually indistinguishable at every <var>P</var> — at
+RSR = 12 dB their separation is 0.117 dB (§16.7), below the resolution of this plot. Note this
+figure carries <em>no</em> CRLB overlay: the bound at <var>P</var> = 6 is +46.87 dB and would
+destroy the axis (§16.5).
+<span class="gen">plot_artifact.py → A2_nmse_vs_pilots_baselines.png · source: results/track_b/b4/*.npz</span></figcaption>
+</figure>
+
+<figure>
+<img src="@@FIG:A3_nmse_vs_rsr_baselines@@" alt="NMSE versus reference-to-signal ratio">
+<figcaption><span class="fid">Figure A3</span> NMSE vs RSR (single-user convention, Cui eq. 37).
+This is the figure that justifies operating at 12 dB rather than the 30 dB used in scratch testing:
+as RSR grows the Bessel ratio <code>R(κ) → 1</code>, EM-GS degenerates into biased-GS, and the two
+curves become inseparable. At low RSR the reference no longer dominates, phase information is lost,
+and both degrade. 12 dB is inside the informative band and is the value Cui uses with a physical
+justification.
+<span class="gen">plot_artifact.py → A3_nmse_vs_rsr_baselines.png · source: results/track_b/b6/*.npz</span></figcaption>
+</figure>
+
+<div class="col">
+<h3>13.2 The proposed estimator (Figures B1, B1b, B2, B4)</h3>
+</div>
+
+<figure>
+<img src="@@FIG:B1_nmse_vs_array_size@@" alt="NMSE averaged over SNR versus array size N, two panels for P=10 and P=30; EM-GS flat, HS-GS improving with N">
+<figcaption><span class="fid">Figure B1</span> The central result. NMSE averaged over the six SNR
+points, plotted against array size <var>N</var>, for <var>P</var> = 10 (left) and <var>P</var> = 30
+(right). <strong>EM-GS is flat</strong> — 0.012 dB across the three array sizes — which is exactly
+what row-separability predicts: the exact-model estimators solve <var>N</var> independent row
+problems, so adding rows adds proportionally more unknowns and no per-row information. HS-GS is the
+only curve that moves, because the Hankel rank cap ⌈<var>N</var>/2⌉ grows with <var>N</var> while
+<var>L<sub>k</sub></var> does not, so the constraint becomes progressively more binding. Note the
+left panel at <var>N</var> = 8: HS-GS is <em>above</em> EM-GS — worse — and the figure is drawn on a
+common axis so that crossing is visible rather than hidden.
+<span class="gen">plot_artifact.py → B1_nmse_vs_array_size.png · source: results/track_b/b3/*.npz</span></figcaption>
+</figure>
+
+<figure>
+<img src="@@FIG:B1b_gain_vs_array_size@@" alt="HS-GS gain over EM-GS versus array size N, one curve per pilot length, both starting below zero at N=8">
+<figcaption><span class="fid">Figure B1b</span> The same result as a paired gain, eq. (39),
+separately for each pilot length. Mean gain −0.19 / +0.78 / +2.85 dB at <var>N</var> = 8 / 16 / 32,
+monotone in <var>N</var> at both pilot lengths. The dotted line at zero is the break-even level, and
+<strong>both curves start below it</strong>: at <var>N</var> = 8 the mean gain is negative
+(−0.32 dB at <var>P</var> = 10, −0.07 dB at <var>P</var> = 30). Per instruction no error bars are
+drawn here; the 95% paired-bootstrap intervals for every point are tabulated in §16.1, and the
+<var>N</var> = 32 interval lies strictly above the <var>N</var> = 16 interval at all 12 operating
+points — a stronger statement than either point estimate alone.
+<span class="gen">plot_artifact.py → B1b_gain_vs_array_size.png · source: results/track_b/b3/*.npz</span></figcaption>
+</figure>
+
+<figure>
+<img src="@@FIG:B2_nmse_vs_snr_proposed@@" alt="NMSE versus SNR at N=32, P=30 with both CRLBs; EM-GS on the unconstrained bound, HS-GS between the two">
+<figcaption><span class="fid">Figure B2</span> Estimators against both bounds at the headline
+operating point, <var>N</var> = 32, <var>P</var> = 30. <strong>EM-GS lies on the unconstrained
+CRLB</strong> — the red and green curves are indistinguishable at every SNR — so EM-GS is close to
+efficient for the unstructured problem, and the bound is credible. The constrained (Gorman–Hero /
+Stoica–Ng) bound sits about 7 dB lower, and HS-GS sits between the two: it recovers roughly a third
+of the structural headroom, leaving 4.29–4.82 dB on the table at this configuration. The full
+36-point gap table, including the two points where HS-GS falls <em>below</em> the constrained bound
+(<var>N</var>=8, <var>P</var>=10, SNR = −5 and 0 dB — permitted for a biased estimator, §16.4), is
+in §16.3.
+<span class="gen">plot_artifact.py → B2_nmse_vs_snr_proposed.png · source: b3/*.npz + constrained_crlb.json</span></figcaption>
+</figure>
+
+<figure>
+<img src="@@FIG:B4_win_rate_vs_N@@" alt="Per-trial win rate of HS-GS over EM-GS versus array size, one curve per pilot length, crossing 50 percent between N=8 and 16">
+<figcaption><span class="fid">Figure B4</span> Per-trial win rate of HS-GS over EM-GS vs array
+size, at both pilot lengths, with the 50% coin-flip level dotted. 38.1% / 70.3% / 93.1% at
+<var>P</var> = 10 and 29.1% / 77.7% / 97.7% at <var>P</var> = 30. <strong>The <var>N</var> = 8
+values must be read with the tie fraction beside them</strong> (§12.5): 57.8% of <var>N</var> = 8
+trials are exact ties in which the order selector picks <var>L̂</var> ≥ the rank cap, the projection
+is a no-op, and HS-GS returns EM-GS bit-for-bit — so a strict inequality is false by construction,
+not by defeat. The tie fraction is not plotted here; it is tabulated per point in §16.1.
+<span class="gen">plot_artifact.py → B4_win_rate_vs_N.png · source: results/track_b/b3/*.npz</span></figcaption>
+</figure>
+
+<div class="col">
+<h3>13.3 Mechanism and bound diagnostics (Figures C1, C3)</h3>
+</div>
+
+<figure>
+<img src="@@FIG:C1_hankel_singular_values@@" alt="Hankel singular value spectra for true channel, EM-GS estimate, and after Cadzow">
+<figcaption><span class="fid">Figure C1</span> Why the structural prior is not a modelling
+fiction, and simultaneously why the projection is only approximate. Normalised Hankel singular values
+for one channel column, <var>N</var> = 32, <var>L<sub>k</sub></var> = 3, SNR = 5 dB. The
+<strong>true channel</strong> falls to ≈ 10<sup>−16</sup> — machine precision — immediately after
+index 3: the low-rank property is <em>exact</em>, not approximate, which is Kronecker's theorem made
+visible. The <strong>EM-GS estimate</strong> has no cliff at all; noise has filled the whole
+spectrum, so the estimate is not a sum of <var>L</var> exponentials and the structural information
+is simply absent from it. <strong>After Cadzow</strong> a cliff reappears at the right index — but
+it descends only to ≈ 10<sup>−3</sup>, some thirteen orders of magnitude short of the true channel's.
+That shortfall is the 4-sweep alternating projection being an <em>approximation</em> to the nearest
+fixed-rank Hankel matrix, exactly as §9.5 and Q5 state, and it is a visible upper bound on how much
+structure the projection can actually impose.
+<span class="gen">plot_artifact.py → C1_hankel_singular_values.png · source: single seeded realization</span></figcaption>
+</figure>
+
+<figure>
+<img src="@@FIG:C3_gap_to_constrained_crlb@@" alt="Gap from HS-GS up to the constrained CRLB versus SNR at P=30, one curve per array size, all positive and ordered by N">
+<figcaption><span class="fid">Figure C3</span> Gap from HS-GS up to the constrained CRLB vs SNR,
+one curve per array size, at <var>P</var> = 30. Every value is positive — HS-GS is above the
+structured bound throughout this panel — and the three curves are cleanly ordered:
+<strong>the gap grows with <var>N</var></strong>, from 0.32–1.41 dB at <var>N</var> = 8 to
+4.29–4.82 dB at <var>N</var> = 32. Read correctly this is not a negative result about HS-GS, which
+improves in absolute terms; it says that Cadzow-projected alternating minimisation recovers a
+<em>shrinking share</em> of the available structural gain as redundancy grows, and localises the
+remaining headroom in the two weak points identified in §20.2. The <var>P</var> = 10 panel, where
+the gap reaches 8.85 dB and where the only two negative gaps occur, is tabulated in §16.3 rather
+than plotted.
+<span class="gen">plot_artifact.py → C3_gap_to_constrained_crlb.png · source: b3/*.npz + constrained_crlb.json</span></figcaption>
+</figure>
+
+<div class="note ok"><div class="t">Figure B3 — new experiment, designed and run for this artifact</div>
+<p>The specification calls for a figure of NMSE vs <em>controlled</em> path count <var>L</var>, to
+test the structural hypothesis directly. <strong>No such data existed</strong> in the Track-B stores:
+B3–B6 all draw <code>L<sub>k</sub> ~ 𝒰{3..7}</code> at random, so nothing isolated the effect of
+<var>L</var>. Experiment B7 was therefore written and run — <var>N</var> = 32 (cap 16),
+<var>P</var> = 30, SNR = 5 dB, RSR = 12 dB, <var>L</var> ∈ {2,4,…,16} fixed and identical across
+users, 400 trials per point, 3,200 trials total, complete.</p>
+<p><strong>The hypothesis was recorded in the script before the run started</strong>, and is quoted
+verbatim from <code>run_b7_pathcount.py</code>:</p>
+<p style="font-family:var(--mono);font-size:12.5px;margin:12px 0 12px 16px;border-left:2px solid var(--soft);padding-left:14px">
+"L increases → Hankel rank increases → the strict low-rank prior carries less information → the
+HS-GS advantage should shrink, and should vanish once L reaches cap(N) = ⌈N/2⌉, where the
+constraint is vacuous."</p>
+<p>It was confirmed: the gain decays strictly monotonically from +7.13 dB at <var>L</var> = 2 to
++0.04 dB at <var>L</var> = 14 (CI straddling zero) and −0.12 dB at the cap. The results, the
+refinement the data forces on the prediction, and why the null lands one grid point early are in
+§16.8. The figure is below.</p></div>
+
+<figure>
+<img src="@@FIG:B3_gain_vs_pathcount@@" alt="NMSE and HS-GS gain versus controlled path count L">
+<figcaption><span class="fid">Figure B3</span> The mechanism tested directly. (a) NMSE of all three
+estimators vs controlled path count. <strong>The two baselines are flat</strong> — path count does
+not affect an estimator that ignores structure, which is the control that shows the sweep is not
+confounded — while HS-GS rises to meet them. (b) The paired gain with its 95% bootstrap interval,
+decaying monotonically to zero as <var>L</var> approaches the Hankel rank cap ⌈<var>N</var>/2⌉ = 16
+(dotted). This is the only controlled experiment in the study: <var>L</var> is set rather than drawn,
+and the hypothesis producing the figure was recorded before the run.
+<span class="gen">plot_b7.py → B3_gain_vs_pathcount.png · source: results/track_b/b7/L*.npz (3,200 trials)</span></figcaption>
+</figure>
+
+<div class="col">
+<h3>13.4 Figures deliberately not produced</h3>
+<ul>
+<li><strong>Error bars on the main NMSE curves.</strong> Excluded by standing instruction. The
+uncertainty is reported instead as explicit CI columns in the Part XVI tables and on the gain figure
+B1b, where the paired interval is the statistically meaningful one (§12.3).</li>
+<li><strong>Any figure containing the pre-correction CRLB.</strong> The originally shipped
+unconstrained bound had a real defect (§10.3) and disagreed with the corrected bound by up to
+4.19 dB. It is described in the text but never plotted, per the instruction not to place an invalid
+bound on a graph.</li>
+<li><strong>Constellation / BER figures.</strong> Track B is a channel-estimation study. No detector
+is implemented, so any BER curve would be fabricated.</li>
+</ul>
+</div>
+</section>
