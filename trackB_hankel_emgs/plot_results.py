@@ -59,8 +59,9 @@ def fig1_snr(S):
                    capsize=2.5, elinewidth=0.9)
     ax[1].set_xlabel("SNR (dB)")
     ax[1].set_ylabel(r"gain $\Delta_{\mathrm{H}}$ (dB)")
-    ax[1].text(0.03, 0.95, "above 0: Hankel helps", transform=ax[1].transAxes,
-               va="top", fontsize=7.5, color="0.35")
+    ax[1].text(0.98, 0.04, "above the dotted line: Hankel helps",
+               transform=ax[1].transAxes, ha="right", va="bottom",
+               fontsize=7.5, color="0.35")
     ns = sorted({A[f"{s:+.1f}"]["trials"] for s in snr})
     n = str(ns[0]) if len(ns) == 1 else f"{ns[0]}-{ns[-1]}"
     for a in ax:

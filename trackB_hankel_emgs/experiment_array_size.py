@@ -27,7 +27,7 @@ P = cfg.P_DEFAULT
 def points(n_small: int, n_large: int):
     out = []
     for N in cfg.N_GRID:
-        n_trials = n_small if N == cfg.N_DEFAULT else n_large
+        n_trials = {cfg.N_DEFAULT: n_small, 32: cfg.N_TRIALS_N32}.get(N, n_large)
         for snr in cfg.SNR_GRID_DB:
             out.append(dict(
                 path=str(RESULTS / "grid" / f"N{N:02d}_P{P}_snr{snr:+05.1f}.npz"),
@@ -43,7 +43,7 @@ def main():
     procs = int(os.environ.get("PROCS", 4))
     print(f"Experiment B: gain vs array size | N in {cfg.N_GRID}, P={P}, "
           f"K={cfg.K}, RSR={cfg.RSR_DB} dB")
-    print(f"  {n} trials/point at N={cfg.N_DEFAULT}, {nl} elsewhere; "
+    print(f"  trials/point: N={cfg.N_DEFAULT}->{n}, N=16->{nl}, N=32->{cfg.N_TRIALS_N32}; "
           f"{len(cfg.N_GRID) * len(cfg.SNR_GRID_DB)} points, fingerprint {FP}")
     print(f"  rank ceilings ceil(N/2): " +
           ", ".join(f"N={N}->{-(-N // 2)}" for N in cfg.N_GRID))

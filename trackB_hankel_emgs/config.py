@@ -42,18 +42,21 @@ EXP_C_SNR   = 5.0
 # per candidate rank (1..r_max), so one trial at N=32 costs ~8.5x one at N=8.
 # Measured throughput on 4 cores was ~120 paired trials/min at N=8, which makes
 # a uniform 600-trial sweep ~9 h. The budget is therefore 600 where trials are
-# cheap (experiment A, the main performance figure) and 250 at N=16/32.
+# cheap (experiment A, the main performance figure), 200 for experiment C
+# (the mechanism test, at N=32) and 150 for the N=16/32 columns of experiment B.
 #
-# 250 trials gives a paired-bootstrap CI half-width of roughly 0.2 dB, which is
-# well below the effects being resolved; pairing is what makes this adequate,
-# since the shared channel realisation cancels in the gain. Per-point trial
+# These are small budgets by design, and pairing is what makes them adequate:
+# the shared channel realisation cancels in the gain, so the CI on the
+# DIFFERENCE is far tighter than the marginal CIs. Expect a half-width around
+# 0.2 dB at 200 trials and 0.25 dB at 150. Per-point trial
 # counts and 95% CIs are reported for EVERY point, so no conclusion rests on
 # the reader assuming a uniform budget. To reproduce at a larger budget:
 #     N_TRIALS_LARGE=600 N_TRIALS_PATH=600 ./run_all.sh
 # which resumes from the existing stores rather than recomputing them.
 N_TRIALS        = 600       # N = 8 grid (experiment A) -- the main figure
-N_TRIALS_PATH   = 250       # experiment C, N = 32
-N_TRIALS_LARGE  = 250       # N = 16, 32 grid (experiment B)
+N_TRIALS_PATH   = 300       # experiment C, N = 32
+N_TRIALS_LARGE  = 400       # experiment B, N = 16
+N_TRIALS_N32    = 200       # experiment B, N = 32 (~8.5x the cost of an N=8 trial)
 CHUNK      = 50             # checkpoint flush interval
 NBOOT      = 2000           # paired bootstrap resamples
 BOOT_SEED  = 987654321      # matches the Track-B analysis scripts
