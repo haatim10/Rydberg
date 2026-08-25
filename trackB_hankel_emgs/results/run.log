@@ -14,3 +14,40 @@ Experiment A done
 Experiment C: gain vs path count | N=32 (r_max=16) P=30 SNR=5.0 dB RSR=12.0 dB
   L FIXED and identical across users, grid (2, 4, 6, 8, 10, 12, 14, 16)
   300 trials/point, 8 points, fingerprint 158d50eddc2db50c
+  C L= 2: +150 trials (9.1 min)
+  C L= 8: +150 trials (9.2 min)
+  C L= 4: +150 trials (9.2 min)
+  C L= 6: +150 trials (9.2 min)
+  C L=10: +300 trials (18.1 min)
+  C L=16: +300 trials (18.2 min)
+  C L=14: +300 trials (18.2 min)
+  C L=12: +300 trials (18.3 min)
+Experiment C done
+=== 21:42:34 Experiment B (adds N=16, N=32) ===
+Experiment B: gain vs array size | N in (8, 16, 32), P=30, K=3, RSR=12.0 dB
+  trials/point: N=8->600, N=16->400, N=32->200; 21 points, fingerprint 158d50eddc2db50c
+  rank ceilings ceil(N/2): N=8->4, N=16->8, N=32->16
+  B N=8 SNR=-5: complete (600 trials)
+  B N=8 SNR=-10: complete (600 trials)
+  B N=8 SNR=+10: complete (600 trials)
+  B N=8 SNR=+15: complete (600 trials)
+  B N=8 SNR=+20: complete (600 trials)
+  B N=8 SNR=+0: complete (600 trials)
+  B N=8 SNR=+5: complete (600 trials)
+  B N=16 SNR=-10: +400 trials (7.6 min)
+  B N=16 SNR=+5: +400 trials (7.7 min)
+  B N=16 SNR=-5: +400 trials (7.8 min)
+  B N=16 SNR=+0: +400 trials (8.2 min)
+  B N=16 SNR=+20: +400 trials (7.4 min)
+  B N=16 SNR=+10: +400 trials (7.6 min)
+  B N=16 SNR=+15: +400 trials (7.5 min)
+  B N=32 SNR=-10: +200 trials (12.0 min)
+  B N=32 SNR=-5: +200 trials (12.1 min)
+  B N=32 SNR=+5: +200 trials (12.1 min)
+  B N=32 SNR=+0: +200 trials (12.5 min)
+  B N=32 SNR=+10: +200 trials (11.8 min)
+  B N=32 SNR=+20: +200 trials (11.3 min)
+  B N=32 SNR=+15: +200 trials (11.5 min)
+Experiment B done
+=== 22:21:22 ALL SWEEPS DONE ===
+all experiment-C points complete

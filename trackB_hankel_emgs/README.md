@@ -98,6 +98,87 @@ caught in the stores themselves.
 * `mean gain` (unweighted mean of the per-operating-point gains) and `max gain`
   (best single point) are reported as separate columns and never conflated.
 
+## G. Results (10,800 paired trials, 13/13 checks passing)
+
+Regenerate with `python verify_results.py`; the numbers below are copied from
+its output and also live in `results/*.csv`.
+
+**A -- NMSE vs SNR, N = 8** (600 trials/point). The projection **helps below
+0 dB and hurts at and above it**, both with CIs excluding zero:
+
+| SNR | EM-GS | Hankel | gain | 95% CI |
+|---|---|---|---|---|
+| -10 | 5.576 | 4.832 | **+0.744** | [+0.662, +0.829] |
+| -5 | 0.463 | -0.255 | **+0.717** | [+0.624, +0.817] |
+| 0 | -5.198 | -4.920 | **-0.278** | [-0.390, -0.174] |
+| +5 | -10.625 | -10.222 | **-0.403** | [-0.521, -0.289] |
+| +10 | -15.832 | -15.641 | -0.190 | [-0.277, -0.106] |
+| +15 | -20.734 | -20.535 | -0.198 | [-0.298, -0.106] |
+| +20 | -25.896 | -25.706 | -0.190 | [-0.389, -0.051] |
+
+**B -- gain vs array size.** Mean and max are different quantities and are
+reported separately:
+
+| N | r_max | trials | mean gain | max gain (at SNR) | win rate | constraint active |
+|---|---|---|---|---|---|---|
+| 8 | 4 | 4200 | +0.03 dB | +0.74 dB (-10) | 33.4% | 54.1% |
+| 16 | 8 | 2800 | +0.81 dB | +1.60 dB (-5) | 78.0% | 92.7% |
+| 32 | 16 | 1400 | +2.45 dB | +3.09 dB (-5) | 96.3% | 99.4% |
+
+**C -- gain vs true path count** (N = 32, r_max = 16, 300 trials/point). The
+gain decays **strictly monotonically** to zero as L reaches the rank ceiling:
+
+| L | gain | 95% CI | win rate | E[L_hat] | L_hat - L |
+|---|---|---|---|---|---|
+| 2 | +7.043 | [+6.735, +7.335] | 100.0% | 2.13 | +0.13 |
+| 4 | +3.556 | [+3.379, +3.729] | 99.3% | 4.02 | +0.02 |
+| 6 | +1.792 | [+1.636, +1.956] | 94.0% | 5.67 | -0.33 |
+| 8 | +1.038 | [+0.927, +1.155] | 90.0% | 7.30 | -0.70 |
+| 10 | +0.577 | [+0.455, +0.695] | 79.0% | 8.44 | -1.56 |
+| 12 | +0.266 | [+0.191, +0.339] | 73.0% | 9.81 | -2.19 |
+| 14 | +0.046 | [-0.050, +0.136] | 60.3% | 10.55 | -3.45 |
+| 16 | -0.117 | [-0.206, -0.038] | 45.0% | 11.63 | -4.37 |
+
+**Ablations** (N=32, L=4 fixed, 120 trials -- diagnostics, NOT replacements for
+the baseline config):
+
+| variant | NMSE dB | gain dB |
+|---|---|---|
+| EM-GS baseline | -10.646 | 0.000 |
+| **Hankel, interleaved (BASELINE CONFIG)** | **-14.355** | **+3.709** |
+| Hankel, post-hoc (project once at end) | -14.067 | +3.421 |
+| Hankel, ORACLE rank L_hat = L (not deployable) | -14.723 | +4.077 |
+| Hankel, 1 Cadzow sweep | -14.647 | +4.001 |
+| Hankel, 8 Cadzow sweeps | -14.319 | +3.673 |
+
+Two of these say the inherited defaults are **not** optimal at this operating
+point: a single Cadzow sweep beats the audited 4 by 0.29 dB, and oracle rank
+would buy 0.37 dB over the held-out selector. Neither was adopted -- the
+baseline is what the audit found, and changing it after seeing these numbers is
+exactly the tuning this study forbids. They are recorded as leads.
+
+## H. Conclusion
+
+Under the current sparse geometric ULA Track-B model, adding a low-rank Hankel
+projection to EM-GS improves NMSE **conditionally, not generally**:
+
+* it **helps when the channel is sparse relative to the array**, growing with
+  array size (+0.03 / +0.81 / +2.45 dB mean at N = 8 / 16 / 32) and shrinking
+  with path count (+7.04 dB at L = 2 down to zero at L = 14);
+* it **hurts at N = 8 for SNR >= 0 dB** (-0.19 to -0.40 dB, CIs excluding
+  zero), where r_max = 4 is comparable to L_k in {3..7} so the projection is
+  either inactive or truncating genuine channel components;
+* it **turns slightly negative at L = r_max** (-0.117 dB, CI [-0.206, -0.038]),
+  where the constraint is vacuous and the selector under-selects by 4.4.
+
+The path-count sweep is the load-bearing evidence: the gain vanishes precisely
+where the low-rank structure does, which is what rules out generic denoising as
+the explanation. Both baselines are flat in L over the same sweep, confirming
+the sweep is not confounded.
+
+Scope: this is a statement about the tested i.i.d.-uniform-AoA, equal-per-path-
+power geometric model only. Nothing here speaks to clustered propagation.
+
 ## F. What was NOT done
 
 No threshold, sweep count, initialisation, operating point, path distribution

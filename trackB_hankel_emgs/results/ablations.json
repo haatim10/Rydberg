@@ -1,0 +1,42 @@
+{
+ "config": {
+  "N": 32,
+  "P": 30,
+  "snr_db": 5.0,
+  "L": 4,
+  "trials": 120,
+  "mean_L_hat": 3.95
+ },
+ "rows": [
+  {
+   "variant": "EM-GS baseline",
+   "nmse_db": -10.645951678598397,
+   "gain_db": 0.0
+  },
+  {
+   "variant": "Hankel, interleaved (BASELINE CONFIG)",
+   "nmse_db": -14.355256934640348,
+   "gain_db": 3.70930525604195
+  },
+  {
+   "variant": "Hankel, post-hoc (project once at end)",
+   "nmse_db": -14.066817653787124,
+   "gain_db": 3.4208659751887276
+  },
+  {
+   "variant": "Hankel, ORACLE rank L_hat=L (not deployable)",
+   "nmse_db": -14.723434890204139,
+   "gain_db": 4.077483211605741
+  },
+  {
+   "variant": "Hankel, 1 Cadzow sweep",
+   "nmse_db": -14.646944075342152,
+   "gain_db": 4.000992396743754
+  },
+  {
+   "variant": "Hankel, 8 Cadzow sweeps",
+   "nmse_db": -14.319391335022345,
+   "gain_db": 3.673439656423947
+  }
+ ]
+}

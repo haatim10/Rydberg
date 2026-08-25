@@ -1,0 +1,13 @@
+
+ABLATIONS  N=32 P=30 SNR=5.0 dB L=4 (fixed), 120 paired trials
+  selected rank: mean L_hat = 3.95 vs true L = 4
+variant                                         NMSE dB   gain dB
+EM-GS baseline                                  -10.646    +0.000
+Hankel, interleaved (BASELINE CONFIG)           -14.355    +3.709
+Hankel, post-hoc (project once at end)          -14.067    +3.421
+Hankel, ORACLE rank L_hat=L (not deployable)    -14.723    +4.077
+Hankel, 1 Cadzow sweep                          -14.647    +4.001
+Hankel, 8 Cadzow sweeps                         -14.319    +3.673
+  Baseline config is row 2. The others are diagnostics and do NOT
+  replace it, whichever way they come out.
+  wrote /home/user/rydberg-trackb/trackB_hankel_emgs/results/ablations.json
