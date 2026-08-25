@@ -126,6 +126,89 @@ allc = list(CC["jacobian_cond"]["b3"].values()) + list(CC["jacobian_cond"]["b4"]
 claim("worst conditioning", "$80.1$", max(allc), 80.1, 0.05)
 claim("CRLB trials", "$400$ channel realisations", CC["n_trials"], 400, 0)
 
+# --- the compiled document itself must be error-free.
+# A missing macro is an ERROR ("! Undefined control sequence"), not a warning,
+# and pdflatex in batchmode continues past it, silently rendering a broken
+# line. Grepping only for warnings misses exactly that class of fault.
+LOG = REPO / "paper" / "hsgs.log"
+if LOG.exists():
+    lg = LOG.read_text(errors="ignore")
+    for name, pat, want in (("no LaTeX errors", r"^! ", 0),
+                            ("no undefined references", r"Warning.*undefined", 0),
+                            ("no overfull boxes", r"Overfull", 0)):
+        n = len(re.findall(pat, lg, re.M))
+        (ok if n == want else bad).append(
+            f"{'PASS' if n == want else 'FAIL'}  {name}: found {n}")
+    und = set(re.findall(r"Undefined control sequence.*?\\([a-zA-Z]+)", lg, re.S))
+    (ok if not und else bad).append(
+        f"{'PASS' if not und else 'FAIL'}  no undefined macros"
+        + (f": {sorted(und)}" if und else ""))
+
+# --- the standalone package: N x SNR grid behind Figs. 5-6
+PKG = REPO / "trackB_hankel_emgs" / "results"
+pk = json.loads((PKG / "summary.json").read_text())
+B2 = pk["experiment_B"]
+for N, em, hk, gain in (("8", -10.321, -10.350, 0.029),
+                        ("16", -10.337, -11.149, 0.812),
+                        ("32", -10.301, -12.753, 2.452)):
+    claim(f"pkg N={N} EM-GS SNR-avg", f"${em}$",
+          B2[N]["em_gs_db_mean_over_points"], em)
+    claim(f"pkg N={N} Hankel SNR-avg", f"${hk:.3f}$",
+          B2[N]["hankel_db_mean_over_points"], hk)
+emv = [B2[N]["em_gs_db_mean_over_points"] for N in ("8", "16", "32")]
+claim("EM-GS flat in N (new grid)", "$0.04$~dB", max(emv) - min(emv), 0.036, 0.005)
+claim("gap widens 0.03->0.81->2.45", "$0.03\\to0.81\\to2.45$~dB",
+      B2["32"]["mean_gain_db"], 2.452)
+A2 = pk["experiment_A"]
+claim("N=8 helps at -10 dB", "$0.74$~dB at $-10$~dB SNR", A2["-10.0"]["gain_db"], 0.744)
+claim("N=8 hurts above 0 dB", "up to $0.40$~dB above $0$~dB",
+      -min(A2[f"{s:+.1f}"]["gain_db"] for s in (0.0, 5.0, 10.0, 15.0, 20.0)), 0.403)
+C2 = pk["experiment_C"]
+# The paper's Fig. 3 uses the 400-trial B7 sweep; the package ran an
+# independent 300-trial sweep of the same design. Check they agree in trend and
+# endpoints rather than re-checking a literal the paper no longer prints.
+b7 = {int(Path(f).stem[1:]): np.load(f) for f in glob.glob(str(R / "b7/L*.npz"))}
+b7g = {L: 10 * np.log10(d["num_em_gs"].sum() / d["num_hs_gs"].sum())
+       for L, d in b7.items()}
+pkg_g = {int(L): v["gain_db"] for L, v in C2.items()}
+dmax_c = max(abs(b7g[L] - pkg_g[L]) for L in pkg_g)
+ok.append(f"INFO  path-count sweeps: B7(400 trials) vs package(300 trials), "
+          f"max |diff| = {dmax_c:.3f} dB over 8 values of L")
+claim("path-count sweeps agree within MC error", "$7.13$~dB at $L=2$", dmax_c, 0.0, 0.35)
+claim("both sweeps end non-positive at L=r_max", "$7.13$~dB at $L=2$",
+      float(max(b7g[16], pkg_g[16]) < 0), 1.0, 0)
+claim("pkg checks", "thirteen automated checks", pk["checks_passed"], 13, 0)
+claim("pkg checks total", "thirteen automated checks", pk["checks_total"], 13, 0)
+pkg_trials = sum(v["trials"] for v in B2.values())
+claim("pkg grid trials", "$8.4\\times10^{3}$ paired trials", pkg_trials, 8400, 0)
+claim("total trials in abstract", "$3.6\\times10^{4}$ paired trials",
+      tot + pkg_trials, 36400, 400)
+
+# --- the two runs agree bit-for-bit where they overlap
+o = np.load(R / "b3/N32_P30_snr+05.0.npz")
+n_ = np.load(PKG / "grid/N32_P30_snr+05.0.npz")
+oi = {int(t): i for i, t in enumerate(o["trial"])}
+ni = {int(t): i for i, t in enumerate(n_["trial"])}
+com = sorted(set(oi) & set(ni))
+dmax = max(max(abs(o["num_em_gs"][oi[t]] - n_["num_em_gs"][ni[t]]),
+               abs(o["num_hs_gs"][oi[t]] - n_["num_hankel_em_gs"][ni[t]])) for t in com)
+claim("overlapping runs agree bit-for-bit", "all $200$ common trials", dmax, 0.0, 0.0)
+claim("number of common trials", "all $200$ common trials", len(com), 200, 0)
+
+# --- linear-vs-dB averaging shares quoted in Sec. VI
+lin = np.array([10 ** (A2[f"{s:+.1f}"]["em_gs_db"] / 10) for s in
+                (-10.0, -5.0, 0.0, 5.0, 10.0, 15.0, 20.0)])
+claim("low-SNR share of the linear sum", "$\\approx70\\%$ of the sum",
+      100 * lin[0] / lin.sum(), 70.1, 1.0)
+claim("top-three share of the linear sum", "top three SNRs together carry $0.72\\%$",
+      100 * lin[-3:].sum() / lin.sum(), 0.72, 0.02)
+
+# --- the four algorithms are present and cross-referenced
+for lab in ("alg:emgs", "alg:cadzow", "alg:rank", "alg:hsgs"):
+    hit = f"\\label{{{lab}}}" in TEX and f"\\ref{{{lab}}}" in TEX
+    (ok if hit else bad).append(
+        f"{'PASS' if hit else 'FAIL'}  algorithm {lab} defined and referenced")
+
 # --- structural / audit facts asserted in the text
 A = json.loads((R / "artifact_audit.json").read_text())
 txt = [("exact observation identity", "never linearised", float(A["Z_equals_abs_GS_B_W"]) == 0.0),

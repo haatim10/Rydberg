@@ -17,6 +17,8 @@
 \newcommand{\bB}{\mathbf{B}}
 \newcommand{\bW}{\mathbf{W}}
 \newcommand{\bZ}{\mathbf{Z}}
+\newcommand{\bR}{\mathbf{R}}
+\newcommand{\bY}{\mathbf{Y}}
 \newcommand{\bH}{\mathbf{H}}
 \newcommand{\bU}{\mathbf{U}}
 \newcommand{\bJ}{\mathbf{J}}
@@ -47,22 +49,26 @@ Email: f20220519@pilani.bits-pilani.ac.in}}
 Rydberg atomic quantum receivers measure only the \emph{magnitude} of the
 incident field superposed on a local reference, making multi-user channel
 estimation a biased phase-retrieval rather than a linear-Gaussian problem. The
-known solvers---biased Gerchberg--Saxton (GS) and its expectation--
-maximisation refinement EM-GS---treat the channel as unstructured, and their
+known solvers---biased Gerchberg--Saxton (GS) and its expectation--maximisation refinement EM-GS---treat the channel as unstructured, and their
 normalised mean-square error (NMSE) consequently does not improve as the
 atomic array grows. We observe that on a uniform linear array each propagation
 path contributes exactly one spatial complex exponential, so the Hankel
 lifting of every channel column has rank at most the path count. Interleaving
-a Cadzow low-rank Hankel projection with every exact EM-GS update yields HS-
-GS; the model order comes from a held-out pilot residual, no oracle path count
+a Cadzow low-rank Hankel projection with every exact EM-GS update yields HS-GS; the model order comes from a held-out pilot residual, no oracle path count
 is used, and the magnitude observation is never linearised. We also derive
 unconstrained and geometry-constrained Cram\'er--Rao bounds for the exact
-Rician likelihood. Over $2.8\times10^{4}$ trials, and \emph{under the tested
-sparse geometric multipath model with i.i.d.\ uniform angles of arrival and
-equal per-path power}, HS-GS improves on EM-GS by a mean of $2.85$~dB at
-$N=32$, while EM-GS is flat in $N$ to $0.012$~dB. A controlled path-count
+Rician likelihood. Over $3.6\times10^{4}$ paired trials, and \emph{under the tested sparse
+geometric multipath model with i.i.d.\ uniform angles of arrival and equal
+per-path power}, HS-GS improves on EM-GS by a mean of $2.85$~dB at $N=32$.
+Plotting the two error curves separately shows why: EM-GS is flat in array
+size to within $0.04$~dB, so HS-GS is the only estimator whose NMSE improves
+as the aperture grows, and the gap widens monotonically
+($0.03\to0.81\to2.45$~dB at $N=8/16/32$). The benefit is conditional rather
+than general: at $N=8$ the projection helps by $0.74$~dB at $-10$~dB SNR but
+\emph{hurts} by up to $0.40$~dB above $0$~dB. A controlled path-count
 experiment confirms the mechanism: the gain decays monotonically from
-$7.13$~dB at $L=2$ to zero at the Hankel rank cap. Robustness under clustered
+$7.13$~dB at $L=2$ to zero exactly as the path count reaches the Hankel rank
+ceiling. Robustness under clustered
 propagation is not established and is the decisive next test.
 \end{abstract}
 
@@ -80,8 +86,7 @@ flexibility unavailable to conventional antennas
 \cite{cui2025,fancher2021,artusio2022}. Cui \emph{et al.} \cite{cui2025}
 showed that the resulting atomic MIMO receiver does not obey the linear
 transmission model: heterodyne readout against a local reference yields the
-\emph{modulus} of the summed field, so recovery is a \emph{biased phase-
-retrieval} (PR) problem \cite{netrapalli2015,dong2023}. They adapted the
+\emph{modulus} of the summed field, so recovery is a \emph{biased phase-retrieval} (PR) problem \cite{netrapalli2015,dong2023}. They adapted the
 Gerchberg--Saxton (GS) algorithm \cite{gerchberg1972} to this setting and
 proposed EM-GS, which replaces the hard modulus substitution with the exact
 posterior mean of the phase factor under the Rician law.
@@ -159,9 +164,7 @@ $\alpha_{\ell,k}\sim\CN(0,\beta_k/L_k)$ and $\beta_k=1$.
 The assumptions used in every experiment reported here are: sparse geometric
 multipath with $L_k\sim\mathcal{U}\{3,\dots,7\}$ drawn i.i.d.\ per user per
 realisation; angles of arrival i.i.d.\ \emph{uniform in $\theta$} (a
-Kolmogorov--Smirnov test over $4465$ samples gives $p=0.150$ against uniform-
-in-$\theta$, $p<10^{-4}$ against uniform-in-$\sin\theta$); equal average per-
-path power, so no near--far effect; pilots i.i.d.\ $\CN(0,1)$, redrawn each
+Kolmogorov--Smirnov test over $4465$ samples gives $p=0.150$ against uniform-in-$\theta$, $p<10^{-4}$ against uniform-in-$\sin\theta$); equal average per-path power, so no near--far effect; pilots i.i.d.\ $\CN(0,1)$, redrawn each
 trial and rejection-sampled to full row rank with $P\ge2K$, hence \emph{not}
 orthogonal (largest off-diagonal $|\bS\bS^{H}|/P$ is $0.233$); and flat,
 narrowband propagation. The channel is \emph{not} a clustered 3GPP TR 38.901
@@ -289,17 +292,19 @@ carries no convergence guarantee. When $\hat L\ge r_{\max}$ the routine returns
 its input unchanged, so HS-GS reproduces EM-GS bit for bit.
 
 \subsection{Interleaved Iteration and Order Selection}
-The projection is applied \emph{inside} the exact iteration, not as post-
-processing:
+The projection is applied \emph{inside} the exact iteration, not as post-processing:
 \begin{equation}\label{eq:map}
 \bG^{(t)}=\mathcal{P}_{\hat L}\circ\mathcal{T}_{\mathrm{EM\text{-}GS}}
 \bigl(\bG^{(t-1)}\bigr),\qquad t=1,\dots,T,
 \end{equation}
 with $\mathcal{P}_{\hat L}$ acting column-wise after \emph{every} one of the
-$T=50$ updates (Algorithm~\ref{alg:hsgs}). This matters because EM-GS update
-quality depends on the current iterate through $\kappa$ in \eqref{eq:bessel}:
-a structurally cleaner iterate yields a better phase estimate, hence a better
-next iterate.
+$T=50$ updates. This matters because EM-GS update quality depends on the
+current iterate through $\kappa$ in \eqref{eq:bessel}: a structurally cleaner
+iterate yields a better phase estimate, hence a better next iterate.
+Algorithms~\ref{alg:emgs}--\ref{alg:hsgs} give the measurement update, the
+projection, the rank selector and their composition; the paragraph after
+Alg.~\ref{alg:hsgs} states precisely which lines separate HS-GS from the
+baseline.
 
 HS-GS requires a target rank $\hat L$, and the true $L_k$ is unknown to any
 practical receiver. The in-sample residual cannot supply it: constraining
@@ -322,19 +327,98 @@ typical choice is $\hat L=5$, and in Section~\ref{sec:results}-C the mean
 $\hat L$ reaches only $11.55$ at $L=16$.
 
 \begin{algorithm}[tb]
-\caption{HS-GS}
+\caption{EM-GS measurement update $\mathcal{T}_{\mathrm{EM}}$ (one iteration)}
+\label{alg:emgs}
+\begin{algorithmic}[1]
+\Require $\bZ,\bS,\bB,\sigma^2$; current iterate $\bG$ (or $\varnothing$)
+\If{$\bG=\varnothing$}\Comment{spectral initialisation, first call only}
+  \State $\bG\leftarrow$ leading singular vectors of the row-wise
+         $\bZ$-weighted Gram matrix
+\EndIf
+\State $\boldsymbol{\Lambda}\leftarrow\bG\bS+\bB$
+       \Comment{noiseless field estimate, $N\times P$}
+\State $\boldsymbol{\kappa}\leftarrow(2/\sigma^2)\,\bZ\odot|\boldsymbol{\Lambda}|$
+\State $\bR\leftarrow R(\boldsymbol{\kappa})$, $R(x)=I_1(x)/I_0(x)$
+       \Comment{elementwise; see \S\ref{sec:model}-C}
+\State $\hat\bY\leftarrow\bR\odot\bZ\odot
+       e^{\jmath\angle\boldsymbol{\Lambda}}$
+       \Comment{Rician posterior mean of the field}
+\For{$n=1$ \textbf{to} $N$}\Comment{rows are independent}
+  \State $\bG_{n,:}\leftarrow\bigl(\hat\bY_{n,:}-\bB_{n,:}\bigr)\bS^{H}
+         \bigl(\bS\bS^{H}\bigr)^{-1}$
+\EndFor
+\State \Return $\bG$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[tb]
+\caption{Cadzow projection $\mathcal{P}_{\hat L}$ of one channel column}
+\label{alg:cadzow}
+\begin{algorithmic}[1]
+\Require $\bg\in\mathbb{C}^{N}$, target rank $\hat L$, sweeps $n_{\mathrm{cz}}$
+\State $p\leftarrow\arg\max_{1\le p\le N-1}\min(N-p,\,p+1)$
+       \Comment{pencil maximising the attainable rank}
+\State $r_{\max}\leftarrow\min(N-p,\,p+1)=\lceil N/2\rceil$
+\If{$\hat L\ge r_{\max}$}
+  \State \Return $\bg$ \Comment{constraint vacuous: exact no-op}
+\EndIf
+\For{$t=1$ \textbf{to} $n_{\mathrm{cz}}$}
+  \State $\bH\leftarrow\Hank(\bg)$, $\bH_{q,r}=g_{q+r}$
+         \Comment{$(N{-}p)\times(p{+}1)$}
+  \State $\bU\boldsymbol{\Sigma}\mathbf{V}^{H}\leftarrow\mathrm{svd}(\bH)$
+  \State $\bH\leftarrow\bU_{:,1:\hat L}\boldsymbol{\Sigma}_{1:\hat L}
+         \mathbf{V}_{:,1:\hat L}^{H}$
+         \Comment{projector 1: rank, Eckart--Young optimal}
+  \State $g_m\leftarrow\dfrac{1}{|\mathcal{A}_m|}
+         \displaystyle\sum_{(q,r)\in\mathcal{A}_m}\bH_{q,r}$,
+         $\ \mathcal{A}_m=\{(q,r):q+r=m\}$
+         \Comment{projector 2: Hankel, by anti-diagonal averaging}
+\EndFor
+\State \Return $\bg$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[tb]
+\caption{Held-out pilot rank selection (uses no ground truth)}
+\label{alg:rank}
+\begin{algorithmic}[1]
+\Require $\bZ,\bS,\bB,\sigma^2$; held-out fraction $\nu$, inner iterations
+         $T_{\mathrm{sel}}$
+\State $P_{\mathcal{V}}\leftarrow\max(1,\mathrm{round}(\nu P))$
+\State $\mathcal{V}\leftarrow\{P-P_{\mathcal{V}}+1,\dots,P\}$,\quad
+       $\mathcal{F}\leftarrow\{1,\dots,P-P_{\mathcal{V}}\}$
+       \Comment{validation / fitting columns}
+\For{$L=1$ \textbf{to} $r_{\max}$}
+  \State $\bG_L\leftarrow\textsc{HS-GS}\bigl(\bZ_{:,\mathcal{F}},
+         \bS_{:,\mathcal{F}},\bB_{:,\mathcal{F}},\sigma^2;
+         L,\,T_{\mathrm{sel}}\bigr)$
+         \Comment{Alg.~\ref{alg:hsgs}, fitting columns only}
+  \State $J(L)\leftarrow\bigl\|\,\bZ_{:,\mathcal{V}}-
+         \bigl|\bG_L\bS_{:,\mathcal{V}}+\bB_{:,\mathcal{V}}\bigr|\,
+         \bigr\|_F^{2}$
+         \Comment{scored on columns never fitted}
+\EndFor
+\State \Return $\hat L=\arg\min_{L} J(L)$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[tb]
+\caption{HS-GS: EM-GS with an interleaved structural projection}
 \label{alg:hsgs}
 \begin{algorithmic}[1]
-\Require $\bZ,\bS,\bB,\sigma^2$; $T$, $n_{\mathrm{cz}}$, $\nu$, $T_{\mathrm{sel}}$
-\State $\hat L\leftarrow$ held-out pilot selection \eqref{eq:order}
-\State $\mathrm{active}\leftarrow(\hat L<r_{\max})$;\quad $\bG\leftarrow\varnothing$
+\Require $\bZ,\bS,\bB,\sigma^2$; $T$, $n_{\mathrm{cz}}$, $\nu$,
+         $T_{\mathrm{sel}}$, $\Pi$ (project every $\Pi$ iterations)
+\State $\hat L\leftarrow$ Alg.~\ref{alg:rank}
+       \Comment{omitted when $\hat L$ is supplied, as in Alg.~\ref{alg:rank} line 4}
+\State $\mathrm{active}\leftarrow(\hat L<r_{\max})$;\quad
+       $\bG\leftarrow\varnothing$
 \For{$t=1$ \textbf{to} $T$}
-  \State $\bG\leftarrow\mathcal{T}_{\mathrm{EM\text{-}GS}}(\bG;\bZ,\bS,\bB,\sigma^2)$
-         \Comment{exact update, eq.~\eqref{eq:bessel}}
-  \If{$\mathrm{active}$}
+  \State $\bG\leftarrow\mathcal{T}_{\mathrm{EM}}(\bG)$
+         \Comment{Alg.~\ref{alg:emgs} -- \emph{identical} to the baseline}
+  \If{$\mathrm{active}$ \textbf{and} $t\bmod\Pi=0$}
     \For{$k=1$ \textbf{to} $K$}
       \State $\bG_{:,k}\leftarrow\mathcal{P}_{\hat L}(\bG_{:,k})$
-             \Comment{$n_{\mathrm{cz}}$ Cadzow sweeps}
+             \Comment{Alg.~\ref{alg:cadzow}, column-wise}
     \EndFor
   \EndIf
 \EndFor
@@ -342,14 +426,21 @@ $\hat L$ reaches only $11.55$ at $L=16$.
 \end{algorithmic}
 \end{algorithm}
 
+\noindent\textbf{Relation to the baseline.} Deleting lines 5--9 of
+Alg.~\ref{alg:hsgs} yields baseline EM-GS exactly: both chain the same
+$\mathcal{T}_{\mathrm{EM}}$ for the same $T$ iterations from the same
+initialisation, with no early stopping in either. Setting
+$\hat L\ge r_{\max}$ makes $\mathcal{P}_{\hat L}$ the identity
+(Alg.~\ref{alg:cadzow}, line 4), so the two estimators then agree
+\emph{bit for bit}; this is checked numerically in \S\ref{sec:setup}.
+
 \subsection{Complexity}
 One EM-GS update costs $O(NPK)$ once the $K\times K$ Gram matrix is cached;
 the projection adds $Kn_{\mathrm{cz}}$ SVDs of an $(N-p)\times(p+1)$ matrix
 per iteration, i.e.\ $O(Kn_{\mathrm{cz}}N^{3})$, and order selection
 multiplies the estimation by the $r_{\max}$ candidates. Against a
 \emph{chained} EM-GS baseline---the correct reference, since HS-GS issues $T$
-single-iteration calls costing $1.005$--$1.038\times$ in overhead alone---HS-
-GS at fixed order costs $1.49\times$, $1.32\times$ and $1.22\times$ at
+single-iteration calls costing $1.005$--$1.038\times$ in overhead alone---HS-GS at fixed order costs $1.49\times$, $1.32\times$ and $1.22\times$ at
 $N=8,16,32$, the ratio \emph{falling} with $N$ because the exact step grows
 faster than the projection at these dimensions. Order selection dominates the
 full estimator, at $57.7\%$, $74.1\%$ and $85.5\%$ of its runtime; shrinking
@@ -391,8 +482,7 @@ yields a bound too low by $0.17$--$4.64$~dB across our $36$ operating points.
 An identifiability check settles the form: with $K=3$ (six real unknowns) and
 $P=3$ measurements the per-row problem is unidentifiable and \eqref{eq:fisher}
 is correctly singular, whereas the rank-two construction claims full rank.
-Fig.~\ref{fig:snr} corroborates it---EM-GS sits within $0.05$~dB of the rank-
-one bound at high SNR, and would appear to violate the rank-two one. Because
+Fig.~\ref{fig:snr} corroborates it---EM-GS sits within $0.05$~dB of the rank-one bound at high SNR, and would appear to violate the rank-two one. Because
 row $n$ of $\bG\bS$ enters only measurement row $n$, $\bJ$ is block diagonal
 across receive elements, which is why the unconstrained bound---and any
 estimator attaining it---is flat in $N$ under a normalised metric.
@@ -456,9 +546,45 @@ realisations, so the reported gain
 \end{equation}
 and its $95\%$ paired bootstrap interval ($2000$ resamples) benefit from
 cancellation of the common channel draw; realisations are independent
-\emph{across} operating points. Unless noted, $400$ trials per point are used,
-extended to $1200$ at the five points whose intervals initially straddled
-zero, for $2.8\times10^{4}$ trials in total.
+\emph{across} operating points.
+
+\textbf{Two averaging domains, kept distinct.} Within an operating point,
+across trials, \eqref{eq:nmse} sums energies first and converts to decibels
+last: the average is taken in the \emph{linear} domain. Across SNR, for the
+summary of Fig.~\ref{fig:snravg}, the mean is of the per-SNR decibel values,
+i.e.\ \emph{after} conversion. The distinction matters: linear NMSE spans three
+orders of magnitude over this grid, so a linear-domain average across SNR is
+dominated by the lowest-SNR point, which carries $\approx70\%$ of the sum while
+the top three SNRs together carry $0.72\%$. Such an average would be nearly
+blind to the high-SNR half of the sweep, which is precisely where the
+projection hurts at $N=8$.
+
+\textbf{Trial budget.} Cost is dominated by rank selection, which reruns the
+estimator once per candidate order, so one trial at $N=32$ costs
+$\approx8.5\times$ one at $N=8$; the budget is therefore tiered and every table
+reports its own per-point count. In the SNR sweep of Section~\ref{sec:results}-B
+the budget is $400$ trials per point, extended to $1200$ at the five points
+whose intervals initially straddled zero. Section~\ref{sec:results} rests on
+$2.8\times10^{4}$ trials for the SNR, pilot-length and path-count sweeps, plus
+$8.4\times10^{3}$ paired trials on the $N\times$SNR grid of
+Figs.~\ref{fig:panels}--\ref{fig:snravg} ($600/400/200$ per point at
+$N=8/16/32$).
+
+\textbf{Verification.} The estimator comparison is reproduced by a standalone
+package sharing the model and both estimators with the runs reported here,
+which passes thirteen automated checks. Two are load-bearing for fairness and
+are executed rather than asserted: each trial supplies a single
+\emph{read-only} world $(\bG,\bS,\bB,\bW,\bZ)$ to both estimators, so they
+cannot diverge in channel, pilots or noise; and with the projection disabled
+HS-GS reproduces EM-GS to $\max|\mathrm{diff}|=0$, so the projection is
+provably the only difference. A third confirms the structural premise of
+Section~\ref{sec:hankel} directly: a noiseless $L$-path column has Hankel
+singular values $\sigma_{L+1}/\sigma_1\approx7\times10^{-16}$, i.e.\ numerical
+rank exactly $L$. Where the two sets of runs overlap they agree bit for bit on
+all $200$ common trials, so the differing summary values quoted in
+Sections~\ref{sec:results}-B and \ref{sec:results}-D reflect only their
+different averaging grids ($P\in\{10,30\}$ over six SNRs versus $P=30$ over
+seven, the latter extended to $-10$~dB), not a difference in data.
 
 %==========================================================================
 \section{Results and Discussion}\label{sec:results}
@@ -505,8 +631,7 @@ $+2.85$~dB for $N=8,16,32$, the per-trial win rate $33.5\%$, $74.0\%$ and
 $95.3\%$, and the constraint active in $57.5\%$, $92.7\%$ and $99.6\%$ of
 trials; the largest single-point gain is $4.33$~dB ($N=32$, $P=10$, SNR
 $=-5$~dB). Under the same averaging EM-GS varies by only $0.012$~dB across the
-three array sizes ($-8.846$, $-8.848$, $-8.836$~dB), exactly as the block-
-diagonal Fisher structure of Section~\ref{sec:crlb} requires. The
+three array sizes ($-8.846$, $-8.848$, $-8.836$~dB), exactly as the block-diagonal Fisher structure of Section~\ref{sec:crlb} requires. The
 $N$-dependence therefore belongs to the structural prior, not to a degrading
 baseline.
 
@@ -583,6 +708,52 @@ than to machine precision.}
 \label{fig:spectrum}
 \end{figure}
 
+\subsection{Absolute NMSE of Both Estimators versus $N$}
+Fig.~\ref{fig:scaling} plots the \emph{difference} $\Delta_{\mathrm{HS}}$, which
+leaves open how each estimator behaves on its own.
+Figs.~\ref{fig:panels}--\ref{fig:snravg} plot the two NMSE curves themselves,
+over an SNR grid extended down to $-10$~dB, at $P=30$.
+
+Two facts separate cleanly. First, \textbf{EM-GS is flat in $N$}: its
+SNR-averaged NMSE is $-10.321$, $-10.337$ and $-10.301$~dB at $N=8,16,32$, a
+spread of $0.036$~dB, and the same flatness holds inside every panel of
+Fig.~\ref{fig:panels} (for instance $-25.90$, $-25.95$, $-25.87$~dB at
+$20$~dB SNR). Under a normalised metric, enlarging the array buys the
+unstructured estimator essentially nothing, exactly as the block-diagonal
+Fisher structure of Section~\ref{sec:crlb} requires. Second, \textbf{HS-GS is
+the only curve that moves}: $-10.350$, $-11.149$, $-12.753$~dB. The gap
+therefore widens monotonically, $0.03\to0.81\to2.45$~dB, and the ordering holds
+at every SNR tested.
+
+The $N=8$ panel deserves its own sentence, because the SNR-averaged
+$0.03$~dB conceals a sign change: HS-GS gains $0.744$~dB at $-10$~dB SNR but
+loses $0.190$--$0.403$~dB at $0$~dB and above, with confidence intervals
+excluding zero in both directions. At that array size $r_{\max}=4$ is
+comparable to $L_k\in\{3,\dots,7\}$, so the projection is either inactive or
+truncating genuine channel components. $N=8$ is a mixed result, not a small
+positive one.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{fig/fig5_nmse_vs_N_panels.pdf}
+\caption{Absolute channel NMSE of both estimators versus array size at three
+SNR regimes ($K=3$, $P=30$, RSR $=12$~dB, $L_k\sim\mathcal{U}\{3..7\}$; $600$,
+$400$ and $200$ paired trials per point at $N=8,16,32$). Lower is better. Error
+bars are $95\%$ bootstrap intervals. EM-GS is flat in $N$ in all three panels;
+HS-GS is the only curve that improves. Note the leftmost panel: at $N=8$ the
+curves nearly touch, and at $0$ and $20$~dB HS-GS is \emph{above} EM-GS.}
+\label{fig:panels}
+\end{figure*}
+
+\begin{figure}[tb]
+\centering
+\includegraphics[width=0.92\columnwidth]{fig/fig6_snr_averaged_nmse_vs_N.pdf}
+\caption{SNR-averaged NMSE versus array size, the mean of the seven per-SNR
+values taken \emph{after} conversion to decibels (see \S\ref{sec:setup}).
+Labels give HS-GS minus EM-GS.}
+\label{fig:snravg}
+\end{figure}
+
 \subsection{Distance to the Bounds, and Crossings}
 HS-GS lies above the geometric CCRB at $34$ of $36$ operating points, by
 $0.32$--$8.85$~dB, and the gap \emph{grows} with $N$ ($+0.32$ to $+1.41$~dB at
@@ -616,8 +787,7 @@ was identified.
 %==========================================================================
 \section{Limitations and Future Work}\label{sec:limits}
 %==========================================================================
-All results here were produced under the i.i.d.\ uniform-AoA, equal-per-path-
-power, flat geometric model of Section~\ref{sec:model}, so the defensible
+All results here were produced under the i.i.d.\ uniform-AoA, equal-per-path-power, flat geometric model of Section~\ref{sec:model}, so the defensible
 claim is model-conditional: \emph{under the tested sparse geometric multipath
 model, exploiting the low-rank Hankel structure of the ULA response improves
 channel-estimation NMSE relative to EM-GS, by a mean of $2.85$~dB at $N=32$.}
@@ -636,8 +806,7 @@ weaken or eliminate the gain.
 Three further limitations are noted. A single scalar $\hat L$ is imposed on
 all $K$ users despite their differing true orders; per-user selection would
 change only the selector and would isolate how much of the CCRB gap is order
-misspecification. The iteration \eqref{eq:map} has no convergence guarantee---
-non-convex constraint set, approximate projection---and is defined by a fixed
+misspecification. The iteration \eqref{eq:map} has no convergence guarantee---non-convex constraint set, approximate projection---and is defined by a fixed
 budget. Finally, all users have equal average power, so near--far effects are
 untested.
 
@@ -647,10 +816,15 @@ untested.
 The ULA response of a sparse geometric channel makes the Hankel lifting of
 each channel column rank-deficient, and this structure can be enforced inside
 an exact biased phase-retrieval iteration without linearising the magnitude
-observation and without estimating any angle. The resulting HS-GS estimator
-improves on EM-GS by a mean of $2.85$~dB at $N=32$ under the tested model,
-whereas the unstructured baselines are flat in array size as the block-
-diagonal Fisher information requires. A controlled path-count experiment both
+observation and without estimating any angle. The resulting HS-GS estimator improves on EM-GS by a mean of $2.85$~dB at
+$N=32$ under the tested model. Plotting absolute NMSE rather than the
+difference makes the asymmetry explicit: the unstructured baselines are flat
+in array size, as the block-diagonal Fisher information requires, so HS-GS is
+the only estimator that converts a larger aperture into a lower normalised
+error. That the gap widens with $N$ is an \emph{empirical} finding over
+$N\in\{8,16,32\}$, consistent with the rank ceiling $\lceil N/2\rceil$ growing
+past $L_k$ but not proved to hold beyond the sizes simulated; the benefit is
+also conditional, being negative at $N=8$ above $0$~dB SNR. A controlled path-count experiment both
 confirms the mechanism and delimits it: the gain scales with the redundancy
 $r_{\max}/L$ and vanishes when the path count reaches the Hankel ceiling.
 Against a constrained CRLB derived for this likelihood, HS-GS attains part but
