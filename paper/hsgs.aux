@@ -1,0 +1,88 @@
+\relax 
+\citation{cui2025}
+\citation{fancher2021}
+\citation{artusio2022}
+\citation{cui2025}
+\citation{netrapalli2015}
+\citation{dong2023}
+\citation{gerchberg1972}
+\citation{cui2025}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}System Model}{1}{}\protected@file@percent }
+\newlabel{sec:model}{{II}{1}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-A}}Magnitude-Only Measurement}{1}{}\protected@file@percent }
+\newlabel{eq:obs}{{1}{1}{}{}{}}
+\newlabel{eq:snr}{{2}{1}{}{}{}}
+\citation{cui2025}
+\citation{cadzow1988}
+\citation{cadzow1988}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Simulation parameters. All experiments use the exact observation \eqref  {eq:obs}; the modulus is never linearised.}}{2}{}\protected@file@percent }
+\newlabel{tab:params}{{I}{2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-B}}Geometric ULA Channel}{2}{}\protected@file@percent }
+\newlabel{eq:chan}{{3}{2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {II-C}}Baseline Solvers}{2}{}\protected@file@percent }
+\newlabel{eq:bessel}{{4}{2}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {III}Hankel Structure of the ULA Channel}{2}{}\protected@file@percent }
+\newlabel{sec:hankel}{{III}{2}{}{}{}}
+\newlabel{eq:lift}{{5}{2}{}{}{}}
+\newlabel{eq:sep}{{6}{2}{}{}{}}
+\newlabel{eq:rank1}{{7}{2}{}{}{}}
+\newlabel{eq:rank}{{8}{2}{}{}{}}
+\newlabel{eq:cap}{{9}{2}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Proposed HS-GS Estimator}{2}{}\protected@file@percent }
+\newlabel{sec:method}{{IV}{2}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Cadzow Projection}{2}{}\protected@file@percent }
+\citation{gorman1990}
+\citation{stoica1998}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces HS-GS}}{3}{}\protected@file@percent }
+\newlabel{alg:hsgs}{{1}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Interleaved Iteration and Order Selection}{3}{}\protected@file@percent }
+\newlabel{eq:map}{{10}{3}{}{}{}}
+\newlabel{eq:order}{{11}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}Complexity}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Performance Benchmark}{3}{}\protected@file@percent }
+\newlabel{sec:crlb}{{V}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Likelihood and Fisher Information}{3}{}\protected@file@percent }
+\newlabel{eq:rice}{{12}{3}{}{}{}}
+\newlabel{eq:score}{{13}{3}{}{}{}}
+\newlabel{eq:fisher}{{14}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Constrained Bound on the Geometric Manifold}{3}{}\protected@file@percent }
+\citation{cui2025}
+\newlabel{eq:ccrb}{{15}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Bias Caveat}{4}{}\protected@file@percent }
+\newlabel{eq:mse}{{16}{4}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Simulation Setup}{4}{}\protected@file@percent }
+\newlabel{sec:setup}{{VI}{4}{}{}{}}
+\newlabel{eq:nmse}{{17}{4}{}{}{}}
+\newlabel{eq:gain}{{18}{4}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces NMSE versus SNR at $N=32$, $P=30$, RSR $=12$~dB. EM-GS is indistinguishable from the unconstrained CRLB across the range, so the bound is tight for the unstructured problem. HS-GS lies between the two bounds, recovering part of the structural headroom identified by the geometric CCRB.}}{4}{}\protected@file@percent }
+\newlabel{fig:snr}{{1}{4}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Paired HS-GS gain over EM-GS versus array size. Faint markers are the six individual SNR operating points; solid lines are their mean. The gain grows monotonically with $N$; at $N=8$ the individual points straddle zero, so no single scalar summarises that array size.}}{4}{}\protected@file@percent }
+\newlabel{fig:scaling}{{2}{4}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VII}Results and Discussion}{4}{}\protected@file@percent }
+\newlabel{sec:results}{{VII}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-A}}Main Result and Array-Size Scaling}{4}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Controlled path count ($N=32$, $P=30$, SNR $=5$~dB, RSR $=12$~dB, $400$ trials per point, $L$ fixed and identical across users). (a) The two baselines are flat in $L$---path count does not affect an estimator that ignores structure---which confirms the sweep is not confounded; HS-GS rises to meet them. (b) The paired gain decays monotonically to zero as $L$ approaches the rank ceiling $r_{\max }=\lceil N/2\rceil =16$; the $95\%$ paired bootstrap band is plotted but is narrower than the markers. The hypothesis producing this figure was recorded before the experiment was run.}}{5}{}\protected@file@percent }
+\newlabel{fig:pathcount}{{3}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-B}}Controlled Path Count: When and Why the Method Works}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-C}}Structural Diagnostic}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {VII-D}}Distance to the Bounds, and Crossings}{5}{}\protected@file@percent }
+\citation{tr38901}
+\bibcite{cui2025}{1}
+\bibcite{fancher2021}{2}
+\bibcite{artusio2022}{3}
+\bibcite{netrapalli2015}{4}
+\bibcite{dong2023}{5}
+\bibcite{gerchberg1972}{6}
+\bibcite{cadzow1988}{7}
+\bibcite{gorman1990}{8}
+\bibcite{stoica1998}{9}
+\bibcite{tr38901}{10}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Normalised Hankel singular values for one channel column, $N=32$, $L=3$, SNR $=5$~dB. The true channel is exactly rank $L$; the EM-GS estimate is full rank; Cadzow restores the cliff approximately, to $\sim \!10^{-3}$ rather than to machine precision.}}{6}{}\protected@file@percent }
+\newlabel{fig:spectrum}{{4}{6}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VIII}Limitations and Future Work}{6}{}\protected@file@percent }
+\newlabel{sec:limits}{{VIII}{6}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IX}Conclusion}{6}{}\protected@file@percent }
+\newlabel{sec:conclusion}{{IX}{6}{}{}{}}
+\@writefile{toc}{\contentsline {section}{References}{6}{}\protected@file@percent }
+\gdef \@abspage@last{6}
