@@ -37,16 +37,23 @@ EXP_C_N     = 32            # cap(32) = 16, so L_GRID reaches the ceiling exactl
 EXP_C_SNR   = 5.0
 
 # --- Monte Carlo -----------------------------------------------------------
-# Trials per operating point. Cost is dominated by rank selection, which runs
-# the estimator once per candidate rank (1..r_max), so one trial at N=32 costs
-# ~8.5x one at N=8. Measured throughput on 4 cores made a uniform 600 a ~5.7 h
-# sweep, so the budget is tiered: 600 where trials are cheap, 400 elsewhere. At
-# 400 trials the paired-bootstrap CI half-width is ~0.15 dB, well below the
-# effects being resolved. Per-point trial counts and CIs are reported for every
-# point, so nothing depends on the reader assuming a uniform budget.
-N_TRIALS        = 600       # N = 8 grid (experiment A)
-N_TRIALS_LARGE  = 400       # N = 16, 32 grid (experiment B)
-N_TRIALS_PATH   = 400       # experiment C
+# Trials per operating point, TIERED BY COST -- not by what makes results look
+# better. Cost is dominated by rank selection, which reruns the estimator once
+# per candidate rank (1..r_max), so one trial at N=32 costs ~8.5x one at N=8.
+# Measured throughput on 4 cores was ~120 paired trials/min at N=8, which makes
+# a uniform 600-trial sweep ~9 h. The budget is therefore 600 where trials are
+# cheap (experiment A, the main performance figure) and 250 at N=16/32.
+#
+# 250 trials gives a paired-bootstrap CI half-width of roughly 0.2 dB, which is
+# well below the effects being resolved; pairing is what makes this adequate,
+# since the shared channel realisation cancels in the gain. Per-point trial
+# counts and 95% CIs are reported for EVERY point, so no conclusion rests on
+# the reader assuming a uniform budget. To reproduce at a larger budget:
+#     N_TRIALS_LARGE=600 N_TRIALS_PATH=600 ./run_all.sh
+# which resumes from the existing stores rather than recomputing them.
+N_TRIALS        = 600       # N = 8 grid (experiment A) -- the main figure
+N_TRIALS_PATH   = 250       # experiment C, N = 32
+N_TRIALS_LARGE  = 250       # N = 16, 32 grid (experiment B)
 CHUNK      = 50             # checkpoint flush interval
 NBOOT      = 2000           # paired bootstrap resamples
 BOOT_SEED  = 987654321      # matches the Track-B analysis scripts

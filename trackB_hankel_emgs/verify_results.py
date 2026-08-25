@@ -82,7 +82,10 @@ def summarise(d: dict) -> dict:
 
 def load(path: str) -> dict:
     d = np.load(path)
-    return {k: d[k] for k in d.files if k != "fingerprint"}
+    out = {k: d[k] for k in d.files if k != "fingerprint"}
+    if out["trial"].size == 0:
+        raise ValueError(f"{path}: store holds no completed trials")
+    return out
 
 
 # ------------------------------------------------------------------ sweeps
@@ -90,6 +93,8 @@ def grid_points() -> dict:
     out = {}
     for f in sorted(glob.glob(str(RES / "grid" / "*.npz"))):
         stem = Path(f).stem                      # N08_P30_snr+05.0
+        if stem.endswith(".tmp"):                # a flush in progress
+            continue
         N = int(stem[1:3]); P = int(stem.split("_P")[1].split("_")[0])
         snr = float(stem.split("snr")[1])
         out[(N, P, snr)] = load(f)
@@ -99,7 +104,10 @@ def grid_points() -> dict:
 def path_points() -> dict:
     out = {}
     for f in sorted(glob.glob(str(RES / "pathcount" / "L*.npz"))):
-        out[int(Path(f).stem[1:])] = load(f)
+        stem = Path(f).stem
+        if stem.endswith(".tmp"):
+            continue
+        out[int(stem[1:])] = load(f)
     return out
 
 

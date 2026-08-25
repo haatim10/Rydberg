@@ -61,7 +61,8 @@ def fig1_snr(S):
     ax[1].set_ylabel(r"gain $\Delta_{\mathrm{H}}$ (dB)")
     ax[1].text(0.03, 0.95, "above 0: Hankel helps", transform=ax[1].transAxes,
                va="top", fontsize=7.5, color="0.35")
-    n = A[f"{snr[0]:+.1f}"]["trials"]
+    ns = sorted({A[f"{s:+.1f}"]["trials"] for s in snr})
+    n = str(ns[0]) if len(ns) == 1 else f"{ns[0]}-{ns[-1]}"
     for a in ax:
         a.set_xticks(snr)
     fig.text(0.5, -0.06, f"$N$=8, $K$=3, $P$=30, RSR=12 dB, "
@@ -127,7 +128,8 @@ def fig3_pathcount(S):
 
     for a in ax:
         a.set_xticks(L); a.margins(y=0.16)
-    n = C[str(L[0])]["trials"]
+    nc = sorted({C[str(x)]["trials"] for x in L})
+    n = str(nc[0]) if len(nc) == 1 else f"{nc[0]}-{nc[-1]}"
     fig.text(0.5, -0.06, f"$N$=32 ($r_{{\\max}}$={r_max}), $K$=3, $P$=30, SNR=5 dB, "
              f"RSR=12 dB, $L$ fixed and identical across users, "
              f"{n} paired trials/point", ha="center", fontsize=7.5)
