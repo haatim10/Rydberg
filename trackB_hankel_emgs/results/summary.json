@@ -1,0 +1,182 @@
+{
+ "fingerprint_config": {
+  "MASTER_SEED": 20250820,
+  "K": 3,
+  "N_DEFAULT": 8,
+  "P_DEFAULT": 30,
+  "L_MIN": 3,
+  "L_MAX": 7,
+  "RSR_DB": 12.0,
+  "GS_MAX_ITER": 50,
+  "CADZOW_ITER": 4,
+  "PROJECT_EVERY": 1,
+  "SELECT_ITER": 20,
+  "VAL_FRAC": 0.3,
+  "N_TRIALS": 600
+ },
+ "experiment_A": {
+  "-10.0": {
+   "trials": 200,
+   "em_gs_db": 5.5639118467725135,
+   "hankel_db": 4.826437128956413,
+   "em_gs_median_db": 5.539655954012153,
+   "hankel_median_db": 5.0029310724876215,
+   "em_gs_sd_db": 1.6901796881288582,
+   "hankel_sd_db": 1.8889990482559587,
+   "gain_db": 0.7374747178161,
+   "gain_ci_lo": 0.5874497707221519,
+   "gain_ci_hi": 0.8903533094688404,
+   "gain_se_db": 0.0840468326201961,
+   "gain_median_db": 0.39728809535461745,
+   "win_rate": 0.615,
+   "tie_rate": 0.275,
+   "active_frac": 0.725,
+   "mean_L_hat": 2.43,
+   "r_max": 4,
+   "mean_L_true_sum": 15.01
+  },
+  "-5.0": {
+   "trials": 150,
+   "em_gs_db": 0.37995150575087866,
+   "hankel_db": -0.383319426950906,
+   "em_gs_median_db": 0.5477747330552775,
+   "hankel_median_db": -0.2007705849435504,
+   "em_gs_sd_db": 2.0807004763275305,
+   "hankel_sd_db": 1.9671698197233949,
+   "gain_db": 0.7632709327017841,
+   "gain_ci_lo": 0.5538699202241884,
+   "gain_ci_hi": 0.955814121952741,
+   "gain_se_db": 0.10191250063288353,
+   "gain_median_db": 0.5768926590207734,
+   "win_rate": 0.6733333333333333,
+   "tie_rate": 0.15333333333333332,
+   "active_frac": 0.8466666666666667,
+   "mean_L_hat": 1.96,
+   "r_max": 4,
+   "mean_L_true_sum": 15.053333333333333
+  },
+  "+0.0": {
+   "trials": 150,
+   "em_gs_db": -5.171738969573452,
+   "hankel_db": -4.797173832644201,
+   "em_gs_median_db": -5.089897831257449,
+   "hankel_median_db": -4.65018892287297,
+   "em_gs_sd_db": 1.9101718487638448,
+   "hankel_sd_db": 2.19976107644851,
+   "gain_db": -0.3745651369292521,
+   "gain_ci_lo": -0.5836002240226212,
+   "gain_ci_hi": -0.17417795989697119,
+   "gain_se_db": 0.10152230296104665,
+   "gain_median_db": 0.0,
+   "win_rate": 0.26666666666666666,
+   "tie_rate": 0.29333333333333333,
+   "active_frac": 0.7066666666666667,
+   "mean_L_hat": 2.6466666666666665,
+   "r_max": 4,
+   "mean_L_true_sum": 15.053333333333333
+  },
+  "+5.0": {
+   "trials": 200,
+   "em_gs_db": -10.577440219172889,
+   "hankel_db": -10.091390113519946,
+   "em_gs_median_db": -10.730165286143533,
+   "hankel_median_db": -10.498305050400985,
+   "em_gs_sd_db": 1.9011877293673218,
+   "hankel_sd_db": 2.135113409467898,
+   "gain_db": -0.48605010565294204,
+   "gain_ci_lo": -0.7078704748424448,
+   "gain_ci_hi": -0.2750884850137257,
+   "gain_se_db": 0.08951059798714545,
+   "gain_median_db": 0.0,
+   "win_rate": 0.28,
+   "tie_rate": 0.385,
+   "active_frac": 0.615,
+   "mean_L_hat": 3.17,
+   "r_max": 4,
+   "mean_L_true_sum": 15.01
+  }
+ },
+ "experiment_B": {
+  "8": {
+   "r_max": 4,
+   "points": 4,
+   "trials": 700,
+   "em_gs_db_mean_over_points": -2.4513289590557372,
+   "hankel_db_mean_over_points": -2.6113615610396597,
+   "mean_gain_db": 0.16003260198392255,
+   "max_gain_db": 0.7632709327017841,
+   "max_gain_at_snr": -5.0,
+   "min_gain_db": -0.48605010565294204,
+   "pooled_gain_db": 0.6577769155910462,
+   "pooled_em_gs_db": 1.3782348500334218,
+   "pooled_hankel_db": 0.7204579344423756,
+   "win_rate": 0.45875,
+   "active_frac": 0.7233333333333334,
+   "per_snr_gain_db": {
+    "-10.0": 0.7374747178161,
+    "-5.0": 0.7632709327017841,
+    "+0.0": -0.3745651369292521,
+    "+5.0": -0.48605010565294204
+   }
+  }
+ },
+ "checks": [
+  {
+   "name": "1 projection-off == EM-GS bit-for-bit",
+   "pass": true,
+   "detail": "max|diff|=0.000e+00"
+  },
+  {
+   "name": "2 world arrays are read-only (pairing cannot be broken)",
+   "pass": true,
+   "detail": "writeable flags clear: [True, True, True, True, True]"
+  },
+  {
+   "name": "3 NMSE numerator/denominator formula",
+   "pass": true,
+   "detail": "num diff 8.88e-16, den diff 7.11e-15"
+  },
+  {
+   "name": "4 unlift(lift(g)) == g (Hankel projector is exact)",
+   "pass": true,
+   "detail": "max|diff|=0.000e+00"
+  },
+  {
+   "name": "5 rank selection is not an oracle",
+   "pass": true,
+   "detail": "no ground-truth symbol appears in select_order_heldout"
+  },
+  {
+   "name": "6 noiseless L-path Hankel has numerical rank L",
+   "pass": true,
+   "detail": "L=2: sv[L]/sv[0]=6.73e-16; L=3: sv[L]/sv[0]=7.56e-16"
+  },
+  {
+   "name": "7 truncate_rank(H,3) has numerical rank 3",
+   "pass": true,
+   "detail": "sv[3]/sv[0]=1.50e-16"
+  },
+  {
+   "name": "8 Hankel dims and ceiling r_max=ceil(N/2)",
+   "pass": true,
+   "detail": "N=8: (5, 4) cap=4; N=16: (9, 8) cap=8; N=32: (17, 16) cap=16"
+  },
+  {
+   "name": "9 every stored L_hat in [1, r_max]",
+   "pass": true,
+   "detail": "0 violations"
+  },
+  {
+   "name": "10 no NaN/Inf in any stored result",
+   "pass": true,
+   "detail": "0 non-finite values"
+  },
+  {
+   "name": "11 per-trial pairing guard passed",
+   "pass": true,
+   "detail": "700/700 trials confirmed Z==|GS+B+W| and outputs finite"
+  }
+ ],
+ "checks_passed": 11,
+ "checks_total": 11
+}
