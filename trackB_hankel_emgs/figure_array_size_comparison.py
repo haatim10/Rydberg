@@ -146,57 +146,49 @@ def invariance_checks(grid: dict) -> list[tuple[str, bool, str]]:
 
 
 # ------------------------------------------------------------------- figures
-def fig_panels(S: dict) -> None:
-    fig, axes = plt.subplots(1, 3, figsize=(7.4, 2.75), sharex=True)
-    for ax, snr in zip(axes, PANEL_SNRS):
-        Ns = list(cfg.N_GRID)
+def fig_panels(S: dict) -> dict:
+    """One 2x2 float: the three SNR regimes plus the SNR-averaged summary.
+
+    Kept as a single figure rather than two so the four panels share a caption
+    and one float slot; no panel is dropped.
+    """
+    Ns = list(cfg.N_GRID)
+    fig, ax = plt.subplots(2, 2, figsize=(3.3, 2.42), sharex=True)
+    flat = ax.ravel()
+
+    for a, snr in zip(flat[:3], PANEL_SNRS):
         for key, lo, hi, sty in (("em_db", "em_lo", "em_hi", EM),
                                  ("hk_db", "hk_lo", "hk_hi", HK)):
             y = np.array([S[(N, snr)][key] for N in Ns])
             l = np.array([S[(N, snr)][lo] for N in Ns])
             h = np.array([S[(N, snr)][hi] for N in Ns])
-            ax.errorbar(Ns, y, yerr=[y - l, h - y], capsize=2.5, elinewidth=0.9, **sty)
-        ax.set_xscale("log", base=2); ax.set_xticks(Ns)
-        ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-        ax.set_xlabel("array size $N$")
-        ax.set_title(f"SNR = {snr:+.0f} dB", fontsize=8.5)
-    axes[0].set_ylabel("channel NMSE (dB)\n(lower is better)")
-    axes[0].legend(framealpha=1.0, loc="best")
-    fig.text(0.5, -0.07, "$K$=3, $P$=30, RSR=12 dB, $L_k\\sim\\mathcal{U}\\{3..7\\}$; "
-             "paired trials, identical channel/pilots/noise/initialisation per trial; "
-             "error bars 95% bootstrap CI", ha="center", fontsize=7.5)
+            a.errorbar(Ns, y, yerr=[y - l, h - y], capsize=2.5, elinewidth=0.9, **sty)
+        a.set_title(f"SNR = {snr:+.0f} dB", fontsize=7.5)
+
+    em = [float(np.mean([S[(N, s)]["em_db"] for s in cfg.SNR_GRID_DB])) for N in Ns]
+    hk = [float(np.mean([S[(N, s)]["hk_db"] for s in cfg.SNR_GRID_DB])) for N in Ns]
+    a = flat[3]
+    a.plot(Ns, em, **EM); a.plot(Ns, hk, **HK)
+    for N, u, v in zip(Ns, em, hk):
+        a.annotate(f"{v - u:+.2f}", (N, (u + v) / 2), fontsize=6.6, ha="center",
+                   va="center", color="0.3",
+                   bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.7))
+    a.set_title("SNR-averaged", fontsize=7.5)
+    a.margins(x=0.16, y=0.16)
+
+    for a in flat:
+        a.set_xscale("log", base=2); a.set_xticks(Ns)
+        a.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
+        a.set_ylabel("NMSE (dB)", fontsize=7.5)
+    for a in ax[1]:
+        a.set_xlabel("array size $N$")
+    flat[0].legend(framealpha=1.0, loc="best", fontsize=7.5)
+    fig.text(0.5, -0.03, "lower is better", ha="center", fontsize=7)
     fig.tight_layout()
     for ext in ("png", "pdf"):
         fig.savefig(FIG / f"fig5_nmse_vs_N_panels.{ext}")
     plt.close(fig)
-    print("  wrote figures/fig5_nmse_vs_N_panels.{png,pdf}")
-
-
-def fig_summary(S: dict) -> dict:
-    """SNR-averaged NMSE. Mean of the per-SNR dB values (after dB conversion)."""
-    Ns = list(cfg.N_GRID)
-    em = [float(np.mean([S[(N, s)]["em_db"] for s in cfg.SNR_GRID_DB])) for N in Ns]
-    hk = [float(np.mean([S[(N, s)]["hk_db"] for s in cfg.SNR_GRID_DB])) for N in Ns]
-    fig, ax = plt.subplots(figsize=(3.7, 2.75))
-    ax.plot(Ns, em, **EM); ax.plot(Ns, hk, **HK)
-    for N, a, b in zip(Ns, em, hk):
-        ax.annotate(f"{b - a:+.2f} dB", (N, (a + b) / 2), fontsize=7,
-                    ha="center", va="center", color="0.3",
-                    bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.8))
-    ax.set_xscale("log", base=2); ax.set_xticks(Ns)
-    ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
-    ax.margins(x=0.16, y=0.14)          # room for the end labels
-    ax.set_xlabel("array size $N$")
-    ax.set_ylabel("SNR-averaged NMSE (dB)\n(lower is better)")
-    ax.legend(framealpha=1.0, loc="best")
-    fig.text(0.5, -0.10, "mean of the seven per-SNR NMSE values (averaged AFTER\n"
-             "the dB conversion); labels give Hankel $-$ EM-GS",
-             ha="center", fontsize=7.5)
-    fig.tight_layout()
-    for ext in ("png", "pdf"):
-        fig.savefig(FIG / f"fig6_snr_averaged_nmse_vs_N.{ext}")
-    plt.close(fig)
-    print("  wrote figures/fig6_snr_averaged_nmse_vs_N.{png,pdf}")
+    print("  wrote figures/fig5_nmse_vs_N_panels (4 panels)")
     return {"N": Ns, "em_gs_db": em, "hankel_db": hk}
 
 
@@ -236,8 +228,7 @@ def main() -> int:
     if not all(g for _, g, _ in checks):
         return 1
 
-    fig_panels(S)
-    summ = fig_summary(S)
+    summ = fig_panels(S)
 
     with open(RES / "figure_array_size_comparison.csv", "w", newline="") as fh:
         w = csv.writer(fh)

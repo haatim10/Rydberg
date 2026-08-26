@@ -16,6 +16,14 @@ TEX = " ".join(TEX_RAW.split())
 ok, bad = [], []
 
 
+def fact(desc, computed, expected, tol=0.005):
+    """A data-integrity check with no printed counterpart in the manuscript."""
+    agree = abs(computed - expected) <= tol
+    (ok if agree else bad).append(
+        f"{'PASS' if agree else 'FAIL'}  {desc}: computed={computed:.4f} "
+        f"expected={expected}")
+
+
 def claim(desc, present_in_tex, computed, expected, tol=0.005):
     hit = present_in_tex in TEX
     agree = abs(computed - expected) <= tol
@@ -38,13 +46,15 @@ em = [np.mean(f("EMGS_dB", N)) for N in ("8", "16", "32")]
 claim("EM-GS flatness", "$0.012$~dB", max(em) - min(em), 0.012)
 
 # --- win rates and active fractions
+WIN_LIT = "win rate $33.5$, $74.0$, $95.3\\%$"
+ACT_LIT = "constraint active in $57.5$, $92.7$, $99.6\\%$ of trials"
 for N, w, a in (("8", 33.5, 57.5), ("16", 74.0, 92.7), ("32", 95.3, 99.6)):
-    claim(f"win rate N={N}", f"${w}\\%$", 100 * np.mean(f("win_rate", N)), w, 0.05)
-    claim(f"active frac N={N}", f"${a}\\%$", 100 * np.mean(f("active_frac", N)), a, 0.05)
+    claim(f"win rate N={N}", WIN_LIT, 100 * np.mean(f("win_rate", N)), w, 0.05)
+    claim(f"active frac N={N}", ACT_LIT, 100 * np.mean(f("active_frac", N)), a, 0.05)
 
 # --- N=32,P=30 sweep
 g32 = f("gain_dB", "32", "30")
-claim("N=32,P=30 gain at 5 dB", "$2.27$~dB at $5$~dB", g32[2], 2.27)
+claim("N=32,P=30 gain at 5 dB", "$2.27$--$3.04$~dB", g32[2], 2.27)
 claim("N=32,P=30 gain range lo", "$2.27$--$3.04$", min(g32), 2.27)
 claim("N=32,P=30 gain range hi", "$2.27$--$3.04$", max(g32), 3.04)
 
@@ -63,8 +73,8 @@ u = f("uncon_CRLB_dB")
 n_gs = sum(1 for a, b in zip(f("GS_dB"), u) if a < b)
 n_em = sum(1 for a, b in zip(f("EMGS_dB"), u) if a < b)
 n_hs = sum(1 for a, b in zip(f("HSGS_dB"), u) if a < b)
-claim("GS crossings", "at $18$ and $19$ of $36$ points", n_gs, 18, 0)
-claim("EM-GS crossings", "at $18$ and $19$ of $36$ points", n_em, 19, 0)
+fact("GS crossings", n_gs, 18, 0)
+fact("EM-GS crossings", n_em, 19, 0)
 claim("HS-GS below uncon CRLB", "$26$ of $36$", n_hs, 26, 0)
 claim("HS-GS max below uncon", "$6.94$~dB", max(b - a for a, b in zip(f("HSGS_dB"), u) if a < b), 6.94)
 ccgap = [a - b for a, b in zip(f("HSGS_dB"), f("con_CRLB_dB"))]
@@ -80,37 +90,65 @@ claim("EM over GS RSR=0", "$1.31$~dB", g(0.0), 1.31)
 claim("EM over GS RSR=12", "$0.113$~dB", g(12.0), 0.113)
 claim("EM over GS RSR=24", "$0.002$~dB", g(24.0), 0.002)
 
-# --- B7 controlled path count
-b7 = []
-for p in sorted(glob.glob(str(R / "b7/L*.npz"))):
-    d_ = np.load(p)
-    b7.append((int(Path(p).stem[1:]),
-               10 * np.log10(d_["num_em_gs"].sum() / d_["num_hs_gs"].sum()),
-               10 * np.log10(d_["num_em_gs"].sum() / d_["denom"].sum()),
-               (d_["num_hs_gs"] < d_["num_em_gs"]).mean(), d_["L_hat"].mean(),
-               d_["active"].mean(), d_["denom"].size))
-seq = ", ".join(f"{v:.2f}".rstrip("0").rstrip(".") if False else f"{v:.2f}" for _, v, *_ in b7)
-for L, v, *_ in b7:
-    lit = f"{v:.2f}".replace("-", "$-$") if v < 0 else f"{v:.2f}"
-    ok.append(f"INFO  B7 L={L}: gain {v:+.3f} dB")
-claim("B7 monotone", "7.13,\\;3.58,\\;1.84,\\;1.03,\\;0.59,\\;0.27,\\;0.04,\\;-0.12",
-      1.0 if all(b7[i][1] > b7[i + 1][1] for i in range(len(b7) - 1)) else 0.0, 1.0, 0)
-claim("B7 gain at L=2", "$7.13$~dB at $L=2$", b7[0][1], 7.13)
-claim("B7 gain at L=14", "$+0.04$~dB", b7[6][1], 0.04)
-claim("B7 gain at L=16", "$-0.12$~dB", b7[7][1], -0.12)
-claim("B7 win rate L=2", "$100\\%$", 100 * b7[0][3], 100.0, 0.05)
-claim("B7 win rate L=16", "$45.3\\%$", 100 * b7[7][3], 45.3, 0.05)
-emb7 = [t[2] for t in b7]
-claim("B7 EM-GS flat", "$0.140$~dB", max(emb7) - min(emb7), 0.140)
-claim("B7 mean Lhat at L=16", "$11.55$", b7[7][4], 11.55)
-claim("B7 active at L=16", "$90.2\\%$", 100 * b7[7][5], 90.2, 0.05)
+# --- controlled path count.  Fig. 3 and Sec. VII-B are sourced from the
+# package's 300-trial sweep (trackB_hankel_emgs/results/pathcount), not the
+# older 400-trial B7 sweep; B7 is retained below as an independent replication.
+PC = REPO / "trackB_hankel_emgs" / "results" / "pathcount"
+pc = []
+for p_ in sorted(glob.glob(str(PC / "L*.npz"))):
+    d_ = np.load(p_)
+    e_, h_, dn_ = d_["num_em_gs"], d_["num_hankel_em_gs"], d_["denom"]
+    pc.append((int(Path(p_).stem[1:]),
+               10 * np.log10(e_.sum() / h_.sum()),
+               10 * np.log10(e_.sum() / dn_.sum()),
+               (h_ < e_).mean(), d_["L_hat"].mean(), d_["active"].mean(), dn_.size))
+
+
+def boot_ci(f):
+    d_ = np.load(f)
+    e_, h_ = d_["num_em_gs"], d_["num_hankel_em_gs"]
+    rng = np.random.default_rng(987654321)
+    n_ = e_.size
+    v = []
+    for _ in range(2000):
+        i = rng.integers(0, n_, n_)
+        v.append(10 * np.log10(e_[i].sum() / h_[i].sum()))
+    return np.percentile(v, [2.5, 97.5])
+
+
+for L, v, *_ in pc:
+    ok.append(f"INFO  path count L={L}: gain {v:+.3f} dB")
+claim("path-count sequence",
+      "7.04,\\;3.56,\\;1.79,\\;1.04,\\;0.58,\\;0.27,\\;0.05,\\;-0.12",
+      1.0 if all(pc[i][1] > pc[i + 1][1] for i in range(len(pc) - 1)) else 0.0, 1.0, 0)
+for i, want in enumerate((7.04, 3.56, 1.79, 1.04, 0.58, 0.27, 0.05, -0.12)):
+    fact(f"path-count gain at L={pc[i][0]}", pc[i][1], want)
+claim("path-count win rate L=2", "from $100\\%$", 100 * pc[0][3], 100.0, 0.05)
+claim("path-count win rate L=16", "to $45.0\\%$", 100 * pc[7][3], 45.0, 0.05)
+empc = [t[2] for t in pc]
+claim("path-count EM-GS flat", "EM-GS flat to $0.19$~dB", max(empc) - min(empc), 0.191)
+claim("path-count mean Lhat at L=16", "only $11.63$ at $L=16$", pc[7][4], 11.63)
+claim("path-count active at L=16", "active in $89.3\\%$", 100 * pc[7][5], 89.3, 0.05)
+lo14, hi14 = boot_ci(str(PC / "L14.npz"))
+lo16, hi16 = boot_ci(str(PC / "L16.npz"))
+claim("CI at L=14", "CI $[-0.05,+0.14]$", lo14, -0.05, 0.005)
+fact("CI at L=14 upper", hi14, 0.14)
+claim("CI at L=16", "CI $[-0.21,-0.04]$", lo16, -0.21, 0.005)
+fact("CI at L=16 upper", hi16, -0.04)
+fact("null reached one grid point before the ceiling", float(lo14 < 0 < hi14), 1.0, 0)
+fact("L=16 significantly negative", float(hi16 < 0), 1.0, 0)
+claim("path-count trials/point", "$300$ trials per point", pc[0][6], 300, 0)
 
 # --- trial counts
-tot = sum(np.load(p)["denom"].size
-          for sub in ("b3", "b4", "b6", "b7") for p in glob.glob(str(R / sub / "*.npz")))
-claim("total trials", "$2.8\\times10^{4}$", tot, 28000, 0)
-claim("B7 trials/point", "$400$ trials per point", b7[0][6], 400, 0)
-claim("extended points", "five points", sum(1 for x in rows if int(x["trials"]) > 400), 5, 0)
+sweeps = sum(np.load(p)["denom"].size
+             for sub in ("b3", "b4", "b6") for p in glob.glob(str(R / sub / "*.npz")))
+pc_trials = sum(t[6] for t in pc)
+claim("SNR + pilot sweep trials", "$2.5\\times10^{4}$ trials for the SNR and",
+      sweeps, 24800, 200)
+claim("path-count trials in budget", "$2.4\\times10^{3}$ on the", pc_trials, 2400, 0)
+claim("tiered trial counts", "$200$--$1200$, tiered",
+      float(min(int(x["trials"]) for x in rows) >= 200
+            and max(int(x["trials"]) for x in rows) == 1200), 1.0, 0)
 
 # --- CRLB internals
 CC = json.loads((R / "constrained_crlb.json").read_text())
@@ -124,7 +162,7 @@ claim("Jacobian rank N=8", "$40.4$",
       np.mean([jr[k] for k in jr if k.startswith("N8_")]), 40.4, 0.05)
 allc = list(CC["jacobian_cond"]["b3"].values()) + list(CC["jacobian_cond"]["b4"].values())
 claim("worst conditioning", "$80.1$", max(allc), 80.1, 0.05)
-claim("CRLB trials", "$400$ channel realisations", CC["n_trials"], 400, 0)
+fact("CRLB trials", CC["n_trials"], 400, 0)
 
 # --- the compiled document itself must be error-free.
 # A missing macro is an ERROR ("! Undefined control sequence"), not a warning,
@@ -164,9 +202,9 @@ claim("N=8 helps at -10 dB", "$0.74$~dB at $-10$~dB SNR", A2["-10.0"]["gain_db"]
 claim("N=8 hurts above 0 dB", "up to $0.40$~dB above $0$~dB",
       -min(A2[f"{s:+.1f}"]["gain_db"] for s in (0.0, 5.0, 10.0, 15.0, 20.0)), 0.403)
 C2 = pk["experiment_C"]
-# The paper's Fig. 3 uses the 400-trial B7 sweep; the package ran an
-# independent 300-trial sweep of the same design. Check they agree in trend and
-# endpoints rather than re-checking a literal the paper no longer prints.
+# The paper's Fig. 3 uses the package's 300-trial sweep; B7 ran an independent
+# 400-trial sweep of the same design. Neither is printed as a literal here --
+# this is a replication check between two runs, so it uses fact(), not claim().
 b7 = {int(Path(f).stem[1:]): np.load(f) for f in glob.glob(str(R / "b7/L*.npz"))}
 b7g = {L: 10 * np.log10(d["num_em_gs"].sum() / d["num_hs_gs"].sum())
        for L, d in b7.items()}
@@ -174,15 +212,15 @@ pkg_g = {int(L): v["gain_db"] for L, v in C2.items()}
 dmax_c = max(abs(b7g[L] - pkg_g[L]) for L in pkg_g)
 ok.append(f"INFO  path-count sweeps: B7(400 trials) vs package(300 trials), "
           f"max |diff| = {dmax_c:.3f} dB over 8 values of L")
-claim("path-count sweeps agree within MC error", "$7.13$~dB at $L=2$", dmax_c, 0.0, 0.35)
-claim("both sweeps end non-positive at L=r_max", "$7.13$~dB at $L=2$",
-      float(max(b7g[16], pkg_g[16]) < 0), 1.0, 0)
+fact("path-count sweeps agree within MC error", dmax_c, 0.0, 0.35)
+fact("both sweeps end non-positive at L=r_max",
+     float(max(b7g[16], pkg_g[16]) < 0), 1.0, 0)
 claim("pkg checks", "thirteen automated checks", pk["checks_passed"], 13, 0)
 claim("pkg checks total", "thirteen automated checks", pk["checks_total"], 13, 0)
 pkg_trials = sum(v["trials"] for v in B2.values())
-claim("pkg grid trials", "$8.4\\times10^{3}$ paired trials", pkg_trials, 8400, 0)
+claim("pkg grid trials", "$8.4\\times10^{3}$ on the", pkg_trials, 8400, 0)
 claim("total trials in abstract", "$3.6\\times10^{4}$ paired trials",
-      tot + pkg_trials, 36400, 400)
+      sweeps + pkg_trials + pc_trials, 35600, 500)
 
 # --- the two runs agree bit-for-bit where they overlap
 o = np.load(R / "b3/N32_P30_snr+05.0.npz")
@@ -192,22 +230,29 @@ ni = {int(t): i for i, t in enumerate(n_["trial"])}
 com = sorted(set(oi) & set(ni))
 dmax = max(max(abs(o["num_em_gs"][oi[t]] - n_["num_em_gs"][ni[t]]),
                abs(o["num_hs_gs"][oi[t]] - n_["num_hankel_em_gs"][ni[t]])) for t in com)
-claim("overlapping runs agree bit-for-bit", "all $200$ common trials", dmax, 0.0, 0.0)
-claim("number of common trials", "all $200$ common trials", len(com), 200, 0)
+fact("overlapping runs agree bit-for-bit", dmax, 0.0, 0.0)
+fact("number of common trials", len(com), 200, 0)
 
 # --- linear-vs-dB averaging shares quoted in Sec. VI
 lin = np.array([10 ** (A2[f"{s:+.1f}"]["em_gs_db"] / 10) for s in
                 (-10.0, -5.0, 0.0, 5.0, 10.0, 15.0, 20.0)])
 claim("low-SNR share of the linear sum", "$\\approx70\\%$ of the sum",
       100 * lin[0] / lin.sum(), 70.1, 1.0)
-claim("top-three share of the linear sum", "top three SNRs together carry $0.72\\%$",
+claim("top-three share of the linear sum", "against $0.72\\%$",
       100 * lin[-3:].sum() / lin.sum(), 0.72, 0.02)
 
 # --- the four algorithms are present and cross-referenced
-for lab in ("alg:emgs", "alg:cadzow", "alg:rank", "alg:hsgs"):
+for lab in ("alg:emgs", "alg:cadzow", "alg:hsgs"):
     hit = f"\\label{{{lab}}}" in TEX and f"\\ref{{{lab}}}" in TEX
     (ok if hit else bad).append(
         f"{'PASS' if hit else 'FAIL'}  algorithm {lab} defined and referenced")
+
+# The rank-selection box was merged into the text when the paper was cut to six
+# pages; the procedure itself must still be fully specified there.
+for lit in ("held-out", "\\nu=0.3", "T_{\\mathrm{sel}}=20", "1,\\dots,r_{\\max}"):
+    hit = lit in TEX
+    (ok if hit else bad).append(
+        f"{'PASS' if hit else 'FAIL'}  rank selection described in text: {lit!r}")
 
 # --- structural / audit facts asserted in the text
 A = json.loads((R / "artifact_audit.json").read_text())

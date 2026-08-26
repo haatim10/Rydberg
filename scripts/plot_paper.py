@@ -53,7 +53,7 @@ def save(fig, name):
 # ---- Fig. 1: NMSE vs SNR at N=32, P=30, all three estimators + both bounds
 def fig1():
     CC = crlb()
-    fig, ax = plt.subplots(figsize=(3.4, 2.35))
+    fig, ax = plt.subplots(figsize=(3.2, 1.75))
     for est, (mk, c, lab) in STY.items():
         ax.plot(SNRS, [pooled(b3(32, 30, s), est) for s in SNRS], mk, color=c, label=lab)
     key = [f"N32_P30_snr{s:+.0f}" for s in SNRS]
@@ -73,7 +73,7 @@ def fig2():
     Individual (SNR, P) points are shown as well as their mean, because at N = 8
     the per-point gains straddle zero and a mean alone would hide that.
     """
-    fig, ax = plt.subplots(figsize=(3.4, 2.25))
+    fig, ax = plt.subplots(figsize=(3.2, 1.65))
     for P, mk, c in ((10, "o-", "C0"), (30, "s-", "C3")):
         means = []
         for N in (8, 16, 32):
@@ -94,47 +94,54 @@ def fig2():
 
 
 # ---- Fig. 3: controlled path count (the mechanism test)
+# Sourced from the standalone verification package (trackB_hankel_emgs), which
+# ran this sweep at 300 trials/point with 13/13 automated checks passing. Its
+# runs agree bit-for-bit with the earlier B7 sweep on overlapping trials; the
+# package is used here so the figure and the reproducibility harness share one
+# source of truth. The package ran EM-GS and HS-GS only (no biased GS).
 def fig3():
+    PKG = REPO / "trackB_hankel_emgs" / "results" / "pathcount"
     rows = []
-    for f in sorted(glob.glob(str(R / "b7" / "L*.npz"))):
+    for f in sorted(glob.glob(str(PKG / "L*.npz"))):
         d = np.load(f); L = int(Path(f).stem[1:])
-        e, h, den = d["num_em_gs"], d["num_hs_gs"], d["denom"]
+        e, h, den = d["num_em_gs"], d["num_hankel_em_gs"], d["denom"]
         rng = np.random.default_rng(SEED)
         idx = rng.integers(0, den.size, size=(NBOOT, den.size))
         bs = 10 * np.log10(e[idx].sum(1) / h[idx].sum(1))
-        rows.append((L, 10 * np.log10(d["num_biased_gs"].sum() / den.sum()),
-                     10 * np.log10(e.sum() / den.sum()),
+        rows.append((L, 10 * np.log10(e.sum() / den.sum()),
                      10 * np.log10(h.sum() / den.sum()),
                      10 * np.log10(e.sum() / h.sum()),
                      np.percentile(bs, 2.5), np.percentile(bs, 97.5),
-                     d["L_hat"].mean()))
+                     d["L_hat"].mean(), int(den.size)))
     L = [r[0] for r in rows]; cap = 16
-    fig, ax = plt.subplots(2, 1, figsize=(3.4, 3.15), sharex=True)
+    fig, ax = plt.subplots(2, 1, figsize=(3.2, 1.80), sharex=True)
 
-    ax[0].plot(L, [r[1] for r in rows], "s--", color="0.40", label="GS")
-    ax[0].plot(L, [r[2] for r in rows], "o-", color="C0", label="EM-GS")
-    ax[0].plot(L, [r[3] for r in rows], "^-", color="C3", label="HS-GS")
+    ax[0].plot(L, [r[1] for r in rows], "o-", color="C0", label="EM-GS")
+    ax[0].plot(L, [r[2] for r in rows], "^-", color="C3", label="HS-GS")
     ax[0].set_ylabel(r"NMSE$_G$ (dB)")
-    ax[0].legend(framealpha=1.0, loc="lower right")
+    ax[0].legend(framealpha=1.0, loc="lower right", fontsize=6.8)
     ax[0].set_title("(a) NMSE vs path count", fontsize=7.5)
 
+    g = np.array([r[3] for r in rows])
+    lo = np.array([r[4] for r in rows]); hi = np.array([r[5] for r in rows])
     ax[1].axhline(0, color="0.5", lw=0.8, ls=":")
-    ax[1].plot(L, [r[4] for r in rows], "^-", color="C3")
-    ax[1].fill_between(L, [r[5] for r in rows], [r[6] for r in rows],
-                       color="C3", alpha=0.18, lw=0)
-    ax[1].set_ylabel(r"$\Delta_{\mathrm{HS}}$ over EM-GS (dB)")
+    ax[1].errorbar(L, g, yerr=[g - lo, hi - g], fmt="^-", color="C3",
+                   capsize=2, elinewidth=0.8)
+    ax[1].set_ylabel(r"$\Delta_{\mathrm{HS}}$ (dB)")
     ax[1].set_title("(b) gain vanishes at the rank cap", fontsize=7.5)
 
     for a in ax:
         a.margins(y=0.22)
         a.axvline(cap, color="0.25", ls=":", lw=1.0)
-        a.annotate("rank cap $r_{\\mathrm{max}}\\!=\\!16$",
-                   xy=(cap, 0.97), xycoords=("data", "axes fraction"),
-                   xytext=(-4, 0), textcoords="offset points",
-                   ha="right", va="top", fontsize=6.6, color="0.25")
+        a.annotate("rank cap $r_{\\mathrm{max}}\\!=\\!16$", xy=(cap, 0.97),
+                   xycoords=("data", "axes fraction"), xytext=(-4, 0),
+                   textcoords="offset points", ha="right", va="top",
+                   fontsize=6.4, color="0.25")
         a.set_xticks(L)
     ax[1].set_xlabel("paths per user $L$")
     save(fig, "fig3_pathcount")
+    print("    fig3 seq:", ", ".join(f"{r[3]:+.2f}" for r in rows),
+          f"| trials/pt {rows[0][7]} | E[Lhat] at L=16 = {rows[-1][6]:.2f}")
 
 
 # ---- Fig. 4: Hankel spectrum -- why the prior exists and what Cadzow does
@@ -156,7 +163,7 @@ def fig4():
     norm = lambda s: s / s[0]
     gc = cadzow_project(Ge[:, 0], L, n_iter=4)
 
-    fig, ax = plt.subplots(figsize=(3.4, 2.35))
+    fig, ax = plt.subplots(figsize=(3.2, 1.60))
     k = np.arange(1, min(hankel_matrix(w.G[:, 0], p).shape) + 1)
     ax.semilogy(k, norm(sv(w.G[:, 0])), "o-", color="0.10", label=f"true channel ($L={L}$)")
     ax.semilogy(k, norm(sv(Ge[:, 0])), "s-", color="C0", label="EM-GS estimate")
