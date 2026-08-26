@@ -55,17 +55,25 @@ Cui's row adapter is separable across receive elements: element ``n`` is
 estimated from ``z_n`` alone. The ULA structure is a coupling *along* ``n``,
 so an unstructured GS sweep cannot see it.
 
-Applying the projection once and then running GS to convergence does
-nothing, because GS is a contraction toward its own unstructured fixed
-point: the fixed points of ``T_GS^∞ ∘ P_S`` are exactly the fixed points of
-``T_GS``. Measured: the gain decays monotonically with the number of
+Applying the projection once and then running GS to convergence is
+measured to do nothing: the gain decays monotonically with the number of
 unconstrained iterations after projection — +1.30 dB at 1, +0.06 at 10,
-exactly 0.00 at 50.
+0.00 at 50. That is an EMPIRICAL observation on this configuration. No
+contraction or convergence property is claimed: GS is not known to be a
+contraction, alternating-projection schemes of this kind are not
+contractions in general, and the fixed points of the composed map are not
+characterised here.
 
-Interleaving instead makes the iteration map ``T = P_S ∘ T_GS``, whose
-fixed points satisfy ``g = P_S(T_GS(g))`` — simultaneously structured and
-consistent with the measurement update. That is the mathematical reason
-the projection is applied every iteration here.
+The defensible mechanism for interleaving is the dependence chain
+
+    G^(t)  ->  lambda^(t) = G^(t) S + B  ->  kappa^(t) = 2 Z |lambda^(t)| / sigma^2
+
+The EM-GS update is driven by the Bessel ratio R(kappa), so the phase and
+per-measurement reliability used at iteration t+1 are functions of the
+iterate at t. Enforcing structure at t therefore changes the information
+the next measurement update consumes, which a single post-hoc projection
+cannot do. Whether that helps is an empirical question, answered by the
+schedule ablation (interleaved vs post-hoc) and not by a theorem.
 
 Identifiability caveat
 ----------------------

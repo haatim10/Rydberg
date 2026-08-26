@@ -419,9 +419,11 @@ $a=|\lambda|$}. Differentiating, with $\frac{d}{dx}\log I_0(x)=R(x)$,
 \frac{\partial\log p}{\partial a}=\frac{2}{\sigma^2}\bigl[zR(\kappa)-a\bigr],
 \qquad \kappa=\frac{2za}{\sigma^2},
 \end{equation}
+Using the zero-mean-score identity $\mathbb{E}[zR(\kappa)]=a$, write
+$\beta(a,\sigma^2)=\sigma^{-4}\bigl(\mathbb{E}[z^{2}R^{2}(\kappa)]-a^{2}\bigr)$,
 so one measurement carries scalar information
-$\beta(a,\sigma^2)=\mathbb{E}[(\partial_a\log p)^2]$, contributing to the
-Fisher matrix in real coordinates
+$I_a(a,\sigma^2)=\mathbb{E}[(\partial_a\log p)^2]=4\beta(a,\sigma^2)$,
+contributing to the Fisher matrix in real coordinates
 $\boldsymbol{\eta}=[\Re\mathrm{vec}\,\bG;\Im\mathrm{vec}\,\bG]$
 \begin{equation}\label{eq:fisher}
 \bJ_{n}=\sum_{p=1}^{P}4\beta(a_{n,p},\sigma^2)\,

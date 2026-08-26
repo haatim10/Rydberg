@@ -69,6 +69,9 @@ from rydberg_sim.crlb import rician_fisher_scalar
 from rydberg_sim.track_b_drivers import TRACK_B_K, track_b_world
 
 N_TRIALS = 20
+#: Relative singular-value cut defining the numerical rank of the tangent
+#: space range(D). Matches constrained_crlb_fast.py so the two paths agree.
+TANGENT_RTOL = 1e-9
 
 
 def beta_of(a: float, sigma2: float) -> float:
@@ -98,8 +101,14 @@ def fisher_real(G, S, B, sigma2):
     return blocks
 
 
-def jacobian(theta_list, alpha_list, N, K):
-    """D = d(vec_real G)/d(theta), theta = {psi, Re alpha, Im alpha} per path.
+def jacobian(psi_list, alpha_list, N, K):
+    """D = d(vec_real G)/d(phi), phi = {psi, Re alpha, Im alpha} per path.
+
+    The angular coordinate is the SPATIAL FREQUENCY psi = pi sin(theta), which
+    is what appears in the generator G[n,k] = sum_l alpha_lk exp(-i n psi_lk).
+    Passing the physical AoA theta here is a bug: it evaluates the tangent
+    space at the wrong point of the manifold (verified by
+    scripts/audit_verify.py, PART 4b).
 
     Row ordering of the output matches fisher_real: for receive element n the
     2K rows are [Re G[n,:], Im G[n,:]]; blocks are stacked over n.
@@ -109,7 +118,7 @@ def jacobian(theta_list, alpha_list, N, K):
     nn = np.arange(N)
     col = 0
     for k in range(K):
-        psi, al = theta_list[k], alpha_list[k]
+        psi, al = psi_list[k], alpha_list[k]
         for l in range(len(al)):
             e = np.exp(-1j * nn * psi[l])            # (N,)
             dpsi = al[l] * (-1j * nn) * e            # d/d psi
@@ -135,41 +144,70 @@ def bounds_for(N, P, snr_db, rsr_db=12.0, n_trials=N_TRIALS):
         # unconstrained: block diagonal, so the trace of the inverse is the
         # sum of the per-row traces
         unc += sum(float(np.trace(np.linalg.inv(Jn))) for Jn in blocks)
-        # constrained: project through the manifold Jacobian
-        D = jacobian([np.asarray(x) for x in w.theta],
+        # constrained: project through the manifold Jacobian, in the SPATIAL
+        # FREQUENCY coordinate psi that the generator actually uses.
+        D = jacobian([np.asarray(x) for x in w.psi],
                      [np.asarray(x) for x in w.alpha], N, K)
         J = np.zeros((N * 2 * K, N * 2 * K))
         for n, Jn in enumerate(blocks):
             s = n * 2 * K
             J[s:s + 2 * K, s:s + 2 * K] = Jn
-        JD = D.T @ J @ D
-        ranks.append(np.linalg.matrix_rank(JD, tol=1e-8 * max(1.0, abs(JD).max())))
-        # pseudo-inverse guards the case where the manifold parametrisation is
-        # locally rank deficient (repeated angles); reported via `ranks`
-        con += float(np.trace(D @ np.linalg.pinv(JD, rcond=1e-10) @ D.T))
+        # The path parametrisation is overcomplete whenever 3*sum(L_k) exceeds
+        # the ambient real dimension 2NK, so D^T J D is genuinely singular and
+        # pseudo-inverting it is numerically hopeless (cond up to 7e17). The
+        # CCRB depends only on the TANGENT SPACE range(D), so form it from an
+        # orthonormal basis: CCRB = U (U^T J U)^{-1} U^T.
+        U_full, sv, _ = np.linalg.svd(D, full_matrices=False)
+        keep = sv > sv[0] * TANGENT_RTOL
+        U = U_full[:, keep]
+        ranks.append(int(keep.sum()))
+        UJU = U.T @ J @ U
+        con += float(np.trace(U @ np.linalg.solve(UJU, U.T)))
         den += float(np.linalg.norm(w.G, "fro") ** 2)
     return unc, con, den, ranks
 
 
 # ------------------------------------------------------------ validation ---
+def complex_convention_db(N, P, snr_db, rsr_db=12.0, n_trials=6):
+    """The crlb.json convention (F = sum_q beta_q m_q m_q^H) on GIVEN trials.
+
+    Recomputed here rather than read from crlb.json so the comparison is
+    PAIRED on channel realisations. Comparing a 6-trial sweep against a
+    20-trial stored value confounds the convention gap with Monte-Carlo
+    jitter, which is large enough here to flip its sign.
+    """
+    from rydberg_sim.crlb import cui_crlb
+    num = den = 0.0
+    for t in range(n_trials):
+        w = track_b_world(t, P, float(snr_db), rsr_db=rsr_db, N=N)
+        for n in range(N):
+            r = cui_crlb(w.S, np.conjugate(w.G[n]), np.conjugate(w.B[n]),
+                         w.sigma2, expected_u_energy=float(TRACK_B_K))
+            num += float(np.real(np.trace(r.crlb)))
+        den += float(np.linalg.norm(w.G, "fro") ** 2)
+    return 10 * np.log10(num / den)
+
+
 def validate():
     ok = True
     print("=" * 78)
-    print("VALIDATION 1 — real-coordinate unconstrained bound vs the existing one")
+    print("VALIDATION 1 — real rank-1 bound must EXCEED the two-quadrature one")
     print("=" * 78)
-    C = json.loads((REPO / "results/track_b/crlb.json").read_text())
-    print(f"{'N':>3}{'P':>4}{'SNR':>5} | {'real-coord':>11} {'crlb.json':>11} {'diff':>8}")
+    print("  A magnitude measurement constrains ONE real direction, so its real")
+    print("  Fisher term is rank 1. The complex convention F = sum beta m m^H")
+    print("  credits both quadratures and can therefore only ADD information,")
+    print("  giving a strictly LOWER bound. These are different quantities: the")
+    print("  test is the inequality, not equality. Paired on the same trials.")
+    print(f"{'N':>3}{'P':>4}{'SNR':>5} | {'rank-1':>9} {'2-quad':>9} {'excess dB':>10}")
     for N, P, s in ((8, 30, 5.0), (8, 10, 15.0), (16, 30, 0.0), (32, 30, 10.0)):
         unc, _, den, _ = bounds_for(N, P, s, n_trials=6)
         mine = 10 * np.log10(unc / den)
-        ref = C["b3"][f"N{N}_P{P}_snr{s:+.0f}"]
+        ref = complex_convention_db(N, P, s, n_trials=6)
         d = mine - ref
-        # 6 trials vs 20, so allow Monte-Carlo slack; the convention check is
-        # whether they agree to a fraction of a dB, not to machine precision
-        good = True   # reported, not gated: see FINDING in the report
+        good = d > 0.0
         ok &= good
-        print(f"{N:3d}{P:4d}{s:5.0f} | {mine:11.3f} {ref:11.3f} {d:+8.3f}"
-              f"  {'ok' if good else 'MISMATCH'}")
+        print(f"{N:3d}{P:4d}{s:5.0f} | {mine:9.3f} {ref:9.3f} {d:+10.3f}"
+              f"  {'ok' if good else 'MISMATCH — rank-1 bound below 2-quadrature'}")
 
     print()
     print("=" * 78)

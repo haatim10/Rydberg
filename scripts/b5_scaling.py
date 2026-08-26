@@ -22,8 +22,14 @@ the path budget does not, so rho grows linearly in N.
 
 Where the constraint bites
 -------------------------
-By Kronecker's theorem a length-N sequence is a sum of L complex
-exponentials iff its Hankel matrix has rank L. A length-N Hankel matrix
+A length-N sequence that is a sum of L complex exponentials has a Hankel
+lifting of rank at most L: each path contributes one rank-one outer product
+v_l w_l^T. The converse does NOT hold for the physical model -- rank <= L
+also admits exponentials with poles off the unit circle, |z_l| != 1, which
+are not ULA steering responses. Low Hankel rank is therefore a NECESSARY
+structural property of the sparse geometric ULA channel, exploited here as a
+relaxation of the geometric manifold rather than an exact characterisation of
+it. A length-N Hankel matrix
 has rank at most max_p min(N-p, p+1) = ceil(N/2). So for L_k >= ceil(N/2)
 the true channel already saturates the achievable rank and the constraint
 carries no information about that user. This is a property of the

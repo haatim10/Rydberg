@@ -10,9 +10,11 @@ Two optimisations, neither of which changes the result:
 
 1. beta(a, sigma^2) is a smooth 1-D function of a at fixed sigma^2, and
    sigma^2 is constant within an operating point. So one interpolation table
-   per point replaces N*P*n_trials quadratures with ~400. Measured accuracy
-   of the table: max relative error 2.7e-4, median 6e-7 -- three orders of
-   magnitude below the sampling noise it removes.
+   per point replaces N*P*n_trials quadratures with ~400. The accuracy of the
+   table is MEASURED at run time by measure_interp_error(), probed at
+   amplitudes drawn from this point's own |lambda| population, and written to
+   the output JSON under "beta_interp_rel_err_max" per point plus a global
+   worst case. It is not asserted from a comment.
 2. J is block diagonal across receive elements, so D^T J D is assembled
    blockwise as sum_n D_n^T J_n D_n rather than by forming the full
    2NK x 2NK matrix.
@@ -46,7 +48,24 @@ def beta_table(a_lo, a_hi, sigma2, n=TABLE_PTS):
     return grid, vals
 
 
-def point_bounds(N, P, snr_db, rsr_db, n_trials=N_TRIALS):
+def measure_interp_error(grid, vals, amps, sigma2, n_probe=200, seed=12345):
+    """MEASURED max/median relative error of the beta interpolation table.
+
+    Probes at amplitudes drawn from the actual |lambda| population of this
+    operating point (not a uniform grid, which would understate the error
+    where the table is sparsest relative to the data). Returns (max, median)
+    relative error against exact quadrature. Reported per point rather than
+    asserted from a docstring comment.
+    """
+    rng = np.random.default_rng(seed)
+    probe = rng.choice(amps, size=min(int(n_probe), amps.size), replace=False)
+    exact = np.array([rician_fisher_scalar(float(a), sigma2).beta for a in probe])
+    approx = np.interp(probe, grid, vals)
+    rel = np.abs(approx - exact) / np.maximum(np.abs(exact), 1e-300)
+    return float(rel.max()), float(np.median(rel))
+
+
+def point_bounds(N, P, snr_db, rsr_db, n_trials=N_TRIALS, measure_interp=False):
     """Return summed traces (unconstrained, constrained), channel energy, and
     diagnostics, over trials 0..n_trials-1 -- the same worlds the estimators saw."""
     worlds = [track_b_world(t, P, float(snr_db), rsr_db=float(rsr_db), N=N)
@@ -56,6 +75,8 @@ def point_bounds(N, P, snr_db, rsr_db, n_trials=N_TRIALS):
     lam = [w.G @ w.S + w.B for w in worlds]
     amps = np.concatenate([np.abs(l).ravel() for l in lam])
     grid, vals = beta_table(amps.min(), amps.max(), sigma2)
+    interp_err = (measure_interp_error(grid, vals, amps, sigma2)
+                  if measure_interp else (float("nan"), float("nan")))
 
     unc = con = den = 0.0
     ranks, conds = [], []
@@ -70,7 +91,11 @@ def point_bounds(N, P, snr_db, rsr_db, n_trials=N_TRIALS):
         Dc = np.zeros((N, K, m), dtype=np.complex128)   # complex dG[n,k]/dtheta
         col = 0
         for k in range(K):
-            psi, al = np.asarray(w.theta[k]), np.asarray(w.alpha[k])
+            # SPATIAL FREQUENCY psi = pi sin(theta): this is the variable that
+            # appears in the generator exp(-i n psi). Using the physical AoA
+            # theta here evaluates the tangent space at the wrong point of the
+            # manifold (verified by scripts/audit_verify.py, PART 4b).
+            psi, al = np.asarray(w.psi[k]), np.asarray(w.alpha[k])
             for l in range(len(al)):
                 e = np.exp(-1j * nn * psi[l])
                 Dc[:, k, col] = al[l] * (-1j * nn) * e
@@ -111,17 +136,18 @@ def point_bounds(N, P, snr_db, rsr_db, n_trials=N_TRIALS):
         Minv = np.linalg.inv(UJU)
         con += float(sum(np.trace(U[n] @ Minv @ U[n].T) for n in range(N)))
         den += float(np.linalg.norm(w.G, "fro") ** 2)
-    return unc, con, den, ranks, conds
+    return unc, con, den, ranks, conds, interp_err
 
 
 def _job(a):
     kind, N, P, s, rsr, nt = a
-    unc, con, den, ranks, conds = point_bounds(N, P, s, rsr, nt)
+    unc, con, den, ranks, conds, ierr = point_bounds(
+        N, P, s, rsr, nt, measure_interp=True)
     key = (f"P{P}" if kind == "b4" else
            f"N{N}_P{P}_snr{s:+.0f}_rsr{rsr:+.0f}" if kind == "b6" else
            f"N{N}_P{P}_snr{s:+.0f}")
     return (kind, key, 10 * np.log10(unc / den), 10 * np.log10(con / den),
-            float(np.mean(ranks)), float(np.median(conds)), nt)
+            float(np.mean(ranks)), float(np.median(conds)), nt, ierr)
 
 
 def main():
@@ -134,8 +160,10 @@ def main():
              for r in (0.0, 6.0, 12.0, 18.0, 24.0)]
     jobs.sort(key=lambda j: -j[1] * j[2])
     out = {k: {"b3": {}, "b4": {}, "b6": {}} for k in
-           ("unconstrained_rank1", "constrained", "jacobian_rank", "jacobian_cond")}
+           ("unconstrained_rank1", "constrained", "jacobian_rank", "jacobian_cond",
+            "beta_interp_rel_err_max")}
     out["n_trials"] = nt
+    worst_interp = 0.0
     out["note"] = (
         "Averaged over the SAME trial indices the estimator curves use, so the "
         "comparison is paired on channel realisations. unconstrained_rank1: "
@@ -145,13 +173,18 @@ def main():
         "governs a biased estimator.")
     print(f"{nt} trials/point, {len(jobs)} points", flush=True)
     with mp.Pool(int(os.environ.get("CC_PROCS", "4"))) as pool:
-        for kind, key, u, c, r, cond, _ in pool.imap_unordered(_job, jobs):
+        for kind, key, u, c, r, cond, _, ierr in pool.imap_unordered(_job, jobs):
             out["unconstrained_rank1"][kind][key] = u
             out["constrained"][kind][key] = c
             out["jacobian_rank"][kind][key] = r
             out["jacobian_cond"][kind][key] = cond
+            out["beta_interp_rel_err_max"][kind][key] = ierr[0]
+            worst_interp = max(worst_interp, ierr[0])
             print(f"  {kind} {key}: unconstr {u:7.2f}  constr {c:7.2f}"
-                  f"  (rank {r:.1f}, cond {cond:.1e})", flush=True)
+                  f"  (rank {r:.1f}, cond {cond:.1e}, interp {ierr[0]:.1e})",
+                  flush=True)
+    out["beta_interp_rel_err_worst_over_all_points"] = worst_interp
+    print(f"\nMEASURED worst beta-interpolation relative error: {worst_interp:.3e}")
     (REPO / "results/track_b/constrained_crlb.json").write_text(
         json.dumps(out, indent=2))
     print(f"\nwrote {REPO/'results/track_b/constrained_crlb.json'}", flush=True)

@@ -28,14 +28,43 @@ echo "=== $(date -u +%H:%M:%S) ALL SWEEPS DONE ==="
 # Re-running is cheap and idempotent: completed points are skipped. Always
 # confirm completeness rather than trusting that the stages ran to the end.
 python3 - <<'EOF'
-import glob, numpy as np, config as cfg
+import glob, os, sys, numpy as np, config as cfg
+
+def count(path):
+    return np.load(path)["trial"].size if os.path.exists(path) else 0
+
 miss = []
-for f in glob.glob("results/pathcount/L*.npz"):
-    n = np.load(f)["trial"].size
-    if n < cfg.N_TRIALS_PATH: miss.append(f"{f}: {n}/{cfg.N_TRIALS_PATH}")
-have = {int(f.split("L")[-1][:2]) for f in glob.glob("results/pathcount/L*.npz")}
+
+# --- Experiments A and B: every (N, SNR) point on the grid -----------------
+# Expected budget per N, matching experiment_array_size.points().
+want = {cfg.N_DEFAULT: int(os.environ.get("N_TRIALS", cfg.N_TRIALS)),
+        16: int(os.environ.get("N_TRIALS_LARGE", cfg.N_TRIALS_LARGE)),
+        32: cfg.N_TRIALS_N32}
+for N in cfg.N_GRID:
+    need = want.get(N, cfg.N_TRIALS_LARGE)
+    for snr in cfg.SNR_GRID_DB:
+        f = f"results/grid/N{N:02d}_P{cfg.P_DEFAULT}_snr{snr:+05.1f}.npz"
+        n = count(f)
+        if n == 0:
+            miss.append(f"A/B N={N} SNR={snr:+.0f}: MISSING")
+        elif n < need:
+            miss.append(f"A/B N={N} SNR={snr:+.0f}: {n}/{need}")
+
+# --- Experiment C: every L on the path-count sweep -------------------------
+needC = int(os.environ.get("N_TRIALS", cfg.N_TRIALS_PATH))
 for L in cfg.L_GRID:
-    if L not in have: miss.append(f"experiment C L={L}: MISSING")
-print("INCOMPLETE:" if miss else "all experiment-C points complete")
-for m in miss: print("  " + m)
+    f = f"results/pathcount/L{L:02d}.npz"
+    n = count(f)
+    if n == 0:
+        miss.append(f"C L={L}: MISSING")
+    elif n < needC:
+        miss.append(f"C L={L}: {n}/{needC}")
+
+if miss:
+    print(f"INCOMPLETE — {len(miss)} point(s):")
+    for m in miss:
+        print("  " + m)
+    sys.exit(1)
+n_pts = len(cfg.N_GRID) * len(cfg.SNR_GRID_DB) + len(cfg.L_GRID)
+print(f"all {n_pts} points complete at the expected trial counts")
 EOF

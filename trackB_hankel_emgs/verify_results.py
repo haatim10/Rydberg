@@ -41,23 +41,31 @@ def pooled_db(num: np.ndarray, den: np.ndarray) -> float:
 
 
 def boot_ci(a: np.ndarray, b: np.ndarray, *, nboot=cfg.NBOOT, seed=cfg.BOOT_SEED):
-    """95% PAIRED bootstrap CI on the gain 10log10(sum a / sum b).
+    """95% PAIRED bootstrap CI and SD on the gain 10log10(sum a / sum b).
 
     The resample index vector is drawn once and applied to both estimators, so
     the shared channel realisation cancels and the interval on the difference
     is far tighter than the marginals would suggest.
+
+    Returns ``(lo, hi, sd)``. ``sd`` is the standard deviation of the
+    bootstrap distribution of the POOLED ratio-of-sums gain -- i.e. the
+    standard error of the statistic actually reported. It is NOT the standard
+    error of the mean of per-trial decibel gains, which estimates a different
+    quantity (a mean of ratios, not a ratio of sums) and is smaller by
+    Jensen; reporting that as the SE of the pooled gain was an audit finding.
     """
     rng = np.random.default_rng(seed)
     idx = rng.integers(0, a.size, size=(nboot, a.size))
     g = 10 * np.log10(a[idx].sum(1) / b[idx].sum(1))
-    return float(np.percentile(g, 2.5)), float(np.percentile(g, 97.5))
+    return (float(np.percentile(g, 2.5)), float(np.percentile(g, 97.5)),
+            float(np.std(g, ddof=1)))
 
 
 def summarise(d: dict) -> dict:
     """All statistics for one operating point, from its raw per-trial arrays."""
     e, h, den = d["num_em_gs"], d["num_hankel_em_gs"], d["denom"]
     r_e, r_h = e / den, h / den                       # per-trial NMSE (linear)
-    lo, hi = boot_ci(e, h)
+    lo, hi, boot_sd = boot_ci(e, h)
     n = e.size
     per_trial_gain_db = 10 * np.log10(e / h)
     return dict(
@@ -69,7 +77,12 @@ def summarise(d: dict) -> dict:
         hankel_sd_db=float(np.std(10 * np.log10(r_h), ddof=1)),
         gain_db=float(10 * np.log10(e.sum() / h.sum())),
         gain_ci_lo=lo, gain_ci_hi=hi,
-        gain_se_db=float(np.std(per_trial_gain_db, ddof=1) / np.sqrt(n)),
+        # SE of the POOLED ratio-of-sums gain, from the paired bootstrap.
+        gain_boot_sd_db=boot_sd,
+        # SE of the mean of per-trial dB gains. A DIFFERENT estimand (mean of
+        # ratios, not ratio of sums) -- kept for reference under a name that
+        # says what it is, never as the SE of the pooled gain.
+        per_trial_gain_mean_se_db=float(np.std(per_trial_gain_db, ddof=1) / np.sqrt(n)),
         gain_median_db=float(np.median(per_trial_gain_db)),
         win_rate=float((h < e).mean()),
         tie_rate=float((h == e).mean()),
@@ -227,6 +240,62 @@ def implementation_checks(quick: bool = False) -> None:
               and abs(db - d0["denom"][i0]) < 1e-9,
               f"trial {t0}: recomputed vs stored agree to <1e-9")
 
+    # 14. CHAINED EM-GS == a single max_iter=T call, bit for bit.
+    # em_gs.py's docstring asserts this, and the whole fairness argument rests
+    # on it, but check 1 compares two CHAINED paths and so never tested it.
+    from rydberg_sim.gs import em_gs_channel_rows
+    w14 = make_world(0, N=16, P=30, snr_db=5.0)
+    worst14, all14 = 0.0, True
+    for T in (1, 5, 50):
+        single = em_gs_channel_rows(w14.S, w14.Z, w14.B, w14.sigma2,
+                                    max_iter=T, ridge=cfg.RIDGE, G0=None).G_hat
+        chained = em_gs.em_gs(w14.S, w14.Z, w14.B, w14.sigma2, max_iter=T)
+        all14 &= bool(np.array_equal(single, chained))
+        worst14 = max(worst14, float(np.abs(single - chained).max()))
+    check("14 chained em_gs_step == single max_iter=T call", all14,
+          f"T in (1,5,50): max|diff|={worst14:.3e}")
+
+    # 15. Rank selection uses no oracle -- BEHAVIOURALLY, not by grep.
+    # Re-run the selector on observables copied into fresh plain arrays that
+    # are detached from the world object entirely, so no attribute path to
+    # G, L_k or theta survives. A selector with any hidden route to ground
+    # truth would have to change its answer.
+    w15 = make_world(3, N=16, P=30, snr_db=0.0)
+    full = hem.hankel_em_gs(w15.S, w15.Z, w15.B, w15.sigma2)
+    S_d = np.array(w15.S, copy=True)
+    Z_d = np.array(w15.Z, copy=True)
+    B_d = np.array(w15.B, copy=True)
+    s2_d = float(w15.sigma2)
+    del w15
+    detached, _ = hp.select_rank(S_d, Z_d, B_d, s2_d)
+    check("15 rank selection reproduces from detached observables only",
+          int(detached) == int(full.L_hat),
+          f"L_hat detached={int(detached)} vs in-estimator={int(full.L_hat)}")
+
+    # 16. Low Hankel rank is NECESSARY for the geometric model, not sufficient.
+    # (a) an L-path unit-modulus channel has Hankel rank <= L; (b) a rank-L
+    # Hankel lifting also arises from poles OFF the unit circle, which are not
+    # ULA steering responses -- so the constraint is a relaxation of the
+    # geometric manifold, not a characterisation of it.
+    rng16 = np.random.default_rng(4242)
+    nec_ok, suff_witness = True, 0.0
+    for L in (2, 3, 4):
+        psi16 = rng16.uniform(-np.pi, np.pi, L)
+        a16 = rng16.normal(size=L) + 1j * rng16.normal(size=L)
+        nn16 = np.arange(32)[:, None]
+        g_phys = (a16[None, :] * np.exp(-1j * nn16 * psi16[None, :])).sum(1)
+        s_phys = hp.singular_values(g_phys)
+        nec_ok &= int((s_phys / s_phys[0] > 1e-10).sum()) <= L
+        # same rank, radii != 1 => not a ULA channel
+        z_off = np.exp(-1j * psi16) * (1.0 + 0.35 * rng16.random(L))
+        g_off = (a16[None, :] * z_off[None, :] ** nn16).sum(1)
+        s_off = hp.singular_values(g_off)
+        if int((s_off / s_off[0] > 1e-10).sum()) == L:
+            suff_witness = max(suff_witness, float(np.abs(np.abs(z_off) - 1).max()))
+    check("16 Hankel rank<=L necessary, NOT sufficient (off-circle witness)",
+          nec_ok and suff_witness > 0.0,
+          f"rank-L witness with max||z|-1| = {suff_witness:.3f}")
+
 
 # ----------------------------------------------------------------- reporting
 def main() -> int:
@@ -252,7 +321,7 @@ def main() -> int:
             print(f"{snr:>6.0f} {s['trials']:>7d} {s['em_gs_db']:>9.3f} "
                   f"{s['hankel_db']:>9.3f} {s['gain_db']:>+8.3f} "
                   f"[{s['gain_ci_lo']:+6.3f},{s['gain_ci_hi']:+6.3f}] "
-                  f"{s['gain_se_db']:>6.3f} {100 * s['win_rate']:>6.1f} "
+                  f"{s['gain_boot_sd_db']:>6.3f} {100 * s['win_rate']:>6.1f} "
                   f"{100 * s['active_frac']:>6.1f} {s['mean_L_hat']:>6.2f}")
         out["experiment_A"] = {f"{k:+.1f}": v for k, v in A.items()}
 
@@ -349,12 +418,12 @@ def _write_csvs(out: dict) -> None:
         with open(RES / "experiment_A_snr.csv", "w", newline="") as fh:
             w = csv.writer(fh)
             w.writerow(["snr_db", "trials", "em_gs_db", "hankel_em_gs_db", "gain_db",
-                        "gain_ci_lo", "gain_ci_hi", "gain_se_db", "win_rate",
+                        "gain_ci_lo", "gain_ci_hi", "gain_boot_sd_db", "win_rate",
                         "active_frac", "mean_L_hat"])
             for k, s in out["experiment_A"].items():
                 w.writerow([k, s["trials"], f"{s['em_gs_db']:.4f}", f"{s['hankel_db']:.4f}",
                             f"{s['gain_db']:.4f}", f"{s['gain_ci_lo']:.4f}",
-                            f"{s['gain_ci_hi']:.4f}", f"{s['gain_se_db']:.4f}",
+                            f"{s['gain_ci_hi']:.4f}", f"{s['gain_boot_sd_db']:.4f}",
                             f"{s['win_rate']:.4f}", f"{s['active_frac']:.4f}",
                             f"{s['mean_L_hat']:.3f}"])
     if "experiment_B" in out:
