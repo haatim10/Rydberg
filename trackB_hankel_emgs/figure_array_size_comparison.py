@@ -153,7 +153,7 @@ def fig_panels(S: dict) -> dict:
     and one float slot; no panel is dropped.
     """
     Ns = list(cfg.N_GRID)
-    fig, ax = plt.subplots(2, 2, figsize=(3.3, 2.42), sharex=True)
+    fig, ax = plt.subplots(2, 2, figsize=(3.4, 2.85), sharex=True)
     flat = ax.ravel()
 
     for a, snr in zip(flat[:3], PANEL_SNRS):
@@ -164,27 +164,41 @@ def fig_panels(S: dict) -> dict:
             h = np.array([S[(N, snr)][hi] for N in Ns])
             a.errorbar(Ns, y, yerr=[y - l, h - y], capsize=2.5, elinewidth=0.9, **sty)
         a.set_title(f"SNR = {snr:+.0f} dB", fontsize=7.5)
+        a.margins(x=0.16, y=0.20)
 
     em = [float(np.mean([S[(N, s)]["em_db"] for s in cfg.SNR_GRID_DB])) for N in Ns]
     hk = [float(np.mean([S[(N, s)]["hk_db"] for s in cfg.SNR_GRID_DB])) for N in Ns]
     a = flat[3]
     a.plot(Ns, em, **EM); a.plot(Ns, hk, **HK)
-    for N, u, v in zip(Ns, em, hk):
-        a.annotate(f"{v - u:+.2f}", (N, (u + v) / 2), fontsize=6.6, ha="center",
-                   va="center", color="0.3",
+    # The two curves touch at N = 8, so a label at the midpoint of the gap sits
+    # on a marker. Hang each one below the lower (Hankel) point instead, where
+    # the panel is empty, and open up the y-margin to make room.
+    for i, (N, u, v) in enumerate(zip(Ns, em, hk)):
+        dx, ha = ((3, "left") if i == 0 else
+                  (-3, "right") if i == len(Ns) - 1 else (0, "center"))
+        a.annotate(f"{v - u:+.2f}", (N, min(u, v)), fontsize=6.6, ha=ha,
+                   va="top", color="0.3", textcoords="offset points",
+                   xytext=(dx, -7),
                    bbox=dict(fc="white", ec="none", alpha=0.85, pad=0.7))
     a.set_title("SNR-averaged", fontsize=7.5)
-    a.margins(x=0.16, y=0.16)
+    a.margins(x=0.16)
+    a.set_ymargin(0.30)
 
     for a in flat:
         a.set_xscale("log", base=2); a.set_xticks(Ns)
         a.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
         a.set_ylabel("NMSE (dB)", fontsize=7.5)
+        a.tick_params(labelsize=7)
     for a in ax[1]:
         a.set_xlabel("array size $N$")
-    flat[0].legend(framealpha=1.0, loc="best", fontsize=7.5)
-    fig.text(0.5, -0.03, "lower is better", ha="center", fontsize=7)
-    fig.tight_layout()
+    fig.tight_layout(pad=0.4, w_pad=0.8, h_pad=0.6)
+    # Panels are small and the two curves converge at N = 8, so an in-axes
+    # legend covered data in every position tried. One shared legend below the
+    # grid cannot occlude anything.
+    h, lb = flat[0].get_legend_handles_labels()
+    fig.legend(h, lb, loc="upper center", bbox_to_anchor=(0.5, 0.045), ncol=2,
+               frameon=False, fontsize=7.5, handlelength=2.0, columnspacing=1.8)
+    fig.subplots_adjust(bottom=0.20)
     for ext in ("png", "pdf"):
         fig.savefig(FIG / f"fig5_nmse_vs_N_panels.{ext}")
     plt.close(fig)

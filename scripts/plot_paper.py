@@ -53,7 +53,7 @@ def save(fig, name):
 # ---- Fig. 1: NMSE vs SNR at N=32, P=30, all three estimators + both bounds
 def fig1():
     CC = crlb()
-    fig, ax = plt.subplots(figsize=(3.2, 1.75))
+    fig, ax = plt.subplots(figsize=(3.3, 1.72))
     for est, (mk, c, lab) in STY.items():
         ax.plot(SNRS, [pooled(b3(32, 30, s), est) for s in SNRS], mk, color=c, label=lab)
     key = [f"N32_P30_snr{s:+.0f}" for s in SNRS]
@@ -62,7 +62,12 @@ def fig1():
     ax.plot(SNRS, [CC["constrained"]["b3"][k] for k in key], "-.",
             color="C2", lw=1.0, label="CCRB, geometric")
     ax.set_xlabel("SNR (dB)"); ax.set_ylabel(r"NMSE$_G$ (dB)")
-    ax.set_xticks(SNRS); ax.legend(framealpha=1.0, loc="lower left")
+    ax.set_xticks(SNRS)
+    # Five entries and a full diagonal sweep leave no clear interior region, so
+    # the legend goes outside the axes: it cannot occlude data there.
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.36), ncol=3,
+              frameon=False, fontsize=6.6, handlelength=1.9,
+              columnspacing=1.0, handletextpad=0.5, borderpad=0.0)
     save(fig, "fig1_nmse_vs_snr")
 
 
@@ -73,7 +78,7 @@ def fig2():
     Individual (SNR, P) points are shown as well as their mean, because at N = 8
     the per-point gains straddle zero and a mean alone would hide that.
     """
-    fig, ax = plt.subplots(figsize=(3.2, 1.65))
+    fig, ax = plt.subplots(figsize=(3.3, 1.62))
     for P, mk, c in ((10, "o-", "C0"), (30, "s-", "C3")):
         means = []
         for N in (8, 16, 32):
@@ -89,7 +94,10 @@ def fig2():
     ax.get_xaxis().set_major_formatter(matplotlib.ticker.ScalarFormatter())
     ax.set_xlabel("array size $N$")
     ax.set_ylabel(r"$\Delta_{\mathrm{HS}}$ over EM-GS (dB)")
-    ax.legend(framealpha=1.0, loc="upper left")
+    # Both series rise to the right, so the lower-right quadrant holds no data.
+    ax.set_ylim(top=max(4.4, ax.get_ylim()[1]))
+    ax.legend(framealpha=1.0, loc="lower right", fontsize=6.8,
+              handlelength=1.8, borderpad=0.35, labelspacing=0.3)
     save(fig, "fig2_gain_vs_N")
 
 
@@ -114,13 +122,12 @@ def fig3():
                      np.percentile(bs, 2.5), np.percentile(bs, 97.5),
                      d["L_hat"].mean(), int(den.size)))
     L = [r[0] for r in rows]; cap = 16
-    fig, ax = plt.subplots(2, 1, figsize=(3.2, 1.80), sharex=True)
+    fig, ax = plt.subplots(2, 1, figsize=(3.3, 2.20), sharex=True)
+    fig.subplots_adjust(hspace=0.16)
 
     ax[0].plot(L, [r[1] for r in rows], "o-", color="C0", label="EM-GS")
     ax[0].plot(L, [r[2] for r in rows], "^-", color="C3", label="HS-GS")
     ax[0].set_ylabel(r"NMSE$_G$ (dB)")
-    ax[0].legend(framealpha=1.0, loc="lower right", fontsize=6.8)
-    ax[0].set_title("(a) NMSE vs path count", fontsize=7.5)
 
     g = np.array([r[3] for r in rows])
     lo = np.array([r[4] for r in rows]); hi = np.array([r[5] for r in rows])
@@ -128,10 +135,15 @@ def fig3():
     ax[1].errorbar(L, g, yerr=[g - lo, hi - g], fmt="^-", color="C3",
                    capsize=2, elinewidth=0.8)
     ax[1].set_ylabel(r"$\Delta_{\mathrm{HS}}$ (dB)")
-    ax[1].set_title("(b) gain vanishes at the rank cap", fontsize=7.5)
 
+    # Panel titles became a collision hazard once the figure was shrunk to fit
+    # the column; the panel letter now rides inside the axes and the caption
+    # carries the wording.
+    for a, lab in zip(ax, ("(a)", "(b)")):
+        a.annotate(lab, xy=(0.015, 0.94), xycoords="axes fraction",
+                   ha="left", va="top", fontsize=7.5)
     for a in ax:
-        a.margins(y=0.22)
+        a.margins(y=0.26)
         a.axvline(cap, color="0.25", ls=":", lw=1.0)
         a.annotate("rank cap $r_{\\mathrm{max}}\\!=\\!16$", xy=(cap, 0.97),
                    xycoords=("data", "axes fraction"), xytext=(-4, 0),
@@ -139,6 +151,10 @@ def fig3():
                    fontsize=6.4, color="0.25")
         a.set_xticks(L)
     ax[1].set_xlabel("paths per user $L$")
+    # One shared legend, outside both axes.
+    h, lb = ax[0].get_legend_handles_labels()
+    fig.legend(h, lb, loc="upper center", bbox_to_anchor=(0.55, -0.02), ncol=2,
+               frameon=False, fontsize=6.8, handlelength=1.9, columnspacing=1.4)
     save(fig, "fig3_pathcount")
     print("    fig3 seq:", ", ".join(f"{r[3]:+.2f}" for r in rows),
           f"| trials/pt {rows[0][7]} | E[Lhat] at L=16 = {rows[-1][6]:.2f}")
@@ -163,7 +179,7 @@ def fig4():
     norm = lambda s: s / s[0]
     gc = cadzow_project(Ge[:, 0], L, n_iter=4)
 
-    fig, ax = plt.subplots(figsize=(3.2, 1.60))
+    fig, ax = plt.subplots(figsize=(3.3, 1.62))
     k = np.arange(1, min(hankel_matrix(w.G[:, 0], p).shape) + 1)
     ax.semilogy(k, norm(sv(w.G[:, 0])), "o-", color="0.10", label=f"true channel ($L={L}$)")
     ax.semilogy(k, norm(sv(Ge[:, 0])), "s-", color="C0", label="EM-GS estimate")
@@ -171,8 +187,11 @@ def fig4():
     ax.axvline(L + 0.5, color="0.5", ls=":", lw=0.9)
     ax.set_xlabel("singular value index"); ax.set_ylabel("normalised singular value")
     ax.set_xticks([1, 4, 8, 12, 16])
-    # the empty mid-right band is the only region no curve passes through
-    ax.legend(framealpha=1.0, loc="center right", bbox_to_anchor=(1.0, 0.42))
+    # Sixteen decades of dynamic range leave no interior gap wide enough for a
+    # three-entry legend, so it sits below the axes.
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.34), ncol=2,
+              frameon=False, fontsize=6.6, handlelength=1.9,
+              columnspacing=1.0, handletextpad=0.5, borderpad=0.0)
     save(fig, "fig4_hankel_spectrum")
 
 

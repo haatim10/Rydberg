@@ -296,11 +296,11 @@ Alg.~\ref{alg:hsgs} states precisely which lines separate HS-GS from the
 baseline.
 
 HS-GS needs a target rank $\hat L$, and the true $L_k$ is unknown to any
-practical receiver. The in-sample residual cannot supply it: constraining
-$\bG$ to a smaller set can only worsen the fit to the pilots used for fitting,
-so that criterion always prefers the largest candidate. Splitting the pilots
-into a fitting set and a validation set of fraction $\nu=0.3$ penalises
-over-modelling correctly, and every quantity involved is observable:
+practical receiver. The in-sample residual cannot supply it: constraining $\bG$
+can only worsen the fit to the pilots used for fitting, so that criterion
+always prefers the largest candidate. Holding out a validation fraction
+$\nu=0.3$ of the pilots penalises over-modelling correctly, and every quantity
+involved is observable:
 \begin{equation}\label{eq:order}
 \hat L=\arg\min_{1\le L\le r_{\max}}
 \bigl\|\,\bZ_{\mathcal{V}}-\bigl|\bG_L\bS_{\mathcal{V}}+\bB_{\mathcal{V}}\bigr|\,\bigr\|_F^{2},
@@ -309,10 +309,10 @@ with $\bG_L$ the estimate at order $L$ from the fitting columns only, run for
 $T_{\mathrm{sel}}=20$ iterations. \textbf{No oracle rank is used anywhere in
 this paper}; the selector returns a single scalar $\hat L$ applied to all $K$
 columns. Order matters both ways: $\hat L<L$ truncates genuine components, a
-bias that does not vanish as noise decreases, while $\hat L>L$ admits noise
-and weakens the prior. Our selector systematically under-selects---true orders
-$(7,4,6)$ typically give $\hat L=5$, and in Section~\ref{sec:results}-C mean
-$\hat L$ reaches only $11.63$ at $L=16$.
+bias that does not vanish as noise decreases, while $\hat L>L$ admits noise and
+weakens the prior. Ours systematically under-selects---true orders $(7,4,6)$
+typically give $\hat L=5$, and mean $\hat L$ reaches only $11.63$ at $L=16$
+(\S\ref{sec:results}-B).
 
 \begin{algorithm}[!tb]
 \caption{EM-GS measurement update $\mathcal{T}_{\mathrm{EM}}$ (one iteration)}
@@ -395,13 +395,12 @@ the two then agree \emph{bit for bit}; this is checked numerically in
 
 \subsection{Complexity}
 One EM-GS update costs $O(NPK)$; the projection adds $Kn_{\mathrm{cz}}$ SVDs
-per iteration, $O(Kn_{\mathrm{cz}}N^{3})$, and selection multiplies this by
-the $r_{\max}$ candidates. Against a \emph{chained} EM-GS baseline (the
-correct reference, HS-GS issuing $T$ single-iteration calls costing
-$1.005$--$1.038\times$ in overhead alone) HS-GS at fixed order costs $1.49$,
-$1.32$, $1.22\times$ at $N=8,16,32$---the ratio \emph{falls} with $N$.
-Selection dominates the full estimator ($57.7$--$85.5\%$ of runtime), so
-shrinking the candidate set is the obvious practical target.
+per iteration, $O(Kn_{\mathrm{cz}}N^{3})$, and selection multiplies this by the
+$r_{\max}$ candidates. Against a \emph{chained} EM-GS baseline---the correct
+reference, HS-GS issuing $T$ single-iteration calls---HS-GS at fixed order
+costs $1.49$, $1.32$, $1.22\times$ at $N=8,16,32$, so the ratio \emph{falls}
+with $N$. Selection dominates ($57.7$--$85.5\%$ of runtime), making the
+candidate set the obvious practical target.
 
 %==========================================================================
 \section{Performance Benchmark}\label{sec:crlb}
@@ -449,15 +448,15 @@ $\bD(\bD^{T}\bJ\bD)^{-1}\bD^{T}$ is unusable, $\bD$ being rank deficient: at
 $N=8$ its mean numerical rank is $40.4$ against $\approx44.7$ parameters, and
 $28.1\%$ of realisations have $3\sum_k L_k>2NK$, so
 $\boldsymbol{\phi}\mapsto\bG$ is not injective. We use the Gorman--Hero /
-Stoica--Ng tangent-space form \cite{gorman1990,stoica1998}, $\bU$ an
-orthonormal basis of $\range(\bD)$ from SVD at tolerance $10^{-9}$:
+Stoica--Ng tangent-space form \cite{gorman1990,stoica1998} with $\bU$ an
+orthonormal basis of $\range(\bD)$ (SVD, tolerance $10^{-9}$):
 \begin{equation}\label{eq:ccrb}
 \mathrm{CCRB}=\bU\bigl(\bU^{T}\bJ\bU\bigr)^{-1}\bU^{T},
 \end{equation}
 which depends on the tangent \emph{space} and is invariant to
-over-parameterisation. Worst conditioning of $\bU^{T}\bJ\bU$ is then $80.1$
-(at the degenerate $P=6$), elsewhere below $35$. Both bounds are averaged over
-the same $400$ realisations as the estimator curves.
+over-parameterisation. Worst conditioning of $\bU^{T}\bJ\bU$ is then $80.1$ (at
+the degenerate $P=6$), elsewhere below $35$. Both bounds average over the same
+realisations as the estimator curves.
 
 \subsection{Bias Caveat}
 Both bounds constrain the covariance of \emph{unbiased} estimators, whereas
@@ -513,11 +512,10 @@ path-count sweep.
 \textbf{Verification.} A standalone package reproduces the comparison and
 passes thirteen automated checks. Two are load-bearing for fairness and
 executed rather than asserted: each trial hands both estimators one
-\emph{read-only} world $(\bG,\bS,\bB,\bW,\bZ)$, so they cannot diverge, and
-with the projection disabled HS-GS reproduces EM-GS to
-$\max|\mathrm{diff}|=0$---the projection is provably the only difference. A
-third confirms \S\ref{sec:hankel}: a noiseless $L$-path column has
-$\sigma_{L+1}/\sigma_1\approx7\times10^{-16}$.
+\emph{read-only} world $(\bG,\bS,\bB,\bW,\bZ)$, and with the projection
+disabled HS-GS reproduces EM-GS to $\max|\mathrm{diff}|=0$---the projection is
+provably the only difference. A third confirms \S\ref{sec:hankel}: a noiseless
+$L$-path column has $\sigma_{L+1}/\sigma_1\approx7\times10^{-16}$.
 
 %==========================================================================
 \section{Results and Discussion}\label{sec:results}
@@ -543,14 +541,14 @@ summarises that array size.}
 \label{fig:scaling}
 \end{figure}
 
-\subsection{Main Result and Array-Size Scaling} First the operating point. EM-GS improves on biased GS by $1.31$~dB at RSR
-$=0$~dB, collapsing to $0.113$~dB at $12$~dB and $0.002$~dB at $24$~dB as
-$R(\kappa)\to1$ and the two provably coincide. RSR $=12$~dB, from
-\cite{cui2025}, keeps the baselines separable, so the gains below are
-attributable to the projection, not the choice of exact step.
-Fig.~\ref{fig:snr} shows the comparison at $N=32$, $P=30$. EM-GS tracks the unconstrained CRLB to within $0.05$~dB for SNR $\ge5$~dB, so
-it is close to efficient for the unstructured problem and the corrected bound
-is credible. The geometric CCRB lies $0.87$--$9.98$~dB below it, quantifying
+\subsection{Main Result and Array-Size Scaling} First the operating point.
+EM-GS improves on biased GS by $1.31$~dB at RSR $=0$~dB, collapsing to
+$0.113$~dB at $12$~dB and $0.002$~dB at $24$~dB as $R(\kappa)\to1$ and the two
+provably coincide. RSR $=12$~dB, from \cite{cui2025}, keeps the baselines
+separable, so the gains below are attributable to the projection, not the
+choice of exact step. In Fig.~\ref{fig:snr} ($N=32$, $P=30$) EM-GS tracks the
+unconstrained CRLB to within $0.05$~dB for SNR $\ge5$~dB, so it is close to
+efficient for the unstructured problem and the bound is credible. The geometric CCRB lies $0.87$--$9.98$~dB below it, quantifying
 what the structure is worth in principle; HS-GS occupies part of that gap,
 improving on EM-GS by $2.27$--$3.04$~dB across the sweep.
 
@@ -565,24 +563,24 @@ baseline.
 The mechanism is the ratio of path count to rank ceiling \eqref{eq:cap}: at
 $N=8$, $r_{\max}=4$ while $L_k\in\{3,\dots,7\}$, so the projection is inactive
 in $43\%$ of trials and where active often truncates real components, whereas
-at $N=32$, $r_{\max}=16\gg L_k$ and it is active in $99.6\%$. At $N=8$ the sign of any scalar summary depends on the
-pooling---the per-point mean is $-0.19$~dB, energy-pooling gives
-$+0.81$~dB---because HS-GS wins at low SNR and loses at high SNR there. That
-high-SNR loss is a bias-dominated floor: truncation bias does not shrink with
+at $N=32$, $r_{\max}=16\gg L_k$ and it is active in $99.6\%$. At $N=8$ the sign
+of any scalar summary therefore depends on the pooling---the per-point mean is
+$-0.19$~dB, energy-pooling $+0.81$~dB---because HS-GS wins at low SNR and loses
+at high SNR there, a bias-dominated floor: truncation bias does not shrink with
 noise, so as variance falls the trade stops paying. At $N=16$ and $32$ every
 pooling agrees in sign.
 
 \begin{figure}[!tb]
 \centering
-\includegraphics[width=0.97\columnwidth]{fig/fig3_pathcount.pdf}
+\includegraphics[width=0.93\columnwidth]{fig/fig3_pathcount.pdf}
 \caption{Controlled path count ($N=32$, $P=30$, SNR $=5$~dB, RSR $=12$~dB,
 $300$ trials per point, $L$ fixed and identical across users). (a) EM-GS is
 flat in $L$---path count does not affect an estimator that ignores
 structure---which confirms the sweep is not confounded; HS-GS rises to meet
 it. (b) The paired gain decays monotonically to zero as $L$ approaches the rank
 ceiling $r_{\max}=\lceil N/2\rceil=16$; the $95\%$ paired bootstrap band is
-plotted but is narrower than the markers. The hypothesis producing this figure
-was recorded before the experiment was run.}
+plotted but is narrower than the markers. The hypothesis was recorded before
+the experiment was run.}
 \label{fig:pathcount}
 \end{figure}
 
@@ -594,10 +592,9 @@ $r_{\max}$; the gain decays strictly monotonically,
 7.04,\;3.56,\;1.79,\;1.04,\;0.58,\;0.27,\;0.05,\;-0.12~\text{dB}
 \]
 for $L=2,4,\dots,16$, with the per-trial win rate falling from $100\%$ to
-$45.0\%$ and EM-GS flat to $0.19$~dB across the sweep. The interpretation is direct: when $L\ll r_{\max}$ the lifting carries
-substantial redundant structure, so projecting suppresses error that does not
-share it; as $L\to r_{\max}$ the prior admits almost every vector and the
-benefit disappears.
+$45.0\%$ and EM-GS flat to $0.19$~dB across the sweep. When $L\ll r_{\max}$ the lifting carries redundant structure, so projecting
+suppresses error that does not share it; as $L\to r_{\max}$ the prior admits
+almost every vector and the benefit disappears.
 
 Two details matter. The null is reached at $L=14$ (gain $+0.05$~dB, CI
 $[-0.05,+0.14]$), one grid point \emph{before} the ceiling, and at $L=16$ it
@@ -605,9 +602,9 @@ is small but significantly negative ($-0.12$~dB, CI $[-0.21,-0.04]$). The
 selector explains this, not the theory: mean $\hat L$ reaches only $11.63$ at
 $L=16$, so the constraint is still active in $89.3\%$ of trials and there
 discards genuine components---the $\hat L<L$ regime of \S\ref{sec:method}-B.
-Second, this rules out the obvious rival: generic denoising would persist at
-large $L$, where the estimate is equally noisy, not vanish exactly where the
-prior becomes vacuous.
+Second, this rules out generic denoising, which would persist at large $L$,
+where the estimate is equally noisy, rather than vanish exactly where the prior
+becomes vacuous.
 
 \subsection{Structural Diagnostic}
 Fig.~\ref{fig:spectrum} shows why the prior exists and what the projection
@@ -650,7 +647,7 @@ $N=8$ is a mixed result, not a small positive one.
 
 \begin{figure}[!tb]
 \centering
-\includegraphics[width=0.98\columnwidth]{fig/fig5_nmse_vs_N_panels.pdf}
+\includegraphics[width=0.92\columnwidth]{fig/fig5_nmse_vs_N_panels.pdf}
 \caption{Absolute channel NMSE versus array size: three SNR regimes and, bottom
 right, the SNR-averaged summary (mean of the seven per-SNR values taken
 \emph{after} conversion to decibels, \S\ref{sec:setup}; inset labels give HS-GS
@@ -667,18 +664,17 @@ $0.32$--$8.85$~dB, and the gap \emph{grows} with $N$ ($+0.32$--$1.41$~dB at
 $N=8$, $+4.29$--$4.82$~dB at $N=32$, $P=30$): it captures more structural gain
 in absolute terms as the array grows but a smaller share of what is available.
 
-Curves do fall below the plotted bounds, in two distinct senses. HS-GS lies
-below the \emph{unconstrained} CRLB at $26$ of $36$ points, by up to
-$6.94$~dB, but this is no violation: that bound governs estimators treating
-$\bG$ as $2NK$ free parameters, whereas HS-GS exploits a prior it does not
-model. Its proper bound is the CCRB, respected at $34$ of $36$. The remaining
-crossings are consistent with bias, as \eqref{eq:mse} permits, and track the
-measured shrinkage $c=\langle\hat\bG,\bG\rangle/\|\bG\|_F^{2}$ in both
-magnitude and location: GS and EM-GS cross by up to $2.62$~dB at $-5$~dB where
-$c_{\mathrm{EM}}=0.944$, but by at most $0.05$~dB for SNR $\ge15$~dB where
-$c\to1$; HS-GS falls below the CCRB at exactly the two points of strongest
-shrinkage ($c_{\mathrm{HS}}=0.561$, $0.776$). We do not claim bias accounts
-for every crossing.
+Curves do fall below the plotted bounds, in two senses. HS-GS lies below the
+\emph{unconstrained} CRLB at $26$ of $36$ points, by up to $6.94$~dB, but this
+is no violation: that bound governs estimators treating $\bG$ as $2NK$ free
+parameters, whereas HS-GS exploits a prior it does not model. Its proper bound
+is the CCRB, respected at $34$ of $36$. The remaining crossings are consistent
+with bias, as \eqref{eq:mse} permits, and track the measured shrinkage
+$c=\langle\hat\bG,\bG\rangle/\|\bG\|_F^{2}$: GS and EM-GS cross by up to
+$2.62$~dB at $-5$~dB where $c_{\mathrm{EM}}=0.944$, but by at most $0.05$~dB
+for SNR $\ge15$~dB where $c\to1$, and HS-GS falls below the CCRB at exactly
+the two points of strongest shrinkage ($c_{\mathrm{HS}}=0.561$, $0.776$). We
+do not claim bias accounts for every crossing.
 
 %==========================================================================
 \section{Limitations and Future Work}\label{sec:limits}
@@ -700,8 +696,8 @@ gain.
 
 Further, a single scalar $\hat L$ is imposed on all $K$ users despite their
 differing orders; \eqref{eq:map} has no convergence guarantee, its constraint
-set being non-convex and its projection approximate; and all users have equal
-power, so near--far effects are untested.
+set being non-convex and its projection approximate; and equal user power
+leaves near--far effects untested.
 
 %==========================================================================
 \section{Conclusion}\label{sec:conclusion}
