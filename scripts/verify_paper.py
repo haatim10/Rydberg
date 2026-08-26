@@ -161,7 +161,7 @@ jr = CC["jacobian_rank"]["b3"]
 claim("Jacobian rank N=8", "$40.4$",
       np.mean([jr[k] for k in jr if k.startswith("N8_")]), 40.4, 0.05)
 allc = list(CC["jacobian_cond"]["b3"].values()) + list(CC["jacobian_cond"]["b4"].values())
-claim("worst conditioning", "$80.1$", max(allc), 80.1, 0.05)
+claim("worst conditioning", "$52.3$", max(allc), 52.3, 0.05)
 fact("CRLB trials", CC["n_trials"], 400, 0)
 
 # --- the compiled document itself must be error-free.

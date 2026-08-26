@@ -70,8 +70,10 @@ as the aperture grows, and the gap widens monotonically
 than general: at $N=8$ the projection helps by $0.74$~dB at $-10$~dB SNR but
 \emph{hurts} by up to $0.40$~dB above $0$~dB. A controlled path-count
 experiment confirms the mechanism: the gain decays monotonically from
-$7.04$~dB at $L=2$ to zero exactly as the path count reaches the Hankel rank
-ceiling. Robustness under clustered
+$7.04$~dB at $L=2$ toward zero as the path count approaches the Hankel rank
+ceiling, reaching the null one grid point before it; at the ceiling the
+practical held-out selector under-selects the order, leaving a small
+significantly negative gain. Robustness under clustered
 propagation is not established and is the decisive next test.
 \end{abstract}
 
@@ -456,7 +458,7 @@ orthonormal basis of $\range(\bD)$ (SVD, tolerance $10^{-9}$):
 \mathrm{CCRB}=\bU\bigl(\bU^{T}\bJ\bU\bigr)^{-1}\bU^{T},
 \end{equation}
 which depends on the tangent \emph{space} and is invariant to
-over-parameterisation. Worst conditioning of $\bU^{T}\bJ\bU$ is then $80.1$ (at
+over-parameterisation. Worst conditioning of $\bU^{T}\bJ\bU$ is then $52.3$ (at
 the degenerate $P=6$), elsewhere below $35$. Both bounds average over the same
 realisations as the estimator curves.
 
@@ -526,10 +528,12 @@ $L$-path column has $\sigma_{L+1}/\sigma_1\approx7\times10^{-16}$.
 \begin{figure}[!tb]
 \centering
 \includegraphics[width=0.95\columnwidth]{fig/fig1_nmse_vs_snr.pdf}
-\caption{NMSE versus SNR at $N=32$, $P=30$, RSR $=12$~dB. EM-GS is
-indistinguishable from the unconstrained CRLB, so that bound is tight for the
-unstructured problem; HS-GS lies between the two, recovering part of the
-headroom identified by the geometric CCRB.}
+\caption{NMSE versus SNR at $N=32$, $P=30$, RSR $=12$~dB. EM-GS tracks the
+unconstrained CRLB to within $0.05$~dB for SNR $\ge5$~dB, so that bound is
+tight for the unstructured problem there; at $-5$ and $0$~dB the curves
+separate visibly ($0.30$ and $0.24$~dB), consistent with the low-SNR bias of
+\eqref{eq:mse}. HS-GS lies between the two, recovering part of the headroom
+identified by the geometric CCRB.}
 \label{fig:snr}
 \end{figure}
 
@@ -714,8 +718,9 @@ larger aperture into lower normalised error. That the gap widens with $N$ is an
 \emph{empirical} finding over $N\in\{8,16,32\}$, consistent with $\lceil
 N/2\rceil$ growing past $L_k$ but not proved beyond the sizes simulated; the
 benefit is conditional, negative at $N=8$ above $0$~dB SNR. The path-count
-sweep delimits the mechanism: the gain scales with $r_{\max}/L$ and vanishes at
-the ceiling. Validation under clustered propagation remains the essential next
+sweep delimits the mechanism: the gain scales with $r_{\max}/L$ and decays to
+the null just below the ceiling, turning slightly negative at it where the
+selector under-selects. Validation under clustered propagation remains the essential next
 step.
 
 %==========================================================================
