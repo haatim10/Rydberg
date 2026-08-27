@@ -1,0 +1,302 @@
+{
+  "config": {
+    "system": {
+      "K": 3,
+      "N": 32,
+      "P": 20,
+      "L_min": 3,
+      "L_max": 7,
+      "beta": 1.0,
+      "c": 1.0,
+      "vartheta": 0.0,
+      "rsr_db": 10.0,
+      "master_seed": 20260827
+    },
+    "data": {
+      "n_train": 20000,
+      "n_val": 2000,
+      "n_test": 2000,
+      "train_seed_range": [
+        0,
+        1000000
+      ],
+      "val_seed_range": [
+        1000000,
+        2000000
+      ],
+      "test_seed_range": [
+        2000000,
+        3000000
+      ],
+      "pilot_mode": "fixed_S",
+      "fixed_S_seed": 777000001,
+      "snr_mode": "snr_range",
+      "snr_range_db": [
+        0.0,
+        20.0
+      ],
+      "snr_fixed_db": 5.0,
+      "p_train_choices": null
+    },
+    "model": {
+      "T_UR": 10,
+      "d_model": 64,
+      "L_enc": 3,
+      "n_heads": 4,
+      "ffn_mult": 4,
+      "dropout": 0.0,
+      "filter_hidden": 32,
+      "filter_input": "log1p_kappa",
+      "filter_init": "random",
+      "gate_init": "near_gs",
+      "tie_layers": false,
+      "deep_supervision": false
+    },
+    "train": {
+      "batch_size": 32,
+      "lr": 0.001,
+      "epochs": 50,
+      "optimizer": "adam",
+      "scheduler": "cosine",
+      "weight_decay": 0.0,
+      "grad_clip": 1.0,
+      "num_threads": 1,
+      "seed": 20260827,
+      "init": "random"
+    },
+    "numeric": {
+      "dtype": "float32"
+    },
+    "baseline": {
+      "T_GS": 100,
+      "ridge": 0.0
+    },
+    "base_sha": "54c88d5d5888923d973b6ff6a429e51da75b61df",
+    "audit_commit": "74984c7",
+    "rsr_paper_equiv_db": 14.771212547196624,
+    "gate_init_value": -2.0,
+    "eps": 1e-08
+  },
+  "torch": "2.13.0+cu130",
+  "cuda_available": false,
+  "reference_config": {
+    "N": 32,
+    "K": 3,
+    "P": 20,
+    "T_UR": 10,
+    "d_model": 64,
+    "L_enc": 3,
+    "batch_size": 32,
+    "dtype": "float32"
+  },
+  "params": {
+    "tie_layers": false,
+    "T_UR": 10,
+    "per_layer": [
+      {
+        "layer": 0,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 1,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 2,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 3,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 4,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 5,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 6,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 7,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 8,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 9,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      }
+    ],
+    "totals": {
+      "filter_net": 970,
+      "gate": 10,
+      "transformer": 1585920,
+      "all_parameters": 1586900
+    },
+    "note": "untied: per-layer sums equal the total"
+  },
+  "runs": {
+    "1": {
+      "n_threads": 1,
+      "N": 32,
+      "P": 20,
+      "n_samples": 200,
+      "epoch_seconds": [
+        0.878,
+        0.803,
+        0.87
+      ],
+      "median_epoch_seconds": 0.87,
+      "samples_per_second": 229.81,
+      "dataset_gen_seconds_for_200": 0.21,
+      "dataset_gen_per_sample_ms": 1.04
+    },
+    "2": {
+      "n_threads": 2,
+      "N": 32,
+      "P": 20,
+      "n_samples": 200,
+      "epoch_seconds": [
+        0.698,
+        0.692,
+        0.714
+      ],
+      "median_epoch_seconds": 0.698,
+      "samples_per_second": 286.36,
+      "dataset_gen_seconds_for_200": 0.25,
+      "dataset_gen_per_sample_ms": 1.27
+    },
+    "4": {
+      "n_threads": 4,
+      "N": 32,
+      "P": 20,
+      "n_samples": 200,
+      "epoch_seconds": [
+        0.782,
+        0.847,
+        0.766
+      ],
+      "median_epoch_seconds": 0.782,
+      "samples_per_second": 255.85,
+      "dataset_gen_seconds_for_200": 0.14,
+      "dataset_gen_per_sample_ms": 0.72
+    }
+  },
+  "chosen_num_threads": 2,
+  "extrapolation": {
+    "basis": "num_threads=2, 286.36 samples/s at N=32",
+    "one_training_20000x50_seconds": 3492.1,
+    "one_training_20000x50_hours": 0.97,
+    "dataset_generation_20000_seconds": 25.4,
+    "dataset_generation_20000_hours": 0.007,
+    "total_one_training_hours": 0.98
+  },
+  "per_N": {
+    "8": {
+      "n_threads": 2,
+      "N": 8,
+      "P": 20,
+      "n_samples": 200,
+      "epoch_seconds": [
+        0.574,
+        0.57,
+        0.566
+      ],
+      "median_epoch_seconds": 0.57,
+      "samples_per_second": 350.87,
+      "dataset_gen_seconds_for_200": 0.13,
+      "dataset_gen_per_sample_ms": 0.63,
+      "one_training_hours": 0.79
+    },
+    "16": {
+      "n_threads": 2,
+      "N": 16,
+      "P": 20,
+      "n_samples": 200,
+      "epoch_seconds": [
+        0.635,
+        0.622,
+        0.631
+      ],
+      "median_epoch_seconds": 0.631,
+      "samples_per_second": 316.71,
+      "dataset_gen_seconds_for_200": 0.13,
+      "dataset_gen_per_sample_ms": 0.64,
+      "one_training_hours": 0.88
+    },
+    "32": {
+      "n_threads": 2,
+      "N": 32,
+      "P": 20,
+      "n_samples": 200,
+      "epoch_seconds": [
+        0.763,
+        0.796,
+        0.823
+      ],
+      "median_epoch_seconds": 0.796,
+      "samples_per_second": 251.32,
+      "dataset_gen_seconds_for_200": 0.15,
+      "dataset_gen_per_sample_ms": 0.75,
+      "one_training_hours": 1.11
+    }
+  },
+  "training_matrix": {
+    "D1_nmse_vs_snr": {
+      "trainings": 3,
+      "detail": "N=32, P=20, 3 initializers",
+      "hours": 3.33
+    },
+    "D2_nmse_vs_pilots": {
+      "trainings": 3,
+      "detail": "N=32, P~U{sweep}, 3 initializers",
+      "hours": 3.33
+    },
+    "D3_nmse_vs_array_size": {
+      "trainings": 6,
+      "detail": "N in {8,16} x 3 initializers; the N=32 column reuses D1",
+      "hours": 5.01
+    },
+    "total": {
+      "trainings": 12,
+      "hours": 11.67
+    }
+  }
+}

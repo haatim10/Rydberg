@@ -1,0 +1,540 @@
+{
+  "gates": {
+    "A_shapes": {
+      "pass": true,
+      "cases": [
+        {
+          "N": 8,
+          "K": 2,
+          "P": 8,
+          "batch": 1,
+          "resolved": [
+            1,
+            8,
+            2,
+            8
+          ]
+        },
+        {
+          "N": 16,
+          "K": 3,
+          "P": 20,
+          "batch": 4,
+          "resolved": [
+            4,
+            16,
+            3,
+            20
+          ]
+        },
+        {
+          "N": 32,
+          "K": 3,
+          "P": 30,
+          "batch": 2,
+          "resolved": [
+            2,
+            32,
+            3,
+            30
+          ]
+        },
+        {
+          "N": 8,
+          "K": 4,
+          "P": 12,
+          "batch": 3,
+          "resolved": [
+            3,
+            8,
+            4,
+            12
+          ]
+        }
+      ],
+      "errors": [],
+      "summary": "4 shape configs + 5 negative cases"
+    },
+    "B_forward_float64": {
+      "pass": true,
+      "tolerance": 1e-12,
+      "dtype": "float64",
+      "G_at_S_rel_err": 0.0,
+      "B_rel_err": 0.0,
+      "Y_rel_err": 0.0,
+      "Z_rel_err": 9.798584824653947e-17,
+      "max_rel_err": 9.798584824653947e-17,
+      "summary": "max rel 9.799e-17 < 1e-12"
+    },
+    "C_ls_parity_float64": {
+      "pass": true,
+      "tolerance": 1e-12,
+      "dtype": "float64",
+      "cases": [
+        {
+          "N": 8,
+          "P": 8,
+          "rel_err": 5.596817923854495e-13
+        },
+        {
+          "N": 16,
+          "P": 20,
+          "rel_err": 4.736772212747627e-13
+        },
+        {
+          "N": 32,
+          "P": 30,
+          "rel_err": 5.127483445181247e-13
+        }
+      ],
+      "max_rel_err": 5.596817923854495e-13,
+      "note": "batched G = R S^H (S S^H)^{-1} vs the repository's per-row canonical solve (gs.py:326-331)",
+      "summary": "max rel 5.597e-13 < 1e-12"
+    },
+    "D_gs_degeneration_float64": {
+      "pass": true,
+      "tolerance": 1e-12,
+      "dtype": "float64",
+      "rel_err": 5.871026118883876e-13,
+      "condition": "alpha=0, residual disabled => one classical GS update",
+      "summary": "rel 5.871e-13 < 1e-12"
+    },
+    "E_emgs_degeneration_float64": {
+      "pass": true,
+      "tolerance": 1e-10,
+      "dtype": "float64",
+      "rel_err": 5.699833358502871e-13,
+      "bessel_vs_scipy_rel_err": 2.487586901279584e-16,
+      "kappa_min": 1.5146388919456903,
+      "kappa_max": 55.90203629778653,
+      "condition": "FilterNet -> exact i1e/i0e, alpha=1, residual disabled",
+      "summary": "rel 5.700e-13 < 1e-10; bessel vs scipy 2.488e-16"
+    },
+    "B_forward_float32": {
+      "pass": true,
+      "tolerance": 1e-05,
+      "dtype": "float32",
+      "G_at_S_rel_err": 5.677842749196119e-08,
+      "B_rel_err": 1.2126849790380536e-08,
+      "Y_rel_err": 3.8035424214839424e-08,
+      "Z_rel_err": 4.091534439133168e-08,
+      "max_rel_err": 5.677842749196119e-08,
+      "summary": "max rel 5.678e-08 < 1e-05"
+    },
+    "C_ls_parity_float32": {
+      "pass": true,
+      "tolerance": 1e-05,
+      "dtype": "float32",
+      "cases": [
+        {
+          "N": 8,
+          "P": 8,
+          "rel_err": 1.479370126179824e-07
+        },
+        {
+          "N": 16,
+          "P": 20,
+          "rel_err": 1.3618272251874674e-07
+        },
+        {
+          "N": 32,
+          "P": 30,
+          "rel_err": 1.3868187683535554e-07
+        }
+      ],
+      "max_rel_err": 1.479370126179824e-07,
+      "note": "batched G = R S^H (S S^H)^{-1} vs the repository's per-row canonical solve (gs.py:326-331)",
+      "summary": "max rel 1.479e-07 < 1e-05"
+    },
+    "D_gs_degeneration_float32": {
+      "pass": true,
+      "tolerance": 1e-05,
+      "dtype": "float32",
+      "rel_err": 1.9100123816331028e-07,
+      "condition": "alpha=0, residual disabled => one classical GS update",
+      "summary": "rel 1.910e-07 < 1e-05"
+    },
+    "E_emgs_degeneration_float32": {
+      "pass": true,
+      "tolerance": 1e-05,
+      "dtype": "float32",
+      "rel_err": 2.428929900328678e-07,
+      "bessel_vs_scipy_rel_err": 2.487586901279584e-16,
+      "kappa_min": 1.5146388919456903,
+      "kappa_max": 55.90203629778653,
+      "condition": "FilterNet -> exact i1e/i0e, alpha=1, residual disabled",
+      "summary": "rel 2.429e-07 < 1e-05; bessel vs scipy 2.488e-16"
+    },
+    "F_transformer_identity": {
+      "pass": true,
+      "tolerance": 0.0,
+      "max_abs_diff": 0.0,
+      "per_layer_max_abs_residual": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "condition": "out_proj zero-initialized => residual exactly 0",
+      "summary": "max abs diff 0.0e+00 (required exactly 0.0)"
+    },
+    "G_conjugation": {
+      "pass": true,
+      "tolerance": 1e-12,
+      "psi": 1.5707963267948963,
+      "fitted_slope": -1.570796326794896,
+      "slope_after_roundtrip": -1.570796326794896,
+      "steering_sign": "e^{-j n psi}",
+      "numpy_to_torch_rel_err": 0.0,
+      "ls_rel_err_vs_G": 9.74818214612021e-17,
+      "ls_rel_err_vs_conjG": 1.414213562373095,
+      "tokenize_roundtrip_rel_err": 0.0,
+      "tokenize_roundtrip_rel_err_vs_conjG": 1.414213562373095,
+      "summary": "max rel 9.748e-17; sign e^-jnpsi; conj cross-checks 1.41/1.41 (large)"
+    },
+    "H_gradients": {
+      "pass": true,
+      "dtype": "float32",
+      "loss": 0.22427834570407867,
+      "all_finite": true,
+      "all_nonzero": true,
+      "per_layer": [
+        {
+          "layer": 0,
+          "filter_net_grad_norm": 0.007897074334323406,
+          "former_grad_norm": 0.2791294753551483,
+          "gate_grad_abs": 0.0013541912194341421
+        },
+        {
+          "layer": 1,
+          "filter_net_grad_norm": 0.03809396177530289,
+          "former_grad_norm": 0.32197821140289307,
+          "gate_grad_abs": 0.005317145027220249
+        },
+        {
+          "layer": 2,
+          "filter_net_grad_norm": 0.07188202440738678,
+          "former_grad_norm": 0.42724788188934326,
+          "gate_grad_abs": 0.015589808113873005
+        }
+      ],
+      "summary": "loss 0.2243; all grads finite and > 0 across 3 layers"
+    },
+    "J_noiseless_fixed_point": {
+      "pass": true,
+      "tolerance": 1e-10,
+      "fixed_point": [
+        {
+          "sigma2": 1e-06,
+          "rel_err": 3.0672961822187205e-08
+        },
+        {
+          "sigma2": 1e-09,
+          "rel_err": 3.067503089707139e-11
+        },
+        {
+          "sigma2": 1e-12,
+          "rel_err": 3.282018878179125e-14
+        }
+      ],
+      "emgs_to_gs_limit": [
+        {
+          "sigma2": 0.1,
+          "rel_diff_vs_gs": 0.0033516285906319892
+        },
+        {
+          "sigma2": 0.001,
+          "rel_diff_vs_gs": 3.068910064025338e-05
+        },
+        {
+          "sigma2": 1e-06,
+          "rel_diff_vs_gs": 3.067295964728398e-08
+        },
+        {
+          "sigma2": 1e-09,
+          "rel_diff_vs_gs": 3.0672855920566915e-11
+        },
+        {
+          "sigma2": 1e-12,
+          "rel_diff_vs_gs": 3.0580216541245684e-14
+        }
+      ],
+      "note": "the residual is the exact 1-R(kappa) bias, which vanishes linearly in sigma2; the truth is a fixed point only in the limit, which is correct EM-GS behaviour",
+      "summary": "fixed point 3.28e-14, GS limit 3.06e-14"
+    },
+    "K_kappa_invariance": {
+      "pass": true,
+      "tolerance": 1e-10,
+      "scaled_cases": [
+        {
+          "scale": 2.0,
+          "rel_err": 0.0
+        },
+        {
+          "scale": 10.0,
+          "rel_err": 1.6116235245706988e-16
+        },
+        {
+          "scale": 1000.0,
+          "rel_err": 1.1129464528089097e-16
+        },
+        {
+          "scale": 0.01,
+          "rel_err": 1.5703608167557978e-16
+        }
+      ],
+      "max_rel_err": 1.6116235245706988e-16,
+      "negative_control_rel_err": 0.7499999999999999,
+      "note": "Track D applies NO input normalization; this gate proves the invariant holds should one ever be introduced",
+      "summary": "max rel 1.612e-16; negative control 0.75 (must be large)"
+    },
+    "I_overfit32": {
+      "pass": true,
+      "target_db": -25.0,
+      "final_nmse_db": -135.99326957768216,
+      "best_nmse_db": -136.1207983512335,
+      "n_samples": 32,
+      "steps": 1500,
+      "seconds": 46.5,
+      "curve": [
+        {
+          "step": 1,
+          "nmse_db": -7.01851291549759
+        },
+        {
+          "step": 50,
+          "nmse_db": -20.36108684232145
+        },
+        {
+          "step": 100,
+          "nmse_db": -37.49818755641419
+        },
+        {
+          "step": 150,
+          "nmse_db": -52.21207384625274
+        },
+        {
+          "step": 200,
+          "nmse_db": -51.02714075747694
+        },
+        {
+          "step": 250,
+          "nmse_db": -50.246647918710245
+        },
+        {
+          "step": 300,
+          "nmse_db": -54.30516139822024
+        },
+        {
+          "step": 350,
+          "nmse_db": -55.539638518892104
+        },
+        {
+          "step": 400,
+          "nmse_db": -67.19032236627092
+        },
+        {
+          "step": 450,
+          "nmse_db": -102.4246249868613
+        },
+        {
+          "step": 500,
+          "nmse_db": -49.10667775521908
+        },
+        {
+          "step": 550,
+          "nmse_db": -77.70903977668745
+        },
+        {
+          "step": 600,
+          "nmse_db": -102.45218483889948
+        },
+        {
+          "step": 650,
+          "nmse_db": -118.04324863252965
+        },
+        {
+          "step": 700,
+          "nmse_db": -129.20505897523987
+        },
+        {
+          "step": 750,
+          "nmse_db": -129.5980682890436
+        },
+        {
+          "step": 800,
+          "nmse_db": -130.58449222466044
+        },
+        {
+          "step": 850,
+          "nmse_db": -131.06735826390928
+        },
+        {
+          "step": 900,
+          "nmse_db": -132.11678648761838
+        },
+        {
+          "step": 950,
+          "nmse_db": -131.71936225930372
+        },
+        {
+          "step": 1000,
+          "nmse_db": -133.17562881166654
+        },
+        {
+          "step": 1050,
+          "nmse_db": -133.1933028827038
+        },
+        {
+          "step": 1100,
+          "nmse_db": -133.79611918937906
+        },
+        {
+          "step": 1150,
+          "nmse_db": -134.41214944028712
+        },
+        {
+          "step": 1200,
+          "nmse_db": -135.01050934760397
+        },
+        {
+          "step": 1250,
+          "nmse_db": -135.0327158482437
+        },
+        {
+          "step": 1300,
+          "nmse_db": -135.50406907433296
+        },
+        {
+          "step": 1350,
+          "nmse_db": -135.5074044053958
+        },
+        {
+          "step": 1400,
+          "nmse_db": -135.6400643040223
+        },
+        {
+          "step": 1450,
+          "nmse_db": -135.68150354742048
+        },
+        {
+          "step": 1500,
+          "nmse_db": -135.99326957768216
+        }
+      ],
+      "config": {
+        "T_UR": 4,
+        "d_model": 32,
+        "L_enc": 2,
+        "N": 16,
+        "K": 3,
+        "P": 20
+      },
+      "summary": "best -136.12 dB (target < -25.0 dB)"
+    }
+  },
+  "meta": {
+    "torch_version": "2.13.0+cu130",
+    "numpy_version": "2.4.6",
+    "cuda_available": false,
+    "model": {
+      "tie_layers": false,
+      "T_UR": 10,
+      "per_layer": [
+        {
+          "layer": 0,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 1,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 2,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 3,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 4,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 5,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 6,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 7,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 8,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 9,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        }
+      ],
+      "totals": {
+        "filter_net": 970,
+        "gate": 10,
+        "transformer": 1585920,
+        "all_parameters": 1586900
+      },
+      "note": "untied: per-layer sums equal the total",
+      "initial_alphas": [
+        0.11920291930437088,
+        0.11920291930437088,
+        0.11920291930437088,
+        0.11920291930437088,
+        0.11920291930437088,
+        0.11920291930437088,
+        0.11920291930437088,
+        0.11920291930437088,
+        0.11920291930437088,
+        0.11920291930437088
+      ],
+      "gate_init": "near_gs",
+      "gate_init_value": -2.0,
+      "param_bytes": 6347600,
+      "param_mb": 6.0535430908203125,
+      "optimizer_state_mb": 12.107086181640625
+    }
+  }
+}

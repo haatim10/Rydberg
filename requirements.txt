@@ -1,0 +1,40 @@
+# Rydberg atomic MIMO - Python dependencies.
+#
+# Added by Track D (URformer). Before this file the repository declared no
+# dependencies of any kind, and a fresh container could not run the test suite
+# at all -- numpy, scipy and pytest all had to be installed by hand before
+# `python3 -m pytest` would even start. This file closes that reproducibility
+# hole. It is additive and behaviour-neutral: the pins below are the exact
+# versions that produced the recorded test baseline.
+#
+# Install:
+#     pip install -r requirements.txt
+#
+# Baseline recorded with these versions:
+#     Track A only  (main @ 8e3792d)          274 passed, 1 skipped
+#     Track A + B   (base @ 54c88d5)          358 passed, 1 skipped
+
+# --- core, required by rydberg_sim (Tracks A and B) ------------------------
+numpy==2.4.6
+scipy==1.17.1
+
+# --- testing ---------------------------------------------------------------
+pytest==9.1.1
+
+# --- figures (rydberg_sim/track_a.py, trackB_hankel_emgs/plot_results.py) ---
+# Imported lazily and guarded by try/except ImportError, so the test suite
+# passes without it. Needed to regenerate any figure.
+matplotlib
+
+# --- Track D only (trackD_urformer) ----------------------------------------
+# CPU-only execution. NOTE: PROMPT 2 asked for the CPU-only wheel index
+#     pip install torch --index-url https://download.pytorch.org/whl/cpu
+# but download.pytorch.org is blocked by this environment's proxy policy
+# (403 on CONNECT); PyPI is the only reachable index. The PyPI linux wheel is
+# CUDA-linked and pulls ~2.5 GB of nvidia-* wheels that go unused here.
+# torch.cuda.is_available() is False and every Track D run is CPU-only either
+# way, so this is a packaging-size cost, not a behavioural difference.
+#
+# On a machine that can reach download.pytorch.org, prefer:
+#     pip install torch==2.13.0 --index-url https://download.pytorch.org/whl/cpu
+torch==2.13.0
