@@ -1,0 +1,201 @@
+{
+  "audit": {
+    "phase": "PROMPT 1 - repository audit only",
+    "date": "2026-08-27",
+    "audited_tree": "claude/new-paper-implementation-fs4ako @ 8e3792d (identical to origin/main)",
+    "target_paper": "J. Xiao, J. Wang, M. Zeng, H. Xu, X. Li, A. Nallanathan, 'Channel Estimation for Rydberg Atomic Quantum Receivers: Unrolled Phase Retrieval From Holographic Snapshots', IEEE Signal Processing Letters, vol. 33, pp. 1696-1700, 2026",
+    "implementation_started": false,
+    "repository_files_modified": 0,
+    "files_created": [
+      "reports/trackD_audit.md",
+      "reports/trackD_audit.json",
+      "scratch/trackD_audit_probe.py"
+    ]
+  },
+
+  "conventions": {
+    "G_shape": "(N, K) complex128",
+    "H_shape": "(N, K) complex128",
+    "S_shape": "(K, P) complex128",
+    "B_shape": "(N, P) complex128",
+    "W_shape": "(N, P) complex128",
+    "Z_shape": "(N, P) float64",
+    "forward_expr": "Z = |G @ S + B + W|",
+    "forward_code_ref": "rydberg_sim/forward.py:206,226-227",
+    "forward_matches_prompt_hypothesis": true,
+    "steering_sign": "e^{-j n psi}, n = 0..N-1 (0-based); e^{-j(n-1)psi} 1-based; NEGATIVE exponent",
+    "steering_code_ref": "rydberg_sim/channel.py:156",
+    "steering_slope_fitted": -1.570796326794896,
+    "steering_psi_def": "psi = pi * sin(theta)  (channel.py:144)",
+    "B_rank": 1,
+    "B_is_rank1_b1T": true,
+    "B_code_ref": "rydberg_sim/reference.py:192  B = np.outer(c * alpha * a_b, symbols)",
+    "B_column_ratio_spread": 0.0,
+    "nmse_form": "BOTH: per-trial instantaneous ||dG||_F^2/||G||_F^2 stored (monte_carlo.py:958) alongside error_energy and true_energy; AGGREGATE is ratio-of-sums sum(error_energy)/sum(true_energy) via NmseAccumulator.nmse_linear (metrics.py:386)",
+    "nmse_aggregate_rule": "ratio-of-sums",
+    "snr_formula_as_implemented": "sigma2 = c^2 * sum_k(beta_k) / 10**(snr_db/10)   [total over K users]",
+    "snr_code_ref": "rydberg_sim/calibration.py:108",
+    "rsr_formula_as_implemented": "|alpha_b| = sqrt(RSR_lin * beta_ref / E|s_b|^2)   [SINGLE-user denominator]",
+    "rsr_code_ref": "rydberg_sim/calibration.py:127",
+    "m_step_expr": "lam = M^H u + b; y = z*exp(j*angle(lam)); r = y - b; u = solve(M @ M^H + ridge*I, M @ r)",
+    "m_step_code_ref": "rydberg_sim/gs.py:326-331",
+    "m_step_uses_explicit_pinv": false,
+    "channel_adapter_convention": "M = S (not conjugated), b = conj(B[n]), z = Z[n], output G_hat[n] = conj(u_hat)",
+    "channel_adapter_code_ref": "rydberg_sim/gs.py:397-407"
+  },
+
+  "gates": {
+    "oracle_phase_rel_err": 2.8651169772770695e-16,
+    "oracle_phase_abs_err": 7.190046907511409e-16,
+    "oracle_phase_threshold": 1e-10,
+    "oracle_phase_pass": true,
+    "oracle_phase_vs_conjG_rel_err": 1.548784915437376,
+    "oracle_phase_recovers_G_not_conjG": true,
+
+    "emgs_fixed_point_rel_err": 4.696223880902549e-11,
+    "emgs_fixed_point_sigma2": 1e-09,
+    "emgs_fixed_point_pass": true,
+    "emgs_fixed_point_note": "residual is the exact 1-R(kappa) bias, vanishing linearly in sigma2; truth is a fixed point only in the limit, which is correct EM-GS behaviour",
+    "emgs_fixed_point_sweep": [
+      {"sigma2": 1e-06, "rel_err": 4.696228e-08},
+      {"sigma2": 1e-09, "rel_err": 4.696224e-11}
+    ],
+
+    "emgs_to_gs_limit_rel_err": 7.891211549119725e-11,
+    "emgs_to_gs_limit_sigma2": 1e-09,
+    "emgs_to_gs_limit_pass": true,
+    "emgs_to_gs_limit_sweep": [
+      {"sigma2": 1e-01, "rel_diff": 8.817274e-03, "min_R_kappa": 0.8590358372},
+      {"sigma2": 1e-03, "rel_diff": 7.896639e-05, "min_R_kappa": 0.9987128569},
+      {"sigma2": 1e-05, "rel_diff": 7.891268e-07, "min_R_kappa": 0.9999871368},
+      {"sigma2": 1e-07, "rel_diff": 7.891214e-09, "min_R_kappa": 0.9999998714},
+      {"sigma2": 1e-09, "rel_diff": 7.891212e-11, "min_R_kappa": 0.9999999987}
+    ]
+  },
+
+  "kappa_stats": {
+    "config": "N=8, K=2, P=8, RSR=10 dB, SNR=5 dB, sigma2=0.632456",
+    "min": 0.64661396832119,
+    "median": 33.213744716678534,
+    "max": 116.29120327761875,
+    "overflow": false,
+    "nan": false,
+    "inf": false,
+    "R_min": 0.3075083278095268,
+    "R_max": 0.9956911250099049,
+    "R_within_unit_interval": true,
+    "R_implementation": "scipy.special.ive(1,x)/ive(0,x) for x <= 1e4 (shared exp(-|x|) cancels); asymptotic 1 - 1/(2x) - 1/(8x^2) above; R(0)=0 exact; np.clip(.,0,1)",
+    "R_code_ref": "rydberg_sim/gs.py:426",
+    "R_branch_continuity_at_1e4": {"below": 0.999949998750, "above": 0.999950003750},
+    "cosmetic_caveat": "at x=1e300 the asymptotic branch (gs.py:423) emits RuntimeWarning: overflow encountered in multiply forming 8.0*x*x; the term correctly underflows to 0.0 and the returned value is correct. Observed kappa_max ~116 is ~298 orders of magnitude away. Unreachable in practice. No change proposed; noted so a future warnings-as-errors run is not surprised."
+  },
+
+  "snr_rsr_check": {
+    "method": "ratio of summed energies over 400 realizations, N=8 K=2 P=8",
+    "points": [
+      {"snr_requested_db": 5.0, "snr_measured_db": 5.092722117944673, "rsr_requested_db": 10.0, "rsr_measured_db": 9.893192142607758},
+      {"snr_requested_db": 0.0, "snr_measured_db": 0.093, "rsr_requested_db": 10.0, "rsr_measured_db": 9.893},
+      {"snr_requested_db": 12.0, "snr_measured_db": 12.093, "rsr_requested_db": 12.0, "rsr_measured_db": 11.893}
+    ],
+    "verdict": "both implemented as documented; uniform ~0.09 dB finite-sample offset, consistent with row normalization holding in expectation not per realization",
+    "confidence_intervals_computed": false
+  },
+
+  "reuse": [
+    {"item": "trial generator", "path": "rydberg_sim/monte_carlo.py", "symbol": "generate_channel_estimation_trial", "status": "wrap", "note": "requires spec.track=='B'"},
+    {"item": "geometric ULA channel", "path": "rydberg_sim/channel.py", "symbol": "generate_ula_channel", "status": "reuse"},
+    {"item": "steering vector/matrix", "path": "rydberg_sim/channel.py", "symbol": "steering_matrix, steering_vector, spatial_frequency", "status": "reuse"},
+    {"item": "pilot matrix", "path": "rydberg_sim/pilots.py", "symbol": "generate_gaussian_pilots", "status": "reuse", "note": "CN(0,1) complex, rejection-sampled full row rank"},
+    {"item": "reference field B", "path": "rydberg_sim/reference.py", "symbol": "generate_reference_field", "status": "reuse", "note": "rank-1 outer product, deterministic"},
+    {"item": "noise / forward", "path": "rydberg_sim/forward.py", "symbol": "exact_forward", "status": "reuse"},
+    {"item": "SNR calibration", "path": "rydberg_sim/calibration.py", "symbol": "snr_db_to_sigma2", "status": "reuse"},
+    {"item": "RSR calibration", "path": "rydberg_sim/calibration.py", "symbol": "rsr_db_to_alpha_magnitude, make_alpha_b, reference_user_beta", "status": "reuse"},
+    {"item": "GS", "path": "rydberg_sim/gs.py", "symbol": "biased_gs, biased_gs_channel_rows", "status": "reuse"},
+    {"item": "EM-GS", "path": "rydberg_sim/gs.py", "symbol": "em_gs, em_gs_channel_rows, em_kappa", "status": "reuse"},
+    {"item": "R(kappa)", "path": "rydberg_sim/gs.py", "symbol": "bessel_ratio", "status": "reuse"},
+    {"item": "LS / M-step", "path": "rydberg_sim/gs.py", "symbol": "_solve_ls (inline in biased_gs/em_gs)", "status": "reuse"},
+    {"item": "spectral initializer", "path": "rydberg_sim/spectral.py", "symbol": "spectral_initialize, spectral_initialize_channel_rows", "status": "reuse", "validated": true, "n_tests": 14},
+    {"item": "linearised closed-form LS", "path": "rydberg_sim/baselines.py", "symbol": "linearised_closed_form_ls", "status": "reuse", "validated": true, "n_tests": 6, "note": "present - do NOT invent one"},
+    {"item": "NMSE", "path": "rydberg_sim/metrics.py", "symbol": "channel_nmse, NmseAccumulator", "status": "reuse"},
+    {"item": "Monte Carlo seeding", "path": "rydberg_sim/rng.py", "symbol": "get_trial_rngs, operating_point_spawn_key", "status": "reuse", "note": "6 named streams from SeedSequence(entropy=seed, spawn_key=(trial,))"},
+    {"item": "Monte Carlo harness", "path": "rydberg_sim/monte_carlo.py", "symbol": "run_experiment, ExperimentSpec, RESULT_COLUMNS, aggregate_result_table", "status": "wrap"},
+    {"item": "Track-B Hankel (DO NOT TOUCH)", "path": "origin/claude/adversarial-audit-gs6iid: rydberg_sim/track_b_structure.py, track_b_proposed.py, track_b_drivers.py, track_b_prototype.py, tests/test_track_b_adapter.py, scripts/*track_b*.py, trackB_hankel_emgs/*", "symbol": "hankel_matrix, hankel_project, hs_gs, hs_gs_auto, cadzow_project, esprit_project, angular_project", "status": "do_not_modify"}
+  ],
+
+  "must_add": [
+    "torch forward + differentiable EM-GS layer, numerically identical to gs.py at alpha=1 and FilterNet == bessel_ratio",
+    "FilterNet (2-layer MLP, scalar kappa -> (0,1))",
+    "scalar stabilization gate alpha = sigmoid(g)",
+    "channel Transformer (K tokens x 2M, d_model, L_enc pre-LN encoder blocks)",
+    "T_UR-layer unrolled stack",
+    "training loop (Adam + cosine annealing), dataset generation/caching, train/val/test split keyed off existing seeding",
+    "closed-box CNN and Transformer baselines",
+    "Track D spec/driver, run_all.sh, and the two figures (NMSE vs SNR; NMSE vs P)"
+  ],
+
+  "environment": {
+    "python": "3.11",
+    "python_path": "/usr/local/bin/python3",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1",
+    "torch": null,
+    "torch_is_new_dependency": true,
+    "torch_special_i0e_available": null,
+    "torch_special_i1e_available": null,
+    "torch_special_check_note": "could not be verified - torch is not installed. Both have existed since torch 1.7 so availability is near-certain, but this is unverified.",
+    "cuda": false,
+    "device": "CPU only - no nvidia-smi, no GPU",
+    "vram_gb": 0,
+    "cpus": 4,
+    "ram_gb": 15.7,
+    "test_framework": "pytest",
+    "test_invocation": "python3 -m pytest",
+    "test_config": "pytest.ini: pythonpath=., testpaths=tests, addopts=-q",
+    "test_baseline_passed": 274,
+    "test_baseline_skipped": 1,
+    "test_baseline_failed": 0,
+    "test_baseline_seconds": 90.01,
+    "dependency_declaration_file": null,
+    "dependency_declaration_note": "NO requirements.txt, pyproject.toml, setup.py or setup.cfg exists. Dependencies are implicit. pytest.ini is the only config file.",
+    "container_installs_performed": ["numpy", "scipy", "pytest", "pypdf"],
+    "container_installs_note": "container arrived without numpy/scipy/pytest so nothing in the repository could run. Installed at container level only; no tracked file touched, no dependency declared."
+  },
+
+  "discrepancies": [
+    {"id": 1, "item": "pilot orientation", "paper": "S in C^{PxK}, H S^T, M-step (S^T)pinv", "repository": "S in C^{KxP}, G S, M-step solve(S S^H, S r)", "action": "keep ours; never mechanically transcribe (S.T).pinv()", "confirmed": true},
+    {"id": 2, "item": "bias structure", "paper": "B = b 1^T rank 1", "repository": "ALSO rank 1: outer(c*alpha_b*a_b, s_b) with s_b == 1", "action": "PROMPT HYPOTHESIS WAS WRONG - we already match the paper; nothing to reconcile", "confirmed": true, "prompt_hypothesis_refuted": true},
+    {"id": 3, "item": "channel model", "paper": "clustered Saleh-Valenzuela with sqrt(M/N_ray)", "repository": "geometric specular ULA, alpha ~ CN(0, beta_k/L_k)", "action": "keep ours; not reproducing S-V", "confirmed": true},
+    {"id": 4, "item": "transduction gain", "paper": "G scalar OUTSIDE the magnitude: z = G|Hs+b+w|", "repository": "c folded in, G = cH, Z = |GS+B+W|, c=1.0 baseline", "action": "keep ours; estimate G. Repo does NOT currently report H_hat separately - NMSE is computed on G (monte_carlo.py:945); identical since c is a known real scalar", "confirmed": true},
+    {"id": 5, "item": "steering sign", "paper": "e^{+j...}", "repository": "e^{-j n psi} (measured)", "action": "keep ours", "confirmed": true},
+    {"id": 6, "item": "R(kappa) definition", "paper": "NEVER DEFINED - says only 'the ratio of modified Bessel functions'", "repository": "I1(kappa)/I0(kappa) via scipy.special.ive, from Cui et al.", "action": "repository is the authority; record that the paper is silent", "confirmed": true},
+    {"id": 7, "item": "RSR denominator - NOT IN THE PROMPT'S LIST", "paper": "RSR = E(|b|^2)/E(|H s_p|^2) - MULTI-user denominator", "repository": "Cui single-user denominator E|g_nk s_kp|^2", "action": "differs by exactly a factor K. Paper's 10 dB == 10 + 10log10(K) dB in ours (+4.77 dB at K=3). Nothing to fix, but Track D must state its convention and apply the offset whenever a paper number is quoted", "confirmed": true, "newly_found": true},
+    {"id": 8, "item": "L_k draw", "paper": "n/a", "repository": "config.py:92 stores L_k as a FIXED frozen tuple; Track B draws L_k ~ U{3..7} iid per user per realization in its drivers on the audit branch, not in generate_ula_channel", "action": "Track D must decide - see decision D3", "confirmed": true, "newly_found": true}
+  ],
+
+  "branch_finding": {
+    "issue": "Hankel / Track-B code is NOT in this checkout",
+    "this_branch_contains": "Track A only",
+    "trackB_location": "origin/claude/adversarial-audit-gs6iid @ 54c88d5",
+    "delta": "22 files, ~3750 lines ahead",
+    "audit_still_valid_because": "every module defining a convention Track D depends on is byte-identical between the branches. The diff touches only __init__.py, channel_cui.py, monte_carlo.py, spectral.py and the Track-A/B drivers - NOT channel.py, gs.py, forward.py, pilots.py, reference.py, metrics.py, calibration.py, baselines.py, config.py or rng.py",
+    "trackB_inspected_how": "read-only via git show; no checkout performed"
+  },
+
+  "gate_summary": {
+    "spectral_initializer_missing_or_unvalidated": false,
+    "linearised_ls_initializer_missing": false,
+    "oracle_phase_gate_failed": false,
+    "pytorch_is_new_dependency": true,
+    "Y_orientation_differs_from_hypothesis": false
+  },
+
+  "open_questions": [
+    {"id": "D1", "blocking": true, "question": "Which branch is Track D's base - Track A only (main/this branch) or the full Track-A+B tree (origin/claude/adversarial-audit-gs6iid)?", "recommendation": "base on the audit branch: the stated end goal is merging URformer with the Hankel plan, and the HS-GS/EM-GS comparison, L_k ~ U{3..7} convention and frozen trackB_hankel_emgs/config.py provenance all live there. Core conventions are identical either way, so it costs nothing now and saves a reconciliation later."},
+    {"id": "D2", "blocking": true, "question": "PyTorch is a new, undeclared dependency, on CPU-only hardware with 4 cores. (a) Should Track D introduce the repository's first requirements.txt, or stay implicit? (b) What training scale is acceptable given no GPU?", "recommendation": "size the study to what CPU allows and report trial counts and training time honestly, the way Track B tiered its budget; decide target scale before building."},
+    {"id": "D3", "blocking": true, "question": "Random L_k ~ U{3..7} per realization (Track B convention) or fixed L_k?", "recommendation": "match Track B so the eventual HS-URformer ablation is like-for-like."},
+    {"id": "D4", "blocking": false, "question": "Which RSR convention do Track D figures use - ours (single-user, Cui) or the paper's (multi-user)?", "recommendation": "ours, with the 10log10(K) offset stated explicitly wherever a paper number is quoted."},
+    {"id": "D5", "blocking": false, "question": "The paper's Table I is a scanned image and did not text-extract. Missing: M, K, L, C_l, d_model, L_enc, T_UR, learning rate, dataset size, batch size. Can you supply them?", "recommendation": "otherwise I will choose defensible defaults and document them as deviations, the way Track A documents its eight."},
+    {"id": "D6", "blocking": false, "question": "Baseline initialization: the paper initializes H_hat(0) as random complex Gaussian for everything including the GS/EM-GS baselines, while we have a validated spectral initializer that is a much stronger start.", "recommendation": "report both - random-init EM-GS to reproduce the paper's claim, spectral-init EM-GS as the honest control. The gap may narrow substantially, and that is a finding worth having."},
+    {"id": "Q7", "blocking": false, "question": "torch.special.i0e / i1e availability is unverified because torch is not installed. Confirm once torch is added."}
+  ]
+}
