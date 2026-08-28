@@ -139,7 +139,13 @@ def test_layer_degenerates_to_emgs_with_exact_bessel(world):
 
 
 def test_transformer_residual_is_exactly_zero_at_init(world):
-    """zero_init_out => the URformer layer IS the classical fixed update."""
+    """zero_init_out => the Transformer RESIDUAL is exactly zero at init.
+
+    Scope note: this pins the residual only. It does NOT mean the untrained
+    layer equals a classical estimator -- the gated filter still scales
+    Y_direct by alpha*R_learned + (1-alpha) ~ 0.936. See
+    test_default_untrained_urformer_is_NOT_a_classical_estimator.
+    """
     w, sysc = world
     model = URformer(16, sysc.K, ModelConfig(T_UR=2), NumericConfig("float64")).double()
     args = (_t(np.zeros_like(w.G_true)), _t(w.Z, F64), _t(w.S), _t(w.B),
