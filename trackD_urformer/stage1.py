@@ -78,10 +78,11 @@ def train_arm(cfg: TrackDConfig, arm: str, *, epochs: int, out_dir: Path,
     torch.manual_seed(cfg.train.seed)
     np.random.seed(cfg.train.seed)
 
+    # init=... memoizes G^(0) per sample (exact; see TrackDDataset.g0).
     train_ds = TrackDDataset("train", sysc=cfg.system, datac=cfg.data,
-                             numeric=cfg.numeric)
+                             numeric=cfg.numeric, init=cfg.train.init)
     val_ds = TrackDDataset("val", sysc=cfg.system, datac=cfg.data,
-                           numeric=cfg.numeric)
+                           numeric=cfg.numeric, init=cfg.train.init)
     train_ld = DataLoader(train_ds, batch_size=cfg.train.batch_size, shuffle=True,
                           collate_fn=collate, num_workers=0)
     val_ld = DataLoader(val_ds, batch_size=cfg.train.batch_size, shuffle=False,

@@ -389,3 +389,34 @@ def test_stage1_trains_and_evaluates_with_the_SAME_initializer():
     # and stage 1's main() must force spectral explicitly
     main_src = inspect.getsource(stage1.main)
     assert 'init="spectral"' in main_src
+
+
+def test_g0_cache_is_exact():
+    """Memoized G^(0) must be BITWISE identical to a fresh computation.
+
+    The cache is a speed optimization only (spectral init measured ~62 s per
+    epoch at N=32). If it ever differed from make_initial_G, every trained
+    model would be silently training on something other than the declared
+    initializer.
+    """
+    from trackD_urformer.baselines import make_initial_G
+
+    sysc = SystemConfig(K=3, N=8, P=12)
+    for init in ("random", "spectral", "linearized_ls"):
+        ds = TrackDDataset("train", sysc=sysc, datac=DataConfig(),
+                           numeric=NUM64, N=8, P=12, init=init)
+        for i in (0, 1, 5):
+            s = ds.sample(i)
+            fresh = make_initial_G(init, S=s.S, Z=s.Z, B=s.B, seed=s.trial)
+            assert np.array_equal(ds.g0(i), fresh), f"{init} cache differs"
+            assert np.array_equal(ds.g0(i), fresh), f"{init} unstable on reuse"
+        # and the batch dict must carry it
+        assert "G0" in ds[0]
+
+
+def test_g0_absent_when_no_initializer_declared():
+    ds = TrackDDataset("train", sysc=SystemConfig(K=3, N=8, P=12),
+                       datac=DataConfig(), numeric=NUM64, N=8, P=12)
+    assert "G0" not in ds[0]
+    with pytest.raises(ValueError, match="initializer"):
+        ds.g0(0)

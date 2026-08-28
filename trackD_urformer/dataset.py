@@ -157,6 +157,7 @@ class TrackDDataset(Dataset):
         P: int | None = None,
         snr_db: float | None = None,
         cache: bool = True,
+        init: str | None = None,
     ) -> None:
         if split not in SPLITS:
             raise ValueError(f"split must be one of {SPLITS}, got {split!r}")
@@ -181,6 +182,15 @@ class TrackDDataset(Dataset):
             if datac.pilot_mode == "fixed_S" else None
         )
         self._cache: dict[int, TrackDSample] = {} if cache else None  # type: ignore
+
+        # Optional memoized initial estimate. G0 = f(S, Z, B, seed) is a
+        # DETERMINISTIC function of quantities that never change for a given
+        # sample, so recomputing it every epoch is pure waste -- and `spectral`
+        # / `linearized_ls` run in NumPy, which measured ~62 s per epoch at
+        # N=32 (167.7 s/epoch vs 106 s with `random`). Memoizing is exact, not
+        # an approximation: `test_g0_cache_is_exact` pins cached == fresh.
+        self.init = init
+        self._g0_cache: dict[int, np.ndarray] = {}
 
     def __len__(self) -> int:
         return self.n_items
@@ -215,6 +225,21 @@ class TrackDDataset(Dataset):
             self._cache[idx] = s
         return s
 
+    def g0(self, idx: int) -> np.ndarray:
+        """Memoized ``G^(0)`` for sample ``idx`` under ``self.init``.
+
+        Exactly the value :func:`baselines.make_initial_G` returns; only
+        computed once per sample instead of once per sample per epoch.
+        """
+        if self.init is None:
+            raise ValueError("dataset was not constructed with an initializer")
+        if idx not in self._g0_cache:
+            from .baselines import make_initial_G
+            s = self.sample(idx)
+            self._g0_cache[idx] = make_initial_G(
+                self.init, S=s.S, Z=s.Z, B=s.B, seed=s.trial)
+        return self._g0_cache[idx]
+
     def __getitem__(self, idx: int) -> dict[str, torch.Tensor]:
         s = self.sample(idx)
         cd, rd = self.numeric.complex_dtype, self.numeric.real_dtype
@@ -222,7 +247,7 @@ class TrackDDataset(Dataset):
         # torch refuses to wrap a non-writable buffer without warning.
         def _t(a, dtype):
             return torch.as_tensor(np.array(a, copy=True), dtype=dtype)
-        return {
+        item = {
             "Z": _t(s.Z, rd),
             "S": _t(s.S, cd),
             "B": _t(s.B, cd),
@@ -231,6 +256,9 @@ class TrackDDataset(Dataset):
             "snr_db": torch.as_tensor(s.snr_db, dtype=rd),
             "trial": torch.as_tensor(s.trial, dtype=torch.int64),
         }
+        if self.init is not None:
+            item["G0"] = _t(self.g0(idx), cd)
+        return item
 
 
 def collate(items: list[dict[str, torch.Tensor]]) -> dict[str, torch.Tensor]:

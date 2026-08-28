@@ -72,6 +72,10 @@ def make_initial_batch(batch: dict, init: str, cfg: TrackDConfig) -> torch.Tenso
     ``linearized_ls`` delegate to the repository's validated NumPy routines --
     they are not reimplemented here.
     """
+    # Memoized by the dataset when it was constructed with an initializer.
+    # Identical value, computed once per sample instead of once per epoch.
+    if "G0" in batch:
+        return batch["G0"]
     G_true = batch["G_true"]
     if init == "random":
         g = torch.randn_like(G_true.real), torch.randn_like(G_true.real)
