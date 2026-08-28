@@ -124,9 +124,12 @@ def measure_kappa_range(
     }
     for p in percentiles:
         out[f"p{p}"] = float(torch.quantile(allk, p / 100.0))
-    # Grid bounds: from the low percentile up to 4x the observed max, so the
-    # fit has headroom above anything training will present.
-    lo = max(out["p0.1"], 1e-6)
+    # Grid bounds. PROMPT 4 A4 found the original p0.1 lower bound left the
+    # EVALUATION kappa minimum a factor ~150 below the fitted grid: training
+    # percentiles do not bound what evaluation presents. Anchor the low end on
+    # the observed MINIMUM with a safety factor instead of a percentile, and
+    # keep 4x headroom above the max.
+    lo = max(0.1 * out["min"], 1e-8)
     hi = 4.0 * out["max"]
     out["grid_lo"] = float(lo)
     out["grid_hi"] = float(hi)
@@ -153,12 +156,30 @@ def warmstart_filternet(
 
     Returns a dict with the achieved MSE and the grid actually used.
     """
+    lo_req, hi_req = kappa_stats["grid_lo"], kappa_stats["grid_hi"]
+
     if cache_path is not None:
         cache_path = Path(cache_path)
         if cache_path.exists():
             blob = torch.load(cache_path, map_location=device, weights_only=False)
-            net.load_state_dict(blob["state_dict"])
-            return blob["info"] | {"loaded_from_cache": True}
+            cached = blob["info"]
+            # A cache fitted on a DIFFERENT grid, a different criterion, or a
+            # different shape is not a valid warm start for this request.
+            # Loading it anyway is the same silent-staleness class of bug as a
+            # dead config field, so invalidate instead of trusting the path.
+            stale = (
+                abs(cached.get("grid_lo", -1) - lo_req) > 1e-12 * max(1.0, lo_req)
+                or abs(cached.get("grid_hi", -1) - hi_req) > 1e-9 * max(1.0, hi_req)
+                or cached.get("target_max_abs") != target_max_abs
+            )
+            if not stale:
+                try:
+                    net.load_state_dict(blob["state_dict"])
+                except RuntimeError as exc:      # width/variant mismatch
+                    stale = True
+                    cached = dict(cached, load_error=str(exc))
+            if not stale:
+                return cached | {"loaded_from_cache": True}
 
     lo, hi = kappa_stats["grid_lo"], kappa_stats["grid_hi"]
     kappa = torch.logspace(math.log10(lo), math.log10(hi), n_grid,

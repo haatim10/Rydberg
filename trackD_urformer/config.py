@@ -158,7 +158,13 @@ class DataConfig:
     fixed_S_seed: int = 777_000_001         # only used when pilot_mode == "fixed_S"
 
     snr_mode: Literal["snr_range", "snr_fixed"] = "snr_range"
-    snr_range_db: tuple[float, float] = (0.0, 20.0)
+    # WIDENED from (0, 20) to (-10, 20) by PROMPT 4 A4. The D1 evaluation sweep
+    # is D1_SNR_GRID_DB = (-10, -5, 0, 5, 10, 15, 20), so a [0,20] training
+    # range would have forced the model to EXTRAPOLATE at the two lowest
+    # evaluation points -- precisely the regime where phase retrieval is
+    # hardest and where the paper claims its largest gains. Training must cover
+    # evaluation with no extrapolation at either end.
+    snr_range_db: tuple[float, float] = (-10.0, 20.0)
     snr_fixed_db: float = 5.0
 
     # RSR is FIXED, never sampled. Stated explicitly so no later reader assumes
