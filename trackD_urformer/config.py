@@ -175,6 +175,16 @@ class DataConfig:
     p_train_choices: tuple[int, ...] | None = None
 
     def __post_init__(self) -> None:
+        # rsr_train_mode is declarative, and "range" has no implementation.
+        # Reject it loudly rather than letting it sit as a silent no-op -- that
+        # is exactly how `filter_init` came to be dead (PROMPT 4 A1).
+        if self.rsr_train_mode != "fixed":
+            raise NotImplementedError(
+                f"rsr_train_mode={self.rsr_train_mode!r} is not implemented; "
+                "Track D trains at a single fixed RSR (PROMPT 3 item 1). "
+                "Comparing at another reference level requires a RETRAINING, "
+                "not a re-evaluation."
+            )
         rs = [self.train_seed_range, self.val_seed_range, self.test_seed_range]
         for a, b in ((0, 1), (0, 2), (1, 2)):
             lo1, hi1 = rs[a]

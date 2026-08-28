@@ -47,11 +47,18 @@ class FilterNet(nn.Module):
         hidden: int = 32,
         filter_input: str = "log1p_kappa",
         activation: str = "relu",
+        predict_one_minus_R: bool = False,
     ) -> None:
         super().__init__()
         if filter_input not in ("kappa", "log1p_kappa", "log1p_kappa_plus_logsigma2"):
             raise ValueError(f"unknown filter_input {filter_input!r}")
         self.filter_input = filter_input
+        # Labeled variant (PROMPT 4 A3): predict 1-R instead of R. Better
+        # conditioned when R ~ 1 across most of the kappa range, because the
+        # sigmoid's resolution is then spent on the small-kappa knee -- exactly
+        # the low-local-SNR entries the filter exists to handle. The output
+        # remains in (0,1) either way; only the target changes.
+        self.predict_one_minus_R = bool(predict_one_minus_R)
         self.in_dim = 2 if filter_input == "log1p_kappa_plus_logsigma2" else 1
         self.fc1 = nn.Linear(self.in_dim, hidden)
         self.act = {"relu": nn.ReLU(), "tanh": nn.Tanh(),
@@ -78,7 +85,8 @@ class FilterNet(nn.Module):
                 ) -> torch.Tensor:
         """Return ``R_learned`` with the same shape as ``kappa``, in (0,1)."""
         x = self.features(kappa, sigma2)
-        return torch.sigmoid(self.fc2(self.act(self.fc1(x)))).squeeze(-1)
+        out = torch.sigmoid(self.fc2(self.act(self.fc1(x)))).squeeze(-1)
+        return 1.0 - out if self.predict_one_minus_R else out
 
 
 @torch.no_grad()
@@ -133,6 +141,7 @@ def warmstart_filternet(
     max_steps: int = 20000,
     lr: float = 1e-2,
     target_mse: float = 1e-4,
+    target_max_abs: float | None = None,
     cache_path: str | Path | None = None,
     device: str = "cpu",
 ) -> dict:
@@ -159,21 +168,34 @@ def warmstart_filternet(
     net = net.to(device).double()
     opt = torch.optim.Adam(net.parameters(), lr=lr)
     mse = float("inf")
+    max_abs = float("inf")
     step = 0
     for step in range(1, max_steps + 1):
         opt.zero_grad()
         pred = net(kappa.view(1, 1, -1)).view(-1)
-        loss = torch.mean((pred - target) ** 2)
+        err = pred - target
+        # Train on MSE but ALSO track the worst-case error: MSE alone hides a
+        # large residual concentrated at the small-kappa knee, because R ~ 1
+        # over most of the measured range (PROMPT 4 A3).
+        loss = torch.mean(err ** 2)
         loss.backward()
         opt.step()
-        mse = float(loss)
-        if mse < target_mse:
+        mse = float(loss.detach())
+        max_abs = float(err.detach().abs().max())
+        if target_max_abs is not None:
+            if max_abs < target_max_abs:
+                break
+        elif mse < target_mse:
             break
 
+    converged = (max_abs < target_max_abs if target_max_abs is not None
+                 else mse < target_mse)
     info = {
         "achieved_mse": mse,
+        "achieved_max_abs": max_abs,
         "target_mse": target_mse,
-        "converged": mse < target_mse,
+        "target_max_abs": target_max_abs,
+        "converged": converged,
         "steps": step,
         "n_grid": n_grid,
         "grid_lo": lo,
