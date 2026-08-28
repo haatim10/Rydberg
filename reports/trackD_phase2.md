@@ -204,9 +204,21 @@ Untied weights, so per-layer sums equal the total. The Transformer is
 parameters, under 0.07%.
 
 Initial `α_t` = **0.1192** for all 10 layers (`gate_init="near_gs"`, `g=−2.0`),
-so the network starts close to plain GS. Combined with the zero-initialized
-Transformer output projection, the untrained URformer *is* the classical
-algorithm — which is why gate F can demand exactly `0.0`.
+so the network starts close to plain GS.
+
+> **CORRECTION (PROMPT 3 item 2).** This section originally continued: "the
+> untrained URformer *is* the classical algorithm." **That was wrong.** The
+> Transformer residual is exactly zero at init, and the architecture *can be
+> forced* to exact GS or exact EM-GS — but the **default untrained** network is
+> neither. With `α = 0.1192` and the default random FilterNet, the effective
+> multiplier `α·R_learned + (1−α)` measures **0.934–0.941**, not 1, so the
+> untrained model sits **0.1230** relative from one GS step and **0.0947** from
+> one EM-GS step. Full algebra, measurements and the four separated claims are
+> in `reports/trackD_stage1_plan.md` §2.
+
+Gate F's exact-`0.0` requirement concerns the **Transformer residual only**,
+which is genuinely zero at initialization; it never implied the whole network
+equalled a classical estimator.
 
 ## 13. GPU/CPU availability
 

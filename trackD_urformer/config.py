@@ -161,6 +161,16 @@ class DataConfig:
     snr_range_db: tuple[float, float] = (0.0, 20.0)
     snr_fixed_db: float = 5.0
 
+    # RSR is FIXED, never sampled. Stated explicitly so no later reader assumes
+    # a range was drawn (PROMPT 3 item 1). The value lives in
+    # SystemConfig.rsr_db and is 10 dB in OUR single-user convention.
+    #
+    # Consequence, booked now: a model trained at fixed RSR is OFF-DISTRIBUTION
+    # at any other reference level. The later Xiao-comparability experiment at
+    # rsr_paper_equiv_dB therefore requires a RETRAINING, not merely a
+    # re-evaluation of these checkpoints.
+    rsr_train_mode: Literal["fixed", "range"] = "fixed"
+
     # For D2: P drawn uniformly from this set during training (see README sec. 6).
     p_train_choices: tuple[int, ...] | None = None
 
@@ -201,9 +211,21 @@ class ModelConfig:
     filter_input: Literal[
         "kappa", "log1p_kappa", "log1p_kappa_plus_logsigma2"
     ] = "log1p_kappa"
+    # NOTE: until 2026-08-28 this field was declared but never read by
+    # URformerLayer -- the warm-start machinery in filter_net.py existed and was
+    # never called. It is now wired. The DEFAULT IS UNCHANGED ("random"), so
+    # this fixes a dead field without altering any reported behaviour.
     filter_init: Literal["random", "emgs_warmstart"] = "random"
+    filter_warmstart_cache: str = "reports/trackD_filternet_warmstart.pt"
 
     gate_init: Literal["near_gs", "near_emgs", "neutral"] = "near_gs"
+
+    # Arm 2 of stage 1 ("URformer-filteronly"): FilterNet + gate + LS with the
+    # Transformer residual module REMOVED ENTIRELY -- not zeroed, not disabled
+    # at runtime, simply not constructed. ~980 parameters instead of 1,586,900.
+    # This is the ablation that attributes any gain between "unrolling helped"
+    # and "a 1.57M-parameter learned denoiser helped".
+    use_transformer: bool = True
 
     # Untied weights per unrolled layer (PROMPT 2 sec. 5).
     tie_layers: bool = False

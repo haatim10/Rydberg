@@ -54,11 +54,16 @@ G^(t)    = G_lin + Former_t(G_lin)     [4]     learned user-token Transformer
 
 ## Design decisions worth knowing
 
-**The network starts as the classical algorithm.** `gate_init="near_gs"` puts
-every `alpha_t` at 0.119, and the Transformer's output projection is
-zero-initialized, so at step 0 the URformer *is* biased GS with a small EM
-correction. Training moves it away from there. This is why gate F can require
-the residual to be *exactly* 0.0 rather than merely small.
+**The network starts NEAR, but not equal to, the classical algorithm.**
+`gate_init="near_gs"` puts every `alpha_t` at 0.1192 and the Transformer's
+output projection is zero-initialized, so the residual is exactly zero (which is
+why gate F can require *exactly* 0.0). But the gated filter still multiplies
+`Y_direct` by `alpha*R_learned + (1-alpha)`, and with the default random
+FilterNet that measures 0.934-0.941 rather than 1. The untrained model is
+therefore ~12% from one GS step and ~9% from one EM-GS step -- close to GS
+because alpha is small, **not equal to it**. The architecture *can* be forced to
+either classical estimator (gates D and E); the default is neither. See
+`reports/trackD_stage1_plan.md` section 2.
 
 **The LS step is never learned.** It reuses the repository's M-step, written in
 batched form as `G = R S^H (S S^H)^{-1}`. That this equals the repository's

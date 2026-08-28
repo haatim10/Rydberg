@@ -53,11 +53,13 @@ class URformerLayer(nn.Module):
             hidden=mcfg.filter_hidden, filter_input=mcfg.filter_input
         )
         self.gate = nn.Parameter(torch.tensor(float(mcfg.gate_init_value)))
+        # Arm 2 ("filteronly") does not CONSTRUCT the Transformer at all, so its
+        # parameters do not exist rather than being zeroed or skipped.
         self.former = ChannelTransformer(
             N=N, K=K, d_model=mcfg.d_model, L_enc=mcfg.L_enc,
             n_heads=mcfg.n_heads, ffn_mult=mcfg.ffn_mult, dropout=mcfg.dropout,
             zero_init_out=True,
-        )
+        ) if mcfg.use_transformer else None
         # Test hooks. Never set during training; used only by verify.py gates.
         self._override_filter: str | None = None   # None | "exact_bessel"
         self._override_alpha: float | None = None
@@ -87,7 +89,7 @@ class URformerLayer(nn.Module):
         Y_rec = alpha.to(Y.dtype) * Y_filt + (1.0 - alpha).to(Y.dtype) * Y_direct
 
         G_lin = least_squares_G(Y_rec - B, S, ridge=self.ridge)
-        if self._disable_residual:
+        if self._disable_residual or self.former is None:
             return G_lin
         return G_lin + self.former(G_lin)
 
@@ -114,6 +116,29 @@ class URformer(nn.Module):
     def initial_alphas(self) -> list[float]:
         """Initial ``alpha_t`` for every layer. Printed into the report."""
         return [float(l.alpha.detach()) for l in self.layers]
+
+    def apply_filter_warmstart(self, cache_path: str | None = None) -> dict:
+        """Load the Bessel warm start into every layer's FilterNet.
+
+        Only meaningful when ``ModelConfig.filter_init == "emgs_warmstart"``;
+        the caller is responsible for checking. Requires the cache produced by
+        :func:`filter_net.warmstart_filternet`, which fits the MLP over a grid
+        whose bounds were MEASURED from the training set -- never an assumed
+        range. Returns the cached fit info so the achieved MSE is reportable.
+        """
+        from pathlib import Path
+
+        path = Path(cache_path or self.mcfg.filter_warmstart_cache)
+        if not path.exists():
+            raise FileNotFoundError(
+                f"warm-start cache {path} not found. Build it first with "
+                "filter_net.warmstart_filternet(net, measure_kappa_range(ds))."
+            )
+        blob = torch.load(path, map_location="cpu", weights_only=False)
+        for layer in self.layers:
+            layer.filter_net.load_state_dict(blob["state_dict"])
+            layer.filter_net.to(next(self.parameters()).dtype)
+        return blob["info"]
 
     def forward(self, G0: torch.Tensor, Z: torch.Tensor, S: torch.Tensor,
                 B: torch.Tensor, sigma2: torch.Tensor,
@@ -155,7 +180,7 @@ def count_parameters(model: URformer) -> dict:
             "layer": i,
             "filter_net": n(l.filter_net),
             "gate": l.gate.numel(),
-            "transformer": n(l.former),
+            "transformer": n(l.former) if l.former is not None else 0,
             "total": n(l),
         })
     tied = model.mcfg.tie_layers

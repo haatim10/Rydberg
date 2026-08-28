@@ -236,3 +236,72 @@ def test_dataset_splits_do_not_share_trials():
     va = set(range(cfg.data.val_seed_range[0],
                    cfg.data.val_seed_range[0] + 100))
     assert not (va & set(list(tr)[:100]))
+
+
+# ---------------------------------------------------------------------------
+# PROMPT 3 additions
+# ---------------------------------------------------------------------------
+def test_filteronly_arm_has_no_transformer():
+    """Arm 2: the Transformer is not constructed, not merely disabled."""
+    cfg = TrackDConfig()
+    m = URformer(cfg.system.N, cfg.system.K,
+                 ModelConfig(T_UR=10, use_transformer=False), cfg.numeric)
+    assert all(l.former is None for l in m.layers)
+    c = count_parameters(m)
+    assert c["totals"]["transformer"] == 0
+    # FilterNet (97 x 10) + one gate scalar per layer.
+    assert c["totals"]["all_parameters"] == 970 + 10
+
+
+def test_filteronly_still_runs_and_equals_gs_when_alpha_zero(world):
+    w, sysc = world
+    m = URformer(16, sysc.K, ModelConfig(T_UR=1, use_transformer=False),
+                 NumericConfig("float64")).double()
+    m._set_test_mode(alpha=0.0)
+    G0 = np.zeros_like(w.G_true)
+    with torch.no_grad():
+        out = m(_t(G0), _t(w.Z, F64), _t(w.S), _t(w.B),
+                torch.tensor([w.sigma2], dtype=F64))[0].numpy()
+    ref = biased_gs_channel_rows(w.S, w.Z, w.B, max_iter=1, G0=G0).G_hat
+    assert _rel(out, ref) < 1e-12
+
+
+def test_default_untrained_urformer_is_NOT_a_classical_estimator(world):
+    """PROMPT 3 item 2. Pins the CORRECTED claim.
+
+    With the default gate_init="near_gs" (alpha=0.1192) and the default
+    filter_init="random", the effective multiplier on Y_direct is
+    alpha*R_learned + (1-alpha), which equals 1 only if alpha==0 or R==1.
+    Neither holds, so the untrained network is neither GS nor EM-GS.
+    """
+    w, sysc = world
+    torch.manual_seed(0)
+    m = URformer(16, sysc.K, ModelConfig(T_UR=1), NumericConfig("float64")).double()
+    G0 = np.zeros_like(w.G_true)
+    args = (_t(G0), _t(w.Z, F64), _t(w.S), _t(w.B),
+            torch.tensor([w.sigma2], dtype=F64))
+    with torch.no_grad():
+        out = m(*args)[0].numpy()
+    ref_gs = biased_gs_channel_rows(w.S, w.Z, w.B, max_iter=1, G0=G0).G_hat
+    ref_em = em_gs_channel_rows(w.S, w.Z, w.B, w.sigma2, max_iter=1, G0=G0).G_hat
+    # Materially different from BOTH -- this is the corrected claim.
+    assert _rel(out, ref_gs) > 1e-3
+    assert _rel(out, ref_em) > 1e-3
+
+
+def test_rsr_train_mode_is_fixed_by_default():
+    """PROMPT 3 item 1: RSR is fixed, never sampled."""
+    assert DataConfig().rsr_train_mode == "fixed"
+
+
+def test_seed_ranges_used_by_defaults_are_disjoint():
+    """PROMPT 3 item 3e, asserted programmatically."""
+    d = DataConfig()
+    used = {
+        "train": (d.train_seed_range[0], d.train_seed_range[0] + d.n_train),
+        "val": (d.val_seed_range[0], d.val_seed_range[0] + d.n_val),
+        "test": (d.test_seed_range[0], d.test_seed_range[0] + d.n_test),
+    }
+    for a, b in (("train", "val"), ("train", "test"), ("val", "test")):
+        lo, hi = max(used[a][0], used[b][0]), min(used[a][1], used[b][1])
+        assert max(0, hi - lo) == 0, f"{a}/{b} overlap"

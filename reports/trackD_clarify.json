@@ -1,0 +1,192 @@
+{
+  "kappa_stats_training_set": {
+    "n_samples": 512,
+    "min": 0.11809454737936337,
+    "max": 1628.3747274719133,
+    "mean": 163.16295807045213,
+    "p0.1": 1.32227132784294,
+    "p1.0": 3.758088064945962,
+    "p50.0": 66.19641157004483,
+    "p99.0": 866.1596149197592,
+    "p99.9": 1148.5039161683208,
+    "grid_lo": 1.32227132784294,
+    "grid_hi": 6513.498909887653
+  },
+  "kappa_note": "measured at G=0 (the first iteration), where |Y| = |B| and kappa is largest, over 512 training realizations spanning the full SNR range",
+  "warmstart": {
+    "achieved_mse": 9.895971606171457e-05,
+    "target_mse": 0.0001,
+    "converged": true,
+    "steps": 140,
+    "n_grid": 4096,
+    "grid_lo": 1.32227132784294,
+    "grid_hi": 6513.498909887653,
+    "kappa_stats": {
+      "n_samples": 512,
+      "min": 0.11809454737936337,
+      "max": 1628.3747274719133,
+      "mean": 163.16295807045213,
+      "p0.1": 1.32227132784294,
+      "p1.0": 3.758088064945962,
+      "p50.0": 66.19641157004483,
+      "p99.0": 866.1596149197592,
+      "p99.9": 1148.5039161683208,
+      "grid_lo": 1.32227132784294,
+      "grid_hi": 6513.498909887653
+    },
+    "loaded_from_cache": false
+  },
+  "warmstart_check": {
+    "max_abs_err_over_grid": 0.05599796015920233,
+    "mean_abs_err_over_grid": 0.005818416359269857
+  },
+  "R_learned_at_init_random": [
+    {
+      "seed": 0,
+      "R_learned_min": 0.4494981221512813,
+      "R_learned_max": 0.5029179849211693,
+      "R_learned_mean": 0.4630188938994489,
+      "rel_err_vs_bessel": 0.5252065646394062,
+      "max_abs_err_vs_bessel": 0.5410656747659384
+    },
+    {
+      "seed": 1,
+      "R_learned_min": 0.28604802789315276,
+      "R_learned_max": 0.48684370015940664,
+      "R_learned_mean": 0.32314511380659755,
+      "rel_err_vs_bessel": 0.6694894183627197,
+      "max_abs_err_vs_bessel": 0.704515769024067
+    },
+    {
+      "seed": 2,
+      "R_learned_min": 0.4124895767181927,
+      "R_learned_max": 0.424565496997718,
+      "R_learned_mean": 0.41687112430392614,
+      "rel_err_vs_bessel": 0.5722762333227863,
+      "max_abs_err_vs_bessel": 0.578074220199027
+    },
+    {
+      "seed": 3,
+      "R_learned_min": 0.35859627916657133,
+      "R_learned_max": 0.42072757464057725,
+      "R_learned_mean": 0.41416816988142174,
+      "rel_err_vs_bessel": 0.5747522009580072,
+      "max_abs_err_vs_bessel": 0.5698362222766424
+    },
+    {
+      "seed": 4,
+      "R_learned_min": 0.29163231854898486,
+      "R_learned_max": 0.4158878389091684,
+      "R_learned_mean": 0.3060931061702624,
+      "rel_err_vs_bessel": 0.6862762594404219,
+      "max_abs_err_vs_bessel": 0.6989314783682349
+    }
+  ],
+  "R_exact_at_this_config": {
+    "min": 0.17852267269116762,
+    "max": 0.9905637969172197,
+    "mean": 0.9723096274064262,
+    "kappa_min": 0.36289075820908395,
+    "kappa_max": 53.241039181939854
+  },
+  "untrained_default": {
+    "alpha_layer0": 0.11920292202211755,
+    "alphas_all_layers": [
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088
+    ],
+    "rel_err_vs_one_GS_step": 0.12303597653502779,
+    "rel_err_vs_one_EMGS_step": 0.09468820416497799,
+    "effective_multiplier_on_Y_direct": {
+      "min": 0.9343785675817698,
+      "max": 0.940746371317961,
+      "mean": 0.9359902830821456,
+      "formula": "alpha*R_learned + (1-alpha); ==1 exactly iff alpha==0 or R==1",
+      "deviation_from_1_max": 0.06562143241823015
+    },
+    "transformer_residual_max_abs": 0.0
+  },
+  "forced_modes": {
+    "alpha0_residual_off_vs_GS": 6.021437517924306e-13,
+    "exact_bessel_alpha1_residual_off_vs_EMGS": 5.842289180297683e-13
+  },
+  "hypothetical_warmstarted_untrained": {
+    "effective_multiplier_min": 0.9020775022098677,
+    "effective_multiplier_max": 0.9988751770197385,
+    "note": "even with a perfect warm start the default alpha=0.1192 gives alpha*R+(1-alpha) != 1 and != R, so it is still neither GS nor EM-GS"
+  },
+  "seed_ledger": {
+    "declared_ranges": {
+      "train": [
+        0,
+        1000000
+      ],
+      "val": [
+        1000000,
+        2000000
+      ],
+      "test": [
+        2000000,
+        3000000
+      ]
+    },
+    "actually_used": {
+      "train": [
+        0,
+        20000
+      ],
+      "val": [
+        1000000,
+        1002000
+      ],
+      "test": [
+        2000000,
+        2002000
+      ]
+    },
+    "intersections": {
+      "train_vs_val": {
+        "declared_overlap_count": 0,
+        "used_overlap_count": 0
+      },
+      "train_vs_test": {
+        "declared_overlap_count": 0,
+        "used_overlap_count": 0
+      },
+      "val_vs_test": {
+        "declared_overlap_count": 0,
+        "used_overlap_count": 0
+      }
+    },
+    "all_disjoint": true,
+    "assertion_output": "all three pairwise intersections empty; asserts passed"
+  },
+  "baseline_spread": {
+    "n_trials": 200,
+    "em_gs_spectral_nmse_db_ratio_of_sums": -9.14356507397093,
+    "gs_spectral_nmse_db_ratio_of_sums": -8.749609117820931,
+    "em_gs_per_trial_db": {
+      "median": -12.93539324072169,
+      "std": 6.272217665861319,
+      "p5": -21.990803665033184,
+      "p95": -3.3441080561641736
+    },
+    "paired_gs_minus_emgs_db": {
+      "median": 0.06764595105494742,
+      "std": 0.21688048635429302,
+      "boot_ci95": [
+        0.044236733783376,
+        0.10021224898985892
+      ]
+    },
+    "note": "the paired GS-minus-EM-GS difference is the natural yardstick: it is a real but small algorithmic effect measured on the same realizations, so it calibrates what a 'meaningful' gap looks like"
+  }
+}
