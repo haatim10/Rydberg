@@ -13,7 +13,8 @@ the reported NMSE is **ratio-of-sums** (metrics.py:386).
 Both RSR conventions are stored on every row::
 
     rsr_ours_dB          - Cui single-user denominator (what we run)
-    rsr_paper_equiv_dB   - rsr_ours_dB + 10*log10(K), the paper's multi-user one
+    rsr_paper_equiv_dB   - rsr_ours_dB - 10*log10(K), the paper's multi-user one
+                           (SIGN CORRECTED: RSR_paper = RSR_ours / K)
 
 so no figure caption ever has to carry the correction by hand.
 
@@ -58,7 +59,10 @@ def _row(sample, *, estimator, initializer, G_hat, runtime_s, K):
         "N": sample.N, "K": sample.K, "P": sample.P,
         "snr_db": sample.snr_db,
         "rsr_ours_dB": sample.rsr_db,
-        "rsr_paper_equiv_dB": sample.rsr_db + 10.0 * math.log10(K),
+        # RSR_paper = RSR_ours / K, so MINUS 10log10(K). See
+        # SystemConfig.rsr_paper_equiv_db for the derivation and the
+        # empirical verification.
+        "rsr_paper_equiv_dB": sample.rsr_db - 10.0 * math.log10(K),
         "initializer": initializer,
         "estimator": estimator,
         "nmse_error_energy": err,

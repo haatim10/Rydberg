@@ -71,7 +71,7 @@ PAPER_DIVERGENCES: tuple[dict[str, str], ...] = (
         "ours": "single-user  E|g_nk s_kp|^2  (Cui eq. 37)",
         "reason": "Seventh discrepancy found by the audit. Differs by exactly K. "
                   "Both fields stored on every row: rsr_ours_dB and "
-                  "rsr_paper_equiv_dB = rsr_ours_dB + 10*log10(K).",
+                  "rsr_paper_equiv_dB = rsr_ours_dB - 10*log10(K).",
     },
     {
         "item": "steering sign",
@@ -130,9 +130,26 @@ class SystemConfig:
 
     @property
     def rsr_paper_equiv_db(self) -> float:
-        """The same reference level expressed in the paper's multi-user convention."""
+        """Our reference level expressed in the paper's MULTI-USER convention.
+
+        SIGN CORRECTED 2026-08-28 (PROMPT 4 Part A). This previously returned
+        ``rsr_db + 10log10(K)``, which is the opposite conversion::
+
+            RSR_ours  = E|b|^2 / E|g_nk s_kp|^2      (ONE user)
+            RSR_paper = E|b|^2 / E|H s_p|^2          (ALL K users)
+            E|H s_p|^2 = K * E|g s|^2
+            =>  RSR_paper = RSR_ours / K
+            =>  RSR_paper_dB = RSR_ours_dB - 10 log10(K)
+
+        Verified empirically on 300 realizations: measured RSR_ours 10.06 dB,
+        RSR_paper 5.21 dB, difference 4.85 dB ~ 10log10(3) = 4.77 dB.
+
+        So our 10 dB is 5.23 dB in the paper's terms, and the paper's 10 dB
+        would be 14.77 dB in ours. The old value was the latter wearing the
+        former's name, and it is written on every result row.
+        """
         import math
-        return float(self.rsr_db + 10.0 * math.log10(self.K))
+        return float(self.rsr_db - 10.0 * math.log10(self.K))
 
 
 # ---------------------------------------------------------------------------

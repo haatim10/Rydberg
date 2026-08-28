@@ -217,8 +217,15 @@ def test_seed_ranges_are_disjoint():
 
 
 def test_rsr_paper_equivalence_is_factor_K():
+    """SIGN CORRECTED: RSR_paper = RSR_ours / K, so the dB form SUBTRACTS.
+
+    This test previously asserted ``+ 10log10(3)``, pinning the wrong
+    direction: that is the paper's RSR expressed in OUR convention, not ours
+    expressed in the paper's. Verified empirically in
+    reports/trackD_partA.json (RSR_ours 10.06 dB, RSR_paper 5.21 dB).
+    """
     sysc = SystemConfig(K=3, rsr_db=10.0)
-    assert abs(sysc.rsr_paper_equiv_db - (10.0 + 10 * np.log10(3))) < 1e-12
+    assert abs(sysc.rsr_paper_equiv_db - (10.0 - 10 * np.log10(3))) < 1e-12
 
 
 def test_gate_init_values():

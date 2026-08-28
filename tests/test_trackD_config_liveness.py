@@ -356,3 +356,17 @@ def test_live_baseline_T_GS(w):
     a = run_em_gs(w, max_iter=5, init="spectral", seed=0)
     b = run_em_gs(w, max_iter=100, init="spectral", seed=0)
     assert _differs(a, b, tol=1e-9)
+
+
+def test_rsr_paper_conversion_sign():
+    """RSR_paper = RSR_ours / K, so the dB conversion SUBTRACTS 10log10(K).
+
+    Pins the corrected direction. The old code added it, which is the
+    conversion for the opposite question ("the paper's RSR in our terms") and
+    is written on every result row. Verified empirically in
+    reports/trackD_partA.json: measured RSR_ours 10.06 dB, RSR_paper 5.21 dB.
+    """
+    for K in (2, 3, 4):
+        sysc = SystemConfig(K=K, rsr_db=10.0)
+        assert abs(sysc.rsr_paper_equiv_db - (10.0 - 10 * np.log10(K))) < 1e-12
+        assert sysc.rsr_paper_equiv_db < sysc.rsr_db   # paper value is SMALLER
