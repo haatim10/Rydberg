@@ -221,7 +221,11 @@ def evaluate_test_once(cfg: TrackDConfig, arms: dict[str, dict],
             T(of, torch.complex128) - T(s.B, torch.complex128),
             T(s.S, torch.complex128))[0].numpy()
 
-        G0np = make_initial_G("spectral", S=s.S, Z=s.Z, B=s.B, seed=trial)
+        # MUST be the initializer the model was TRAINED with. Hardcoding
+        # "spectral" here while train.init defaulted to "random" produced a
+        # silent train/evaluate mismatch (caught at epoch 0 of the first run):
+        # the model would have been evaluated out of distribution.
+        G0np = make_initial_G(cfg.train.init, S=s.S, Z=s.Z, B=s.B, seed=trial)
         G0 = T(G0np, cd)
         Z, S, B = T(s.Z, rd), T(s.S, cd), T(s.B, cd)
         s2 = torch.tensor([s.sigma2], dtype=rd)
@@ -280,12 +284,22 @@ def main(argv=None) -> int:
         return 2
 
     cfg = TrackDConfig()
+    # Stage 1 is SPECTRAL INIT THROUGHOUT (PROMPT 4 B1, and the pre-registered
+    # criterion compares URformer-spectral against EM-GS-spectral). The package
+    # default is "random" (paper-faithful), so stage 1 must override it
+    # explicitly rather than inherit it.
+    cfg = replace(cfg, train=replace(cfg.train, init="spectral"))
     if args.n_train or args.n_test:
         cfg = replace(cfg, data=replace(
             cfg.data,
             n_train=args.n_train or cfg.data.n_train,
             n_test=args.n_test or cfg.data.n_test))
     epochs = args.epochs or cfg.train.epochs
+    assert cfg.train.init == "spectral", "stage 1 requires spectral init"
+    print(f"initializer: {cfg.train.init} (train AND evaluate)")
+    print(f"SNR training range: {cfg.data.snr_range_db} dB")
+    print(f"RSR: {cfg.system.rsr_db} dB ours "
+          f"= {cfg.system.rsr_paper_equiv_db:.2f} dB paper convention")
 
     RESULTS.mkdir(parents=True, exist_ok=True)
     summary_path = REPORTS / "trackD_stage1_results.json"

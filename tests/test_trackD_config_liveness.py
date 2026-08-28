@@ -370,3 +370,22 @@ def test_rsr_paper_conversion_sign():
         sysc = SystemConfig(K=K, rsr_db=10.0)
         assert abs(sysc.rsr_paper_equiv_db - (10.0 - 10 * np.log10(K))) < 1e-12
         assert sysc.rsr_paper_equiv_db < sysc.rsr_db   # paper value is SMALLER
+
+
+def test_stage1_trains_and_evaluates_with_the_SAME_initializer():
+    """Regression: the first stage-1 launch trained with `random` while the
+    test evaluation hardcoded `spectral`, a silent out-of-distribution
+    mismatch caught at epoch 0. evaluate_test_once must read cfg.train.init,
+    never a literal.
+    """
+    import inspect
+    from trackD_urformer import stage1
+
+    src = inspect.getsource(stage1.evaluate_test_once)
+    assert 'make_initial_G(cfg.train.init' in src, \
+        "evaluate_test_once must use cfg.train.init, not a hardcoded string"
+    assert 'make_initial_G("spectral"' not in src
+
+    # and stage 1's main() must force spectral explicitly
+    main_src = inspect.getsource(stage1.main)
+    assert 'init="spectral"' in main_src
