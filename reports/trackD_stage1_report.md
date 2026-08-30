@@ -158,31 +158,43 @@ full URformer                       0.979 dB      (of 4.183 dB available)
 model captures only **23% of the oracle-phase headroom**, and the marginal
 return on the Transformer is **0.786 dB for 1,619× the parameters**.
 
-## 8. The result I did not predict: random init beats the warm start
+## 8. CORRECTED — there was no val/test reversal
 
-| | validation | test (paired median) |
-|---|---:|---:|
-| arm 1a warm start | **−5.571** (better) | −0.979 |
-| arm 1b random | −5.458 | **−1.434** (better) |
+> **This section originally reported a validation→test ranking reversal and
+> offered two candidate mechanisms. PROMPT 5 Part A settled it: there is no
+> reversal.** Full analysis in `reports/trackD_partA_diagnostics.md`.
 
-**The ranking reverses between validation and test**, and arm 1b — the
-*paper-faithful control*, framed in B1 as the weaker arm — beats arm 1a, the
-"method's best shot", by **0.455 dB**.
+The ranking is **consistent across sets and flips across statistics**:
 
-I will not over-explain this from one run. Two candidate mechanisms, both
-testable, neither established:
+| statistic | VAL 1a | VAL 1b | winner | TEST 1a | TEST 1b | winner |
+|---|---:|---:|:---:|---:|---:|:---:|
+| ratio-of-sums | **−5.571** | −5.458 | **1a** | **−5.500** | −5.347 | **1a** |
+| median | −8.194 | **−8.680** | **1b** | −8.416 | **−8.951** | **1b** |
+| paired vs EM-GS | −1.007 | **−1.536** | **1b** | −0.979 | **−1.434** | **1b** |
 
-1. **Selection noise.** Arm 1a's checkpoint was chosen at epoch 8 from a
-   2,000-sample validation set on a curve that was already turning over. A
-   validation optimum that early is poorly determined.
-2. **The warm start is a worse basin.** Seeding FilterNet at the exact Bessel
-   ratio may anchor the layer near classical EM-GS and reduce the diversity the
-   Transformer can exploit — arm 1a's α rose to 0.214 while arm 1b's fell to
-   0.115, i.e. the two found genuinely different solutions.
+Each statistic gives the same answer on both sets. I had quoted validation as
+ratio-of-sums and test as paired median, then read the difference between two
+*statistics* as a difference between two *sets*. The two mechanisms I offered
+were answers to a question that does not arise.
 
-What it does establish: **the newly-wired `filter_init` flag materially changes
-the trained result** — which is what B1 said this pair was for. It just changed
-it in the opposite direction to the one the naming assumed.
+**The real finding underneath.** The arms do genuinely differ, consistently:
+arm 1a (warm start) wins on **ratio-of-sums**, which pools energy and is
+dominated by the hardest low-SNR trials; arm 1b (random) wins on the **median**,
+the typical trial. The paired per-trial difference excludes zero on both sets
+with the same sign (val +0.285 dB, test +0.228 dB; arm 1a better on only
+34.7% / 36.4% of trials).
+
+So the Bessel warm start buys the hard tail at the cost of the typical trial —
+which is what a filter seeded at exact `I₁/I₀` should do, since the filter bites
+hardest where `κ` is small. The pre-registered criterion is on the paired
+median, so **arm 1b remains the arm carried into stage 2** and the stage-1
+verdict is unchanged.
+
+A second caveat from the same analysis: the validation split is uniformly
+**0.28–0.40 dB harder** than test across four untrained classical estimators
+(not an SNR effect — mean SNR differs by 0.039 dB). Absolute val-vs-test
+comparisons therefore carry a ~0.34 dB handicap; paired-within-set is the
+correct comparison.
 
 ## 9. Where this leaves the paper's claim
 
@@ -195,21 +207,34 @@ likely cause is reference power: our RSR is 10 dB in the single-user convention
 = **5.23 dB** in the paper's multi-user one, and weaker reference means worse
 phase recovery. This is not a defect on either side; the configurations differ.
 
-### A scope correction to the A2 bound
+### The unstructured-LS oracle — corrected language, and the positive reading
 
-On **ratio-of-sums**, arm 1a (−5.500 dB) edges *past* the oracle line
-(−5.247 dB). That is not a contradiction. The oracle quantity is
-`G + LS(W,S)` — the ceiling for perfect phase recovery **followed by
-unstructured LS**. A learned estimator can beat it by exploiting the `L_k ≤ 7`
-structural prior that LS discards, and in the aggregate it does, because
-ratio-of-sums is dominated by low-SNR trials where LS noise amplification is
-worst and a prior helps most.
+The A2 quantity is the **unstructured-LS oracle**: `G + LS(W,S)`, the ceiling
+for perfect phase recovery **followed by an unstructured least-squares solve**.
+It is **not** "the exact ceiling for any magnitude-only estimator" — an
+estimator carrying a prior over `G` is not bound by it.
 
-On the **median** trial the oracle remains far ahead (−11.58 vs −8.42), and on
-the pre-registered *paired median* it wins 100% of trials. So A2's line bounds
-the classical pipeline, not every estimator, and the prompt's description of it
-as "the exact ceiling for any magnitude-only estimator" is too strong. The
-criterion was specified on paired medians, where the bound holds.
+**The positive reading, which is a result and not a caveat.** On ratio-of-sums
+arm 1a reaches **−5.500 dB** against the oracle's **−5.247 dB**: it is *past*
+the bound. **A learned estimator exceeding the unstructured-LS oracle is direct
+evidence that the network has recovered the geometric prior that unstructured LS
+discards.** LS treats the channel as `2NK = 192` free real parameters; the truth
+has at most `3·Σ L_k = 63` in an `N=32, K=3` array with `L_k ~ U{3..7}`.
+Everything LS spends beyond those is spent fitting noise, and avoiding that
+waste is exactly what an internalised path structure buys. The effect shows up
+in the energy-pooled statistic and not the median precisely because
+ratio-of-sums is dominated by the lowest-SNR trials, where LS noise
+amplification is worst and a prior is worth most.
+
+**This is the strongest argument in stage 1 for pursuing structure, and the
+direct line to HS-URformer.** The network is already recovering some of the
+`L_k ≤ 7` geometry implicitly, through dense projections never aimed at it. A
+Hankel projection imposes that structure *explicitly*, along the antenna axis
+the user-token Transformer cannot attend over — and Track B measured **+2.85 dB**
+for exactly that at this same `N=32`.
+
+On the **median** trial the oracle remains ahead (−11.58 vs −8.42) and wins 100%
+of paired trials, so the pre-registered criterion is unaffected.
 
 ## 10. Runtime and the revised matrix
 

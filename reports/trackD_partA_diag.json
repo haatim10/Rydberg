@@ -1,0 +1,256 @@
+{
+  "A3": {
+    "per_method": {
+      "gs_spectral": {
+        "val_ratio_of_sums_db": 1.1737682642326719,
+        "test_ratio_of_sums_db": 1.8043091143716408,
+        "val_median_db": -6.833731334422031,
+        "test_median_db": -7.193466312041973,
+        "median_diff_db": 0.3597349776199419
+      },
+      "em_gs_spectral": {
+        "val_ratio_of_sums_db": -0.8352998116978267,
+        "test_ratio_of_sums_db": -0.26289966473502235,
+        "val_median_db": -7.112696784554488,
+        "test_median_db": -7.44826905023805,
+        "median_diff_db": 0.33557226568356224
+      },
+      "linearised_ls": {
+        "val_ratio_of_sums_db": -2.1638927787110647,
+        "test_ratio_of_sums_db": -1.709403418178719,
+        "val_median_db": -6.614410527094382,
+        "test_median_db": -6.891286578427076,
+        "median_diff_db": 0.2768760513326942
+      },
+      "oracle_phase": {
+        "val_ratio_of_sums_db": -5.469609995042156,
+        "test_ratio_of_sums_db": -4.884146019179049,
+        "val_median_db": -11.17808447457341,
+        "test_median_db": -11.582156357612476,
+        "median_diff_db": 0.40407188303906594
+      }
+    },
+    "snr_distribution": {
+      "val": {
+        "mean": 4.7851405,
+        "median": 4.3735,
+        "std": 8.628516672681645,
+        "min": -9.994,
+        "max": 19.981
+      },
+      "test": {
+        "mean": 4.745773,
+        "median": 4.589499999999999,
+        "std": 8.688200146311212,
+        "min": -9.993,
+        "max": 19.968
+      }
+    },
+    "snr_mean_diff_db": 0.0393675
+  },
+  "A1": {
+    "val": {
+      "arm1a_full_warmstart": {
+        "median_diff_db": -1.0072314137247327,
+        "median_ci95": [
+          -1.1820543559178844,
+          -0.8741574938403781
+        ],
+        "mean_diff_db": -1.431063719351082,
+        "mean_ci95": [
+          -1.5638505715778248,
+          -1.2928933653351709
+        ],
+        "win_rate": 0.679,
+        "absolute_median_db": -8.19352048727062
+      },
+      "arm1b_full_random": {
+        "median_diff_db": -1.5358674764718074,
+        "median_ci95": [
+          -1.6984796922417011,
+          -1.389424260987161
+        ],
+        "mean_diff_db": -1.647038436444596,
+        "mean_ci95": [
+          -1.7775710179133482,
+          -1.518262408163171
+        ],
+        "win_rate": 0.7225,
+        "absolute_median_db": -8.679834006113863
+      },
+      "arm2_filteronly_warmstart": {
+        "median_diff_db": -0.21847376192370582,
+        "median_ci95": [
+          -0.32559831191378086,
+          -0.12265134819828488
+        ],
+        "mean_diff_db": -0.4681494165968444,
+        "mean_ci95": [
+          -0.612060798052554,
+          -0.32007662660249936
+        ],
+        "win_rate": 0.5475,
+        "absolute_median_db": -7.3039705756734365
+      }
+    },
+    "test": {
+      "arm1a_full_warmstart": {
+        "median_diff_db": -0.9794911823266053,
+        "median_ci95": [
+          -1.1072945278982909,
+          -0.796532782489674
+        ],
+        "mean_diff_db": -1.5189920951055114,
+        "mean_ci95": [
+          -1.6523344528850654,
+          -1.3875061874633141
+        ],
+        "win_rate": 0.6625,
+        "absolute_median_db": -8.416395592155796
+      },
+      "arm1b_full_random": {
+        "median_diff_db": -1.4344087743151146,
+        "median_ci95": [
+          -1.638977270406179,
+          -1.285885813945626
+        ],
+        "mean_diff_db": -1.6903708492050091,
+        "mean_ci95": [
+          -1.8173186751155364,
+          -1.558553421851664
+        ],
+        "win_rate": 0.715,
+        "absolute_median_db": -8.95107088280778
+      },
+      "arm2_filteronly_warmstart": {
+        "median_diff_db": -0.19319829745367811,
+        "median_ci95": [
+          -0.30971831506259306,
+          -0.06766662643753119
+        ],
+        "mean_diff_db": -0.5356758680557788,
+        "mean_ci95": [
+          -0.6811425452592343,
+          -0.38187461109473786
+        ],
+        "win_rate": 0.539,
+        "absolute_median_db": -7.665013170957248
+      }
+    }
+  },
+  "A2": {
+    "val": {
+      "median_diff_db": 0.2849220847303511,
+      "median_ci95": [
+        0.2519670454254195,
+        0.3156278981642826
+      ],
+      "ci_excludes_zero": true,
+      "mean_diff_db": 0.21597471709351412,
+      "mean_ci95": [
+        0.17442104798395225,
+        0.25538272185620076
+      ],
+      "std_db": 0.9289430248718528,
+      "frac_1a_better": 0.347
+    },
+    "test": {
+      "median_diff_db": 0.22792419349587068,
+      "median_ci95": [
+        0.19982145385008976,
+        0.26662321038390635
+      ],
+      "ci_excludes_zero": true,
+      "mean_diff_db": 0.17137875409949774,
+      "mean_ci95": [
+        0.13101634979729657,
+        0.20891510003392835
+      ],
+      "std_db": 0.8783596514064318,
+      "frac_1a_better": 0.3645
+    }
+  },
+  "A4": {
+    "LIMITATION": "stage 1 retained only best.pt (selected epoch) and checkpoint.pt (final epoch). Per-epoch weights were not kept, so the exact test -- paired validation difference between EVERY epoch and the selected one -- is not computable from existing artifacts. Reported instead: (a) the selected-vs-final paired difference, a real paired measurement; (b) the per-epoch validation curve against a bootstrap SE of the validation metric, which is a MARGINAL SE and therefore an UPPER bound on the plateau width, since pairing would cancel realization variance.",
+    "arm1a_full_warmstart": {
+      "best_epoch": 8,
+      "best_val_db": -5.57111170527118,
+      "final_val_db": -4.6942741302182025,
+      "selected_vs_final_paired_median_db": -0.18327244558466038,
+      "selected_vs_final_ci95": [
+        -0.21704132040779578,
+        -0.13998888931818998
+      ],
+      "selected_vs_final_excludes_zero": true,
+      "marginal_val_se_db": 0.10179826819179714,
+      "n_epochs_within_1se_of_best": 8,
+      "epochs_total": 50
+    },
+    "arm1b_full_random": {
+      "best_epoch": 20,
+      "best_val_db": -5.458073536627746,
+      "final_val_db": -5.102127457340151,
+      "selected_vs_final_paired_median_db": -0.39699650647397045,
+      "selected_vs_final_ci95": [
+        -0.432824221650975,
+        -0.3637864414784534
+      ],
+      "selected_vs_final_excludes_zero": true,
+      "marginal_val_se_db": 0.11192933928094591,
+      "n_epochs_within_1se_of_best": 23,
+      "epochs_total": 50
+    }
+  },
+  "absolute_val": {
+    "gs_spectral": {
+      "ratio_of_sums_db": 1.1737682642326719,
+      "median_db": -6.833731334422031,
+      "mean_db": 1.5258007482627434
+    },
+    "em_gs_spectral": {
+      "ratio_of_sums_db": -0.8352998116978267,
+      "median_db": -7.112696784554488,
+      "mean_db": -0.49388971196776377
+    },
+    "linearised_ls": {
+      "ratio_of_sums_db": -2.1638927787110647,
+      "median_db": -6.614410527094382,
+      "mean_db": -1.8971927769674213
+    },
+    "oracle_phase": {
+      "ratio_of_sums_db": -5.469609995042156,
+      "median_db": -11.17808447457341,
+      "mean_db": -5.100955038167098
+    },
+    "arm1a_full_warmstart": {
+      "ratio_of_sums_db": -5.571111650849495,
+      "median_db": -8.19352048727062,
+      "mean_db": -5.423679280374683
+    },
+    "arm1a_full_warmstart__final": {
+      "ratio_of_sums_db": -4.694274226900541,
+      "median_db": -8.409844939860182,
+      "mean_db": -4.514214949701415
+    },
+    "arm1b_full_random": {
+      "ratio_of_sums_db": -5.458073586408755,
+      "median_db": -8.679834006113863,
+      "mean_db": -5.290216198857001
+    },
+    "arm1b_full_random__final": {
+      "ratio_of_sums_db": -5.102127420327634,
+      "median_db": -9.451220975394136,
+      "mean_db": -4.9215257634271445
+    },
+    "arm2_filteronly_warmstart": {
+      "ratio_of_sums_db": -4.8685801298692315,
+      "median_db": -7.3039705756734365,
+      "mean_db": -4.6988535482098595
+    },
+    "arm2_filteronly_warmstart__final": {
+      "ratio_of_sums_db": -4.868513564903639,
+      "median_db": -7.300827353350207,
+      "mean_db": -4.699001958439192
+    }
+  }
+}
