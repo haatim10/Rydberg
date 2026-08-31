@@ -122,42 +122,71 @@ _save(fig, "fig1_headline")
 
 
 # ---------------------------------------------------------------------------
-# 2. Q4 -- does the Hankel prior help the hard low-SNR tail disproportionately?
+# 2. THE result: Delta_H is not a number, it is an SNR crossover.
+#
+# Q4 predicted the Hankel prior would help the hard low-SNR tail
+# disproportionately. It does the OPPOSITE, and by a lot. Pooled Delta_H
+# (+0.129) is a near-cancellation of -0.333 below 5 dB against +1.209 above
+# it, so the pooled figure describes our uniform SNR draw more than it
+# describes the method.
 # ---------------------------------------------------------------------------
 d_med = db(PER["U1_urformer_80k"]) - db(PER["H1_hs_urformer_80k"])
+d_post = db(PER["U1_urformer_80k"]) - db(PER["U1_plus_post"])
+d_cls = db(PER["U0_em_gs"]) - db(PER["H0_hs_em_gs"])
 edges = np.array([-10, -5, 0, 5, 10, 15, 20])
 mid = 0.5 * (edges[:-1] + edges[1:])
-fig, (ax, ax2) = plt.subplots(1, 2, figsize=(7.2, 2.9))
-m, elo, ehi = [], [], []
-for a, b in zip(edges[:-1], edges[1:]):
-    s = (SNR >= a) & (SNR < b)
-    m.append(np.median(d_med[s]))
-    lo, hi = _boot_median_ci(d_med[s])
-    elo.append(m[-1] - lo)
-    ehi.append(hi - m[-1])
-ax.axhline(0, color=INK, lw=1.0)
-ax.errorbar(mid, m, yerr=[elo, ehi], color=MAGENTA, lw=2, marker="o", ms=5,
-            capsize=3)
-ax.set_xlabel("SNR (dB)")
-ax.set_ylabel("$\\Delta_H$, paired median (dB)")
-ax.set_title("a. $\\Delta_H$ by SNR (PRIMARY: median)", loc="left",
-             fontweight="bold")
 
-# The one place ratio-of-sums earns its keep: it is dominated by the worst
-# trials, which is exactly the tail Q4 asks about. Labelled, not smuggled.
-ros = [db(PER["U1_urformer_80k"][(SNR >= a) & (SNR < b)].sum()
-          / PER["H1_hs_urformer_80k"][(SNR >= a) & (SNR < b)].sum())
-       for a, b in zip(edges[:-1], edges[1:])]
-ax2.axhline(0, color=INK, lw=1.0)
-ax2.plot(mid, m, color=MAGENTA, lw=2, marker="o", ms=5, label="median (primary)")
-ax2.plot(mid, ros, color=ORANGE, lw=2, marker="s", ms=5, ls="--",
-         label="ratio-of-sums (SECONDARY)")
-ax2.set_xlabel("SNR (dB)")
-ax2.set_ylabel("$\\Delta_H$ (dB)")
-ax2.legend(frameon=False)
-ax2.set_title("b. Q4: the two statistics disagree where the tail is",
-              loc="left", fontweight="bold")
-_save(fig, "fig2_delta_by_snr")
+
+def _by_snr(d):
+    m, lo, hi = [], [], []
+    for a, b in zip(edges[:-1], edges[1:]):
+        s = (SNR >= a) & (SNR < b)
+        m.append(np.median(d[s]))
+        l, h = _boot_median_ci(d[s])
+        lo.append(m[-1] - l)
+        hi.append(h - m[-1])
+    return np.array(m), np.array([lo, hi])
+
+
+fig, (ax, ax2) = plt.subplots(1, 2, figsize=(7.4, 3.0))
+for d, c, mk, lab in [(d_med, MAGENTA, "o", "H1  internal (in every layer)"),
+                      (d_post, ORANGE, "s", "U1+post  (once, at the end)"),
+                      (d_cls, AQUA, "D", "H0-U0  classical (Track B)")]:
+    m, er = _by_snr(d)
+    ax.errorbar(mid, m, yerr=er, color=c, lw=2, marker=mk, ms=5, capsize=3,
+                label=lab)
+ax.axhline(0, color=INK, lw=1.2)
+ax.axvspan(-10, 5, color=RED, alpha=0.06)
+ax.annotate("rank-7 truncation\nHURTS here", (-2.5, -0.42), color=RED,
+            fontsize=6.5, ha="center", fontweight="bold")
+ax.set_xlabel("SNR (dB)")
+ax.set_ylabel("paired median gain over the base arm (dB)")
+ax.legend(frameon=False, loc="upper left", fontsize=6.3)
+ax.set_title("a. the prior helps only once the subspace separates",
+             loc="left", fontweight="bold", fontsize=7.5)
+
+# The pooled number, decomposed. This is the panel that says why a single
+# Delta_H is the wrong summary for this effect.
+lo_s, hi_s = SNR < 5, SNR >= 5
+parts = [("SNR < 5 dB\n(50.9% of trials)", np.median(d_med[lo_s]), RED),
+         ("SNR >= 5 dB\n(49.2% of trials)", np.median(d_med[hi_s]), AQUA),
+         ("pooled $\\Delta_H$\n(the pre-reg. statistic)",
+          np.median(d_med), MAGENTA)]
+ax2.axhline(0, color=INK, lw=1.2)
+ax2.axhline(0.3, color=RED, ls="--", lw=1.3)
+ax2.annotate("go threshold +0.3", (2.35, 0.32), color=RED, fontsize=6,
+             ha="right", fontweight="bold")
+for i, (lab, v, c) in enumerate(parts):
+    ax2.bar(i, v, color=c, width=0.6, alpha=0.9)
+    ax2.annotate(f"{v:+.3f}", (i, v), textcoords="offset points",
+                 xytext=(0, 5 if v > 0 else -12), ha="center", fontsize=7.5,
+                 fontweight="bold", color=INK)
+ax2.set_xticks(range(3))
+ax2.set_xticklabels([p[0] for p in parts], fontsize=6.3)
+ax2.set_ylabel("$\\Delta_H$, paired median (dB)")
+ax2.set_title("b. the pooled number is a near-cancellation", loc="left",
+              fontweight="bold", fontsize=7.5)
+_save(fig, "fig2_snr_crossover")
 
 
 # ---------------------------------------------------------------------------
