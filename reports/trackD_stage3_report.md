@@ -44,24 +44,34 @@ decomposition is exactly the move pre-registration exists to prevent. But the
 recorded conclusion is "stop at this SNR mix", not "the Hankel prior does not
 help".
 
-### Why the crossover happens
+### Why the crossover happens — CORRECTED (PROMPT 7 A2)
 
-Rank truncation is a subspace method, and subspace methods have an SNR
-threshold. The projection keeps the top 7 singular directions of the LS
-estimate's `16×17` Hankel matrix. At high SNR those directions *are* the signal
-subspace and truncation is a clean denoiser. At low SNR the noise floor is
-comparable to the signal singular values, the top-7 directions are partly
-noise, and truncation discards weak-but-real signal energy while keeping noise
-it cannot distinguish. Nothing here is specific to learning — the classical arm
-shows the same shape (H0−U0 rises from +0.81 to +1.89 across the same bins),
-just shifted up and much flatter, because EM-GS has no other way to exploit the
-structure.
+**The explanation given in the first version of this report was wrong.** It said
+rank truncation is a subspace method with an SNR threshold, and that "the
+classical arm shows the same shape". It does not. `H0 − U0` is **positive in
+every bin and monotone**:
 
-This also explains the training curves. The NMSE loss is dominated by
-high-error trials, which are the low-SNR ones — precisely where the projection
-hurts. H1's optimisation was therefore steered by the regime the operator
-damages, which is why it plateaus at a **worse train loss** (−6.93 vs U1's
-−7.33), not merely a worse validation loss.
+| SNR bin | H0 − U0 (classical) | U1 → H1 (learned) |
+|---|---|---|
+| −10 … −5 | **+0.809** [+0.724, +0.887] | −0.111 |
+| −5 … 0 | **+1.332** [+1.247, +1.430] | −0.506 |
+| 0 … +5 | **+1.624** [+1.581, +1.719] | −0.451 |
+| +5 … +10 | +1.818 [+1.735, +1.885] | +0.398 |
+| +10 … +15 | +1.809 [+1.736, +1.899] | +1.305 |
+| +15 … +20 | +1.892 [+1.815, +1.965] | +2.226 |
+
+Rank-7 truncation applied to a *classical* estimate helps by 0.8 dB even at the
+worst SNR. So truncation does not destroy signal at low SNR in general, and
+plain subspace-threshold behaviour cannot explain H1's low-SNR loss. My original
+mechanism was a plausible story that the data in the same table already
+contradicted, and I did not check it against that column.
+
+What the table does support: at low SNR the URformer's implicit prior **already
+matches** the explicit one — applying the projection post-hoc to a converged U1
+adds only +0.013 dB in the lowest bin — yet imposing that same projection
+*during training* costs 0.111–0.506 dB. **The damage is specific to constraining
+the learned loop, not to the operator.** PROMPT 7 A4 supplies the mechanism: see
+§3a.
 
 ---
 
@@ -91,34 +101,73 @@ Paired contrasts, positive = second arm better:
 
 ---
 
-## 3. Structural integration is not just undemonstrated — it is worse
+## 3. Structural integration — CORRECTED (PROMPT 7 A1)
 
-**`U1+post` beats `H1`**: −0.105 dB, CI `[−0.145, −0.064]`, excluding zero.
-Applying the *same operator* once to a converged estimate beats threading it
-through all ten unrolled layers, and it wins on 88.6% of trials against U1
-versus H1's 55.2%.
+**The pooled claim in the first version of this report was the same error this
+report diagnoses one level up.** It read: "post-hoc beats internal, −0.105 dB",
+a pooled scalar over a sign change. Per bin, with every CI excluding zero:
 
-The pre-registration said a tie would mean integration was not demonstrated.
-This is stronger than a tie and in the opposite direction from the prediction.
-`U1+post` never hurts in any SNR bin (+0.013 → +0.837, monotone); `H1` swings
-from −0.51 to +2.23. Internal application is **higher variance for lower median
-return**.
+| SNR bin | U1 → H1 (internal) | U1 → U1+post | U1+post → H1 (**integration**) |
+|---|---|---|---|
+| −10 … −5 | −0.111 | +0.013 | **−0.138** [−0.184, −0.093] |
+| −5 … 0 | −0.506 | +0.072 | **−0.582** [−0.633, −0.492] |
+| 0 … +5 | −0.451 | +0.190 | **−0.636** [−0.750, −0.552] |
+| +5 … +10 | +0.398 | +0.497 | **−0.207** [−0.280, −0.078] |
+| +10 … +15 | +1.305 | +0.826 | **+0.388** [+0.293, +0.463] |
+| +15 … +20 | +2.226 | +0.837 | **+1.309** [+1.184, +1.466] |
+| pooled | +0.129 | +0.279 | −0.105 |
 
-The reading: the Hankel projection is a good *post-processor* and a bad
-*training-time constraint*. Applied inside training it distorts the
-representation the network is learning around — ten times per forward pass, in
-the low-SNR regime that dominates the loss — and the network adapts to a
-corrupted intermediate rather than exploiting the structure.
+Post-hoc wins the lower four bins; **internal wins the top two decisively**
+(+2.226 vs +0.837 at 15–20 dB). The corrected statement is therefore:
 
-**One caveat I cannot rule out.** The straight-through estimator means H1's
-backward pass is the gradient of a network *without* the projection while its
-forward pass has one. That mismatch is a candidate explanation for H1's lower
-ceiling that is independent of the operator's merits. Distinguishing "the
-constraint is bad during training" from "the STE gradient is bad" needs a run
-this prompt does not authorise — an exact-gradient variant, or a projection
-warm-up schedule. It is flagged, not resolved.
+> **Structural integration matters at high SNR and is harmful at low SNR.**
 
----
+Not "post-hoc is better". Integration buys +1.309 dB over post-hoc at 15–20 dB,
+which is a real result that the pooled scalar erased — it is the strongest
+evidence in this report *for* the unrolled architecture, and my first pass
+reported its opposite.
+
+### 3a. Why constraining the loop hurts (PROMPT 7 A4)
+
+`nmse_loss` is the mean over the batch of per-sample `‖ΔG‖²/‖G‖²`. Every trial
+carries equal weight in the mean but wildly unequal magnitude, because a
+low-SNR trial's *normalized* error is far larger. Measured on the trained
+checkpoints over the training split:
+
+| arm | share of loss below 5 dB | share of gradient norm below 5 dB |
+|---|---|---|
+| U1 | 0.927 | 0.787 |
+| H1 | **0.943** | **0.859** |
+
+**H1 was optimized almost entirely for the regime its own constraint damages.**
+86% of its gradient signal comes from trials below 5 dB, where the projection
+costs it 0.1–0.5 dB. That explains the worse *train* loss (−6.93 vs −7.33)
+without any appeal to subspace thresholds, and it makes H1's high-SNR win
+(+2.23 dB) the more striking: it is achieved by a model whose training signal
+barely represented that regime.
+
+### The STE caveat, now measured (PROMPT 7 A3)
+
+The straight-through estimator makes H1's backward pass the gradient of a
+network *without* the projection. Measured against the exact autograd gradient
+through the SVD, in float64, per (layer, group) cosine similarity:
+
+| | low SNR (−10…0) | high SNR (+10…+20) |
+|---|---|---|
+| median cosine (excl. gate) | 0.630 | 0.821 |
+| filter_net | 0.886 | 0.977 |
+| transformer | 0.459 | 0.548 |
+| layer 9 (last) transformer | 1.000 | 1.000 |
+| layer 0 (first) transformer | **−0.011** | **0.128** |
+
+The dominant axis is **depth, not SNR**: fidelity is exact at the last layer,
+whose gradient traverses no projection, and decays to near-orthogonal at layer
+0, whose gradient traverses ten. It is additionally worse at low SNR, but it is
+poor in *both* regimes, so the STE cannot be cleanly credited with the
+low-SNR-*specific* damage — nor exonerated. Numerical trust: the minimum
+relative singular-value gap at the truncation is 2.6e-3 (low) and 6.7e-4
+(high), costing ~3 of float64's ~16 digits, so the near-zero cosines are
+structural rather than numerical artifacts.
 
 ## 4. The `n_iter` caveat, raised and then closed
 
@@ -191,12 +240,15 @@ does not authorise.
 
 ## 6. What was actually established
 
-1. `Δ_H = +0.129 dB` at 80k, CI excluding zero → **STOP-MARGINAL, no Part C.**
+1. `Δ_H = +0.129 dB` at 80k, CI excluding zero → **STOP-MARGINAL**; PROMPT 6's
+   Part C (the budget sweep) was not launched.
 2. The pooled figure hides a **1.5 dB SNR crossover**: the rank-7 prior hurts
    below ~5 dB and helps increasingly above it. Any single-number `Δ_H` for
    this method is a statement about the SNR mix it was averaged over.
-3. **Post-hoc projection beats internal projection** (CI excluding zero). The
-   operator is a good post-processor and a bad training-time constraint.
+3. **Structural integration matters at high SNR and is harmful at low SNR**
+   (corrected from "post-hoc beats internal", which was a pooled scalar over a
+   sign change). Internal beats post-hoc by +1.309 dB at 15–20 dB and loses by
+   0.636 dB at 0–5 dB, every CI excluding zero.
 4. The small effect is **not** explained by weak imposition — the `n_iter`
    sweep is flat.
 5. **Unrolling is doing real work** (0.920 dB over a matched single
@@ -209,9 +261,14 @@ does not authorise.
 
 ## 7. What is NOT established
 
-- **Anything about sample efficiency (Q2).** Untested; needs Part C.
-- **Whether the internal-vs-post-hoc result is the operator or the STE.**
-  Confounded; §3.
+- **Anything about sample efficiency (Q2).** Untested; it needs the budget
+   sweep, which remains unauthorised.
+- **Whether H1's low-SNR damage is the constraint itself, the loss weighting,
+  or the STE.** A4 shows 86% of H1's gradient norm comes from trials below
+  5 dB; A3 shows the STE's gradient fidelity is poor at every SNR and worst for
+  early layers (cosine ~0 at layer 0). Neither explanation is cleanly separated
+  from the other, which is what PROMPT 7's Part C
+  ([5,20]-only retraining) is for.
 - **Anything about `N ≠ 32`.** No array-size sweep was run or authorised.
 - **That `r = 7` is the right rank.** Only fixed `r = L_max` was run; the
   adaptive and oracle modes exist and were not exercised in training.

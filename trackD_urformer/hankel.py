@@ -76,7 +76,8 @@ import numpy as np
 import torch
 
 __all__ = ["hankel_matrix_torch", "hankel_to_vector_torch", "hankel_project_torch",
-           "project_G", "RANK_MODES", "max_representable_rank"]
+           "project_G", "project_G_grad", "singular_gap_stats", "RANK_MODES",
+           "max_representable_rank"]
 
 RANK_MODES = ("fixed", "adaptive", "oracle")
 
@@ -141,6 +142,56 @@ def hankel_project_torch(g: torch.Tensor, rank: int, *, pencil: int | None = Non
         Hr = (U[..., :, :r] * s[..., None, :r].to(U.dtype)) @ Vh[..., :r, :]
         cur = hankel_to_vector_torch(Hr)
     return cur
+
+
+def project_G_grad(G: torch.Tensor, *, rank: int = 7, pencil: int | None = None,
+                   n_iter: int = 1) -> torch.Tensor:
+    """DIAGNOSTIC ONLY: the fixed-rank projection with autograd left ON.
+
+    ``Pi_r`` is differentiable almost everywhere, so the exact gradient through
+    the SVD is computable -- it is only *ill-conditioned*, carrying
+    ``1/(sigma_i^2 - sigma_j^2)`` terms that blow up on near-degenerate
+    singular values. This entry point exists so PROMPT 7's A3 can measure how
+    faithful the straight-through approximation actually is, by comparing this
+    gradient against the STE's.
+
+    **Never call this from training.** The training path is the STE in
+    :class:`urformer.URformerLayer`; this is a measurement instrument. Any
+    caller must check the singular-value gaps before trusting the result.
+    """
+    if G.ndim != 3 or not G.is_complex():
+        raise ValueError(
+            f"project_G_grad expects batched complex (batch, N, K), got "
+            f"{tuple(G.shape)} dtype {G.dtype}")
+    b, N, K = G.shape
+    cols = G.permute(0, 2, 1).reshape(b * K, N)
+    out = hankel_project_torch(cols, rank, pencil=pencil, n_iter=n_iter)
+    return out.reshape(b, K, N).permute(0, 2, 1)
+
+
+def singular_gap_stats(G: torch.Tensor, *, rank: int = 7,
+                       pencil: int | None = None) -> dict:
+    """Smallest singular-value gaps in the Hankel spectra of ``G``'s columns.
+
+    The exact SVD gradient carries ``1/(sigma_i - sigma_j)``-type terms, so a
+    tiny gap makes it numerically meaningless. A3 reports these alongside any
+    exact-gradient number, and discards the number if the gap is unusable.
+    The gap that matters most is the one straddling the truncation, ``sigma_r
+    - sigma_{r+1}``: that is the direction the projection actually cuts.
+    """
+    b, N, K = G.shape
+    cols = G.permute(0, 2, 1).reshape(b * K, N)
+    s = torch.linalg.svdvals(hankel_matrix_torch(cols, pencil))
+    adjacent = (s[:, :-1] - s[:, 1:]).abs()
+    r = min(int(rank), s.shape[-1] - 1)
+    return {
+        "min_adjacent_gap": float(adjacent.min()),
+        "min_gap_at_truncation": float((s[:, r - 1] - s[:, r]).abs().min()),
+        "median_gap_at_truncation": float((s[:, r - 1] - s[:, r]).abs().median()),
+        "min_relative_gap_at_truncation":
+            float(((s[:, r - 1] - s[:, r]).abs() / s[:, 0]).min()),
+        "sigma_max_median": float(s[:, 0].median()),
+    }
 
 
 @torch.no_grad()

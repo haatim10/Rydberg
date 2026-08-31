@@ -70,6 +70,9 @@ class URformerLayer(nn.Module):
         self.hankel_pencil = mcfg.hankel_pencil
         self.hankel_iters = int(mcfg.hankel_iters)
         self._disable_hankel: bool = False
+        # A3 diagnostic: use the exact autograd path through the SVD instead of
+        # the straight-through estimator. NEVER set during training.
+        self._exact_hankel_grad: bool = False
 
         # Test hooks. Never set during training; used only by verify.py gates.
         self._override_filter: str | None = None   # None | "exact_bessel"
@@ -104,6 +107,16 @@ class URformerLayer(nn.Module):
         # HS-URformer: the Hankel projection sits BETWEEN the LS step and the
         # Transformer residual, inside every unrolled layer.
         if self.use_hankel and not self._disable_hankel:
+            if self._exact_hankel_grad:
+                # A3 DIAGNOSTIC PATH ONLY, never training. Runs the projection
+                # with autograd on, so the exact (ill-conditioned) SVD gradient
+                # can be compared against the STE's.
+                from .hankel import project_G_grad
+                G_lin = project_G_grad(G_lin, rank=self.hankel_rank,
+                                       pencil=self.hankel_pencil,
+                                       n_iter=self.hankel_iters).to(G_lin.dtype)
+                return (G_lin if self._disable_residual or self.former is None
+                        else G_lin + self.former(G_lin))
             from .hankel import project_G
             proj = project_G(G_lin, rank=self.hankel_rank,
                              pencil=self.hankel_pencil,
@@ -195,17 +208,21 @@ class URformer(nn.Module):
     def _set_test_mode(self, *, filter_override: str | None = None,
                        alpha: float | None = None,
                        disable_residual: bool = False,
-                       disable_hankel: bool | None = None) -> None:
+                       disable_hankel: bool | None = None,
+                       exact_hankel_grad: bool | None = None) -> None:
         for l in self.layers:
             l._override_filter = filter_override
             l._override_alpha = alpha
             l._disable_residual = disable_residual
             if disable_hankel is not None:
                 l._disable_hankel = bool(disable_hankel)
+            if exact_hankel_grad is not None:
+                l._exact_hankel_grad = bool(exact_hankel_grad)
 
     def _clear_test_mode(self) -> None:
         self._set_test_mode(filter_override=None, alpha=None,
-                            disable_residual=False, disable_hankel=False)
+                            disable_residual=False, disable_hankel=False,
+                            exact_hankel_grad=False)
 
 
 def count_parameters(model: URformer) -> dict:
