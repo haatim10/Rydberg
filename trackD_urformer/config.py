@@ -275,6 +275,28 @@ class ModelConfig:
     hankel_pencil: int | None = None        # None -> Track B default p = N//2
     hankel_iters: int = 1           # 1 == H^-1 . Pi_r . H exactly; >1 is Cadzow
 
+    # --- gated Hankel (PROMPT 7) ------------------------------------------
+    # G~ = beta_t * Project(G_lin) + (1 - beta_t) * G_lin, then the Transformer.
+    #   "none"   -> unconditional projection (stage 3's H1)
+    #   "scalar" -> G1: beta_t = sigmoid(g_t), one learned scalar per layer
+    #   "snr"    -> G2: beta_t = sigmoid(MLP_t(log sigma^2)), conditioned on the
+    #               noise level. sigma^2 is ALREADY an estimator input (kappa =
+    #               2 Z |Y| / sigma^2), so this is not privileged information.
+    # The (1 - beta_t) branch is a clean differentiable path, so a gated model
+    # carries gradient regardless of how the projection itself is treated --
+    # the HK6 severing failure cannot recur in this form.
+    hankel_gate: Literal["none", "scalar", "snr"] = "none"
+    hankel_gate_init: float = -2.0          # sigmoid(-2) = 0.119, the alpha convention
+    hankel_gate_hidden: int = 16            # width of the per-layer gate MLP (G2)
+    # MEASURED over 4000 training samples, not assumed:
+    #   mean log sigma^2 = -0.0727, std = 1.998, range [-3.503, +3.401]
+    # G2's gate input is (log sigma^2 - mean) / std, which lands in about
+    # [-1.72, +1.74]. corr(log sigma^2, snr_db) = -1.000 exactly, so
+    # conditioning on sigma^2 IS conditioning on SNR -- and sigma^2 is already
+    # an estimator input via kappa, so no privileged information is added.
+    log_sigma2_mean: float = -0.0727
+    log_sigma2_std: float = 1.998
+
     # Untied weights per unrolled layer (PROMPT 2 sec. 5).
     tie_layers: bool = False
 

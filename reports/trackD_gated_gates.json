@@ -1,0 +1,106 @@
+{
+  "tolerance": 1e-12,
+  "gates": [
+    {
+      "gate": "GK1",
+      "mode": "scalar",
+      "condition": "beta=0 == URformer",
+      "rel": 0.0,
+      "pass": true,
+      "shared_params_copied": 192
+    },
+    {
+      "gate": "GK2",
+      "mode": "scalar",
+      "condition": "beta=1 == HS-URformer",
+      "rel": 0.0,
+      "pass": true,
+      "shared_params_copied": 192
+    },
+    {
+      "gate": "GK0",
+      "mode": "scalar",
+      "condition": "URformer != HS-URformer (gates are non-vacuous)",
+      "rel": 0.24750354676180109,
+      "pass": true
+    },
+    {
+      "gate": "GK1",
+      "mode": "snr",
+      "condition": "beta=0 == URformer",
+      "rel": 0.0,
+      "pass": true,
+      "shared_params_copied": 192
+    },
+    {
+      "gate": "GK2",
+      "mode": "snr",
+      "condition": "beta=1 == HS-URformer",
+      "rel": 0.0,
+      "pass": true,
+      "shared_params_copied": 192
+    },
+    {
+      "gate": "GK0",
+      "mode": "snr",
+      "condition": "URformer != HS-URformer (gates are non-vacuous)",
+      "rel": 0.2822310962014148,
+      "pass": true
+    }
+  ],
+  "initial_betas_scalar": {
+    "per_layer_at_sigma2_0.2": [
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088
+    ],
+    "across_sigma2_layer0": [
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088
+    ],
+    "sigma2_probes": [
+      0.019999999552965164,
+      0.20000000298023224,
+      2.0,
+      20.0
+    ],
+    "total_params": 1586910
+  },
+  "initial_betas_snr": {
+    "per_layer_at_sigma2_0.2": [
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088
+    ],
+    "across_sigma2_layer0": [
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088,
+      0.11920291930437088
+    ],
+    "sigma2_probes": [
+      0.019999999552965164,
+      0.20000000298023224,
+      2.0,
+      20.0
+    ],
+    "total_params": 1587390
+  },
+  "all_pass": true
+}

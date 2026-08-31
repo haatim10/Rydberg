@@ -42,7 +42,54 @@ from .torch_forward import (
 )
 from .transformer import ChannelTransformer
 
-__all__ = ["URformerLayer", "URformer", "count_parameters"]
+__all__ = ["URformerLayer", "URformer", "HankelGate", "count_parameters"]
+
+
+class HankelGate(nn.Module):
+    """``beta_t`` for the gated Hankel projection (PROMPT 7 B1).
+
+    ``mode="scalar"`` (arm G1)
+        one learned scalar per layer, exactly the ``alpha``-gate mechanism.
+        Answers "does a gate help *without* SNR information?"
+    ``mode="snr"`` (arm G2)
+        ``sigmoid(MLP(standardized log sigma^2))``, a compact 2-layer MLP.
+        ``sigma^2`` is already an estimator input -- ``kappa = 2 Z |Y| /
+        sigma^2`` uses it -- so this adds no privileged information. It is
+        perfectly anti-correlated with SNR (measured -1.000), so this is SNR
+        conditioning by another name, and legitimately so.
+
+    Both initialize at ``beta ~ sigmoid(gate_init)``, the alpha convention, so
+    the model starts near plain URformer rather than near HS-URformer. For
+    ``snr`` that is arranged by zeroing the MLP's output weight and setting its
+    bias to ``gate_init``, which makes ``beta`` CONSTANT at initialization --
+    identical to G1's starting point, so the two arms differ only in what they
+    can learn, not where they start.
+    """
+
+    def __init__(self, mode: str, *, init: float = -2.0, hidden: int = 16,
+                 mean: float = 0.0, std: float = 1.0) -> None:
+        super().__init__()
+        self.mode = str(mode)
+        self.mean, self.std = float(mean), float(std)
+        if self.mode == "scalar":
+            self.g = nn.Parameter(torch.tensor(float(init)))
+        elif self.mode == "snr":
+            self.fc1 = nn.Linear(1, hidden)
+            self.fc2 = nn.Linear(hidden, 1)
+            nn.init.zeros_(self.fc2.weight)
+            nn.init.constant_(self.fc2.bias, float(init))
+        else:
+            raise ValueError(f"unknown hankel gate mode {mode!r}")
+
+    def forward(self, sigma2: torch.Tensor) -> torch.Tensor:
+        """``(batch,)`` sigma^2 -> ``(batch, 1, 1)`` beta, broadcastable over G."""
+        if self.mode == "scalar":
+            b = torch.sigmoid(self.g).expand(sigma2.shape[0])
+        else:
+            x = ((torch.log(sigma2.reshape(-1, 1)) - self.mean) / self.std
+                 ).to(self.fc1.weight.dtype)
+            b = torch.sigmoid(self.fc2(torch.tanh(self.fc1(x)))).reshape(-1)
+        return b.reshape(-1, 1, 1)
 
 
 class URformerLayer(nn.Module):
@@ -69,6 +116,14 @@ class URformerLayer(nn.Module):
         self.hankel_mode = str(mcfg.hankel_mode)
         self.hankel_pencil = mcfg.hankel_pencil
         self.hankel_iters = int(mcfg.hankel_iters)
+        self.hankel_gate_mode = str(getattr(mcfg, "hankel_gate", "none"))
+        self.hankel_gate = (
+            HankelGate(self.hankel_gate_mode, init=mcfg.hankel_gate_init,
+                       hidden=mcfg.hankel_gate_hidden,
+                       mean=mcfg.log_sigma2_mean, std=mcfg.log_sigma2_std)
+            if self.use_hankel and self.hankel_gate_mode != "none" else None)
+        # Gate overrides for the GK1/GK2 degeneration gates. None = learned.
+        self._override_beta: float | None = None
         self._disable_hankel: bool = False
         # A3 diagnostic: use the exact autograd path through the SVD instead of
         # the straight-through estimator. NEVER set during training.
@@ -135,7 +190,24 @@ class URformerLayer(nn.Module):
             # This satisfies both stated requirements at once: no gradient
             # through the ill-conditioned SVD, and gradients still flow around
             # the operator to every earlier layer.
-            G_lin = G_lin + (proj - G_lin).detach()
+            proj = G_lin + (proj - G_lin).detach()
+
+            if self.hankel_gate is None and self._override_beta is None:
+                G_lin = proj                      # stage-3 H1: unconditional
+            else:
+                # beta * Project(G_lin) + (1 - beta) * G_lin.
+                # The (1 - beta) branch is an ordinary differentiable path, so
+                # this form carries gradient to every earlier layer no matter
+                # how the projection itself is treated -- the HK6 severing
+                # failure is structurally impossible here.
+                if self._override_beta is not None:
+                    beta = torch.as_tensor(self._override_beta,
+                                           dtype=G_lin.real.dtype,
+                                           device=G_lin.device)
+                else:
+                    beta = self.hankel_gate(sigma2).to(G_lin.real.dtype)
+                bc = beta.to(G_lin.dtype)
+                G_lin = bc * proj + (1.0 - bc) * G_lin
 
         if self._disable_residual or self.former is None:
             return G_lin
@@ -209,11 +281,13 @@ class URformer(nn.Module):
                        alpha: float | None = None,
                        disable_residual: bool = False,
                        disable_hankel: bool | None = None,
-                       exact_hankel_grad: bool | None = None) -> None:
+                       exact_hankel_grad: bool | None = None,
+                       beta: float | None = None) -> None:
         for l in self.layers:
             l._override_filter = filter_override
             l._override_alpha = alpha
             l._disable_residual = disable_residual
+            l._override_beta = beta
             if disable_hankel is not None:
                 l._disable_hankel = bool(disable_hankel)
             if exact_hankel_grad is not None:
@@ -222,7 +296,18 @@ class URformer(nn.Module):
     def _clear_test_mode(self) -> None:
         self._set_test_mode(filter_override=None, alpha=None,
                             disable_residual=False, disable_hankel=False,
-                            exact_hankel_grad=False)
+                            exact_hankel_grad=False, beta=None)
+
+    def initial_betas(self, sigma2: torch.Tensor) -> list[float]:
+        """Each layer's ``beta_t`` at the given noise level. Printed into the report."""
+        out = []
+        for l in self.layers:
+            if l.hankel_gate is None:
+                out.append(1.0 if l.use_hankel else 0.0)
+            else:
+                with torch.no_grad():
+                    out.append(float(l.hankel_gate(sigma2).reshape(-1)[0]))
+        return out
 
 
 def count_parameters(model: URformer) -> dict:
