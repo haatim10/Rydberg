@@ -453,7 +453,10 @@ def main(argv=None) -> int:
     ap.add_argument("--i-have-approval", action="store_true")
     ap.add_argument("--runs", type=str, default=",".join(RUNS))
     ap.add_argument("--eval-only", action="store_true")
+    ap.add_argument("--eval", action="store_true",
+                    help="run the single test pass (~45 min) after training")
     args = ap.parse_args(argv)
+    args.eval = args.eval or args.eval_only
     if not args.i_have_approval:
         print("REFUSING: stage 3 requires --i-have-approval (PROMPT 6 Part B).")
         return 2
@@ -467,8 +470,26 @@ def main(argv=None) -> int:
 
     RESULTS.mkdir(parents=True, exist_ok=True)
     path = REPORTS / "trackD_stage3_results.json"
-    summary = json.loads(path.read_text()) if path.exists() else {
-        "config": cfg.to_dict(), "dataset_identity": ident, "runs": {}}
+
+    def merge_write(**updates) -> dict:
+        """Re-read, merge, write. H1 and X1 train in SEPARATE processes.
+
+        Reading the summary once at startup and writing it at the end would let
+        whichever arm finishes second clobber the first arm's record -- the two
+        processes overlap by design, since X1 is chained behind the EM-GS
+        precompute while H1 is still training.
+        """
+        cur = json.loads(path.read_text()) if path.exists() else {
+            "config": cfg.to_dict(), "dataset_identity": ident, "runs": {}}
+        for key, val in updates.items():
+            if key == "runs":
+                cur.setdefault("runs", {}).update(val)
+            else:
+                cur[key] = val
+        path.write_text(json.dumps(cur, indent=2) + "\n", encoding="utf-8")
+        return cur
+
+    summary = merge_write()
 
     if not args.eval_only:
         for name in [r.strip() for r in args.runs.split(",") if r.strip()]:
@@ -476,13 +497,13 @@ def main(argv=None) -> int:
             t0 = time.time()
             info = train_run(cfg, name, RESULTS / name)
             info["train_seconds"] = round(time.time() - t0, 1)
-            summary["runs"][name] = info
-            path.write_text(json.dumps(summary, indent=2) + "\n",
-                            encoding="utf-8")
+            summary = merge_write(runs={name: info})
             print(f"  [{name}] done in {info['train_seconds']}s, epoch "
                   f"{info['chosen_epoch']}, val {info['chosen_val_db']:.3f} dB")
 
-    if set(RUNS) <= set(summary["runs"]):
+    # Evaluation is OPT-IN. Both training processes would otherwise reach this
+    # point with both arms present and run the same 45-minute test pass twice.
+    if args.eval and set(RUNS) <= set(summary["runs"]):
         print("\n=== single test evaluation ===")
         test = evaluate_stage3(cfg, cfg.data.n_test, summary["runs"])
         per = test["per_trial_nmse"]
@@ -501,8 +522,7 @@ def main(argv=None) -> int:
                for k in (1, 2, 4, 8)},
         }
         test["verdict"] = verdict(test["contrasts"]["delta_H"])
-        summary["test"] = test
-        path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+        summary = merge_write(test=test)
 
         print("\n  per-arm test NMSE (PRIMARY = median):")
         for k, v in test["methods"].items():
@@ -516,6 +536,9 @@ def main(argv=None) -> int:
                   f"excl0={v['ci_excludes_zero']}")
         print(f"\n  VERDICT: {test['verdict']['decision']}")
         print(f"  {test['verdict']['reason']}")
+    elif not args.eval:
+        print("\nskipping evaluation (pass --eval to run it once both arms "
+              f"are trained); have {sorted(summary['runs'])}")
     else:
         print(f"\nskipping evaluation: have {sorted(summary['runs'])}, "
               f"need {sorted(RUNS)}")
