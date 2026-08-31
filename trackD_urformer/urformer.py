@@ -18,8 +18,12 @@ Degeneration properties, all asserted in verify.py:
   => exactly one classical EM-GS iteration                              (gate E)
 * Transformer output weights zeroed => exactly the preceding fixed update (gate F)
 
-No Hankel projection, no Cadzow, no rank truncation, no ESPRIT anywhere in this
-module (PROMPT 2 stop condition 2).
+Under PROMPT 2 this module contained no Hankel projection, no Cadzow, no rank
+truncation and no ESPRIT (stop condition 2). PROMPT 6 lifts that for the
+HS-URformer variant only: with ``ModelConfig.use_hankel=True`` a rank-``r``
+Hankel projection is spliced between the LS step and the Transformer residual.
+It is **off by default**, so the PROMPT 2 baseline is bit-identical to what it
+was, and gate HK5 asserts the operator degenerates to the identity at full rank.
 """
 from __future__ import annotations
 
@@ -60,6 +64,13 @@ class URformerLayer(nn.Module):
             n_heads=mcfg.n_heads, ffn_mult=mcfg.ffn_mult, dropout=mcfg.dropout,
             zero_init_out=True,
         ) if mcfg.use_transformer else None
+        self.use_hankel = bool(mcfg.use_hankel)
+        self.hankel_rank = int(mcfg.hankel_rank)
+        self.hankel_mode = str(mcfg.hankel_mode)
+        self.hankel_pencil = mcfg.hankel_pencil
+        self.hankel_iters = int(mcfg.hankel_iters)
+        self._disable_hankel: bool = False
+
         # Test hooks. Never set during training; used only by verify.py gates.
         self._override_filter: str | None = None   # None | "exact_bessel"
         self._override_alpha: float | None = None
@@ -89,6 +100,30 @@ class URformerLayer(nn.Module):
         Y_rec = alpha.to(Y.dtype) * Y_filt + (1.0 - alpha).to(Y.dtype) * Y_direct
 
         G_lin = least_squares_G(Y_rec - B, S, ridge=self.ridge)
+
+        # HS-URformer: the Hankel projection sits BETWEEN the LS step and the
+        # Transformer residual, inside every unrolled layer.
+        if self.use_hankel and not self._disable_hankel:
+            from .hankel import project_G
+            proj = project_G(G_lin, rank=self.hankel_rank,
+                             pencil=self.hankel_pencil,
+                             n_iter=self.hankel_iters,
+                             mode=self.hankel_mode).to(G_lin.dtype)
+            # STRAIGHT-THROUGH ESTIMATOR. A fully detached projection severs
+            # the unrolled gradient chain: gate HK6 measured EXACTLY ZERO
+            # gradient in every layer except the last Transformer, because
+            # @torch.no_grad() returns a leaf. PROMPT 6 justified detaching by
+            # analogy to the LS/M-step, but that premise is wrong -- the LS
+            # step is torch.linalg.solve and IS differentiable.
+            #
+            # forward:  G_lin -> proj            (exactly the projection)
+            # backward: d/dG_lin = identity      (no path through the SVD)
+            #
+            # This satisfies both stated requirements at once: no gradient
+            # through the ill-conditioned SVD, and gradients still flow around
+            # the operator to every earlier layer.
+            G_lin = G_lin + (proj - G_lin).detach()
+
         if self._disable_residual or self.former is None:
             return G_lin
         return G_lin + self.former(G_lin)
@@ -159,14 +194,18 @@ class URformer(nn.Module):
     # -- test hooks, used only by verify.py -------------------------------
     def _set_test_mode(self, *, filter_override: str | None = None,
                        alpha: float | None = None,
-                       disable_residual: bool = False) -> None:
+                       disable_residual: bool = False,
+                       disable_hankel: bool | None = None) -> None:
         for l in self.layers:
             l._override_filter = filter_override
             l._override_alpha = alpha
             l._disable_residual = disable_residual
+            if disable_hankel is not None:
+                l._disable_hankel = bool(disable_hankel)
 
     def _clear_test_mode(self) -> None:
-        self._set_test_mode(filter_override=None, alpha=None, disable_residual=False)
+        self._set_test_mode(filter_override=None, alpha=None,
+                            disable_residual=False, disable_hankel=False)
 
 
 def count_parameters(model: URformer) -> dict:

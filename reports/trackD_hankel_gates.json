@@ -1,0 +1,161 @@
+{
+  "gates": {
+    "HK1_exactness": {
+      "pass": true,
+      "max_rel_err": 2.11507057954816e-15,
+      "tolerance": 1e-12,
+      "n_cases": 24,
+      "cases": [
+        {
+          "N": 32,
+          "L": 1,
+          "seed": 0,
+          "rel_err": 6.863334659917668e-16
+        },
+        {
+          "N": 32,
+          "L": 1,
+          "seed": 1,
+          "rel_err": 3.584313677031372e-16
+        },
+        {
+          "N": 32,
+          "L": 1,
+          "seed": 2,
+          "rel_err": 8.035795800339066e-16
+        },
+        {
+          "N": 32,
+          "L": 3,
+          "seed": 0,
+          "rel_err": 2.11507057954816e-15
+        },
+        {
+          "N": 32,
+          "L": 3,
+          "seed": 1,
+          "rel_err": 8.917415220331418e-16
+        },
+        {
+          "N": 32,
+          "L": 3,
+          "seed": 2,
+          "rel_err": 1.5562633750605062e-15
+        }
+      ],
+      "summary": "max rel 2.115e-15 < 1e-12 over 24 cases"
+    },
+    "HK2_fixed_point": {
+      "pass": true,
+      "max_rel_err": 1.2150103609249725e-15,
+      "tolerance": 1e-12,
+      "summary": "P(P(g)) == P(g), max rel 1.215e-15"
+    },
+    "HK3_rank": {
+      "pass": true,
+      "rows": [
+        {
+          "L": 1,
+          "n_sv": 16,
+          "sv_L_over_sv0": 1.0,
+          "max_tail_over_sv0": 1.3580298163870807e-15,
+          "trackB_hankel_rank": 1
+        },
+        {
+          "L": 3,
+          "n_sv": 16,
+          "sv_L_over_sv0": 0.32394853781561184,
+          "max_tail_over_sv0": 9.778844056597248e-16,
+          "trackB_hankel_rank": 3
+        },
+        {
+          "L": 5,
+          "n_sv": 16,
+          "sv_L_over_sv0": 0.013192801412153026,
+          "max_tail_over_sv0": 8.179514697199589e-16,
+          "trackB_hankel_rank": 5
+        },
+        {
+          "L": 7,
+          "n_sv": 16,
+          "sv_L_over_sv0": 6.921094157452273e-05,
+          "max_tail_over_sv0": 8.143636661541602e-16,
+          "trackB_hankel_rank": 7
+        }
+      ],
+      "summary": "exactly L nonzero singular values, tail < 1e-12"
+    },
+    "HK4_trackB_parity": {
+      "pass": true,
+      "hankel_matrix_rel_err": 0.0,
+      "hankel_project_rel_err": 1.7651937045454685e-15,
+      "tolerance": 1e-12,
+      "note": "Track D torch operator vs Track B numpy, identical input",
+      "summary": "matrix 0.000e+00, project 1.765e-15"
+    },
+    "HK5_identity_degeneration": {
+      "pass": true,
+      "rel_err": 2.29306225216039e-15,
+      "tolerance": 1e-12,
+      "full_rank_used": 16,
+      "condition": "r = min(N-p, p+1) = 16 => projection is identity => HS-URformer == URformer layer for layer",
+      "summary": "rel 2.293e-15 < 1e-12 at full rank 16"
+    },
+    "HK6_gradient_safety": {
+      "pass": true,
+      "loss": 0.16503968834877014,
+      "all_finite": true,
+      "all_nonzero": true,
+      "per_layer": [
+        {
+          "layer": 0,
+          "filter_net_grad_norm": 0.00865138228982687,
+          "former_grad_norm": 0.14238013327121735,
+          "gate_grad_abs": 0.001668331096880138
+        },
+        {
+          "layer": 1,
+          "filter_net_grad_norm": 0.03926737233996391,
+          "former_grad_norm": 0.17607615888118744,
+          "gate_grad_abs": 0.003869852051138878
+        },
+        {
+          "layer": 2,
+          "filter_net_grad_norm": 0.07685837894678116,
+          "former_grad_norm": 0.24053215980529785,
+          "gate_grad_abs": 0.016847094520926476
+        }
+      ],
+      "note": "projection is @torch.no_grad(), so no gradient path through the SVD",
+      "summary": "loss 0.1650; all grads finite and > 0"
+    },
+    "HK7_N8_degeneracy": {
+      "pass": true,
+      "N": 8,
+      "pencil": 4,
+      "shape": [
+        4,
+        5
+      ],
+      "max_representable_rank": 4,
+      "recovery_rel_err_by_L": {
+        "3": 2.7770969782026026e-16,
+        "4": 2.8796519230152925e-16,
+        "5": 3.709713122648853e-16,
+        "7": 7.232664567232704e-16
+      },
+      "identity_on_random_input_N8": 4.973413336368527e-16,
+      "identity_on_random_input_N32": 0.3322933993162253,
+      "note": "CORRECTED characterization. PROMPT 6 predicted the operator 'cannot represent L_k >= 5' at N=8, i.e. that it would be LOSSY. It is not lossy - it is VACUOUS. With p=4 the embedding is 4x5, so EVERY length-8 vector has Hankel rank <= 4; a rank-7 request truncates to min(7,4)=4, which is no truncation at all. Measured: the projection returns an UNSTRUCTURED random vector unchanged (rel 4.97e-16) at N=8, while genuinely constraining one at N=32 (rel 3.32e-01). So at N=8 HS-URformer is EXACTLY URformer, and Q3's prediction Delta_H <= 0 there is not merely likely but exact: Delta_H == 0 up to training noise.",
+      "summary": "VACUOUS not lossy: identity on random input at N=8 (4.97e-16) vs constraining at N=32 (3.32e-01)"
+    },
+    "A4_dataset_identity": {
+      "pass": true,
+      "seed_config_hash_stage2": "e18eb67aeb703fa1",
+      "seed_config_hash_now": "e18eb67aeb703fa1",
+      "differences": {},
+      "u1_checkpoint_reusable": true,
+      "summary": "datasets identical, stage-2 U1 checkpoints reusable"
+    }
+  }
+}

@@ -260,6 +260,21 @@ class ModelConfig:
     # and "a 1.57M-parameter learned denoiser helped".
     use_transformer: bool = True
 
+    # --- HS-URformer (PROMPT 6) -------------------------------------------
+    # The Hankel projection sits INSIDE every unrolled layer, between the LS
+    # step and the Transformer residual - that placement is what makes the
+    # internal-vs-post-hoc distinction meaningful. Applied through a
+    # STRAIGHT-THROUGH ESTIMATOR: forward is the exact projection, backward is
+    # the identity, so no gradient passes through the ill-conditioned SVD while
+    # the unrolled chain to earlier layers stays intact. Full detachment was
+    # tried first and gate HK6 measured EXACTLY ZERO gradient everywhere but
+    # the last Transformer - see urformer.URformerLayer.forward.
+    use_hankel: bool = False
+    hankel_rank: int = 7            # L_max; a system design assumption, NOT oracle
+    hankel_mode: Literal["fixed", "adaptive", "oracle"] = "fixed"
+    hankel_pencil: int | None = None        # None -> Track B default p = N//2
+    hankel_iters: int = 1           # 1 == H^-1 . Pi_r . H exactly; >1 is Cadzow
+
     # Untied weights per unrolled layer (PROMPT 2 sec. 5).
     tie_layers: bool = False
 
