@@ -15,3 +15,16 @@ results_stage1.log
 # The scientific record (curves, metrics, per-trial rows) is tracked instead.
 results/track_d/stage1/*/checkpoint.pt
 results/track_d/stage1/*/best.pt
+
+# Track D stage-3 (HS-URformer) run artifacts.
+# The EM-GS feature cache is 123 MB of DERIVED data: a deterministic function
+# of (S, Z, B, sigma2, seed, T_GS) with a bit-exact regeneration path and a
+# test that pins it (test_emgs_cache_is_bit_exact). Never a scientific record.
+results/track_d/emgs_cache/
+# Per-epoch weights exist only so the one-SE selection rule can promote the
+# chosen epoch to best.pt; after that they are dead weight (~6 MB x 13 x 2).
+# Stage 2 tracked its own, which is why .git is already 362 MB -- not a
+# precedent worth extending. The selection input (val_per_trial.npy), the
+# curves, best.pt and the per-trial test rows ARE tracked.
+results/track_d/stage3/*/ep[0-9][0-9][0-9].pt
+results/track_d/stage3/*/checkpoint.pt

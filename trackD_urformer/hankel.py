@@ -38,6 +38,29 @@ straight-through estimator (``x + (f(x) - x).detach()``): forward is the exact
 projection, backward is the identity. Both requirements hold at once -- no
 gradient through the SVD, and gradients still reach every earlier layer.
 
+One step is NOT a projection -- read Delta_H with this in mind
+--------------------------------------------------------------
+``Pi_r`` leaves the rank-r matrix set, but a truncated matrix is no longer
+Hankel, and ``H^-1`` (anti-diagonal averaging) puts energy back above rank r.
+So ``H^-1 . Pi_r . H`` is one ALTERNATING-PROJECTION sweep between the rank set
+and the Hankel set, not a projection onto their intersection, and it is not
+idempotent on generic input. That is why Cadzow iterates, and why Track B's
+``hs_gs`` defaults to ``cadzow_iter=4``.
+
+Measured here at ``N=32, r=7`` from a generic complex Gaussian vector, as the
+fraction of Hankel spectral energy still outside rank 7:
+
+    n_iter    1        2        4        8
+    tail      3.7e-2   2.0e-2   8.4e-3   1.4e-3
+
+HS-URformer runs at ``hankel_iters=1``, because that is the operator PROMPT 6
+specifies. The structure it imposes is therefore APPROXIMATE -- about 4% of the
+column's energy remains off-manifold -- and a small ``Delta_H`` has a reading
+other than "the prior does not help": the prior may simply not have been
+imposed very hard. ``stage3`` measures that directly by sweeping ``n_iter`` on
+the training-free ``U1+post`` arm. Note also that H0 (Track B's HS-EM-GS) uses
+four sweeps, so the classical and learned contrasts are NOT iteration-matched.
+
 Rank rule -- three settings, never conflated
 --------------------------------------------
 ``r = 7`` fixed (``L_max``)     PRIMARY. A system design assumption, the same one
