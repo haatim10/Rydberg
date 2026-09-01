@@ -34,3 +34,8 @@ results/track_d/stage3/*/checkpoint.pt
 # chosen epoch to best.pt, after which they are dead weight.
 results/track_d/stage4/*/ep[0-9][0-9][0-9].pt
 results/track_d/stage4/*/checkpoint.pt
+
+# Per-operating-point sweep shards: raw per-trial numerator/denominator, one
+# file per (SNR, P). The merged curves are tracked as
+# reports/trackD_sweep_curves.json and the figures alongside them.
+results/track_d/sweeps/*.json
