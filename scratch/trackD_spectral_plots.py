@@ -60,8 +60,11 @@ ax.set_ylabel("cumulative Hankel energy  $E(q)$")
 ax.set_xlim(1, 16)
 ax.set_ylim(0, 1.02)
 ax.legend(frameon=False, ncol=2, fontsize=6.9, loc="lower right")
-ax.set_title("a. sparse channel, $M{=}32$\nsolid = noiseless,  dashed = EM-GS estimate "
-             "(5 dB)", loc="left", fontweight="bold", fontsize=8)
+ax.set_title("a. sparse channel, $M{=}32$", loc="left", fontweight="bold",
+             fontsize=8.5, pad=14)
+ax.annotate("solid = noiseless   ·   dashed = EM-GS estimate (5 dB)",
+            xy=(0, 1.012), xycoords="axes fraction", fontsize=7.2,
+            color=MUTED, va="bottom")
 
 # ---- panel b: Xiao's own channel -----------------------------------------
 c4 = D["C4_xiao_SV_M32"]
@@ -82,8 +85,10 @@ ax2.annotate("99% energy", (15.7, 0.985), color=MUTED, fontsize=6.8,
 ax2.set_xlabel("retained components  q")
 ax2.set_xlim(1, 16)
 ax2.legend(frameon=False, loc="lower right", fontsize=6.9)
-ax2.set_title("b. the paper's own channel model\nis it approximately low rank?",
-              loc="left", fontweight="bold", fontsize=8)
+ax2.set_title("b. the paper's own channel model", loc="left",
+              fontweight="bold", fontsize=8.5, pad=14)
+ax2.annotate("is it approximately low rank?", xy=(0, 1.012),
+             xycoords="axes fraction", fontsize=7.2, color=MUTED, va="bottom")
 
 OUT.mkdir(parents=True, exist_ok=True)
 for ext in ("png", "pdf"):
@@ -92,12 +97,13 @@ print(f"wrote {OUT}/fig_hankel_spectrum.png")
 
 # ---- the table the deliverable asks for ----------------------------------
 def row(d, name):
-    t = d["tail_energy_median"]
+    # M=16 has cap 8, so tail@13 does not exist there; print "-" rather than
+    # crashing or silently inventing a value.
+    t = {int(k): v for k, v in d["tail_energy_median"].items()}
+    cell = lambda r: f"{t[r]*100:8.2f}" if r in t else f"{'-':>8}"
     return (f"  {name:<34} {d['effective_rank_median']:8.2f} "
             f"{d['effective_rank_energy_median']:9.2f} {d['stable_rank_median']:8.2f} "
-            f"{t['3']*100 if '3' in t else t[3]*100:9.2f} "
-            f"{t['7']*100 if '7' in t else t[7]*100:8.2f} "
-            f"{t['13']*100 if '13' in t else t[13]*100:8.2f}")
+            f"{cell(3):>9} {cell(7)} {cell(13)}")
 
 
 hdr = (f"  {'configuration':<34} {'erank':>8} {'erank_E':>9} {'srank':>8} "
