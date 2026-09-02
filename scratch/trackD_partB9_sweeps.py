@@ -85,6 +85,11 @@ def cells(group: str) -> list[dict]:
     if group == "B6":
         return [{"tag": f"B6_xiao_{m}", "N": 32, "L": None, "K": 3, "P": 20,
                  "channel": f"sv_{m}"} for m in ("clustered", "literal")]
+    if group == "B8":
+        # PROMPT 10 Step 0: the second out-of-model prediction. The predicted
+        # value was committed in 060205b BEFORE this cell was ever run.
+        return [{"tag": "B8_cui", "N": 32, "L": None, "K": 3, "P": 20,
+                 "channel": "sv_cui"}]
     if group == "all":
         # Priority order: B6 and B3 first. B6 tests the A2 prediction on a
         # channel specified by someone else, and B3 is the axis genuinely
@@ -94,12 +99,20 @@ def cells(group: str) -> list[dict]:
     raise ValueError(group)
 
 
-def sv_channel(N, K, rng, *, mode, n_clusters=4, rays=10):
-    """Xiao Saleh-Valenzuela column set, both readings of Table I."""
+def sv_channel(N, K, rng, *, mode, n_clusters=4, rays=10, cui_paths=10):
+    """Saleh-Valenzuela column sets: both Xiao readings, plus the Cui config.
+
+    ``mode="cui"`` is the configuration named in the PROMPT 10 brief -- L = 10
+    independent paths, CN(0,1) gains, incident angles U(-90, 90) deg. See
+    scratch/trackD_step0_cui_predict.py for why the attribution of that
+    configuration is recorded as unverified.
+    """
     n = np.arange(N)
     G = np.empty((N, K), dtype=np.complex128)
     for k in range(K):
-        if mode == "literal":
+        if mode == "cui":
+            th = rng.uniform(-np.pi / 2, np.pi / 2, cui_paths)
+        elif mode == "literal":
             th = rng.uniform(-np.pi / 2, np.pi / 2, n_clusters * rays)
         else:
             ctr = rng.uniform(-np.pi / 2, np.pi / 2, n_clusters)
@@ -184,7 +197,7 @@ def one_cell(cfg, cell: dict, *, seconds: int, seed0: int) -> dict:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="PROMPT 9 Part B classical sweeps")
-    ap.add_argument("--group", required=True, choices=("B1", "B2", "B3", "B6", "B7", "all"))
+    ap.add_argument("--group", required=True, choices=("B1", "B2", "B3", "B6", "B7", "B8", "all"))
     ap.add_argument("--shard", type=int, default=0)
     ap.add_argument("--n-shards", type=int, default=1)
     ap.add_argument("--seconds", type=int, default=CELL_SECONDS)
