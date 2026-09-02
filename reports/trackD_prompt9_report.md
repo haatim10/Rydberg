@@ -323,8 +323,10 @@ Realized per-bin **gradient** shares, measured (not assumed):
 
 Spread across bins falls **31× → 1.9×**. Share below 5 dB falls
 **0.897 → 0.427** (ideal 0.500 — a slight over-correction). The 0.897 figure
-independently reproduces A4's separately-measured 0.859, which is a useful
-consistency check on two different instruments.
+sits close to A4's independently-measured 0.859, which is a useful cross-check;
+the two are not identical measurements (A4 measures gradient *norm* share, this
+measures per-bin gradient share), so the agreement is corroborating rather than
+a reproduction.
 
 ### 3.2 Per-bin results, every contrast (2000 paired trials, bootstrap CI95)
 
@@ -339,10 +341,23 @@ Positive = C1 better.
 **SNR ≥ 5: +1.902 dB** [+1.823, +1.986]. **SNR < 5: +0.135 dB** [+0.101,
 +0.172].
 
-Gap to the unstructured-LS oracle at SNR ≥ 5 falls **+2.897 → +1.000 dB**. In
-the top bin C1's median (−11.630 dB) edges past the oracle's (−11.582) — the
-oracle is a *perfect-phase, unstructured-LS* ceiling, not a universal bound, and
-a learned estimator that exploits channel structure is entitled to pass it.
+Gap to the unstructured-LS oracle at SNR ≥ 5 falls **+2.897 → +1.000 dB**.
+
+C1's **pooled** median (−11.630 dB) edges past the oracle's (−11.582), but the
+per-bin view — the primary statistic — shows this is not a uniform win and must
+not be read as one. C1 minus oracle, by bin (positive = oracle ahead):
+
+| bin | −10..−5 | −5..0 | 0..5 | 5..10 | 10..15 | 15..20 |
+|---|---|---|---|---|---|---|
+| U1 | −1.941 | −0.597 | +0.255 | +1.559 | +2.825 | +4.656 |
+| C1 | −1.990 | −0.586 | −0.231 | +0.207 | +0.911 | **+2.053** |
+
+**C1 beats the oracle below 5 dB and trails it above.** That is coherent: the
+oracle is a *perfect-phase, unstructured-LS* ceiling, not a universal bound, so
+an estimator exploiting channel structure can pass it — and the room to do so is
+largest where noise hurts unstructured LS most, i.e. at low SNR. The pooled
+figure sits above the oracle only because the uniform SNR draw puts half its
+mass in the region where C1 wins.
 
 **P14 — matched-pilot training.** Positive = matched better than the `P = 20`
 model evaluated out of distribution.
