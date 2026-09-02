@@ -161,6 +161,12 @@ A2. The honest statement: predicted −0.12, measured 0.000, error 0.12 dB, and
 **the selector correctly detects that there is no exploitable structure and
 switches itself off.** That is better behaviour than the prediction anticipated.
 
+The two readings put the selector's discrimination on the record: it declines
+to project in **29.1%** of literal-channel trials (mean `L̂ = 11.08` against
+`cap = 16`) and in only **1.4%** of clustered-channel trials (mean
+`L̂ = 6.14`). Nothing tells it which channel it is looking at — it reads the
+held-out pilot residual and nothing else.
+
 ### B3 — `Δ_HS(SNR)` under adaptive rank, default configuration [FACT]
 
 `n = 274`, mean `L̂ = 4.59` (median 5) — the selector chooses well below the
