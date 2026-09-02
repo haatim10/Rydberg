@@ -75,6 +75,12 @@ def cells(group: str) -> list[dict]:
     if group == "B6":
         return [{"tag": f"B6_xiao_{m}", "N": 32, "L": None, "K": 3, "P": 20,
                  "channel": f"sv_{m}"} for m in ("clustered", "literal")]
+    if group == "all":
+        # Priority order: B6 and B3 first. B6 tests the A2 prediction on a
+        # channel specified by someone else, and B3 is the axis genuinely
+        # missing for the classical paper's own claim -- so if the night runs
+        # short, those are the two that must already be done.
+        return cells("B6") + cells("B3") + cells("B2") + cells("B1")
     raise ValueError(group)
 
 
@@ -168,7 +174,7 @@ def one_cell(cfg, cell: dict, *, seconds: int, seed0: int) -> dict:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="PROMPT 9 Part B classical sweeps")
-    ap.add_argument("--group", required=True, choices=("B1", "B2", "B3", "B6"))
+    ap.add_argument("--group", required=True, choices=("B1", "B2", "B3", "B6", "all"))
     ap.add_argument("--shard", type=int, default=0)
     ap.add_argument("--n-shards", type=int, default=1)
     ap.add_argument("--seconds", type=int, default=CELL_SECONDS)
