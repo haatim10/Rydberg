@@ -313,6 +313,36 @@ def main() -> int:
                   f"pooled, {dh:+.3f} dB at SNR>=5  "
                   f"(predicted +0.3..+0.8, and that it GROWS as P falls)")
 
+    # ---------------- B8 : the PROMPT 10 Step 0 out-of-model test ----------
+    if "B8_cui" in cells:
+        c = cells["B8_cui"]
+        p = c["delta_hs"]["pooled_SAMPLING_DESIGN_DEPENDENT"]
+        pred = json.loads(
+            Path("reports/trackD_step0_cui_prediction.json").read_text())
+        pv = pred["PREDICTED_delta_hs_db"]
+        lo, hi = pred["prediction_interval_db"]
+        m = p["median_diff_db"]
+        raw = json.loads((SRC / "B8_cui.json").read_text())
+        res["B8_cui_measured"] = {
+            "predicted_db": pv, "prediction_interval_db": [lo, hi],
+            "measured_db": m, "ci95": p["boot_ci95_median"],
+            "error_db": float(m - pv),
+            "inside_prediction_interval": bool(lo <= m <= hi),
+            "same_side_of_zero": bool((m > 0) == (pv > 0)),
+            "n": c["n"], "mean_L_hat": c["mean_L_hat"],
+            "frac_trials_no_projection": float(
+                np.mean(np.asarray(raw["L_hat"]) >= c["cap"])),
+            "high_snr_ge5": band(c["delta_hs"], 5, 20),
+            "low_snr_lt5": band(c["delta_hs"], -10, 5)}
+        hdr("B8  Step 0: the L=10 configuration vs its REGISTERED prediction")
+        print(f"  predicted {pv:+.3f} dB, interval [{lo:+.3f},{hi:+.3f}]")
+        print(f"  measured  {m:+.3f} dB, CI95 "
+              f"[{p['boot_ci95_median'][0]:+.3f},"
+              f"{p['boot_ci95_median'][1]:+.3f}]   n={c['n']}")
+        print(f"  error {m - pv:+.3f} dB   inside interval: "
+              f"{res['B8_cui_measured']['inside_prediction_interval']}   "
+              f"mean L_hat {c['mean_L_hat']:.2f}")
+
     # ---------------- B4 : oracle gap, every cell --------------------------
     hdr("B4  gap to the unstructured-LS oracle (dB, pooled median; >0 = short of it)")
     print("  cell              EM-GS   HS-auto   fraction of the EM-GS gap closed")
