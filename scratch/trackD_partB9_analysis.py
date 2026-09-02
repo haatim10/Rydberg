@@ -35,9 +35,16 @@ R_EFF = {
     "B1_N16_L2":  (1.88, 8),   "B1_N16_L4":  (3.10, 8),   "B1_N16_L7":  (4.35, 8),
     "B1_N64_L8":  (6.33, 32),  "B1_N64_L14": (9.89, 32),  "B1_N64_L29": (16.24, 32),
 }
-# The N=32 reference row, measured in Track B Experiment C, quoted in A2.
-N32_REF = [(0.212, 3.556), (0.285, 1.792), (0.356, 1.038), (0.408, 0.577),
-           (0.460, 0.266), (0.507, 0.046), (0.546, -0.117)]
+# The N=32 reference row: Track B Experiment C
+# (trackB_hankel_emgs/results/experiment_C_path_count.csv), re-indexed in A2.
+# CAVEAT, and it governs how this row may be used: Experiment C ran at a FIXED
+# SNR of 5 dB (`trackB_hankel_emgs/config.py:37`, `EXP_C_SNR = 5.0`), whereas
+# the B1 cells draw SNR ~ U[-10, 20] and bin post hoc. A pooled B1 number and
+# an Experiment C number are therefore NOT a paired comparison, and the P12
+# collapse is tested INTERNALLY between N=16 and N=64 -- same design, same
+# draw, same estimator -- with this row overlaid as context only.
+N32_REF = [(0.119, 7.043), (0.212, 3.556), (0.285, 1.792), (0.356, 1.038),
+           (0.408, 0.577), (0.460, 0.266), (0.507, 0.046), (0.546, -0.117)]
 N32_CROSSING = 0.518
 A2_PREDICTION = {"B6_xiao_clustered": 1.30, "B6_xiao_literal": -0.12}
 
@@ -70,20 +77,21 @@ def summarize(cell: dict) -> dict:
     return out
 
 
-def crossing(points: list[tuple[float, float]]) -> float | None:
+def crossing(points: list[tuple[float, float]]) -> tuple[float | None, bool]:
     """Zero crossing of Delta vs r_eff/cap, linear in the bracketing pair.
 
-    Extrapolates from the last two points when every cell is still positive,
-    which is flagged by the caller rather than hidden.
+    Returns ``(x, bracketed)``. When no measured pair straddles zero the value
+    is EXTRAPOLATED from the last two points, and ``bracketed`` is False -- a
+    weaker number that must be labelled as such wherever it is quoted.
     """
     p = sorted(points)
     for (x0, y0), (x1, y1) in zip(p, p[1:]):
         if (y0 > 0) != (y1 > 0):
-            return float(x0 + (x1 - x0) * y0 / (y0 - y1))
+            return float(x0 + (x1 - x0) * y0 / (y0 - y1)), True
     (x0, y0), (x1, y1) = p[-2], p[-1]
     if y0 == y1:
-        return None
-    return float(x0 + (x1 - x0) * y0 / (y0 - y1))
+        return None, False
+    return float(x0 + (x1 - x0) * y0 / (y0 - y1)), False
 
 
 def band(sub: dict, lo: float, hi: float) -> float | None:
@@ -171,7 +179,35 @@ def main() -> int:
             print(f"  {c['N']:3d} {cap:4d} {c['L']:3d} {reff:6.2f}   {x:.3f}   "
                   f"{c['n']:4d}  {p['median_diff_db']:+7.3f}  "
                   f"[{p['boot_ci95_median'][0]:+.3f},{p['boot_ci95_median'][1]:+.3f}]")
-        # N=32 reference interpolated at each measured abscissa.
+        # PRIMARY, like-for-like: N=16 against N=64 on their own 3-point
+        # curves, over the r_eff/cap window both actually cover. Same SNR
+        # draw, same estimator, same trial budget rule -- so this, and not the
+        # Experiment C overlay, is what P12 is scored against.
+        def curve(N):
+            xs, ys = zip(*sorted(by_n[N]))
+            return np.asarray(xs), np.asarray(ys)
+
+        internal = {}
+        if 16 in by_n and 64 in by_n:
+            x16, y16 = curve(16)
+            x64, y64 = curve(64)
+            lo = max(x16.min(), x64.min())
+            hi = min(x16.max(), x64.max())
+            grid = np.linspace(lo, hi, 25)
+            d = np.interp(grid, x16, y16) - np.interp(grid, x64, y64)
+            internal = {
+                "overlap_r_eff_over_cap": [float(lo), float(hi)],
+                "N16_minus_N64_db": {f"{g:.3f}": float(v)
+                                     for g, v in zip(grid[::8], d[::8])},
+                "max_abs_gap_db": float(np.max(np.abs(d))),
+                "mean_gap_db": float(np.mean(d)),
+                "sign_constant": bool(np.all(d > 0) or np.all(d < 0))}
+            print(f"  LIKE-FOR-LIKE  N=16 minus N=64 over r_eff/cap "
+                  f"[{lo:.3f},{hi:.3f}]: mean {internal['mean_gap_db']:+.3f} dB, "
+                  f"max |gap| {internal['max_abs_gap_db']:.3f} dB, "
+                  f"one-signed={internal['sign_constant']}")
+
+        # Context overlay only -- Experiment C is at a FIXED 5 dB (see N32_REF).
         ref_x = np.array([x for x, _ in N32_REF])
         ref_y = np.array([y for _, y in N32_REF])
         dev = {}
@@ -179,26 +215,30 @@ def main() -> int:
             for x, y in pts:
                 if ref_x.min() <= x <= ref_x.max():
                     dev[f"N{N}_x{x:.3f}"] = float(y - np.interp(x, ref_x, ref_y))
-        cross = {str(N): crossing(pts) for N, pts in by_n.items()}
-        cross["32"] = N32_CROSSING
-        spread_dev = (max(dev.values()) - min(dev.values())) if dev else None
-        max_dev = max(abs(v) for v in dev.values()) if dev else None
+        cross = {str(N): crossing(pts)[0] for N, pts in by_n.items()}
+        bracketed = {str(N): crossing(pts)[1] for N, pts in by_n.items()}
+        cross["32"], bracketed["32"] = N32_CROSSING, True
         cs = [v for v in cross.values() if v is not None]
         res["B1_collapse"] = {
             "delta_by_N": {str(N): pts for N, pts in by_n.items()},
-            "deviation_from_N32_curve_db": dev,
-            "max_abs_deviation_db": max_dev,
+            "PRIMARY_internal_N16_vs_N64": internal,
+            "context_only_deviation_from_expC_db": dev,
+            "context_caveat": "Experiment C is at a fixed SNR of 5 dB; the B1 "
+                              "cells draw SNR ~ U[-10,20]. These deviations "
+                              "are an overlay, not a paired comparison.",
             "zero_crossing_r_eff_over_cap": cross,
+            "zero_crossing_is_bracketed_not_extrapolated": bracketed,
             "crossing_spread": float(max(cs) - min(cs)) if len(cs) > 1 else None,
             "P12_prediction": "curves within +/-0.3 dB at matched r_eff/cap; "
                               "each N crosses zero at 0.52 +/- 0.08",
             "P12_falsifier": "systematic ordering by N > 0.5 dB, or crossings "
                              "differing by more than 0.15 in r_eff/cap"}
-        print("  deviation from the N=32 reference curve at matched r_eff/cap:")
+        print("  context overlay vs Experiment C (FIXED 5 dB -- not paired):")
         for k, v in dev.items():
             print(f"    {k}  {v:+.3f} dB")
-        print("  zero crossings (r_eff/cap): " +
+        print("  zero crossings (r_eff/cap; * = extrapolated, not bracketed): " +
               "  ".join(f"N={k} {'--' if v is None else f'{v:.3f}'}"
+                        f"{'' if bracketed[k] else '*'}"
                         for k, v in sorted(cross.items(), key=lambda kv: int(kv[0]))))
 
     # ---------------- B6 : Xiao SV against the A2 prediction ---------------
@@ -219,9 +259,12 @@ def main() -> int:
                 "prediction_inside_ci": bool(lo <= pred <= hi),
                 "high_snr_ge5": band(c["delta_hs"], 5, 20),
                 "low_snr_lt5": band(c["delta_hs"], -10, 5),
-                "mean_L_hat": c["mean_L_hat"]}
+                "mean_L_hat": c["mean_L_hat"],
+                "frac_trials_no_projection": float(np.mean(
+                    np.asarray(json.loads((SRC / f"{t}.json").read_text())
+                               ["L_hat"]) >= c["cap"]))}
             hb, lb = band(c["delta_hs"], 5, 20), band(c["delta_hs"], -10, 5)
-            print(f"  {t[9:]:16s} {c['n']:4d}  {pred:+7.2f}   {m:+7.3f}  "
+            print(f"  {t.replace('B6_xiao_', ''):16s} {c['n']:4d}  {pred:+7.2f}   {m:+7.3f}  "
                   f"[{lo:+.3f},{hi:+.3f}]  {m-pred:+6.2f}"
                   f"  {'--' if hb is None else f'{hb:+7.3f}'}"
                   f"  {'--' if lb is None else f'{lb:+7.3f}'}")

@@ -1,0 +1,34 @@
+{
+  "n_timed": 40,
+  "threads": 1,
+  "P": 20,
+  "snr_db": 5.0,
+  "inference_seconds_per_trial": {
+    "GS (100 it)": 0.25417233924999894,
+    "EM-GS (100 it)": 0.7720246620750914,
+    "HS-EM-GS (fixed r=7)": 1.7543163792000995,
+    "HS-EM-GS (adaptive r)": 8.030781068225043,
+    "URformer (10 layers)": 0.03454880097488058
+  },
+  "trainable_parameters": {
+    "URformer / C1 / C2 / C3": 1586900,
+    "G1 gated (adds one scalar per layer)": 1586910,
+    "classical estimators": 0
+  },
+  "training_seconds_80k_13ep": {
+    "URformer (U1, P=20)": 6570.9,
+    "HS-URformer (H1, P=20)": 7904.4,
+    "G1 gated (P=20)": 10162.5,
+    "C1 SNR-balanced (P=20)": 9294.4,
+    "C2 URformer (P=10)": 7902.9,
+    "C3 URformer (P=35)": 11140.6,
+    "C4 G1 gated (P=10)": 10975.0
+  },
+  "inference_relative_to_em_gs": {
+    "GS (100 it)": 0.3292282639868268,
+    "EM-GS (100 it)": 1.0,
+    "HS-EM-GS (fixed r=7)": 2.2723579509555423,
+    "HS-EM-GS (adaptive r)": 10.402233843980394,
+    "URformer (10 layers)": 0.04475090327039342
+  }
+}
