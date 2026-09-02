@@ -16,7 +16,7 @@ as `e24c62a` **before** any Part B sweep or Part C training run started.
 
 ## Headline
 
-Five things came out of the night, in order of how much they change the story.
+Six things came out of the night, in order of how much they change the story.
 
 1. **A prediction made from our own channel's scaling correctly forecast another
    author's channel model.** A2 put Xiao's clustered Saleh–Valenzuela channel at
@@ -39,7 +39,12 @@ Five things came out of the night, in order of how much they change the story.
    but `N = 16` sits a one-signed 0.49 dB (max 0.90) above `N = 64` at matched
    relative rank. Effective rank says **where** the prior stops paying, not
    **how much** it pays.
-5. **The structural prior's payoff is robustness, not accuracy.** G1 is behind
+5. **Scarce pilots make the structural prior more valuable classically and less
+   valuable to a trained network.** Going from `P = 20` to `P = 10`, the
+   classical `Δ_HS` **grows** +0.81 dB while the learned G1-over-URformer margin
+   **shrinks** 0.68 dB, both at SNR ≥ 5. The pre-registered split prediction
+   holds, and it is the one prediction I made against my own prior.
+6. **The structural prior's payoff is robustness, not accuracy.** G1 is behind
    URformer in distribution but degrades least out of it (+0.48 dB vs +0.73 dB
    under a path-richness shift, against a flat oracle).
 
@@ -251,6 +256,29 @@ at small `cap` — `cap(16) = 8` quantizes `L̂` into 8 steps against 32 at
 this prompt did not authorize.
 
 ![the r_eff/cap collapse](../results/track_d/partB9/fig_collapse_reff.png)
+
+### B7 — `Δ_HS` as pilots fall, adaptive rank [FACT]
+
+Added after the fact to score the pre-registration's classical half (see §4).
+Default configuration, `N = 32`, `K = 3`; `B3_default` **is** the `P = 20` point.
+
+| `P` | `n` | `Δ_HS` pooled | CI95 | SNR ≥ 5 | SNR < 5 | mean `L̂` | gap to oracle closed |
+|---|---|---|---|---|---|---|---|
+| 10 | 296 | **+3.572** | [+3.306, +3.830] | +3.537 | +3.591 | 4.29 | 61.5% |
+| 15 | 285 | +3.030 | [+2.833, +3.193] | +3.036 | +2.986 | 4.74 | 59.0% |
+| 20 | 274 | +2.680 | [+2.499, +2.978] | +2.732 | +2.625 | 4.59 | 58.2% |
+| 35 | 247 | **+2.300** | [+2.173, +2.479] | +2.501 | +2.197 | 4.99 | 56.1% |
+
+**Monotone, with non-overlapping CIs at the ends: the classical structural gain
+grows as pilots become scarce.** `Δ(P=10) − Δ(P=20) = +0.892 dB` pooled,
+**+0.805 dB** at SNR ≥ 5. It is also **flat in SNR at every `P`** — the
+SNR ≥ 5 and SNR < 5 columns agree to within 0.30 dB throughout — so this is not
+a low-SNR effect in disguise.
+
+The mechanism is legible in the selected rank: **mean `L̂` falls monotonically
+from 4.99 at `P = 35` to 4.29 at `P = 10`.** With fewer pilots the held-out
+residual supports less structure, the selector truncates harder, and the prior
+does more of the work. Nothing here is told the pilot count.
 
 ### B4 — gap to the unstructured-LS oracle, every cell [FACT]
 
@@ -484,7 +512,28 @@ the `P = 20` value), so it did not catch this. **That is a defect in the
 pre-registration, not a pass.** A prediction with a stated interval should be
 scored against the interval, and this one missed it.
 
-**P15, classical half — <!-- B7 --> (measured in B7; see below).**
+**P15, classical half — CORRECT in direction, marginally over in magnitude.**
+I predicted `Δ_HS` grows as `P` falls, with
+`Δ(P=10) − Δ(P=20) = +0.3 to +0.8 dB`. Measured (B7): **+0.892 dB pooled,
++0.805 dB at SNR ≥ 5** — monotone across all four pilot counts, CIs at the ends
+disjoint. The direction is right and the magnitude sits just **above** the top
+of my interval (by 0.09 dB pooled, 0.005 dB at SNR ≥ 5). I under-predicted
+again, in the same direction as every other miss this prompt.
+
+**P15 as a SPLIT prediction — this is the part that holds, and it is the
+non-obvious part.** The two halves genuinely move in opposite directions:
+
+| half | `P = 20` | `P = 10` | change |
+|---|---|---|---|
+| classical `Δ_HS` (SNR ≥ 5) | +2.732 | +3.537 | **+0.805 — grows** |
+| learned G1 − URformer (SNR ≥ 5) | +1.178 | +0.498 | **−0.680 — shrinks** |
+
+Scarce pilots make the structural prior **more** valuable to a classical
+estimator and **less** valuable to a trained network. The reasoning I gave in
+the pre-registration for the learned half was right: both arms being
+matched-trained at `P = 10` controls away the training-adequacy proxy that made
+the structural gain look real in stage 4, and once it is controlled the network
+has already learned what the prior would have supplied.
 
 **A process failure worth recording.** The classical half of P15 had **no cell
 in the original Part B design** — B1/B2/B3/B6 sweep `N`, `K`, SNR and channel
@@ -519,6 +568,8 @@ I allowed (P15). The correction moved the right direction and not far enough.
 | `Δ_HS` **zero crossing** across `N` (B1) | **yes** [FACT] | 0.588 / 0.518 / 0.544 over a 4× aperture range, spread 0.070 |
 | `Δ_HS` across `K` at fixed `P/2K` (B2) | **yes at SNR ≥ 5, no pooled** [FACT] | spread 0.095 dB above 5 dB; 0.294 dB and monotone pooled |
 | the `r_eff/cap` collapse onto **another author's channel** (B6) | **yes** [FACT] | predicted +1.30, measured +1.173 [+1.017, +1.380] |
+| `Δ_HS` across SNR at fixed `P`, adaptive rank (B7) | **yes** [FACT] | SNR ≥ 5 and SNR < 5 agree within 0.30 dB at all four `P` |
+| one pilot axis for classical **and** learned structure (B7 + P15) | **no** [FACT] | as `P` falls 20 → 10 the classical gain grows +0.81 dB while the learned gain shrinks 0.68 dB |
 
 The two that did not collapse are the more informative pair. The `N` level
 failure says aperture enters somewhere beyond the rank ceiling — [HYP], the
@@ -531,7 +582,7 @@ Fig. 4.
 
 ## 6. Repository state
 
-**Tests: `443 passed` in 139 s** (`PYTHONPATH=. python3 -m pytest`). No new
+**Tests: `443 passed` in 187 s** (`PYTHONPATH=. python3 -m pytest`). No new
 tests were added this prompt — nothing in Parts A, B or C changed an estimator,
 the Hankel operator, the forward model or any config default, which is what the
 existing suite covers.
@@ -544,10 +595,32 @@ existing suite covers.
 (exactly 0.0), `G_conjugation`, `H_gradients`, `I_overfit32` (−136.12 dB),
 `J_noiseless_fixed_point`, `K_kappa_invariance`.
 
-**`git status --porcelain`:** clean at the point of writing; each result landed
-in its own commit as the prompt requires (Part A `5008d9a`, the standalone
-pre-registration `e24c62a`, Part C runs `bcde312`, Part C evaluation `daf765a`,
-Part B `2852c95`).
+**`git status --porcelain`:** clean. Each result landed in its own commit as the
+prompt requires:
+
+| commit | contents |
+|---|---|
+| `e24c62a` | the pre-registration, committed **standing alone** before any run |
+| `5008d9a` | Part A — both normalizations |
+| `558c5f4`, `bcde312` | Part C — stage-5 driver, then the four training runs |
+| `daf765a` | Part C evaluation |
+| `ddb7ef5`, `2852c95` | Part B — driver, then all 12 cells with analysis and figures |
+| `9d9b4ca`, `1c064ef` | two self-corrections to invalid comparisons in the draft (see below) |
+| *this commit* | B7 and the P15 classical scoring |
+
+**Two errors I found in my own draft and corrected before publishing**, both the
+same species — comparing statistics computed under different aggregations:
+
+1. I set B3's **pooled** `Δ_HS` (uniform SNR draw) against fixed `r = 7` at a
+   **5 dB point** and concluded adaptive rank was "worth roughly 1 dB". Matched
+   properly the two are indistinguishable at 5 dB; the advantage is entirely at
+   low SNR.
+2. I wrote that C1 "edges past the oracle in the top bin". Those were **pooled**
+   medians; per bin C1 beats the oracle *below* 5 dB and trails it by +2.053 dB
+   in the top bin.
+
+Both are exactly the failure this report's own preamble warns against, which is
+some evidence the warning is worth keeping at the top.
 
 **One repository convention worth flagging:** raw per-trial sweep dumps under
 `results/track_d/sweeps/` are gitignored (`.gitignore:41`) because they are
