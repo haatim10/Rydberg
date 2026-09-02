@@ -10,6 +10,8 @@ curve rather than one scalar.
   B3  Delta_HS(SNR) under adaptive rank at the default configuration
   B4  the unstructured-LS oracle on every cell
   B6  Xiao's Saleh-Valenzuela channel -- tests the A2 prediction of +1.30 dB
+  B7  pilot sweep at the default configuration -- the pre-registration's P15
+      CLASSICAL half, which the original B1/B2/B3/B6 design left unscored
 
 Trial budgeting, and why it is not the flat 1000 the brief asked for
 --------------------------------------------------------------------
@@ -72,6 +74,14 @@ def cells(group: str) -> list[dict]:
     if group == "B3":
         return [{"tag": "B3_default", "N": 32, "L": None, "K": 3, "P": 20,
                  "channel": "ula"}]
+    if group == "B7":
+        # The pre-registration's P15 CLASSICAL half -- "Delta_HS grows as P
+        # falls" -- had no cell in the original B1/B2/B3/B6 design. That was
+        # an omission, not a scoping decision: it leaves a pre-registered
+        # prediction unscored. B3_default already supplies the P = 20 point at
+        # this configuration, so only the other pilot counts are run here.
+        return [{"tag": f"B7_P{P}", "N": 32, "L": None, "K": 3, "P": P,
+                 "channel": "ula"} for P in (10, 15, 35)]
     if group == "B6":
         return [{"tag": f"B6_xiao_{m}", "N": 32, "L": None, "K": 3, "P": 20,
                  "channel": f"sv_{m}"} for m in ("clustered", "literal")]
@@ -174,7 +184,7 @@ def one_cell(cfg, cell: dict, *, seconds: int, seed0: int) -> dict:
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description="PROMPT 9 Part B classical sweeps")
-    ap.add_argument("--group", required=True, choices=("B1", "B2", "B3", "B6", "all"))
+    ap.add_argument("--group", required=True, choices=("B1", "B2", "B3", "B6", "B7", "all"))
     ap.add_argument("--shard", type=int, default=0)
     ap.add_argument("--n-shards", type=int, default=1)
     ap.add_argument("--seconds", type=int, default=CELL_SECONDS)
