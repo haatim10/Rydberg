@@ -586,10 +586,16 @@ line.**
   **"spectrally compressible spatial structure"**, and attach an SNR qualifier.
   C1 and C4 support the broader claim better than the narrow one, and the narrow
   one is the version A1 cannot justify.
-- **STOP (learned).** Stage 3 STOP-MARGINAL, stage 4's 15× collapse under
-  training-adequacy control, PROMPT 7's failed low-SNR criterion. Three
-  independent results point the same way. Further spend needs ~26 h to reach a
-  claim the existing evidence predicts will be ≈ 0.
+- **STOP (learned) — SCOPE CORRECTED, PROMPT 9.** This meant **stop inventing
+  new learned structural architectures**, and it was worded too broadly. It
+  does **not** retire URformer, which remains the strongest practical
+  estimator here at low and moderate SNR (−11.27 dB at P=20, SNR 5 dB, vs
+  −9.59 HS-EM-GS and −7.87 EM-GS). **URformer stays a first-class arm.**
+  What stops: new HS-in-loop variants, antenna-token, weight-tying. The
+  evidence behind that half is unchanged — stage 3 STOP-MARGINAL, stage 4's
+  15× collapse under training-adequacy control, PROMPT 7's failed low-SNR
+  criterion — and a *structural* method claim would still need ~26 h against
+  a prior of ≈ 0.
 
 ---
 

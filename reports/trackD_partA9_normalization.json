@@ -1,0 +1,350 @@
+{
+  "A1": {
+    "source": "SystemModel.pdf, 'Parameter count' paragraph",
+    "quote": "Treated as unstructured, H possesses 2NK real degrees of freedom. Under the geometric model it is described by 3 sum_k L_k real parameters, comprising two per complex path gain and one per angle of arrival.",
+    "ratio_general": "3 * sum_k L_k / (2 N K)",
+    "ratio_equal_L": "3 K Lbar / (2 N K) = 3 Lbar / (2 N)",
+    "K_cancels": true,
+    "numeric_check_all_K": true,
+    "compression_at_default": 0.234375
+  },
+  "A2": {
+    "cap_N32": 16,
+    "trackB_reindexed": [
+      {
+        "source": "trackB_expC",
+        "N": 32,
+        "L": 2,
+        "r_eff": 1.9002953248930017,
+        "r_eff_over_cap": 0.1187684578058126,
+        "L_over_cap": 0.125,
+        "delta_hs_db": 7.0432,
+        "ci": [
+          6.7347,
+          7.3352
+        ],
+        "rank_rule": "adaptive (held-out residual)",
+        "snr_db": 5.0
+      },
+      {
+        "source": "trackB_expC",
+        "N": 32,
+        "L": 4,
+        "r_eff": 3.3999441720431247,
+        "r_eff_over_cap": 0.2124965107526953,
+        "L_over_cap": 0.25,
+        "delta_hs_db": 3.5563,
+        "ci": [
+          3.3792,
+          3.7289
+        ],
+        "rank_rule": "adaptive (held-out residual)",
+        "snr_db": 5.0
+      },
+      {
+        "source": "trackB_expC",
+        "N": 32,
+        "L": 6,
+        "r_eff": 4.56524014333109,
+        "r_eff_over_cap": 0.28532750895819314,
+        "L_over_cap": 0.375,
+        "delta_hs_db": 1.7922,
+        "ci": [
+          1.6362,
+          1.9564
+        ],
+        "rank_rule": "adaptive (held-out residual)",
+        "snr_db": 5.0
+      },
+      {
+        "source": "trackB_expC",
+        "N": 32,
+        "L": 8,
+        "r_eff": 5.700296821509369,
+        "r_eff_over_cap": 0.35626855134433555,
+        "L_over_cap": 0.5,
+        "delta_hs_db": 1.0376,
+        "ci": [
+          0.9266,
+          1.1546
+        ],
+        "rank_rule": "adaptive (held-out residual)",
+        "snr_db": 5.0
+      },
+      {
+        "source": "trackB_expC",
+        "N": 32,
+        "L": 10,
+        "r_eff": 6.535359092645907,
+        "r_eff_over_cap": 0.40845994329036917,
+        "L_over_cap": 0.625,
+        "delta_hs_db": 0.5767,
+        "ci": [
+          0.4548,
+          0.695
+        ],
+        "rank_rule": "adaptive (held-out residual)",
+        "snr_db": 5.0
+      },
+      {
+        "source": "trackB_expC",
+        "N": 32,
+        "L": 12,
+        "r_eff": 7.364080908397287,
+        "r_eff_over_cap": 0.4602550567748304,
+        "L_over_cap": 0.75,
+        "delta_hs_db": 0.2659,
+        "ci": [
+          0.1911,
+          0.339
+        ],
+        "rank_rule": "adaptive (held-out residual)",
+        "snr_db": 5.0
+      },
+      {
+        "source": "trackB_expC",
+        "N": 32,
+        "L": 14,
+        "r_eff": 8.112128348960795,
+        "r_eff_over_cap": 0.5070080218100497,
+        "L_over_cap": 0.875,
+        "delta_hs_db": 0.0462,
+        "ci": [
+          -0.0503,
+          0.1356
+        ],
+        "rank_rule": "adaptive (held-out residual)",
+        "snr_db": 5.0
+      },
+      {
+        "source": "trackB_expC",
+        "N": 32,
+        "L": 16,
+        "r_eff": 8.730776413087282,
+        "r_eff_over_cap": 0.5456735258179551,
+        "L_over_cap": 1.0,
+        "delta_hs_db": -0.1172,
+        "ci": [
+          -0.2058,
+          -0.0378
+        ],
+        "rank_rule": "adaptive (held-out residual)",
+        "snr_db": 5.0
+      }
+    ],
+    "B1_preindex": {
+      "N16_L2": {
+        "N": 16,
+        "L": 2,
+        "cap": 8,
+        "r_eff": 1.8836223274093724,
+        "r_eff_over_cap": 0.23545279092617155,
+        "L_over_cap": 0.25
+      },
+      "N16_L4": {
+        "N": 16,
+        "L": 4,
+        "cap": 8,
+        "r_eff": 3.1019154919729766,
+        "r_eff_over_cap": 0.38773943649662207,
+        "L_over_cap": 0.5
+      },
+      "N16_L7": {
+        "N": 16,
+        "L": 7,
+        "cap": 8,
+        "r_eff": 4.351145200552146,
+        "r_eff_over_cap": 0.5438931500690183,
+        "L_over_cap": 0.875
+      },
+      "N64_L8": {
+        "N": 64,
+        "L": 8,
+        "cap": 32,
+        "r_eff": 6.329368510313585,
+        "r_eff_over_cap": 0.19779276594729953,
+        "L_over_cap": 0.25
+      },
+      "N64_L14": {
+        "N": 64,
+        "L": 14,
+        "cap": 32,
+        "r_eff": 9.886275092973111,
+        "r_eff_over_cap": 0.30894609665540973,
+        "L_over_cap": 0.4375
+      },
+      "N64_L29": {
+        "N": 64,
+        "L": 29,
+        "cap": 32,
+        "r_eff": 16.24272539843941,
+        "r_eff_over_cap": 0.5075851687012316,
+        "L_over_cap": 0.90625
+      }
+    },
+    "xiao_sv_r_eff": {
+      "clustered": 5.300836361694134,
+      "literal": 11.969758250325249
+    },
+    "note": "r_eff is of the NOISELESS channel. The ESTIMATE's r_eff cannot index this plot: PROMPT 8 C1 measured it at 8.91-11.77 across L=1..16 at 5 dB, i.e. it is set by the noise floor, not by the channel."
+  },
+  "A3": {
+    "snr_family": [
+      {
+        "snr_db": 0.0,
+        "P": 20,
+        "median_diff_db": 0.6830777687424421,
+        "median_kappa": 8.671957075335989
+      },
+      {
+        "snr_db": 10.0,
+        "P": 20,
+        "median_diff_db": 0.0599573605994399,
+        "median_kappa": 76.71551694469616
+      },
+      {
+        "snr_db": 12.5,
+        "P": 20,
+        "median_diff_db": 0.038443835416198446,
+        "median_kappa": 135.5022388875717
+      },
+      {
+        "snr_db": 15.0,
+        "P": 20,
+        "median_diff_db": 0.018896632265420266,
+        "median_kappa": 238.5409787960327
+      },
+      {
+        "snr_db": 17.5,
+        "P": 20,
+        "median_diff_db": 0.012290123444232748,
+        "median_kappa": 426.4189737538254
+      },
+      {
+        "snr_db": 2.5,
+        "P": 20,
+        "median_diff_db": 0.384244102499091,
+        "median_kappa": 14.547928582858775
+      },
+      {
+        "snr_db": 20.0,
+        "P": 20,
+        "median_diff_db": 0.006905972350956802,
+        "median_kappa": 756.8923986169466
+      },
+      {
+        "snr_db": 5.0,
+        "P": 20,
+        "median_diff_db": 0.20817947016327842,
+        "median_kappa": 24.855013602987476
+      },
+      {
+        "snr_db": 7.5,
+        "P": 20,
+        "median_diff_db": 0.12166465036941698,
+        "median_kappa": 43.70966364171047
+      },
+      {
+        "snr_db": -10.0,
+        "P": 20,
+        "median_diff_db": 2.9649757692834107,
+        "median_kappa": 2.0219827072165124
+      },
+      {
+        "snr_db": -2.5,
+        "P": 20,
+        "median_diff_db": 1.1449361416213484,
+        "median_kappa": 5.362867167766538
+      },
+      {
+        "snr_db": -5.0,
+        "P": 20,
+        "median_diff_db": 1.7430127140900624,
+        "median_kappa": 3.542278623734322
+      },
+      {
+        "snr_db": -7.5,
+        "P": 20,
+        "median_diff_db": 2.361767541463119,
+        "median_kappa": 2.575406790097691
+      }
+    ],
+    "pilot_family": [
+      {
+        "snr_db": 5.0,
+        "P": 10,
+        "median_diff_db": 0.30661170271238825,
+        "median_kappa": 24.78646695253544
+      },
+      {
+        "snr_db": 5.0,
+        "P": 12,
+        "median_diff_db": 0.39478539462775775,
+        "median_kappa": 24.8975205427475
+      },
+      {
+        "snr_db": 5.0,
+        "P": 15,
+        "median_diff_db": 0.35186268555892486,
+        "median_kappa": 24.804998468772425
+      },
+      {
+        "snr_db": 5.0,
+        "P": 20,
+        "median_diff_db": 0.20817947016327842,
+        "median_kappa": 24.855013602987476
+      },
+      {
+        "snr_db": 5.0,
+        "P": 25,
+        "median_diff_db": 0.3618170293453793,
+        "median_kappa": 24.867702334386312
+      },
+      {
+        "snr_db": 5.0,
+        "P": 30,
+        "median_diff_db": 0.2109566551954325,
+        "median_kappa": 24.72946925704748
+      },
+      {
+        "snr_db": 5.0,
+        "P": 35,
+        "median_diff_db": 0.21947211165040947,
+        "median_kappa": 24.649398953211303
+      }
+    ],
+    "kappa_definition": "median over (n,p) of 2 Z |Y| / sigma^2 at the true channel"
+  },
+  "A4": {
+    "params": 1586900,
+    "intrinsic_dim_3sumL": 45,
+    "rows": [
+      {
+        "n_train": 20000,
+        "test_median_nmse_db": -9.48,
+        "samples_per_parameter": 0.012603188606717499,
+        "samples_per_intrinsic_dim": 444.44444444444446,
+        "real_measurements_per_parameter": 16.1320814165984
+      },
+      {
+        "n_train": 40000,
+        "test_median_nmse_db": -10.357,
+        "samples_per_parameter": 0.025206377213434997,
+        "samples_per_intrinsic_dim": 888.8888888888889,
+        "real_measurements_per_parameter": 32.2641628331968
+      },
+      {
+        "n_train": 80000,
+        "test_median_nmse_db": -10.831,
+        "samples_per_parameter": 0.050412754426869995,
+        "samples_per_intrinsic_dim": 1777.7777777777778,
+        "real_measurements_per_parameter": 64.5283256663936
+      }
+    ]
+  },
+  "A5": {
+    "claim": "Xiao et al. Fig. 4 is described only as 'evaluated at a fixed SNR of 5 dB'. The paper does not state whether the networks were retrained per pilot count P.",
+    "tag": "[FACT] about the paper's text, not an accusation",
+    "why_it_matters": "Our PROMPT 9 C2/C3 matched-pilot runs separate pilot EFFICIENCY (matched training at each P) from pilot-count GENERALIZATION (one P=20 model evaluated OOD) -- a distinction the paper does not draw either way."
+  }
+}
