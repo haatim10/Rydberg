@@ -174,11 +174,30 @@ switches itself off.** That is better behaviour than the prediction anticipated.
 | gap to oracle, EM-GS | +4.92 | +5.23 | +4.83 | +4.36 | +4.25 | +4.09 |
 | gap to oracle, HS-auto | +2.95 | +2.04 | +2.42 | +1.69 | +1.31 | +0.84 |
 
-**Adaptive rank is worth roughly 1 dB over the fixed `r = 7` used throughout
-Track D** (+2.68 dB pooled here against ~+1.7 dB at 5 dB for fixed `r = 7` in
-the PROMPT 8 sweep) and it is **flat across the whole SNR range**, which fixed
-`r` was not. Every bin's CI excludes zero. HS-EM-GS closes **58.2%** of EM-GS's
-gap to the oracle.
+Every bin's CI excludes zero, and HS-EM-GS closes **58.2%** of EM-GS's gap to
+the oracle.
+
+**How adaptive rank compares to the fixed `r = 7` used throughout Track D — and
+the comparison that must NOT be made.** It is tempting to set this cell's pooled
++2.680 dB against the +1.725 dB that fixed `r = 7` scores at 5 dB in the PROMPT 8
+sweep and call adaptive rank worth ~1 dB. **That comparison is invalid**, and it
+is the exact confound this report's preamble warns about: one number is pooled
+over a uniform draw on `[−10, 20]`, the other is a point at 5 dB. Matched
+properly:
+
+| SNR window | adaptive `L̂` | fixed `r = 7` |
+|---|---|---|
+| ≈ 5 dB (`[4,6)`, n = 21 vs a 400-trial point) | **+1.951** | **+1.725** |
+| −10 … −5 dB | **+2.374** [+1.255, +2.970] | +0.646 / +0.826 / +1.048 at −10 / −7.5 / −5 |
+
+**At 5 dB the two are not distinguishable** (+0.23 dB apart, on 21 adaptive
+trials). **The whole of adaptive rank's advantage is at low SNR**, where its
+bin CI lower bound (+1.255) clears the best fixed-`r` value in that range
+(+1.048). The mechanism is visible in `L̂`: the selector picks a mean of 4.59
+(median 5) rather than 7, and truncating harder is exactly what helps when the
+noise floor is high. Fixed `r = 7` rises monotonically from +0.646 dB at −10 dB
+to +1.905 dB at +20 dB; adaptive `L̂` sits between +2.37 and +3.11 dB across
+every bin with no trend.
 
 ### B2 — `K`-invariance at fixed pilot adequacy `P/2K = 3.33` [FACT]
 
@@ -267,9 +286,11 @@ the **ratios** are the portable part.
 | C2 / C3 matched-`P` | 0.035 | 0.04× | 1,586,900 | 7,903 / 11,141 s |
 
 **This inverts the usual framing of the learned/classical trade.** The learned
-estimator is **22× cheaper at inference than EM-GS and 230× cheaper than the
-adaptive-rank classical method it beats**, because it is a fixed 10-layer
-forward pass rather than 100 iterations × up to `cap` candidate ranks. Its cost
+estimator is **22× cheaper at inference than EM-GS and 230× cheaper than
+adaptive-rank HS-EM-GS**, because it is a fixed 10-layer forward pass rather
+than 100 iterations × up to `cap` candidate ranks — and at 5 dB it is also the
+more accurate of the two (URformer −11.27 dB on 400 trials; adaptive HS-EM-GS
+−9.41 dB on the 21 B3 trials falling in `[4,6)`). Its cost
 is entirely up front: ~2–3 h of training and 1.59M parameters that must be
 retrained when the operating condition moves (§3.2 shows how much that matters).
 The adaptive rank that made HS-EM-GS ~1 dB better in B3 is also what makes it
@@ -489,7 +510,48 @@ Fig. 4.
 
 ## 6. Repository state
 
-<!-- FILLED IN AT THE END -->
+**Tests: `443 passed` in 139 s** (`PYTHONPATH=. python3 -m pytest`). No new
+tests were added this prompt — nothing in Parts A, B or C changed an estimator,
+the Hankel operator, the forward model or any config default, which is what the
+existing suite covers.
+
+**Verification gate: `15/15 gates pass`**
+(`PYTHONPATH=. python3 -m trackD_urformer.verify`), unchanged from
+`reports/trackD_verify.md`:
+`A_shapes`, `B_forward` and `C_ls_parity`, `D_gs_degeneration`,
+`E_emgs_degeneration` (all in both float64 and float32), `F_transformer_identity`
+(exactly 0.0), `G_conjugation`, `H_gradients`, `I_overfit32` (−136.12 dB),
+`J_noiseless_fixed_point`, `K_kappa_invariance`.
+
+**`git status --porcelain`:** clean at the point of writing; each result landed
+in its own commit as the prompt requires (Part A `5008d9a`, the standalone
+pre-registration `e24c62a`, Part C runs `bcde312`, Part C evaluation `daf765a`,
+Part B `2852c95`).
+
+**One repository convention worth flagging:** raw per-trial sweep dumps under
+`results/track_d/sweeps/` are gitignored (`.gitignore:41`) because they are
+bulky. The derived medians behind the three-way pilot figure are therefore
+written to `reports/trackD_pilot_three_way.json`, which is tracked. The Part B
+cell JSONs under `results/track_d/partB9/` are **not** ignored and are committed
+in full, per-trial `num` and `den` stored separately so any pooling can be
+reconstructed without re-running.
+
+---
+
+## What this prompt did NOT do
+
+Per the authorization: no new architecture, no HS-in-loop variant beyond the
+single C4 G1 run, no antenna-token variant, no weight tying, no 160k data
+scaling, no *learned* array-size sweep, and no change to the primary statistic
+or the RSR decision. B7 was added inside Part B's existing scope (classical
+sweeps, no training) to score a pre-registered prediction the original cell list
+could not reach; it introduces no new method.
+
+Three [HYP]s are left standing with the experiment that would settle each named
+in place: whether A3's constant 5.3 is universal or RSR-specific (needs a second
+RSR); whether B1's residual level offset is pencil quantization at small `cap`
+(needs a `p`-sweep at fixed `N`); and whether B2's sub-zero-dB `K` trend is real
+or a small-`n` artifact (needs a longer low-SNR budget).
 
 ---
 

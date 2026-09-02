@@ -269,6 +269,50 @@ def main() -> int:
                   f"  {'--' if hb is None else f'{hb:+7.3f}'}"
                   f"  {'--' if lb is None else f'{lb:+7.3f}'}")
 
+    # ---------------- B7 : the P15 CLASSICAL half --------------------------
+    b7 = {t: c for t, c in cells.items() if t.startswith("B7_")}
+    if b7 and "B3_default" in cells:
+        hdr("B7  Delta_HS as P falls, adaptive rank   (tests P15, classical half)")
+        # B3_default IS the P = 20 point at this configuration.
+        pts = {c["P"]: c for c in list(b7.values()) + [cells["B3_default"]]}
+        print("   P    n   Delta_HS   CI95              SNR>=5    SNR<5   "
+              "mean L_hat   gap closed")
+        for P in sorted(pts):
+            c = pts[P]
+            d = c["delta_hs"]
+            p = d["pooled_SAMPLING_DESIGN_DEPENDENT"]
+            ge = c["vs_oracle"][EM]["pooled_SAMPLING_DESIGN_DEPENDENT"]["median_diff_db"]
+            gh = c["vs_oracle"][HS]["pooled_SAMPLING_DESIGN_DEPENDENT"]["median_diff_db"]
+            hb, lb = band(d, 5, 20), band(d, -10, 5)
+            print(f"  {P:3d} {c['n']:4d}  {p['median_diff_db']:+7.3f}  "
+                  f"[{p['boot_ci95_median'][0]:+.3f},{p['boot_ci95_median'][1]:+.3f}]"
+                  f"  {'--' if hb is None else f'{hb:+7.3f}'}"
+                  f"  {'--' if lb is None else f'{lb:+7.3f}'}"
+                  f"     {c['mean_L_hat']:5.2f}      {(ge-gh)/ge:6.1%}")
+        if 10 in pts and 20 in pts:
+            def grab(P, key):
+                d = pts[P]["delta_hs"]
+                return (d["pooled_SAMPLING_DESIGN_DEPENDENT"]["median_diff_db"]
+                        if key == "pooled" else band(d, 5, 20))
+            dp = grab(10, "pooled") - grab(20, "pooled")
+            dh = grab(10, "hi") - grab(20, "hi")
+            res["B7_P15_classical"] = {
+                "delta_hs_by_P": {str(P): pts[P]["delta_hs"][
+                    "pooled_SAMPLING_DESIGN_DEPENDENT"]["median_diff_db"]
+                    for P in sorted(pts)},
+                "delta_hs_high_snr_by_P": {str(P): band(pts[P]["delta_hs"], 5, 20)
+                                           for P in sorted(pts)},
+                "P10_minus_P20_pooled_db": float(dp),
+                "P10_minus_P20_high_snr_db": float(dh),
+                "P15_classical_prediction": "Delta_HS grows as P falls; "
+                                            "Delta(P=10) - Delta(P=20) = +0.3 to +0.8 dB",
+                "grew_as_P_fell": bool(dp > 0),
+                "inside_predicted_interval_pooled": bool(0.3 <= dp <= 0.8),
+                "inside_predicted_interval_high_snr": bool(0.3 <= dh <= 0.8)}
+            print(f"  P15 classical: Delta(P=10) - Delta(P=20) = {dp:+.3f} dB "
+                  f"pooled, {dh:+.3f} dB at SNR>=5  "
+                  f"(predicted +0.3..+0.8, and that it GROWS as P falls)")
+
     # ---------------- B4 : oracle gap, every cell --------------------------
     hdr("B4  gap to the unstructured-LS oracle (dB, pooled median; >0 = short of it)")
     print("  cell              EM-GS   HS-auto   fraction of the EM-GS gap closed")
