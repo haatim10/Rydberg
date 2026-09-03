@@ -329,8 +329,15 @@ as specified but its attribution is unconfirmed}. At
 % src: reports/trackD_step0_cui_prediction.json
 $\reff/\mathrm{cap}=0.400$ the relation predicts $+0.648$~dB with interval
 $[+0.367,+1.015]$ obtained by propagating the interquartile spread of $\reff$
-through the same curve. \todo{STEP 0 MEASUREMENT PENDING --- insert measured
-value, CI and verdict}
+through the same curve. Measured:
+% src: reports/trackD_partB9_analysis.json B8_cui_measured
+$+0.963$~dB, CI $[+0.808,+1.086]$ over $n=266$ trials. The measurement falls
+inside the registered prediction interval and on the correct side of zero, but
+the point estimate is $0.315$~dB low --- a larger error than on the clustered
+model, and we report it as such rather than as a second $0.13$~dB hit. The two
+tests together bound what the relation is good for: it places a previously
+unseen channel on the correct part of the curve, and it is not accurate to a
+tenth of a decibel in general.
 
 \textbf{A partial match worth reporting.} On a second reading of the clustered
 model in which all $40$ rays are drawn independently, $\reff/\mathrm{cap}$
@@ -395,8 +402,9 @@ The effective rank of the per-user Hankel embedding, taken relative to the
 embedding's capacity $\lfloor N/2\rfloor$, determines whether an explicit
 low-rank prior is worth applying. The ratio locates the boundary of the useful
 region to within $0.070$ across a fourfold range of array sizes, and it
-predicted the gain on two channel models it was never fitted to, one to within
-$0.13$~dB. Paired with an oracle-free rank rule that abstains when no
+predicted the gain on two channel models it was never fitted to --- one to
+within $0.13$~dB, the other inside a registered interval but $0.32$~dB off in
+point estimate. Paired with an oracle-free rank rule that abstains when no
 structure is present, this turns a qualitative sparsity heuristic into a
 quantity a practitioner can compute before committing to the prior.
 

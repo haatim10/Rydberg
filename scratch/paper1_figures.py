@@ -138,9 +138,10 @@ def fig3_predictions(a):
     fig, ax = plt.subplots(figsize=(W, H))
     xr, yr = zip(*A2_CURVE)
     ax.plot(xr, yr, "-", color=FAINT, lw=1.1, zorder=1)
-    ax.annotate("relation, fitted on the\nULA model only", (0.24, 2.85),
-                xytext=(10, 8), textcoords="offset points", color=MUTED,
-                fontsize=7)
+    # Bottom-left is the only region of this panel with no curve, no marker
+    # and no legend in it.
+    ax.annotate("relation, fitted on the\nULA model only", (0.113, 0.75),
+                color=MUTED, fontsize=7, ha="left", va="center")
     ax.axhline(0, color=FAINT, lw=0.6, ls=(0, (4, 3)), zorder=0)
 
     # Predicted and measured are separated on x by a fixed offset, because
@@ -158,15 +159,20 @@ def fig3_predictions(a):
         ax.errorbar([x + DX], [meas], yerr=[[meas - ci[0]], [ci[1] - meas]],
                     color=col, marker=mk, ms=4.6, mew=0, capsize=2.0,
                     elinewidth=0.9, lw=0, zorder=5)
-        ax.annotate(name, (x, max(p, meas)), xytext=(0, 13),
-                    textcoords="offset points", color=INK, fontsize=7,
-                    ha="center")
+        # Leader lines into the empty region right of the curve; the two
+        # channels sit 0.07 apart in x and their labels collide if placed
+        # directly above their own points.
+        ax.annotate(name, (x, max(p, meas)), xytext=(0.50, 0.56 - 0.14 * i),
+                    textcoords="axes fraction", color=INK, fontsize=7,
+                    ha="left", va="center",
+                    arrowprops=dict(arrowstyle="-", color=FAINT, lw=0.7,
+                                    shrinkA=2, shrinkB=5))
 
     # One legend explaining the hollow/filled convention, hue-independent.
     h = [plt.Line2D([], [], ls="", marker="o", ms=4.6, mfc="white",
                     mec=INK, mew=1.3),
          plt.Line2D([], [], ls="", marker="o", ms=4.6, color=INK)]
-    ax.legend(h, ["predicted", "measured (95\\% CI)"], frameon=False,
+    ax.legend(h, ["predicted", "measured, 95% CI"], frameon=False,
               loc="upper right", handletextpad=0.5, labelspacing=0.3)
     ax.set_xlabel(r"$r_{\mathrm{eff}}/\mathrm{cap}$")
     ax.set_ylabel(r"$\Delta_{\mathrm{HS}}$ (dB)")
