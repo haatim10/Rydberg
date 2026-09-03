@@ -65,7 +65,7 @@ effective rank, structured low-rank approximation.
 
 \IEEEPARstart{A}{tomic} receivers based on Rydberg states detect radio fields
 through an optical readout whose output is proportional to field
-\emph{magnitude}, discarding phase~\cite{cui2025,fancher2021}. Multi-user
+\emph{magnitude}, discarding phase~\cite{cui2025,gong2025mag}. Multi-user
 channel estimation on such an array is therefore a phase-retrieval problem
 with a known additive reference, and alternating-projection estimators of the
 Gerchberg--Saxton family are the natural starting
@@ -76,7 +76,7 @@ A separate and older idea is to exploit the geometry of the array response. If
 each user's channel is a sum of a few plane waves on a uniform linear array
 (ULA), its Hankel embedding is low rank, and projecting onto that set inside
 the estimator loop suppresses noise that the unstructured iteration cannot
-distinguish from signal~\cite{cadzow1988}. This works, and it is
+distinguish from signal~\cite{cadzow1988,markovsky2008}. This works, and it is
 straightforward to demonstrate on a sparse channel.
 
 The difficulty is knowing when it applies. A practitioner asked to decide
@@ -105,19 +105,25 @@ axis, and quantifying the residual.
 fitted to, registering each prediction before measuring it.
 \end{enumerate}
 
-\textbf{Relation to rank projection in unrolled solvers.} Projecting onto a
-low-rank set inside an iterative estimator is not new, and a rank projection
-placed within projected gradient descent has been proposed for this
-setting~\cite{xu_pgd}~\todo{VERIFY CITATION --- this work could not be located
-or read; the distinction below is stated structurally and makes no claim about
-its contents}. The distinction that matters is \emph{which} matrix is
-constrained. Constraining the rank of the $N\times K$ channel matrix limits the
-number of distinct spatial signatures across users, and is informative when
-$K$ is large. The constraint used here is applied per user, to the Hankel
-embedding of a single column, and encodes the harmonic structure of the ULA
-manifold; it is informative even at $K=1$. The two are not substitutes, and
-Sec.~\ref{sec:method} shows the second carries a $K$-invariance the first
-cannot.
+\textbf{Relation to rank projection in projected gradient descent.} Projecting
+onto a low-rank set inside an iterative estimator is not new. Xu \emph{et
+al.}~\cite{xu2025} place a rank projection inside projected gradient descent
+(PGD) for this setting and report that ``when the pilot length is small
+($P=10$), the PGD performs better than the basic GD, as the projection
+operation in PGD helps to exploit the rank constraint.'' Our pilot sweep
+(Sec.~\ref{sec:results}) finds the same qualitative trend for a different
+constraint, which we take as corroboration rather than contrast.
+
+The distinction that matters is \emph{which} matrix is constrained. Their rank
+constraint applies to the channel matrix of a two-dimensional ($8\times8$)
+array, limiting the number of distinct spatial signatures; ours applies per
+user, to the Hankel embedding of a single column, and encodes the harmonic
+structure of the ULA manifold, so it is informative even at $K=1$. The two are
+complementary rather than substitutes. They are also not available at the same
+scale: their one-dimensional array has $I=8$ elements, for which
+$\mathrm{cap}(8)=4$ by \eqref{eq:cap}, so the embedding admits at most four
+ranks and the regime this paper characterises barely exists there. The
+structure we exploit needs aperture before it has anything to say.
 
 \section{System Model and Problem Formulation}
 \label{sec:model}
@@ -238,9 +244,9 @@ Parameter & Value \\
 \midrule
 % src: trackD_urformer/config.py:120-129
 Array elements $N$ & 32 (16, 64 in Sec.~\ref{sec:results}) \\
-Users $K$ & 3 (2, 4 in the $K$ sweep) \\
+Users $K$ & 3~\cite{xu2025} (2, 4 in the $K$ sweep) \\
 Pilots $P$ & 20 (10, 15, 35 in the pilot sweep) \\
-Paths per user $L_k$ & $\mathcal{U}\{3,7\}$ \\
+Paths per user $L_k$ & $\mathcal{U}\{3,7\}$~\cite{xu2025} \\
 Path gains $\alpha_{k\ell}$ & $\CN(0,1/L_k)$ \\
 Angles $\theta_{k\ell}$ & $\mathcal{U}(-90^\circ,90^\circ)$ \\
 SNR & $\mathcal{U}[-10,20]$~dB \\
@@ -322,10 +328,16 @@ relation predicts $+1.30$~dB. Measured:
 $+1.173$~dB, CI $[+1.017,+1.380]$, an error of $0.13$~dB with the prediction
 inside the interval.
 
-\textbf{A configuration with $L=10$ independent paths}~\cite{svconfig}~%
-\todo{VERIFY CITATION --- the brief attributes this configuration to a
-preprint that is not available here; the configuration is reproduced exactly
-as specified but its attribution is unconfirmed}. At
+\textbf{A second, independently specified configuration.} We adopt the
+receive-side Saleh--Valenzuela configuration of~\cite{precoding2408} ---
+$L=10$ paths, $\alpha_\ell\sim\CN(0,1)$, incident angles
+$\mathcal{U}(-90^\circ,90^\circ)$.~\todo{FILL IN AUTHORS of arXiv:2408.14366
+from page 1 of the PDF; it is not readable from the environment these results
+were produced in} That work is a \emph{precoding} study, not a competing
+estimator, and we borrow only its channel configuration. Two properties make
+it a good test: it was specified by other authors for a different purpose, and
+it uses uniform linear arrays at both ends with both incident and departure
+angles, of which we use the receive side only. At
 % src: reports/trackD_step0_cui_prediction.json
 $\reff/\mathrm{cap}=0.400$ the relation predicts $+0.648$~dB with interval
 $[+0.367,+1.015]$ obtained by propagating the interquartile spread of $\reff$

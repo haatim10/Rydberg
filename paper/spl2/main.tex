@@ -103,9 +103,10 @@ noise $\bW$, the receiver observes magnitudes only,
 \bZ=\left|\bG\bS+\bB+\bW\right|,\qquad \bW_{np}\sim\CN(0,\sigma^2).
 \label{eq:fwd}
 \end{equation}
-Each user's channel is a sum of $L_k$ plane waves on the array manifold. The
+Each user's channel is a sum of $L_k$ plane waves on the array
+manifold, following the clustered Saleh--Valenzuela model~\cite{meijerink2014}. The
 classical baseline is an expectation--maximization Gerchberg--Saxton iteration
-(EM-GS)~\cite{gerchberg1972}~\todo{VERIFY CITATION}; the unrolled estimator
+(EM-GS)~\cite{gerchberg1972}; the unrolled estimator
 (``URformer'') replaces $T$ iterations with $T$ learned layers, each a
 data-consistency step followed by a learned filter, a gate, and a
 Transformer block across users~\cite{xiao2026}.
@@ -232,7 +233,7 @@ Parameter & Value \\
 \midrule
 % src: trackD_urformer/config.py:120-129, 273
 Array elements $N$ / users $K$ / pilots $P$ & 32 / 3 / 20 \\
-Paths per user $L_k$ & $\mathcal{U}\{3,7\}$ \\
+Paths per user $L_k$ & $\mathcal{U}\{3,7\}$~\cite{xu2025} \\
 SNR (train and test) & $\mathcal{U}[-10,20]$~dB \\
 Reference-to-signal ratio & 10~dB \\
 Unrolled layers $T$ & 10 \\
@@ -305,12 +306,14 @@ $P=20$ model is \emph{worse} at $P=25$ ($-11.13$~dB) than at $P=20$
 ($-11.27$~dB): more measurements, worse estimate. Fig.~\ref{fig:pilots} shows
 all three curves together.
 
-This matters for how such curves are reported. The pilot sweep of
-\cite{xiao2026} is specified only as ``evaluated at a fixed SNR of $5$~dB'';
-the text does not state whether the networks were retrained per pilot count.
-We report that as a fact about what the paper specifies, and as motivation for
-stating the distinction explicitly --- not as a criticism of that work, whose
-convention is the ordinary one and which our own earlier curves shared.
+This matters for how such curves are reported. The pilot sweep
+of~\cite{xiao2026} is described as ``the NMSE performance versus the number of
+pilot transmissions $P$, evaluated at a fixed SNR of $5$~dB'', and as
+``crucial for assessing the pilot efficiency of each algorithm''; the text does
+not state whether the networks were retrained per pilot count. We report that
+as a fact about what the paper specifies, and as motivation for stating the
+distinction explicitly --- not as a criticism of that work, whose convention is
+the ordinary one and which our own earlier curves shared.
 
 \begin{figure}[!t]
 \centering
