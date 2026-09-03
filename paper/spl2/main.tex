@@ -25,9 +25,10 @@
 Channel Estimation for Rydberg Atomic Receivers}
 
 \author{Abdullah~Haatim%
-\thanks{A.~Haatim is with the \todo{CONFIRM DEPARTMENT: taken from an earlier
-draft in this project, not from a definitive source} Department of Electrical
-and Electronics Engineering, Birla Institute of Technology and Science,
+\thanks{A.~Haatim is with the \todo{CONFIRM DEPARTMENT: the string below is
+the one used in the earlier HS-GS draft of this project (paper/hsgs.tex),
+which is where the original guess came from; it is not an independent source}
+Department of Electrical and Electronics Engineering, Birla Institute of Technology and Science,
 Pilani~--- Pilani Campus, India (e-mail:
 f20220519@pilani.bits-pilani.ac.in).}}
 
@@ -103,8 +104,10 @@ noise $\bW$, the receiver observes magnitudes only,
 \bZ=\left|\bG\bS+\bB+\bW\right|,\qquad \bW_{np}\sim\CN(0,\sigma^2).
 \label{eq:fwd}
 \end{equation}
-Each user's channel is a sum of $L_k$ plane waves on the array
-manifold, following the clustered Saleh--Valenzuela model~\cite{meijerink2014}. The
+Each user's channel is a sum of $L_k$ plane waves on the array manifold,
+with $L_k\sim\mathcal{U}\{3,7\}$~\cite{xu2025} and angles drawn uniformly on
+$(-90^\circ,90^\circ)$ (Table~\ref{tab:params}); this is a geometric ULA model,
+not a clustered one. The
 classical baseline is an expectation--maximization Gerchberg--Saxton iteration
 (EM-GS)~\cite{gerchberg1972}; the unrolled estimator
 (``URformer'') replaces $T$ iterations with $T$ learned layers, each a
