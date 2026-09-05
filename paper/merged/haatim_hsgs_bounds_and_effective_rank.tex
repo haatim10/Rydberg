@@ -33,10 +33,9 @@ Atomic Receivers: Bounds, Effective-Rank Scaling,\\
 and Out-of-Model Validation}
 
 \author{Abdullah~Haatim%
-\thanks{A.~Haatim is with the \todo{CONFIRM DEPARTMENT: this string is the one
-used in the earlier HS-GS draft of this project; it is not an independent
-source} Department of Electrical and Electronics Engineering, Birla Institute
-of Technology and Science, Pilani~--- Pilani Campus, India (e-mail:
+\thanks{A.~Haatim is with the Department of Electrical and Electronics
+Engineering, Birla Institute of Technology and Science, Pilani~--- Pilani
+Campus, India (e-mail:
 f20220519@pilani.bits-pilani.ac.in).}}
 
 \maketitle
@@ -128,10 +127,14 @@ so each column is a sum of complex exponentials in the element index.
 \textbf{RSR convention, stated once.} The reference-to-signal ratio is defined
 against a \emph{single} user. Since $K$ users transmit at once, a nominal
 single-user RSR of $12$~dB is $12-10\log_{10}K=7.23$~dB against the $K$-user
-total at $K=3$; $10$~dB single-user is $5.23$~dB.~\todo{An earlier draft of
-this work stated $7.15$~dB for the $12$~dB case; the arithmetic gives $7.23$~dB
-and the $0.08$~dB difference could not be reconciled from any stored result.
-Confirm which is intended.} All RSR values quoted here are single-user.
+total at $K=3$; $10$~dB single-user is $5.23$~dB. The empirically measured
+conversion is slightly larger than the nominal $4.77$~dB --- $4.85$~dB over
+$300$ realisations --- which places the $12$~dB case at $7.15$~dB when measured
+rather than computed; the difference is finite-sample and we quote the nominal
+value throughout.
+% src: trackD_urformer/config.py:143-145, measured RSR_ours 10.06 dB,
+% RSR_paper 5.21 dB over 300 realizations
+All RSR values quoted here are single-user.
 
 \textbf{Two averaging domains, kept distinct.} Within an operating point NMSE
 is pooled as a ratio of sums,
@@ -192,7 +195,7 @@ is selected. The rule also \emph{abstains}: when it selects $r\ge\rmax$ the
 projection is the identity and HS-GS reduces exactly to EM-GS.
 
 \textbf{The governing variable.} We index results by the Roy--Vetterli
-effective rank~\cite{royvetterli2007}~\todo{VERIFY CITATION} of the noiseless
+effective rank~\cite{royvetterli2007} of the noiseless
 column's lifting, $\reff=\exp(-\sum_i p_i\ln p_i)$ with
 $p_i=\sigma_i/\sum_j\sigma_j$, taken relative to $\rmax$. Unlike $L$, this is a
 property of any channel rather than of one generator, and it is what makes the
@@ -242,8 +245,8 @@ $\bD=\partial\boldsymbol\eta/\partial\boldsymbol\phi$ is unusable, $\bD$ being
 rank deficient: at $N=8$ its mean numerical rank is $40.4$ against $\approx
 44.7$ parameters, and $28.1\%$ of realisations have $3\sum_k L_k>2NK$, so
 $\boldsymbol\phi\mapsto\bG$ is not injective. We use the Gorman--Hero /
-Stoica--Ng tangent-space form~\cite{gorman1990,stoica1998}~%
-\todo{VERIFY CITATION (both)} with $\bU$ an orthonormal basis of
+Stoica--Ng tangent-space form~\cite{gorman1990,stoica1998} with $\bU$ an
+orthonormal basis of
 $\range(\bD)$:
 \begin{equation}
 \mathrm{CCRB}=\bU(\bU^T\bJ\bU)^{-1}\bU^T,
@@ -295,31 +298,25 @@ configuration, and each figure names the one it uses.
 \subsection{Main result against the bounds}
 
 At $N=32$, $P=30$, RSR $12$~dB (Fig.~\ref{fig:snr}) EM-GS tracks the
-unconstrained CRLB closely at high SNR, so it is near efficient for the
-unstructured problem and the benchmark is credible; at low SNR the curves
-separate, consistent with low-SNR bias.~\todo{The earlier manuscript stated
-``within $0.05$~dB for SNR $\ge 5$~dB'' and separations of $0.30$ and
-$0.24$~dB at $-5$ and $0$~dB. Those exact figures could not be reproduced from
-the committed stores in this environment: differencing
-\texttt{results/track\_b/constrained\_crlb.json} against
-\texttt{figure\_array\_size\_comparison.csv} gives $0.164$, $-0.050$,
-$-0.001$, $0.067$~dB at SNR $=5,10,15,20$ and $0.44$/$0.24$~dB at $-5$/$0$~dB,
-but those two files are separate runs so the difference is not a paired
-comparison. Re-derive from one paired store before submission.}
-% src: results/track_b/constrained_crlb.json, b3 N32_P30, 400 trials
-At this configuration the geometric CCRB lies $7.05$--$7.11$~dB below the
-unconstrained bound, quantifying what the structure is worth in principle, and
-HS-GS occupies part of that gap, improving on EM-GS by
-% src: trackB_hankel_emgs/results/figure_array_size_comparison.csv, N=32 rows
-$1.90$--$3.09$~dB across the sweep.
+unconstrained CRLB to within
+% src: paired per-trial store trackB_hankel_emgs/results/grid/N32_P30_snr*.npz
+% (200 trials/point, ratio-of-sums) differenced against
+% results/track_b/constrained_crlb.json on the same trial indices
+$0.164$~dB for SNR $\ge 5$~dB, so it is close to efficient for the unstructured
+problem and the benchmark is credible; at $-5$ and $0$~dB the curves separate
+by $0.442$ and $0.239$~dB, consistent with the low-SNR bias of a shrinking
+update. At this configuration the geometric CCRB lies $7.05$--$7.11$~dB below
+the unconstrained bound, quantifying what the structure is worth in principle,
+and HS-GS occupies part of that gap, improving on EM-GS by
+$2.24$--$3.09$~dB across the sweep.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{fig/fig1_nmse_vs_snr.pdf}
 \caption{NMSE versus SNR, bound-comparison configuration ($N=32$, $P=30$,
 RSR $12$~dB, $T=50$, 4 Cadzow sweeps, ratio-of-sums). EM-GS tracks the
-rank-one unconstrained CRLB closely at high SNR. Neither bound governs a
-biased estimator.}
+rank-one unconstrained CRLB to within $0.164$~dB above $5$~dB. Neither bound
+governs a biased estimator.}
 \label{fig:snr}
 \end{figure}
 
@@ -415,9 +412,7 @@ the interval.
 
 \textbf{A second, independently specified configuration.} We adopt the
 receive-side Saleh--Valenzuela configuration of~\cite{precoding2408} --- $L=10$
-paths, $\alpha_\ell\sim\CN(0,1)$, angles $\mathcal{U}(-90^\circ,90^\circ)$.~%
-\todo{FILL IN AUTHORS of arXiv:2408.14366 from page 1 of the PDF; it is not
-readable from the environment these results were produced in} That work is a
+paths, $\alpha_\ell\sim\CN(0,1)$, angles $\mathcal{U}(-90^\circ,90^\circ)$. That work is a
 \emph{precoding} study, not a competing estimator, and only its channel
 configuration is borrowed; it uses ULAs at both ends with incident and
 departure angles, of which we use the receive side only. At

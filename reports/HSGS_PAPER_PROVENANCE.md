@@ -345,19 +345,67 @@ and `0.036 dB` appear here too.
 
 ---
 
-# Every open `\todo` in this paper, with why
+# TODOs — all six resolved
 
-| # | location | what is unresolved |
+Every `\todo{}` is gone from the manuscript. How each was closed:
+
+| # | item | resolution |
 |---|---|---|
-| 1 | author block | department string, from `hsgs.tex` not an independent source |
-| 2 | §II RSR | 7.15 dB (draft) vs 7.23 dB (arithmetic), 0.08 dB unreconciled |
-| 3 | §III effective rank | Roy–Vetterli citation unverified |
-| 4 | §IV-B | Gorman–Hero and Stoica–Ng citations unverified |
-| 5 | §V-A | the "0.05 dB" / "0.30, 0.24 dB" bound-tracking figures — not reproducible as a paired comparison from committed stores |
-| 6 | §V-D | arXiv:2408.14366 author list, PDF unavailable here |
+| 1 | department | **Confirmed by the author:** Department of Electrical and Electronics Engineering, BITS Pilani — Pilani Campus. |
+| 2 | RSR 7.15 vs 7.23 dB | **Explained, not a conflict.** `trackD_urformer/config.py:143-145` records the *empirical* conversion measured over 300 realisations: RSR_ours 10.06 dB, RSR_paper 5.21 dB, difference **4.85 dB** against the nominal `10log₁₀3 = 4.77 dB`. Applying 4.85 to 12 dB gives exactly the draft's **7.15**; the nominal gives **7.23**. Finite-sample, not an error. The paper quotes the nominal and states the measured value. |
+| 3 | Roy–Vetterli | **Verified:** EUSIPCO 2007, pp. 606–610 (EURASIP proceedings). Matches the bib. |
+| 4 | Gorman–Hero; Stoica–Ng | **Verified:** IEEE TIT 36(6), 1285–1301, Nov. 1990; IEEE SPL 5(7), 177–179, Jul. 1998. Both match. |
+| 5 | §V-A bound-tracking figures | **Resolved with a genuine paired computation** — see below. |
+| 6 | arXiv:2408.14366 authors | **Mingyao Cui, Qunsong Zeng, Kaibin Huang** — confirmed by two independent web searches. Notably the *same authors* as `cui2025`; the brief's "Cui et al." was right about the people and wrong only about which paper. |
 
-Plus, in `refs.bib`: Xu's full page range, and page numbers for Cadzow,
-Markovsky, Gerchberg–Saxton and Netrapalli.
+Also closed in `refs.bib`: Xu **pp. 2957–2961** (the author had confirmed 2961 as
+a page inside it — it is the last); Cadzow IEEE TASSP 36(1), 49–62, Jan. 1988;
+Markovsky Automatica 44(4), 891–909, 2008; Gerchberg–Saxton Optik 35, 237–246,
+1972. Two entries remain `[UNVERIFIED]` in the file but are **not cited** by
+either paper, so they never print: `netrapalli2015` and `tr38901`.
+
+*Caveat on method:* `arxiv.org` and `api.semanticscholar.org` are egress-blocked
+from this environment, so these were verified through web search results rather
+than by opening each PDF. Agreement across independent results is good evidence
+but is not the same as reading the article.
+
+## How TODO 5 was closed — the paired store existed after all
+
+The earlier pass concluded the bound-tracking numbers could not be checked
+because `constrained_crlb.json` and `figure_array_size_comparison.csv` are
+separate runs. **That was premature.** The Track B package stores *per-trial*
+paired numerators at every grid point:
+
+`trackB_hankel_emgs/results/grid/N32_P30_snr*.npz` →
+keys `denom`, `num_em_gs`, `num_hankel_em_gs`, `L_hat`, `active`, `paired_ok`,
+200 trials per point. And `constrained_crlb.json`'s own note says it averaged
+"over the SAME trial indices the estimator curves use". So the comparison is
+paired, and computing it directly gives:
+
+| SNR (dB) | EM-GS | HS-GS | CRLB | CCRB | EM-GS − CRLB | HS gain |
+|---|---|---|---|---|---|---|
+| −5 | +0.676 | −2.413 | +0.233 | −6.873 | **+0.442** | +3.088 |
+| 0 | −5.252 | −7.642 | −5.490 | −12.554 | **+0.239** | +2.390 |
+| +5 | −10.577 | −12.816 | −10.741 | −17.809 | +0.164 | +2.239 |
+| +10 | −15.837 | −18.289 | −15.787 | −22.859 | −0.050 | +2.451 |
+| +15 | −20.772 | −23.296 | −20.771 | −27.831 | −0.001 | +2.524 |
+| +20 | −25.861 | −28.436 | −25.928 | −32.973 | +0.067 | +2.575 |
+
+So the paper now states, all from this one paired store:
+
+- EM-GS tracks the CRLB to within **0.164 dB** for SNR ≥ 5 dB (the draft said
+  0.05 dB — **too tight**; 0.05 holds only for SNR ≥ 10).
+- Separations at −5 / 0 dB: **0.442 / 0.239 dB** (draft: 0.30 / 0.24 — the 0 dB
+  value was right, the −5 dB one was not).
+- CCRB below CRLB: **7.05–7.11 dB**.
+- HS-GS over EM-GS: **+2.24 to +3.09 dB** (draft: 2.27–3.04 — near enough that
+  the draft was clearly reading this same store).
+
+This also **supersedes a correction I made an hour earlier**: I had briefly put
+1.90–3.09 dB for the HS-GS range, taken from
+`figure_array_size_comparison.csv`, whose `N=32` block includes a −10 dB point
+the Fig. 1 sweep does not. The grid store is the right one for a sentence about
+Fig. 1, and it gives 2.24–3.09.
 
 # What is verified against a primary source
 
