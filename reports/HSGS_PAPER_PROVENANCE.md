@@ -21,46 +21,42 @@ survive re-numbering.
 
 ---
 
-## ⚠ Read this first — corrections made while writing this document
+## ⚠ Read this first — a correction to the previous correction
 
-Producing this file did what it was supposed to do: tracing each number to a
-store surfaced **five figures I had carried from the old manuscript's prose
-without checking them against the data.** All five are now corrected in the
-manuscript. My earlier statement that "no number was untraceable" was wrong,
-and this is the correction.
+An audit pass traced Figures 1 and 2 back through
+`scripts/plot_paper.py` and found that **both figures, and the CRLB
+computation, read `results/track_b/b3/` — not the `trackB_hankel_emgs/`
+package.** An earlier pass of mine had "corrected" six numbers against the
+wrong store. **Those corrections were wrong and have been reverted.** The
+original manuscript figures were right.
 
-| claim | was (from `hsgs.tex` prose) | now (from the store) | store |
+`results/track_b/b3/` holds 36 files = 3 array sizes × 2 pilot counts
+{10, 30} × 6 SNR values {−5, 0, 5, 10, 15, 20}, **400 trials each** — which is
+also the "36 points" the rank-one CRLB sentence refers to and the `n_trials:
+400` in `constrained_crlb.json`. The old draft's *"twelve operating points"* is
+exactly 6 SNR × 2 pilot counts, and reproduces to three decimals:
+
+| quantity | draft | recomputed from `b3` | verdict |
 |---|---|---|---|
-| aperture gains at `N`=8/16/32 | −0.19 / +0.78 / **+2.85** dB | **+0.029 / +0.812 / +2.452** dB | `experiment_B_array_size.csv`, `mean_gain_db` |
-| EM-GS spread across `N` | 0.012 dB | **0.036 dB** | same file, `em_gs_db_mean_over_points` |
-| win rates | 33.5 / 74.0 / 95.3 % | **33.4 / 78.0 / 96.3 %** | same file, `win_rate` |
-| constraint active | 57.5 / 92.7 / 99.6 % | **54.1 / 92.7 / 99.4 %** | same file, `active_frac` |
-| CCRB below CRLB at `N`=32,`P`=30 | 0.87–9.98 dB | **7.05–7.11 dB** | `constrained_crlb.json`, `b3` `N32_P30` |
-| HS-GS over EM-GS at `N`=32 | 2.27–3.04 dB | **1.90–3.09 dB** | `figure_array_size_comparison.csv`, `N=32` |
-| the replication gap | 2.85 vs 2.680 → 0.17 dB | **2.452 vs 2.680 → 0.23 dB** | both of the above |
+| gain, `N` = 8/16/32 | −0.19 / +0.78 / +2.85 | **−0.192 / +0.780 / +2.851** | draft correct |
+| EM-GS spread across `N` | 0.012 dB | **0.0124 dB** | draft correct |
+| win rate | 33.5 / 74.0 / 95.3 % | **33.5 / 74.0 / 95.3 %** | draft correct |
+| constraint active | 57.5 / 92.7 / 99.6 % | **57.5 / 92.7 / 99.6 %** | draft correct |
+| EM-GS tracks CRLB, SNR ≥ 5 | 0.05 dB | **0.051 dB** | draft correct |
+| separation at −5 / 0 dB | 0.30 / 0.24 | **0.295 / 0.237** | draft correct |
+| HS-GS over EM-GS, `N`=32 | 2.27–3.04 dB | **2.268–3.039** | draft correct |
+| CCRB below CRLB, `N`=32 | 0.87–9.98 dB | **7.045–7.106** | **draft wrong**; corrected |
 
-**Why the old numbers exist.** The draft says these were averaged over
-"twelve operating points" per array size. **No committed store contains a
-twelve-point aperture sweep** — `summary.json` `experiment_B` has seven SNR
-points per `N`, and so does `figure_array_size_comparison.csv`. That run either
-predates the stores or was never committed. The seven-point numbers are what
-can be defended, so those are what the paper now says.
+So exactly **one** of the seven is a genuine defect: the CCRB gap. Everything
+else I previously "fixed" is now restored.
 
-Note this *weakens* the headline slightly (`N=8` becomes +0.03 rather than
-−0.19) but does not change any conclusion: the `N=8` mixed-result reading rests
-on the per-SNR values, which are traceable and unchanged.
-
-**A sixth claim was resolved in a later pass** — the "EM-GS within 0.05 dB of
-the CRLB" and "0.30 / 0.24 dB" figures. I first judged these unreproducible;
-that was premature. The per-trial paired store exists
-(`trackB_hankel_emgs/results/grid/*.npz`) and gives **0.164 dB** for SNR ≥ 5
-and **0.442 / 0.239 dB** at −5 / 0 dB. See the TODO section at the end.
-
-The `HS-GS over EM-GS` row above was also superseded in that pass: 1.90–3.09
-came from a store whose `N=32` block includes a −10 dB point Fig. 1 does not
-sweep. From the correct paired store it is **+2.24 to +3.09 dB**.
-
----
+**The lesson, recorded because it caused two rounds of error:** two independent
+experiment packages exist in this repository with overlapping names and
+different configurations — `trackB_hankel_emgs/results/` (7 SNR points
+including −10 dB, one pilot count) and `results/track_b/b3/` (6 SNR × 2 pilot
+counts, 400 trials). The manuscript's numbers come from the second. A number is
+not traced until the *plotting or analysis script that produced the figure* has
+been read.
 
 # Title, author, abstract
 
@@ -206,9 +202,17 @@ the resulting `J_n = Σ_p 4β u uᵀ`. Implemented in `rydberg_sim/crlb.py`.
 ### §IV-B — the constrained bound (lines 237–254)
 - "about 45 parameters, independent of `N`" → **[MATH]**, `3ΣL_k` at `K=3`,
   `L_k ~ U{3,7}` gives mean 45.
-- "at `N=8` its mean numerical rank is 40.4 against ≈44.7" and "**28.1% of
-  realisations have `3ΣL_k > 2NK`**" → **[CRLB]**, `constrained_crlb.json`,
-  key `jacobian_rank` (stored values 44.53–44.61 across cells).
+- "at `N=8` its mean numerical rank is 40.4 against ≈44.7 parameters" and
+  "**28.1% of realisations have `3ΣL_k > 2NK`**" → all three verified, and the
+  earlier version of this line was **misleading**: it quoted 44.53–44.61, which
+  are the `N=16` and `N=32` cells, next to a sentence about `N=8`.
+  Per-array-size means of `jacobian_rank` in `constrained_crlb.json`
+  (12 cells each) are **N=8: 40.380**, N=16: 44.551, N=32: 44.599 — so the
+  manuscript's **40.4 at N=8 is right**. The parameter count is the mean of
+  `3ΣL_k` over the `N=8` `b3` cells: `3 × 14.875 = ` **44.66 ≈ 44.7** ✓. And
+  with `2NK = 48` at `N=8`, `mean(3ΣL_k > 48)` over the 6400 stored trials is
+  **28.1%** ✓ — exact. **Manuscript correct; only this provenance line was
+  fixed.**
 - Tangent-space form → **[LIT]** Gorman & Hero, *IEEE TIT* 36(6), 1285–1301,
   1990; Stoica & Ng, *IEEE SPL* 5(7), 177–179, Jul. 1998. **Both verified by
   web search.** Implemented in `scripts/constrained_crlb.py`.
@@ -236,44 +240,44 @@ Every row is read directly from a config file, not from prose.
 | Cadzow sweeps | `CADZOW_ITER = 4` | 1 |
 | trials | `paper/hsgs.tex:511` (3.6×10⁴) | `reports/trackD_partB9_analysis.json`, per-cell `n` |
 
-### §V-A — main result against the bounds (lines 297–320)
-**[CRLB] + [EXP-B]**, all four numbers from **one paired store**:
-`trackB_hankel_emgs/results/grid/N32_P30_snr*.npz` (per-trial `denom`,
-`num_em_gs`, `num_hankel_em_gs`; 200 trials per point) differenced against
-`results/track_b/constrained_crlb.json`, which states it averaged over the same
-trial indices.
+### §V-A — main result against the bounds
+**[CRLB] + [EXP-B]**, all from `results/track_b/b3/N32_P30_snr*.npz`
+(400 trials/point, ratio-of-sums) differenced against
+`results/track_b/constrained_crlb.json` on the same trials:
 
-| quantity | value | note |
-|---|---|---|
-| EM-GS tracks CRLB, SNR ≥ 5 | **within 0.164 dB** | draft said 0.05 dB — too tight; 0.05 holds only for SNR ≥ 10 |
-| separation at −5 / 0 dB | **0.442 / 0.239 dB** | draft said 0.30 / 0.24 — the 0 dB value was right |
-| CCRB below CRLB | **7.05–7.11 dB** | draft said 0.87–9.98, which matches no subset (all 52 stored points span 0.889–49.863) |
-| HS-GS over EM-GS | **+2.24 to +3.09 dB** | draft said 2.27–3.04 — close enough that the draft clearly read this store |
+| quantity | value |
+|---|---|
+| EM-GS tracks CRLB, SNR ≥ 5 | **0.051 dB** |
+| separation at −5 / 0 dB | **0.295 / 0.237 dB** |
+| CCRB below CRLB | **7.05–7.11 dB** (the one draft figure that was wrong) |
+| HS-GS over EM-GS | **+2.27 to +3.04 dB** |
 
-- **Figure 1** is `paper/fig/fig1_nmse_vs_snr.pdf`, reused unmodified from the
-  earlier manuscript (commit `b44bf2a`, re-sourced at `19d0a5f`).
+The paper says EM-GS *numerically tracks* the bound and explicitly declines to
+call it efficient, since it is biased and the bound governs unbiased
+estimators.
 
-### §V-B — aperture scaling (lines 328–347)
-**[EXP-B]**, sweep: `trackB_hankel_emgs/experiment_array_size.py`, seven SNR
-points per `N`, 4200 / 2800 / 1400 trials at `N` = 8 / 16 / 32.
-Store: `trackB_hankel_emgs/results/experiment_B_array_size.csv` (and the same
-numbers under `summary.json` → `experiment_B`).
+- **Figure 1** is `paper/fig/fig1_nmse_vs_snr.pdf`, from
+  `scripts/plot_paper.py::fig1`, which reads this same store.
 
-| quantity | value | CSV column |
-|---|---|---|
-| gain | +0.029 / +0.812 / +2.452 dB | `mean_gain_db` |
-| win rate | 33.4 / 78.0 / 96.3 % | `win_rate` |
-| constraint active | 54.1 / 92.7 / 99.4 % | `active_frac` |
-| EM-GS spread | 0.036 dB | `em_gs_db_mean_over_points`, max − min |
+### §V-B — aperture scaling
+**[EXP-B]**, `results/track_b/b3/N{8,16,32}_P{10,30}_snr*.npz`, 400 trials per
+point. The pooling is the per-operating-point mean over **twelve** points —
+six SNR values × two pilot counts — which is what
+`scripts/plot_paper.py::fig2` plots.
 
-The `N=8` per-SNR reading (**+0.744 dB at −10 dB**, losses of
-**0.190–0.403 dB above 0 dB**) is **[EXP-B]** from
-`experiment_A_snr.csv` — which is the `N = 8`, `P = 30` sweep, 600 trials per
-SNR point (`config.py:16`, `N_DEFAULT = 8`). These were traceable and are
-unchanged. The `r_max(8) = 4` versus `L_k ∈ {3,…,7}` explanation is **[MATH]**
-from Eq. (4).
+| quantity | value |
+|---|---|
+| gain | −0.19 / +0.78 / +2.85 dB |
+| win rate | 33.5 / 74.0 / 95.3 % |
+| constraint active | 57.5 / 92.7 / 99.6 % |
+| EM-GS spread | 0.012 dB |
 
-**Figure 2** is `paper/fig/fig2_gain_vs_N.pdf`, reused unmodified.
+`N=8` detail, same store: **+0.78 dB (P=30) and +1.47 dB (P=10) at −5 dB**,
+turning negative as SNR rises and reaching **−2.23 dB**; the projection is
+inactive in **42.5%** of trials there.
+
+**Figure 2** is `paper/fig/fig2_gain_vs_N.pdf`, unmodified; its caption now
+names both pilot curves and the twelve-point pooling.
 
 ### §V-C — path count to effective rank (lines 361–386)
 - The decay `7.04, 3.56, 1.79, 1.04, 0.58, 0.27, 0.05, −0.12 dB` → **[EXP-B]**,
@@ -297,9 +301,17 @@ from Eq. (4).
 - **Figure 3** is `paper/spl1/fig/fig2_boundary_invariance.pdf`, generated by
   `scratch/paper1_figures.py::fig2_boundary`.
 
-### §V-D — out-of-model prediction (lines 401–440)
+### §V-D — cross-generator prediction (lines 401–440)
 The section's framing quotes `paper/hsgs.tex:686–700` — the earlier draft's own
 limitations sentence naming the clustered falsification test.
+
+**The rule**, now stated in the manuscript: predicted `Δ_HS` is
+`numpy.interp` — piecewise-linear interpolation — on the eight-point
+`(r_eff/r_max, Δ_HS)` table of §A2. No regression, no spline, no fitted
+equation. Verified by reproducing all three predictions:
+`interp(0.331) = +1.303`, `interp(0.400) = +0.648`, `interp(0.748) = −0.117`,
+matching the paper's +1.30 / +0.648 / −0.12.
+(`scratch/trackD_step0_cui_predict.py:73,78`.)
 
 | item | value | provenance |
 |---|---|---|

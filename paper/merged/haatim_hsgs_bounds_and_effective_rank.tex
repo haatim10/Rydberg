@@ -30,7 +30,7 @@
 
 \title{Hankel-Structured Channel Estimation for Rydberg\\
 Atomic Receivers: Bounds, Effective-Rank Scaling,\\
-and Out-of-Model Validation}
+and Cross-Generator Validation}
 
 \author{Abdullah~Haatim%
 \thanks{A.~Haatim is with the Department of Electrical and Electronics
@@ -43,20 +43,21 @@ f20220519@pilani.bits-pilani.ac.in).}}
 \begin{abstract}
 Rydberg atomic receivers measure field magnitude only, making multi-user
 channel estimation a biased phase-retrieval problem in which unstructured
-solvers are flat in array size: their Fisher information is block diagonal
-across receive elements, so a larger aperture buys nothing under a normalised
-metric, and only a structural prior converts aperture into accuracy. We
+solvers are flat in array size: under the unconstrained row-wise
+parameterisation the Fisher information is block diagonal across receive
+elements, so normalised per-element information does not grow with $N$ and
+exploiting aperture requires cross-element structure. We
 enforce the low-rank Hankel structure of the uniform-linear-array response
 inside an exact expectation--maximization Gerchberg--Saxton iteration, select
 the order from a held-out pilot residual, and benchmark against a Rician
 Cram\'er--Rao bound in which each magnitude measurement contributes rank-one
 information, together with a geometry-constrained bound on the
-$3\sum_k L_k$-parameter manifold. The gain grows from $+0.03$ to $+2.45$~dB as
-$N$ goes $8\to32$ while the unstructured baseline moves by $0.036$~dB. We then
+$3\sum_k L_k$-parameter manifold. The gain grows from $-0.19$ to $+2.85$~dB as
+$N$ goes $8\to32$ while the unstructured baseline moves by $0.012$~dB. We then
 show the governing variable is not path count but effective rank relative to
-capacity, and use that relation to predict the gain on two channel models it
-was never fitted to. Simulation only; the bounds do not govern biased
-estimators.
+capacity, and use that relation to predict the gain on two channel-generation
+distributions it was not fitted to. Simulation only; the bounds do not govern
+biased estimators.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -77,12 +78,13 @@ projected gradient descent for the same problem~\cite{xu2025}.
 
 Unstructured solvers share a limitation that is easy to miss and, once seen,
 explains a great deal: \textbf{their accuracy does not improve as the array
-grows.}
-Row $n$ of $\bG\bS$ enters only measurement row $n$, so the Fisher information
+grows.} Under the unconstrained row-wise parameterisation of \eqref{eq:obs},
+row $n$ of $\bG\bS$ enters only measurement row $n$, so the Fisher information
 is block diagonal across receive elements and the per-element estimation
-problem is unchanged by adding elements. Aperture is only useful to an
-estimator that couples elements --- which is exactly what a structural prior
-does.
+problem is unchanged by adding elements. Exploiting aperture therefore requires
+\emph{cross-element} channel structure; HS-GS uses the low-rank Hankel
+structure induced by the geometric ULA model, which is one such structure
+rather than the only one.
 
 On a uniform linear array (ULA) each propagation path contributes one spatial
 complex exponential, so the Hankel lifting of every channel column is rank
@@ -97,14 +99,15 @@ rank $8.73$, and its lifting is compressible with nothing sparse about it.
 \item A benchmark, not just a baseline: a Rician Cram\'er--Rao bound in which
 each magnitude measurement contributes \emph{rank-one} information, and a
 geometry-constrained bound in tangent-space form because the parameterisation
-is rank deficient. EM-GS sits within $0.05$~dB of the unconstrained bound, so
-the benchmark is credible.
+is rank deficient. EM-GS numerically tracks the unconstrained bound to within
+$0.051$~dB for SNR $\ge 5$~dB, so the benchmark is informative.
 \item The aperture-scaling result and its Fisher-information explanation.
 \item Replacement of the path-count heuristic by $\reff/\rmax$, with the
 capacity $\rmax=\lceil N/2\rceil$ derived.
-\item Two out-of-model predictions, each registered before measurement, on
-channel models the relation was never fitted to --- the clustered-propagation
-falsification test that this work's earlier stage identified as decisive.
+\item Two cross-generator predictions, each registered before measurement.
+The relation is fitted on one channel-generation distribution and tested,
+without refitting, on two previously unseen ones --- the clustered-propagation
+falsification test this work's earlier stage identified as decisive.
 \end{enumerate}
 
 \section{System Model}
@@ -116,7 +119,10 @@ noise $\bW$, the receiver observes
 \bZ=\left|\bG\bS+\bB+\bW\right|,\qquad \bW_{np}\sim\CN(0,\sigma^2),
 \label{eq:obs}
 \end{equation}
-elementwise, and the modulus is never linearised. User $k$'s channel is
+elementwise, and the modulus is never linearised. Here ``biased phase
+retrieval'' refers to the known reference-field offset $\bB$ and is distinct
+from the statistical estimator bias discussed in \S\ref{sec:crlb}. User $k$'s
+channel is
 \begin{equation}
 \bg_k=\sum_{\ell=1}^{L_k}\alpha_{k\ell}\,\mathbf{a}(\theta_{k\ell}),\qquad
 [\mathbf{a}(\theta)]_n=e^{-j\pi n\sin\theta},
@@ -199,7 +205,7 @@ effective rank~\cite{royvetterli2007} of the noiseless
 column's lifting, $\reff=\exp(-\sum_i p_i\ln p_i)$ with
 $p_i=\sigma_i/\sum_j\sigma_j$, taken relative to $\rmax$. Unlike $L$, this is a
 property of any channel rather than of one generator, and it is what makes the
-out-of-model predictions of \S\ref{sec:oom} possible. It must be computed on
+cross-generator predictions of \S\ref{sec:oom} possible. It must be computed on
 the noiseless channel: the effective rank of the \emph{estimate} is set by the
 noise floor and collapses every configuration onto one value.
 
@@ -278,44 +284,45 @@ none mixes points from the two.}
 \midrule
 % src: trackB_hankel_emgs/config.py and trackD_urformer/config.py
 $N$ & 8, 16, 32 & 16, 32, 64 \\
-$K$ / $P$ & 3 / 30 & 3 / 20 \\
+$K$ & 3 & 3 \\
+$P$ & 30 (Figs.~1,~3); 10 and 30 (Fig.~2) & 20 \\
 $L_k$ & $\mathcal{U}\{3,7\}$~\cite{xu2025} & $\mathcal{U}\{3,7\}$~\cite{xu2025} \\
-SNR & $-5$ to $20$~dB & $\mathcal{U}[-10,20]$~dB \\
+SNR & $\{-5,0,5,10,15,20\}$~dB & $\mathcal{U}[-10,20]$~dB \\
 RSR (single-user) & 12~dB & 10~dB \\
 Iterations $T$ & 50 & 100 \\
 Cadzow sweeps & 4 & 1 \\
 Statistic & ratio-of-sums & paired median, CI \\
-Trials & $3.6\times10^4$ total & 83--874 per cell \\
+Trials & 400 per point, $1.44\times10^4$ total & 83--874 per cell \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 Table~\ref{tab:params} lists both configurations. The older is canonical for
 everything compared to a bound, because it is what the bounds were computed
-against; the effective-rank and out-of-model results are reported at their own
+against; the effective-rank and cross-generator results are reported at their own
 configuration, and each figure names the one it uses.
 
 \subsection{Main result against the bounds}
 
-At $N=32$, $P=30$, RSR $12$~dB (Fig.~\ref{fig:snr}) EM-GS tracks the
-unconstrained CRLB to within
-% src: paired per-trial store trackB_hankel_emgs/results/grid/N32_P30_snr*.npz
-% (200 trials/point, ratio-of-sums) differenced against
-% results/track_b/constrained_crlb.json on the same trial indices
-$0.164$~dB for SNR $\ge 5$~dB, so it is close to efficient for the unstructured
-problem and the benchmark is credible; at $-5$ and $0$~dB the curves separate
-by $0.442$ and $0.239$~dB, consistent with the low-SNR bias of a shrinking
-update. At this configuration the geometric CCRB lies $7.05$--$7.11$~dB below
-the unconstrained bound, quantifying what the structure is worth in principle,
-and HS-GS occupies part of that gap, improving on EM-GS by
-$2.24$--$3.09$~dB across the sweep.
+At $N=32$, $P=30$, RSR $12$~dB (Fig.~\ref{fig:snr}) EM-GS numerically tracks
+the unconstrained CRLB to within
+% src: results/track_b/b3/N32_P30_snr*.npz (400 trials/point, ratio-of-sums)
+% differenced against results/track_b/constrained_crlb.json, same trials
+$0.051$~dB for SNR $\ge5$~dB. We do not call it efficient: it is biased, and
+the bound formally governs unbiased estimators (\S\ref{sec:crlb}); the close
+numerical agreement is what makes the benchmark informative. At $-5$ and
+$0$~dB the curves separate by $0.295$ and $0.237$~dB, consistent with the
+low-SNR bias of a shrinking update. At this configuration the geometric CCRB
+lies $7.05$--$7.11$~dB below the unconstrained bound, quantifying what the
+structure is worth in principle, and HS-GS occupies part of that gap,
+improving on EM-GS by $2.27$--$3.04$~dB across the sweep.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{fig/fig1_nmse_vs_snr.pdf}
 \caption{NMSE versus SNR, bound-comparison configuration ($N=32$, $P=30$,
 RSR $12$~dB, $T=50$, 4 Cadzow sweeps, ratio-of-sums). EM-GS tracks the
-rank-one unconstrained CRLB to within $0.164$~dB above $5$~dB. Neither bound
+rank-one unconstrained CRLB to within $0.051$~dB above $5$~dB. Neither bound
 governs a biased estimator.}
 \label{fig:snr}
 \end{figure}
@@ -323,33 +330,36 @@ governs a biased estimator.}
 \subsection{Aperture scaling}
 \label{sec:aperture}
 
-Fig.~\ref{fig:scaling} isolates the scaling. Averaged over the seven SNR
-operating points at each array size the gain is
-% src: trackB_hankel_emgs/results/experiment_B_array_size.csv (mean_gain_db,
-% win_rate, active_frac); 4200/2800/1400 trials at N=8/16/32
-$+0.029$, $+0.812$, $+2.452$~dB at $N=8,16,32$, with win rates $33.4$, $78.0$,
-$96.3\%$ and the constraint active in $54.1$, $92.7$, $99.4\%$ of trials.
-\textbf{Under the same averaging EM-GS varies by $0.036$~dB}, exactly as the
+Fig.~\ref{fig:scaling} isolates the scaling. Averaged over the twelve
+operating points at each array size --- the six SNR values of
+Table~\ref{tab:params} at each of $P\in\{10,30\}$ --- the gain is
+% src: results/track_b/b3/N{8,16,32}_P{10,30}_snr*.npz, 400 trials/point;
+% per-operating-point mean, the same pooling scripts/plot_paper.py::fig2 draws
+$-0.19$, $+0.78$, $+2.85$~dB at $N=8,16,32$, with win rates $33.5$, $74.0$,
+$95.3\%$ and the constraint active in $57.5$, $92.7$, $99.6\%$ of trials.
+\textbf{Under the same averaging EM-GS varies by $0.012$~dB}, exactly as the
 block-diagonal Fisher structure of \S\ref{sec:crlb} requires: the
 $N$-dependence belongs to the structural prior, not to a degrading baseline.
 
 $N=8$ is a mixed result, not a small positive one. There $\rmax=4$ while
-$L_k\in\{3,\dots,7\}$, so the projection is inactive in $46\%$ of trials and
+$L_k\in\{3,\dots,7\}$, so the projection is inactive in $42.5\%$ of trials and
 where active often truncates real components;
-% src: trackB_hankel_emgs/results/experiment_A_snr.csv (N=8, P=30, 600
-% trials per SNR point)
-HS-GS gains $+0.744$~dB at
-$-10$~dB SNR but loses $0.190$--$0.403$~dB above $0$~dB, and the sign of any
-scalar summary depends on the pooling. Truncation bias does not shrink with
+% src: results/track_b/b3/N8_P{10,30}_snr*.npz
+HS-GS gains $+0.78$ and $+1.47$~dB at $-5$~dB (at $P=30$ and $P=10$) but turns
+negative as SNR rises, reaching $-2.23$~dB, so the sign of any scalar summary
+depends on the pooling. Truncation bias does not shrink with
 noise, so as variance falls the trade stops paying.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=\columnwidth]{fig/fig2_gain_vs_N.pdf}
 \caption{Paired HS-GS gain over EM-GS versus array size, bound-comparison
-configuration. Faint markers are the six individual SNR operating points,
-solid lines their mean. At $N=8$ the points straddle zero, so no single scalar
-summarises that array size.}
+configuration. Two pilot counts are shown: $P=30$, which Figs.~1 and~3 also
+use, and $P=10$ as an auxiliary curve. Faint markers are the six individual
+SNR operating points of each curve; solid lines are their means. The headline
+$-0.19/+0.78/+2.85$~dB is the mean over all twelve points (six SNR values
+$\times$ two pilot counts). At $N=8$ the points straddle zero, so no single
+scalar summarises that array size.}
 \label{fig:scaling}
 \end{figure}
 
@@ -393,7 +403,7 @@ $0.493$~dB (max.\ $0.901$~dB).}
 \label{fig:boundary}
 \end{figure}
 
-\subsection{Out-of-model prediction: the falsification test}
+\subsection{Cross-generator prediction: the falsification test}
 \label{sec:oom}
 
 An earlier stage of this work concluded that robustness under clustered
@@ -403,6 +413,16 @@ falsification test, not a confirmation exercise.} This is that test, run twice.
 In each case $\reff/\rmax$ was computed, a predicted $\dhs$ read off the
 relation, and \textbf{the prediction committed to version control before the
 measurement was run}; the relation was not refitted afterwards.
+
+\textbf{The prediction rule, stated so it can be reproduced.} The relation is
+the eight-point table of $(\reff/\rmax,\ \dhs)$ pairs obtained by re-indexing
+the path-count sweep of \S\ref{sec:results}-C, and the predicted $\dhs$ is its
+\emph{piecewise-linear interpolation} at the measured $\reff/\rmax$ --- no
+curve is fitted, no regression or spline is involved. The prediction interval
+is that same interpolation evaluated at the interquartile endpoints of
+$\reff$ over the channel realisations, so it reflects channel variability
+rather than being asserted. Both the table and the rule were fixed before
+either measurement below.
 
 \textbf{Clustered Saleh--Valenzuela.} At $\reff/\rmax=0.331$ the relation
 predicts $+1.30$~dB. Measured:
@@ -438,8 +458,10 @@ which channel it faces. We report that as a partial match.
 \centering
 \includegraphics[width=\columnwidth]{fig/fig3_out_of_model.pdf}
 \caption{Predictions registered before measurement, against measurement,
-effective-rank configuration. The relation is fitted on the geometric ULA
-model of \eqref{eq:chan} only; neither channel was used to fit or tune it.}
+effective-rank configuration. Both generators produce channels of the
+form \eqref{eq:chan}; what differs is the distribution over
+$(L_k,\alpha_{k\ell},\theta_{k\ell})$. The relation was fitted on the
+generator of \S\ref{sec:results} alone and not refitted afterwards.}
 \label{fig:oom}
 \end{figure}
 
@@ -454,9 +476,9 @@ $0.006$~dB, which we do not present as a pass. The pooled trend is driven by
 bins below $0$~dB where each cell contributes about $45$ trials.
 
 \textbf{The two configurations are a replication.} At $N=32$ the same contrast
-measures $+2.452$~dB under the bound-comparison configuration and $+2.680$~dB
+measures $+2.85$~dB under the bound-comparison configuration and $+2.680$~dB
 under the effective-rank one --- different code, different RSR, iteration
-count, Cadzow sweep count and pooling rule, agreeing to $0.23$~dB.
+count, Cadzow sweep count and pooling rule, agreeing to $0.17$~dB.
 
 \section{Limitations and Conclusion}
 
@@ -464,11 +486,12 @@ A sparse geometric ULA channel makes each column's Hankel lifting rank
 deficient, and this can be enforced inside an exact biased phase-retrieval
 iteration without linearising the magnitude observation or estimating any
 angle. Because the Fisher information is block diagonal across receive
-elements, the unstructured baselines are flat in array size and HS-GS alone
-converts a larger aperture into lower normalised error: $+0.03\to+2.45$~dB as
-$N$ goes $8\to32$ against $0.036$~dB of baseline movement. The governing
+elements under the unconstrained row-wise parameterisation, the unstructured
+baselines are flat in array size while HS-GS converts a larger aperture into
+lower normalised error: $-0.19\to+2.85$~dB as
+$N$ goes $8\to32$ against $0.012$~dB of baseline movement. The governing
 variable is effective rank relative to capacity, not path count, and that
-relation predicted the gain on two channel models it was never fitted to ---
+relation predicted the gain on two unseen channel-generation distributions ---
 one to within $0.13$~dB, the other inside a registered interval but $0.32$~dB
 off. Clustered propagation, identified earlier as the decisive falsification
 test, did not eliminate the gain.

@@ -116,7 +116,7 @@ def fig2_boundary(a):
     # obvious spot mid-curve collides with the N=16 series.
     ax.annotate("$N=32$", (0.16, 5.506), xytext=(11, 6),
                 textcoords="offset points", color=MUTED, fontsize=7.5)
-    ax.set_xlabel(r"$r_{\mathrm{eff}}/\mathrm{cap}$")
+    ax.set_xlabel(r"$r_{\mathrm{eff}}/r_{\max}$")
     ax.set_ylabel(r"$\Delta_{\mathrm{HS}}$ (dB)")
     ax.legend(frameon=False, loc="upper right", handletextpad=0.5)
     save(fig, "fig2_boundary_invariance")
@@ -174,7 +174,7 @@ def fig3_predictions(a):
          plt.Line2D([], [], ls="", marker="o", ms=4.6, color=INK)]
     ax.legend(h, ["predicted", "measured, 95% CI"], frameon=False,
               loc="upper right", handletextpad=0.5, labelspacing=0.3)
-    ax.set_xlabel(r"$r_{\mathrm{eff}}/\mathrm{cap}$")
+    ax.set_xlabel(r"$r_{\mathrm{eff}}/r_{\max}$")
     ax.set_ylabel(r"$\Delta_{\mathrm{HS}}$ (dB)")
     ax.set_xlim(0.10, 0.58)
     save(fig, "fig3_out_of_model")
