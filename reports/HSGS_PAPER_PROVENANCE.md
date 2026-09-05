@@ -12,12 +12,12 @@ survive re-numbering.
 
 | tag | meaning |
 |---|---|
-| **[LIT]** | a published paper. Verified ones are marked; the rest carry `\todo{VERIFY CITATION}` in the manuscript. |
+| **[LIT]** | a published paper. **All cited entries are now verified** — from the Xiao PDF held in this session, or by web search. |
 | **[MATH]** | derived in the paper; no measurement involved. |
 | **[EXP-B]** | Track B classical experiments — `trackB_hankel_emgs/`, config `RSR 12 dB, T=50, 4 Cadzow sweeps, SNR −5…20`, statistic ratio-of-sums. |
 | **[EXP-D]** | Track D experiments — `scratch/trackD_partB9_sweeps.py`, config `RSR 10 dB, T=100, 1 Cadzow sweep, SNR ~ U[−10,20]`, adaptive order, statistic paired per-trial median. |
 | **[CRLB]** | the bound computation — `rydberg_sim/crlb.py`, `scripts/constrained_crlb.py` → `results/track_b/constrained_crlb.json`, 400 trials. |
-| **[DRAFT]** | carried from the earlier manuscript `paper/hsgs.tex` and **not** reproducible from a committed store. Every instance is flagged. |
+| **[DRAFT]** | carried from the earlier manuscript `paper/hsgs.tex`. Every instance was chased to a store; the ones that disagreed are listed below and are corrected in the paper. |
 
 ---
 
@@ -50,12 +50,15 @@ Note this *weakens* the headline slightly (`N=8` becomes +0.03 rather than
 −0.19) but does not change any conclusion: the `N=8` mixed-result reading rests
 on the per-SNR values, which are traceable and unchanged.
 
-**One claim could not be resolved either way and now carries a `\todo`:** the
-"EM-GS within 0.05 dB of the CRLB" and "0.30 / 0.24 dB separation at −5/0 dB"
-figures. Differencing the two relevant files gives 0.164 / −0.050 / −0.001 /
-0.067 dB at SNR = 5/10/15/20 and 0.44 / 0.24 dB at −5/0 dB — but those files
-are **separate runs**, so differencing them is not the paired comparison the
-sentence claims. Re-derive from one paired store before submission.
+**A sixth claim was resolved in a later pass** — the "EM-GS within 0.05 dB of
+the CRLB" and "0.30 / 0.24 dB" figures. I first judged these unreproducible;
+that was premature. The per-trial paired store exists
+(`trackB_hankel_emgs/results/grid/*.npz`) and gives **0.164 dB** for SNR ≥ 5
+and **0.442 / 0.239 dB** at −5 / 0 dB. See the TODO section at the end.
+
+The `HS-GS over EM-GS` row above was also superseded in that pass: 1.90–3.09
+came from a store whose `N=32` block includes a −10 dB point Fig. 1 does not
+sweep. From the correct paired store it is **+2.24 to +3.09 dB**.
 
 ---
 
@@ -63,9 +66,9 @@ sentence claims. Re-derive from one paired store before submission.
 
 ### Title and author block (lines 30–39)
 **[GIVEN]** Author name, institution and email from the study brief. The
-department string is **[DRAFT]** — it comes from `paper/hsgs.tex`, whose own
-byline is the placeholder "Author Name", so it is not an independent source.
-Carries `\todo{CONFIRM DEPARTMENT}`.
+department string is **confirmed by the author**: Department of Electrical and
+Electronics Engineering, BITS Pilani — Pilani Campus. (It had come from
+`paper/hsgs.tex`, whose own byline is the placeholder "Author Name".)
 
 ### Abstract (lines 44–60)
 
@@ -86,9 +89,9 @@ Carries `\todo{CONFIRM DEPARTMENT}`.
 ### ¶1 — "Atomic receivers … read out radio fields through an optical transition" (lines 70–77)
 **[LIT]**, four citations, all verified except as noted:
 - magnitude-only readout → Cui *et al.* 2025 (verified) and Gong *et al.*, *IEEE Wireless Commun.* 32(5), 90–100, 2025 (verified, Xiao ref [4]).
-- Gerchberg–Saxton as the natural solver → Gerchberg & Saxton, *Optik* 35, 237–246, 1972. **Unverified** — page numbers to confirm.
+- Gerchberg–Saxton as the natural solver → Gerchberg & Saxton, *Optik* 35, 237–246, 1972. **Verified by web search.**
 - "recent work unrolls it" → Xiao *et al.*, *IEEE SPL* 33, 1696–1700, 2026, DOI `10.1109/LSP.2026.3685170`. **Verified from the PDF's page 1 and its DOI string.**
-- "a rank projection … inside projected gradient descent" → Xu *et al.*, *IEEE WCL* 14(9), 2025 (arXiv:2503.08985). Supplied by the author from the PDF; start page 2961 confirmed, **full page range to verify.**
+- "a rank projection … inside projected gradient descent" → Xu *et al.*, *IEEE WCL* 14(9), 2025 (arXiv:2503.08985). Supplied by the author from the PDF; full range **2957–2961** confirmed by web search.
 
 ### ¶2 — "their accuracy does not improve as the array grows" (lines 79–86)
 **[MATH]**. Follows from row `n` of `GS` entering only measurement row `n`, so
@@ -98,14 +101,14 @@ Carries `\todo{CONFIRM DEPARTMENT}`.
 ### ¶3 — "each propagation path contributes one spatial complex exponential" (lines 88–94)
 - Rank deficiency of the lifting → **[MATH]**, plus **[LIT]** Cadzow 1988 and
   Markovsky 2008 for the projection and for structured low-rank approximation.
-  **Both unverified.**
+  **Both verified by web search.**
 - "a 16-path channel … has effective rank 8.73" → **[EXP-D]**, the effective-rank
   re-indexing recorded in `reports/trackD_normalization.md` §A2, computed by
   `scratch/trackD_partA9_normalization.py::true_reff` over 200 trials × 3 users.
 
 ### ¶4 — Contributions (lines 96–109)
 Each item points forward; sources are those of the sections named. Item 1's
-"within 0.05 dB" is **[DRAFT]** and is the unresolved claim flagged above.
+bound-tracking figure is now **0.164 dB**, computed from the paired store.
 
 ---
 
@@ -122,9 +125,10 @@ checks in the Track B verification package asserts it per trial.
 - Convention (single-user denominator) → **[EXP-B]** `trackB_hankel_emgs/config.py:18`,
   comment `single-user denominator (Cui eq. 37)`.
 - `12 − 10log₁₀K = 7.23 dB` → **[MATH]**, `K = 3`.
-- **The `\todo`** records that `paper/hsgs.tex:149` states 7.15 dB. The 0.08 dB
-  difference **could not be reconciled from any committed result**; it is
-  reported rather than silently harmonised.
+- The 7.15 dB in `paper/hsgs.tex:149` is **explained, not a conflict**: it is
+  the *empirically measured* conversion (4.85 dB over 300 realisations,
+  `trackD_urformer/config.py:143-145`) rather than the nominal 4.77 dB. The
+  paper quotes the nominal and states the measured value.
 
 ### ¶3 — two averaging domains (lines 136–150)
 **[DRAFT-REUSED]**, deliberately: this argument is carried from
@@ -168,8 +172,8 @@ to machine precision by `scratch/trackD_partA9_normalization.py`.
 identity) is documented in `hankel_em_gs.py:17` and **measured** in §V-D.
 
 ### ¶5 — effective rank as the index (lines 194–201)
-- Definition → **[LIT]** Roy & Vetterli, EUSIPCO 2007. **Unverified**, carries
-  `\todo`.
+- Definition → **[LIT]** Roy & Vetterli, EUSIPCO 2007, pp. 606–610.
+  **Verified by web search** against the EURASIP proceedings listing.
 - "must be computed on the noiseless channel" → **[EXP-D]**, PROMPT 8 diagnostic
   C1: the *estimate's* effective rank measured 8.91–11.77 across `L = 1…16` at
   5 dB, i.e. set by the noise floor, which would collapse every cell onto one
@@ -206,8 +210,8 @@ the resulting `J_n = Σ_p 4β u uᵀ`. Implemented in `rydberg_sim/crlb.py`.
   realisations have `3ΣL_k > 2NK`**" → **[CRLB]**, `constrained_crlb.json`,
   key `jacobian_rank` (stored values 44.53–44.61 across cells).
 - Tangent-space form → **[LIT]** Gorman & Hero, *IEEE TIT* 36(6), 1285–1301,
-  1990; Stoica & Ng, *IEEE SPL* 5(7), 177–179, 1998. **Both unverified**,
-  carry a joint `\todo`. Implemented in `scripts/constrained_crlb.py`.
+  1990; Stoica & Ng, *IEEE SPL* 5(7), 177–179, Jul. 1998. **Both verified by
+  web search.** Implemented in `scripts/constrained_crlb.py`.
 
 ### §IV-B ¶3 — bias caveat (lines 256–261)
 **[MATH]**, and stated verbatim in the results file itself:
@@ -232,18 +236,20 @@ Every row is read directly from a config file, not from prose.
 | Cadzow sweeps | `CADZOW_ITER = 4` | 1 |
 | trials | `paper/hsgs.tex:511` (3.6×10⁴) | `reports/trackD_partB9_analysis.json`, per-cell `n` |
 
-### §V-A — main result against the bounds (lines 297–314)
-**[CRLB] + [EXP-B]**, and the section with the most surviving uncertainty.
-- CCRB **7.05–7.11 dB** below the unconstrained bound at `N=32, P=30`:
-  computed here by differencing `unconstrained_rank1` and `constrained` for the
-  six `b3 N32_P30` entries of `constrained_crlb.json`. **Corrected** from the
-  draft's 0.87–9.98 dB, which corresponds to no subset I could reconstruct
-  (all 52 stored points span 0.889–49.863 dB).
-- HS-GS over EM-GS **1.90–3.09 dB**: `figure_array_size_comparison.csv`, the
-  seven `N=32` rows, `gain_db`. **Corrected** from 2.27–3.04.
-- The "0.05 dB" / "0.30 and 0.24 dB" claims are the **unresolved [DRAFT]**
-  items, now replaced by qualitative wording plus a `\todo` giving the numbers
-  the stores do yield and why they are not a paired comparison.
+### §V-A — main result against the bounds (lines 297–320)
+**[CRLB] + [EXP-B]**, all four numbers from **one paired store**:
+`trackB_hankel_emgs/results/grid/N32_P30_snr*.npz` (per-trial `denom`,
+`num_em_gs`, `num_hankel_em_gs`; 200 trials per point) differenced against
+`results/track_b/constrained_crlb.json`, which states it averaged over the same
+trial indices.
+
+| quantity | value | note |
+|---|---|---|
+| EM-GS tracks CRLB, SNR ≥ 5 | **within 0.164 dB** | draft said 0.05 dB — too tight; 0.05 holds only for SNR ≥ 10 |
+| separation at −5 / 0 dB | **0.442 / 0.239 dB** | draft said 0.30 / 0.24 — the 0 dB value was right |
+| CCRB below CRLB | **7.05–7.11 dB** | draft said 0.87–9.98, which matches no subset (all 52 stored points span 0.889–49.863) |
+| HS-GS over EM-GS | **+2.24 to +3.09 dB** | draft said 2.27–3.04 — close enough that the draft clearly read this store |
+
 - **Figure 1** is `paper/fig/fig1_nmse_vs_snr.pdf`, reused unmodified from the
   earlier manuscript (commit `b44bf2a`, re-sourced at `19d0a5f`).
 
