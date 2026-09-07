@@ -201,10 +201,16 @@ def run_b3_pencil(n_trials=250):
 # ============================================================== B2 brackets
 def run_b2(n_trials=300):
     """Add high-rho cells at N=16 and N=64 to bracket the crossings."""
-    # L read off the committed r_eff(L) behaviour so the target rho is hit by
-    # construction: at N=16 cap=8, at N=64 cap=32.
-    cells = [("N16_L9", 16, 9), ("N16_L12", 16, 12),
-             ("N64_L38", 64, 38), ("N64_L50", 64, 50)]
+    # L read off a MEASURED r_eff(L) probe so the target rho is hit by
+    # construction (scratch/p12_partA_rho.rho_for, 60-150 draws per point):
+    #   N=16 (cap 8):  L=9  -> rho 0.608 ; L=14 -> rho 0.735   crossing 0.588
+    #   N=64 (cap 32): L=38 -> rho 0.596 ; L=48 -> rho 0.669    crossing 0.544
+    # rho ~ 0.75 is NOT reachable at N=64: the ULA path drawer raises
+    # RuntimeError (PSI_SEP_MIN) above L=48, so rho tops out near 0.67 there.
+    # Both N=64 targets still sit ABOVE that array's crossing, which is what
+    # bracketing requires.
+    cells = [("N16_L9", 16, 9), ("N16_L14", 16, 14),
+             ("N64_L38", 64, 38), ("N64_L48", 64, 48)]
     rows = []
     for tag, N, L in cells:
         cap = hankel_rank_cap(N)
