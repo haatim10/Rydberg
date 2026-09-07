@@ -1,0 +1,206 @@
+{
+ "arm": "arm1b_full_random",
+ "spec": {
+  "hankel": true,
+  "snr": [
+   5.0,
+   20.0
+  ],
+  "loss": "ratio",
+  "seed": 3
+ },
+ "params": {
+  "tie_layers": false,
+  "T_UR": 10,
+  "per_layer": [
+   {
+    "layer": 0,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 1,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 2,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 3,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 4,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 5,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 6,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 7,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 8,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 9,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   }
+  ],
+  "totals": {
+   "filter_net": 970,
+   "gate": 10,
+   "transformer": 1585920,
+   "all_parameters": 1586900
+  },
+  "note": "untied: per-layer sums equal the total"
+ },
+ "warmstart": null,
+ "run": "C1_H1_seed3",
+ "n_train": 80000,
+ "epochs": 13,
+ "seed": 20263827,
+ "train_seconds": 7448.5,
+ "history": [
+  {
+   "epoch": 0,
+   "train_loss": 0.02786879035793245,
+   "val_nmse_db": -15.696648851757187,
+   "lr": 0.000985470908713026,
+   "seconds": 666.6
+  },
+  {
+   "epoch": 1,
+   "train_loss": 0.02603705982044339,
+   "val_nmse_db": -15.949092219435137,
+   "lr": 0.000942728012826605,
+   "seconds": 556.8
+  },
+  {
+   "epoch": 2,
+   "train_loss": 0.024174444076418878,
+   "val_nmse_db": -16.257255615279078,
+   "lr": 0.0008742553740855506,
+   "seconds": 563.8
+  },
+  {
+   "epoch": 3,
+   "train_loss": 0.022812878320366145,
+   "val_nmse_db": -16.463790765065095,
+   "lr": 0.0007840323733655781,
+   "seconds": 562.7
+  },
+  {
+   "epoch": 4,
+   "train_loss": 0.021648169829696418,
+   "val_nmse_db": -16.62123546637676,
+   "lr": 0.0006773024435212678,
+   "seconds": 572.7
+  },
+  {
+   "epoch": 5,
+   "train_loss": 0.020876853612437844,
+   "val_nmse_db": -16.76732128146738,
+   "lr": 0.0005602683401276615,
+   "seconds": 561.6
+  },
+  {
+   "epoch": 6,
+   "train_loss": 0.020190199158340694,
+   "val_nmse_db": -16.84674985919846,
+   "lr": 0.00043973165987233864,
+   "seconds": 552.9
+  },
+  {
+   "epoch": 7,
+   "train_loss": 0.019562779123708605,
+   "val_nmse_db": -16.961610301335433,
+   "lr": 0.00032269755647873233,
+   "seconds": 566.7
+  },
+  {
+   "epoch": 8,
+   "train_loss": 0.019054796400293707,
+   "val_nmse_db": -17.018020506455322,
+   "lr": 0.00021596762663442218,
+   "seconds": 576.3
+  },
+  {
+   "epoch": 9,
+   "train_loss": 0.018658255688101054,
+   "val_nmse_db": -17.059446315965904,
+   "lr": 0.00012574462591444943,
+   "seconds": 573.3
+  },
+  {
+   "epoch": 10,
+   "train_loss": 0.01835981444455683,
+   "val_nmse_db": -17.09987252518412,
+   "lr": 5.727198717339522e-05,
+   "seconds": 569.6
+  },
+  {
+   "epoch": 11,
+   "train_loss": 0.018134902949631215,
+   "val_nmse_db": -17.10996911722251,
+   "lr": 1.4529091286973998e-05,
+   "seconds": 567.3
+  },
+  {
+   "epoch": 12,
+   "train_loss": 0.01800726179033518,
+   "val_nmse_db": -17.117218870302516,
+   "lr": 0.0,
+   "seconds": 556.4
+  }
+ ],
+ "selection": {
+  "rule": "one_se",
+  "best_epoch": 12,
+  "se_db": 0.09793481104550524,
+  "threshold_db": -17.01928405925701,
+  "chosen_epoch": 9,
+  "n_within_1se": 4
+ },
+ "chosen_epoch": 9,
+ "chosen_val_db": -17.059446315965904,
+ "best_val_db": -17.117218870302516,
+ "best_path": "results/p12/partC/C1_H1_seed3/best.pt"
+}
