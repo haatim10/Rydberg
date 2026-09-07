@@ -33,9 +33,156 @@
   "note": "CIs above are over TEST REALISATIONS; the seed spread is the separate quantity reported here."
  },
  "P20_delta_h_balanced": {
-  "status": "NOT RUN"
+  "status": "FAILED",
+  "delta_h_high_snr_ge5_db": 0.3946289962908338,
+  "ci95": [
+   0.3145965367868193,
+   0.4683539701489394
+  ],
+  "delta_h_pooled_db": -0.08144574780109881,
+  "per_bin": [
+   {
+    "bin": [
+     -10,
+     -5
+    ],
+    "n": 346,
+    "median_diff_db": -0.1254475867928857,
+    "boot_ci95_median": [
+     -0.16391012777037095,
+     -0.09137191513261816
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     -5,
+     0
+    ],
+    "n": 354,
+    "median_diff_db": -0.3859880620685441,
+    "boot_ci95_median": [
+     -0.4294593724583309,
+     -0.3256036710245982
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     0,
+     5
+    ],
+    "n": 317,
+    "median_diff_db": -0.5824645770481638,
+    "boot_ci95_median": [
+     -0.6732520817103325,
+     -0.418723503985424
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     5,
+     10
+    ],
+    "n": 331,
+    "median_diff_db": -0.1826407177988898,
+    "boot_ci95_median": [
+     -0.280149440413334,
+     -0.0897562157601417
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     10,
+     15
+    ],
+    "n": 336,
+    "median_diff_db": 0.375473482810305,
+    "boot_ci95_median": [
+     0.2718490289829223,
+     0.45660568588346706
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     15,
+     20
+    ],
+    "n": 316,
+    "median_diff_db": 1.3081952744373542,
+    "boot_ci95_median": [
+     1.2114742981093691,
+     1.434158800136741
+    ],
+    "ci_excludes_zero": true
+   }
+  ],
+  "predicted_band_high_snr": [
+   -0.1,
+   0.35
+  ],
+  "predicted_point": 0.1,
+  "max_bin_db": 1.3081952744373542,
+  "threshold_no_bin_above": 0.5,
+  "RECOVERS_ABOVE_BAND": true,
+  "tension_note": "if Delta_H recovers above +0.35 dB the recommendation and the negative result are in tension and Paper 2 must say so"
  },
  "P21_logdb_control": {
-  "status": "NOT RUN"
+  "gradient_share": {
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ],
+   "grad_share": [
+    0.09274544984318604,
+    0.12095867490592939,
+    0.14558466042816573,
+    0.15198525284519773,
+    0.18053932167677406,
+    0.30818664030074705
+   ],
+   "grad_share_below_5dB": 0.35928878517728113,
+   "span_max_over_min": 3.322930028608723
+  },
+  "span_max_over_min": 3.322930028608723,
+  "threshold_span_max": 4.0,
+  "logdb_vs_unbalanced_high_snr_db": 2.4184354583175818,
+  "logdb_vs_unbalanced_ci": [
+   2.350550390150512,
+   2.5055343515313453
+  ],
+  "logdb_minus_balanced_high_snr_db": 0.5839888199054784,
+  "logdb_minus_balanced_ci": [
+   0.5188959879580306,
+   0.6462269883895617
+  ],
+  "status": "FAILED",
+  "REPRODUCES_BALANCED": false,
+  "cost_note": "if this holds, Paper 2 must position per-bin reweighting as one of at least two adequate fixes rather than as THE fix"
  }
 }
