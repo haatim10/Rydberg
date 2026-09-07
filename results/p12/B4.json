@@ -1,0 +1,34 @@
+{
+ "cell": "B4_coarse_to_fine_order_selection",
+ "config": {
+  "N": 32,
+  "K": 3,
+  "P": 20,
+  "rsr_db": 10.0,
+  "n_trials": 300,
+  "stride": 3,
+  "snr": "U[-10,20]",
+  "operator": {
+   "exact_step": "em_gs",
+   "max_iter": 100,
+   "select_iter": 25
+  }
+ },
+ "agreement_rate": 0.9333333333333333,
+ "candidates_exhaustive_mean": 16.0,
+ "candidates_coarse_to_fine_mean": 9.613333333333333,
+ "candidate_reduction": 0.39916666666666667,
+ "selection_seconds_exhaustive": 877.1,
+ "selection_seconds_coarse_to_fine": 521.0,
+ "selection_speedup": 1.6835793112578572,
+ "delta_hs_exhaustive_median_db": 2.949757488251567,
+ "delta_hs_coarse_to_fine_median_db": 2.8674714583961958,
+ "degradation_median_db": 0.0,
+ "degradation_boot_ci95": [
+  0.0,
+  0.0
+ ],
+ "GATE_1_agreement_ge_90pct": true,
+ "GATE_2_degradation_le_0p05dB": true,
+ "BOTH_GATES_PASS": true
+}
