@@ -1,0 +1,84 @@
+{
+ "cell": "B5_posthoc_vs_interleaved_classical",
+ "config": {
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "rsr_db": 12.0,
+  "n_trials": 300,
+  "operator": {
+   "exact_step": "em_gs",
+   "max_iter": 100,
+   "select_iter": 25
+  },
+  "note": "positive = interleaved better; shared L_hat"
+ },
+ "points": [
+  {
+   "snr_db": -5.0,
+   "n": 300,
+   "seconds": 1296.7,
+   "interleaved_minus_posthoc_db": -0.0812163429519599,
+   "boot_ci95_median": [
+    -0.1587742779669714,
+    0.047269534290583025
+   ],
+   "ci_excludes_zero": false
+  },
+  {
+   "snr_db": 0.0,
+   "n": 300,
+   "seconds": 1389.3,
+   "interleaved_minus_posthoc_db": -0.1636716074538378,
+   "boot_ci95_median": [
+    -0.3170919362793838,
+    -0.0660019753079034
+   ],
+   "ci_excludes_zero": true
+  },
+  {
+   "snr_db": 5.0,
+   "n": 300,
+   "seconds": 1295.9,
+   "interleaved_minus_posthoc_db": 0.03357388696015562,
+   "boot_ci95_median": [
+    -0.049709568184264086,
+    0.133280222697265
+   ],
+   "ci_excludes_zero": false
+  },
+  {
+   "snr_db": 10.0,
+   "n": 300,
+   "seconds": 1240.0,
+   "interleaved_minus_posthoc_db": 0.010003448119563885,
+   "boot_ci95_median": [
+    -0.07127883058992794,
+    0.07670510879945235
+   ],
+   "ci_excludes_zero": false
+  },
+  {
+   "snr_db": 15.0,
+   "n": 300,
+   "seconds": 1199.6,
+   "interleaved_minus_posthoc_db": 0.05384629390314899,
+   "boot_ci95_median": [
+    -0.013970899621295274,
+    0.1074482030367691
+   ],
+   "ci_excludes_zero": false
+  },
+  {
+   "snr_db": 20.0,
+   "n": 300,
+   "seconds": 1187.5,
+   "interleaved_minus_posthoc_db": 0.16839072487748297,
+   "boot_ci95_median": [
+    0.10214848524146802,
+    0.24576349826181954
+   ],
+   "ci_excludes_zero": true
+  }
+ ]
+}
