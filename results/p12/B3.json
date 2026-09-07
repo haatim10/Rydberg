@@ -1,0 +1,116 @@
+{
+ "cell": "B3_pencil_sweep",
+ "config": {
+  "N": 32,
+  "K": 3,
+  "P": 20,
+  "rsr_db": 10.0,
+  "n_trials": 250,
+  "snr": "U[-10,20] binned post hoc",
+  "operator": {
+   "exact_step": "em_gs",
+   "max_iter": 100,
+   "select_iter": 25
+  },
+  "generator": "trackD make_world",
+  "confound": "at fixed N the pencil sets admissible-rank COUNT and maximum representable RANK together; see P17"
+ },
+ "points": [
+  {
+   "pencil": 4,
+   "hankel_shape": [
+    28,
+    5
+   ],
+   "admissible_ranks": 5,
+   "n": 250,
+   "seconds": 491.4,
+   "delta_median_db": 2.740068932447744,
+   "boot_ci95_median": [
+    2.5759361046097204,
+    2.933861985740108
+   ],
+   "mean_L_hat": 3.108
+  },
+  {
+   "pencil": 6,
+   "hankel_shape": [
+    26,
+    7
+   ],
+   "admissible_ranks": 7,
+   "n": 250,
+   "seconds": 582.1,
+   "delta_median_db": 3.363702380889448,
+   "boot_ci95_median": [
+    3.1818522556558797,
+    3.5906121252019663
+   ],
+   "mean_L_hat": 3.732
+  },
+  {
+   "pencil": 8,
+   "hankel_shape": [
+    24,
+    9
+   ],
+   "admissible_ranks": 9,
+   "n": 250,
+   "seconds": 730.5,
+   "delta_median_db": 3.1993153079173524,
+   "boot_ci95_median": [
+    3.026589973877372,
+    3.392917064834248
+   ],
+   "mean_L_hat": 4.148
+  },
+  {
+   "pencil": 12,
+   "hankel_shape": [
+    20,
+    13
+   ],
+   "admissible_ranks": 13,
+   "n": 250,
+   "seconds": 920.2,
+   "delta_median_db": 2.911115588207241,
+   "boot_ci95_median": [
+    2.718765032324074,
+    3.1548727984551213
+   ],
+   "mean_L_hat": 4.892
+  },
+  {
+   "pencil": 16,
+   "hankel_shape": [
+    16,
+    17
+   ],
+   "admissible_ranks": 16,
+   "n": 250,
+   "seconds": 1061.2,
+   "delta_median_db": 2.808763737815079,
+   "boot_ci95_median": [
+    2.490472641042544,
+    3.114837206582237
+   ],
+   "mean_L_hat": 4.7
+  },
+  {
+   "pencil": 24,
+   "hankel_shape": [
+    8,
+    25
+   ],
+   "admissible_ranks": 8,
+   "n": 250,
+   "seconds": 615.0,
+   "delta_median_db": 3.12147430949784,
+   "boot_ci95_median": [
+    2.9401666409738816,
+    3.3667725974529903
+   ],
+   "mean_L_hat": 4.156
+  }
+ ]
+}
