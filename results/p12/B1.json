@@ -1,0 +1,123 @@
+{
+ "cell": "B1_bridging_TDop_at_B3_point",
+ "config": {
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "rsr_db": 12.0,
+  "snr_grid": [
+   -5.0,
+   0.0,
+   5.0,
+   10.0,
+   15.0,
+   20.0
+  ],
+  "n_trials": 400,
+  "operator": {
+   "exact_step": "em_gs",
+   "max_iter": 100,
+   "select_iter": 25
+  },
+  "cadzow_iter": 4,
+  "generator": "trackB_hankel_emgs/system_model.make_world"
+ },
+ "points": [
+  {
+   "snr_db": -5.0,
+   "n": 400,
+   "seconds": 1739.0,
+   "delta_median_db": 3.053350201938861,
+   "boot_ci95_median": [
+    2.9017488664080515,
+    3.189533948167542
+   ],
+   "delta_ratio_of_sums_db": 2.962268917491845,
+   "em_gs_db": 0.584557417458486,
+   "hs_gs_db": -2.377711500033359,
+   "mean_L_hat": 2.5175,
+   "active_frac": 1.0,
+   "ci_excludes_zero": true
+  },
+  {
+   "snr_db": 0.0,
+   "n": 400,
+   "seconds": 1845.4,
+   "delta_median_db": 2.4609165009381906,
+   "boot_ci95_median": [
+    2.261956101023196,
+    2.568502737712386
+   ],
+   "delta_ratio_of_sums_db": 2.325056777194222,
+   "em_gs_db": -5.30278701406719,
+   "hs_gs_db": -7.627843791261412,
+   "mean_L_hat": 4.0875,
+   "active_frac": 1.0,
+   "ci_excludes_zero": true
+  },
+  {
+   "snr_db": 5.0,
+   "n": 400,
+   "seconds": 1674.6,
+   "delta_median_db": 2.592869889785571,
+   "boot_ci95_median": [
+    2.410408058326139,
+    2.791390158017183
+   ],
+   "delta_ratio_of_sums_db": 2.455910760936879,
+   "em_gs_db": -10.622677536578353,
+   "hs_gs_db": -13.078588297515232,
+   "mean_L_hat": 5.0425,
+   "active_frac": 1.0,
+   "ci_excludes_zero": true
+  },
+  {
+   "snr_db": 10.0,
+   "n": 400,
+   "seconds": 1611.8,
+   "delta_median_db": 2.4868273921461768,
+   "boot_ci95_median": [
+    2.345196267425763,
+    2.6780823249304997
+   ],
+   "delta_ratio_of_sums_db": 2.4643753687194696,
+   "em_gs_db": -15.644825436216049,
+   "hs_gs_db": -18.10920080493552,
+   "mean_L_hat": 5.495,
+   "active_frac": 1.0,
+   "ci_excludes_zero": true
+  },
+  {
+   "snr_db": 15.0,
+   "n": 400,
+   "seconds": 1546.4,
+   "delta_median_db": 2.749728786772515,
+   "boot_ci95_median": [
+    2.5890222698188072,
+    2.885072546371877
+   ],
+   "delta_ratio_of_sums_db": 2.5873454304227153,
+   "em_gs_db": -20.81408749075962,
+   "hs_gs_db": -23.401432921182334,
+   "mean_L_hat": 5.7275,
+   "active_frac": 1.0,
+   "ci_excludes_zero": true
+  },
+  {
+   "snr_db": 20.0,
+   "n": 400,
+   "seconds": 1537.6,
+   "delta_median_db": 2.761377892921754,
+   "boot_ci95_median": [
+    2.646248252934601,
+    2.8925115977499636
+   ],
+   "delta_ratio_of_sums_db": 2.620549228416923,
+   "em_gs_db": -25.960205095668844,
+   "hs_gs_db": -28.580754324085767,
+   "mean_L_hat": 5.92,
+   "active_frac": 1.0,
+   "ci_excludes_zero": true
+  }
+ ]
+}
