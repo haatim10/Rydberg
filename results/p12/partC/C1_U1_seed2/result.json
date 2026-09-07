@@ -1,0 +1,206 @@
+{
+ "arm": "arm1b_full_random",
+ "spec": {
+  "hankel": false,
+  "snr": [
+   5.0,
+   20.0
+  ],
+  "loss": "ratio",
+  "seed": 2
+ },
+ "params": {
+  "tie_layers": false,
+  "T_UR": 10,
+  "per_layer": [
+   {
+    "layer": 0,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 1,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 2,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 3,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 4,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 5,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 6,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 7,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 8,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   },
+   {
+    "layer": 9,
+    "filter_net": 97,
+    "gate": 1,
+    "transformer": 158592,
+    "total": 158690
+   }
+  ],
+  "totals": {
+   "filter_net": 970,
+   "gate": 10,
+   "transformer": 1585920,
+   "all_parameters": 1586900
+  },
+  "note": "untied: per-layer sums equal the total"
+ },
+ "warmstart": null,
+ "run": "C1_U1_seed2",
+ "n_train": 80000,
+ "epochs": 13,
+ "seed": 20262827,
+ "train_seconds": 6296.5,
+ "history": [
+  {
+   "epoch": 0,
+   "train_loss": 0.043725973372161386,
+   "val_nmse_db": -13.938567347108675,
+   "lr": 0.000985470908713026,
+   "seconds": 560.7
+  },
+  {
+   "epoch": 1,
+   "train_loss": 0.036050056633353235,
+   "val_nmse_db": -14.763511441797812,
+   "lr": 0.000942728012826605,
+   "seconds": 447.7
+  },
+  {
+   "epoch": 2,
+   "train_loss": 0.0310267870336771,
+   "val_nmse_db": -15.292149189278446,
+   "lr": 0.0008742553740855506,
+   "seconds": 445.0
+  },
+  {
+   "epoch": 3,
+   "train_loss": 0.02662676370292902,
+   "val_nmse_db": -15.974091865279982,
+   "lr": 0.0007840323733655781,
+   "seconds": 456.7
+  },
+  {
+   "epoch": 4,
+   "train_loss": 0.023175149988010527,
+   "val_nmse_db": -16.431183242568896,
+   "lr": 0.0006773024435212678,
+   "seconds": 465.8
+  },
+  {
+   "epoch": 5,
+   "train_loss": 0.021731188574805854,
+   "val_nmse_db": -16.417712375816382,
+   "lr": 0.0005602683401276615,
+   "seconds": 451.4
+  },
+  {
+   "epoch": 6,
+   "train_loss": 0.020839151683822273,
+   "val_nmse_db": -16.721048611157187,
+   "lr": 0.00043973165987233864,
+   "seconds": 520.1
+  },
+  {
+   "epoch": 7,
+   "train_loss": 0.01975762072727084,
+   "val_nmse_db": -16.856338509233467,
+   "lr": 0.00032269755647873233,
+   "seconds": 545.4
+  },
+  {
+   "epoch": 8,
+   "train_loss": 0.019118143125623464,
+   "val_nmse_db": -16.974214967926965,
+   "lr": 0.00021596762663442218,
+   "seconds": 539.4
+  },
+  {
+   "epoch": 9,
+   "train_loss": 0.018573444389924407,
+   "val_nmse_db": -17.05502645498492,
+   "lr": 0.00012574462591444943,
+   "seconds": 471.5
+  },
+  {
+   "epoch": 10,
+   "train_loss": 0.018173051850497723,
+   "val_nmse_db": -17.091968913218892,
+   "lr": 5.727198717339522e-05,
+   "seconds": 448.0
+  },
+  {
+   "epoch": 11,
+   "train_loss": 0.01790011797212064,
+   "val_nmse_db": -17.125020753491643,
+   "lr": 1.4529091286973998e-05,
+   "seconds": 453.4
+  },
+  {
+   "epoch": 12,
+   "train_loss": 0.01773552470058203,
+   "val_nmse_db": -17.137406611003605,
+   "lr": 0.0,
+   "seconds": 489.8
+  }
+ ],
+ "selection": {
+  "rule": "one_se",
+  "best_epoch": 12,
+  "se_db": 0.09155350700803068,
+  "threshold_db": -17.045853103995576,
+  "chosen_epoch": 9,
+  "n_within_1se": 4
+ },
+ "chosen_epoch": 9,
+ "chosen_val_db": -17.05502645498492,
+ "best_val_db": -17.137406611003605,
+ "best_path": "results/p12/partC/C1_U1_seed2/best.pt"
+}
