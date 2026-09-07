@@ -1,0 +1,529 @@
+% =====================================================================
+% PAPER 1, restructured per PROMPT 13 after PROMPT 12's closing experiments.
+%
+% Supersedes paper/merged/haatim_hsgs_bounds_and_effective_rank.tex, which is
+% kept unchanged as the pre-PROMPT-12 version.
+%
+% ONE ESTIMATOR THROUGHOUT. PROMPT 12 A1 established that the two result
+% families run the SAME operator -- both call hs_gs_auto, both select the order
+% from held-out pilots, and neither passes cadzow_iter, so both use n_cz = 4
+% (scripts/run_b3.py:145, scratch/trackD_partB9_sweeps.py:171,
+% rydberg_sim/track_b_proposed.py:246). They differ in OPERATING POINT
+% (RSR 12 vs 10 dB, pilot count, SNR handling) and in the reported statistic,
+% not in the estimator. The earlier "never comparable" framing was wrong and
+% has been removed.
+%
+% Headline is now the bridging run (results/p12/B1.json): the TD operator
+% settings at the principal operating point, per the B1 decision rule.
+% =====================================================================
+\documentclass[journal]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{xcolor}
+
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\range}{range}
+\newcommand{\bG}{\mathbf{G}}
+\newcommand{\bS}{\mathbf{S}}
+\newcommand{\bB}{\mathbf{B}}
+\newcommand{\bW}{\mathbf{W}}
+\newcommand{\bZ}{\mathbf{Z}}
+\newcommand{\bJ}{\mathbf{J}}
+\newcommand{\bD}{\mathbf{D}}
+\newcommand{\bU}{\mathbf{U}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\CN}{\mathcal{CN}}
+\newcommand{\Hank}{\mathcal{H}}
+\newcommand{\reff}{r_{\mathrm{eff}}}
+\newcommand{\rmax}{r_{\max}}
+\newcommand{\dhs}{\Delta_{\mathrm{HS}}}
+
+\begin{document}
+
+\title{When Does Structure Help a Magnitude-Only\\
+Channel Estimator? Aperture, Effective Rank,\\
+and a Prospective Test}
+
+\author{Abdullah~Haatim%
+\thanks{A.~Haatim is with the Department of Electrical and Electronics
+Engineering, Birla Institute of Technology and Science, Pilani~--- Pilani
+Campus, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
+
+\maketitle
+
+\begin{abstract}
+A receiver that measures only field magnitude, with a known additive
+reference, makes multi-user channel estimation a biased phase-retrieval
+problem whose Fisher information is rank one per measurement and block
+diagonal across receive elements. Normalised per-element information therefore
+does not grow with array size, and exploiting aperture requires cross-element
+structure. On a uniform linear array the Hankel lifting of each channel column
+supplies exactly such structure, with a capacity of $\lceil N/2\rceil$ ranks.
+This predicts, before any measurement, that a rank prior helps only when the
+channel occupies a small fraction of that capacity --- and therefore that it
+must \emph{hurt} at small aperture. Both follow: enforcing the structure inside
+an exact expectation--maximization Gerchberg--Saxton iteration, with the order
+chosen from a held-out pilot residual, gives $+2.46$ to $+3.05$~dB at $N=32$
+and $-0.19$~dB at $N=8$, while the unstructured baseline moves by $0.012$~dB.
+The governing variable is not path count but effective rank relative to
+capacity; we use that relation to predict the gain on two channel
+distributions it was not fitted to, to errors of $0.13$ and $0.315$~dB.
+Simulation only; the bounds do not govern biased estimators.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Rydberg atomic receiver, channel estimation, phase retrieval, Hankel matrix,
+constrained Cram\'er--Rao bound, effective rank.
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\IEEEPARstart{A}{tomic} receivers based on Rydberg states read out radio fields
+through an optical transition whose response is proportional to field
+\emph{magnitude}, discarding phase~\cite{cui2025,gong2025mag}. Multi-user
+channel estimation is therefore biased phase retrieval, and
+Gerchberg--Saxton-type alternating projection~\cite{gerchberg1972} is the
+natural solver; recent work unrolls it into a trained network~\cite{xiao2026},
+and a rank projection has been placed inside projected gradient descent for the
+same problem~\cite{xu2025}.
+
+\textbf{The atomic receiver enters this paper only through the observation
+model} --- a magnitude-only measurement with a known additive reference,
+\eqref{eq:obs}. Nothing below depends on the vapour-cell physics, so the
+results apply to any array receiver with that measurement, of which the Rydberg
+receiver is the motivating instance.
+
+This paper is organised around a single argument, stated first and tested
+afterwards.
+
+\textbf{Step 1: unstructured solvers cannot use aperture.} Under the
+unconstrained row-wise parameterisation of \eqref{eq:obs}, row $n$ of $\bG\bS$
+enters only measurement row $n$, so the Fisher information is block diagonal
+across receive elements (\S\ref{sec:crlb}). The per-element estimation problem
+is unchanged by adding elements, and normalised per-element information does
+not grow with $N$.
+
+\textbf{Step 2: aperture is therefore usable only through cross-element
+structure.} On a ULA each path contributes one spatial complex exponential, so
+the Hankel lifting of every channel column is rank
+deficient~\cite{cadzow1988,markovsky2008}. That is one such structure, not the
+only one.
+
+\textbf{Step 3: the structure has a finite capacity.} The lifting admits at
+most $\rmax(N)=\lceil N/2\rceil$ ranks (\S\ref{sec:method}). A rank prior is
+informative only when the channel occupies a small fraction of it.
+
+\textbf{Step 4: so the prior must fail, and then harm, at small aperture.}
+At $N=8$ the capacity is $4$ while the simulated path counts are
+$L_k\sim\mathcal{U}\{3,\dots,7\}$; the constraint is frequently vacuous and,
+when active, truncates genuine components. \emph{A sign reversal at small $N$
+is predicted by the argument, not discovered afterwards}, and
+\S\ref{sec:aperture} reports it as such.
+
+The remaining difficulty is knowing \emph{when} "a small fraction of capacity"
+holds. A qualitative appeal to sparsity is unusable: a $16$-path channel on a
+$32$-element array is algebraically full rank yet has effective rank
+% src: reports/trackD_normalization.md:55, Track B Experiment C re-indexed;
+% recomputed 8.694 at the same 200-trial budget, 8.669 at 1000 trials.
+$8.73$, and its lifting is compressible with nothing sparse about it.
+\S\ref{sec:effrank} replaces path count with effective rank relative to
+capacity, and \S\ref{sec:crossgen} tests that replacement prospectively.
+
+\textbf{Contributions.}
+\begin{enumerate}
+\item The information argument above, with a Rician Cram\'er--Rao bound in
+which each magnitude measurement contributes \emph{rank-one} information, and a
+geometry-constrained bound in tangent-space form because the parameterisation
+is rank deficient.
+\item The aperture-scaling result, presented as a test of a prediction the
+argument makes in advance.
+\item Replacement of the path-count heuristic by $\reff/\rmax$, with the
+capacity $\rmax=\lceil N/2\rceil$ derived, and a measurement separating what
+the \emph{prior} does from what the \emph{estimator} does.
+\item Two cross-generator predictions, each registered before measurement.
+\end{enumerate}
+
+\section{System Model and Estimator}
+\label{sec:method}
+
+An $N$-element ULA serves $K$ single-antenna users over $P$ pilots. With
+$\bG\in\mathbb{C}^{N\times K}$, pilots $\bS$, known reference beam $\bB$ and
+noise $\bW$, the receiver observes
+\begin{equation}
+\bZ=\left|\bG\bS+\bB+\bW\right|,\qquad \bW_{np}\sim\CN(0,\sigma^2),
+\label{eq:obs}
+\end{equation}
+the modulus applied after the noise, so \eqref{eq:obs} cannot be linearised.
+Each user's channel is a sum of $L_k$ plane waves on the array manifold,
+\begin{equation}
+g_k[n]=\sum_{\ell=1}^{L_k}\alpha_{\ell,k}e^{-j(n-1)\psi_{\ell,k}},\qquad
+\psi_{\ell,k}=\pi\sin\theta_{\ell,k},
+\label{eq:chan}
+\end{equation}
+with $L_k\sim\mathcal{U}\{3,7\}$~\cite{xu2025} and
+$\theta\sim\mathcal{U}(-90^\circ,90^\circ)$. The reference-to-signal ratio
+(RSR) is the reference power over the \emph{single-user} received power.
+
+\textbf{Structure and capacity.} Substituting \eqref{eq:chan} into the
+$(N-p)\times(p+1)$ Hankel lifting $\Hank_p$ separates the exponential in the
+two indices, so each path contributes one rank-one outer product and
+$\rank\Hank_p(\bg_k)\le L_k$. Since $\Hank_p$ is $(N-p)\times(p+1)$,
+\begin{equation}
+\rmax(N)=\max_p\min(N-p,\,p+1)=\lceil N/2\rceil,
+\label{eq:cap}
+\end{equation}
+and if $L_k\ge\rmax(N)$ the constraint is vacuous. \textbf{$K$ cancels:} the
+structural model uses $3\sum_k L_k$ parameters against $2NK$ unstructured, and
+the ratio is independent of $K$, so the gain should be $K$-invariant at fixed
+pilot adequacy --- tested in \S\ref{sec:kinv}.
+
+\textbf{The estimator.} HS-GS applies, after every exact EM-GS update, a Cadzow
+projection $\mathcal{P}_r(\bg)=\Hank_p^{\dagger}(\Pi_r(\Hank_p(\bg)))$, where
+$\Pi_r$ truncates to $r$ leading singular values and $\Hank_p^{\dagger}$
+averages antidiagonals. One application is \emph{not} idempotent --- it is one
+step of an alternating projection between the rank set and the Hankel set --- so
+the sweep count is part of the operator's definition. All results below use
+$n_{\mathrm{cz}}=4$ sweeps, $T=100$ iterations and a selection budget of $25$.
+With the projection disabled HS-GS reproduces EM-GS to $\max|\text{diff}|=0$,
+so the projection is provably the only difference.
+
+\textbf{Order selection uses no oracle.} A fraction $\nu=0.3$ of the pilot
+columns is held out; each candidate $r\in\{1,\dots,\rmax\}$ is scored by the
+held-out magnitude residual and the minimiser is used. The in-sample residual
+cannot serve: constraining $\bG$ can only worsen the fit to the pilots used for
+fitting, so an in-sample criterion always prefers the largest candidate. When
+the selector returns $\hat r\ge\rmax$ the projection is the identity and the
+estimator \emph{abstains}, falling back exactly to EM-GS. This is a designed
+behaviour and \S\ref{sec:effrank} shows it is load-bearing.
+
+\textbf{Why not estimate the angles directly?} Subspace methods such as
+root-MUSIC and ESPRIT recover $\{\psi_{\ell,k}\}$ from the signal subspace,
+% \todo{VERIFY CITATION}
+but that subspace requires either multiple snapshots or the complex field. With
+magnitude-only single-snapshot data it is identifiable only \emph{after} phase
+retrieval has succeeded, at which point the channel is already estimated. We
+therefore regularise toward the exponential-sum manifold rather than
+parameterising it.
+
+\textbf{Related work.} Structured low-rank Hankel recovery for sums of
+exponentials --- EMaC, ALOHA, LORAKS --- recovers such a matrix from
+\emph{partial linear} observations, with convex relaxations and recovery
+guarantees. \todo{VERIFY CITATION} Gridless line-spectrum and atomic-norm
+methods likewise assume linear measurements and a separation condition.
+\todo{VERIFY CITATION} Toeplitz and Vandermonde covariance methods in array
+processing impose structure on a covariance accumulated over many snapshots.
+\todo{VERIFY CITATION} All three differ from the present setting in the same
+way: our measurement is a \emph{modulus}, so the map is not linear, no convex
+relaxation applies, and the projection is used as a regulariser inside a
+non-convex iteration rather than as the estimator. We claim no new projection
+algorithm; Cadzow's is used as given.
+
+\textbf{Statistics.} The primary statistic is the paired per-trial median
+within an SNR bin, with bootstrap $95\%$ intervals. Where a curve is compared
+to a bound we use the ratio of summed errors, which is what a bound on the
+mean-squared error governs; both are reported for the headline cell.
+
+\section{Performance Benchmark}
+\label{sec:crlb}
+
+\subsection{Rank-one Fisher information}
+
+Conditional on $\bG,\bS,\bB$ the noiseless field at $(n,p)$ is a constant
+$\lambda$, so $z=|\lambda+w|$ is Rice distributed and its density depends on
+$\lambda$ \emph{only through} $a=|\lambda|$. With
+$\frac{d}{dx}\log I_0(x)=R(x)$ and $\kappa=2za/\sigma^2$, the score is
+$\partial_a\log p=\frac{2}{\sigma^2}[zR(\kappa)-a]$; writing
+$\beta=\sigma^{-4}(\mathbb{E}[z^2R^2(\kappa)]-a^2)$, one measurement carries
+scalar information $4\beta$, so in real coordinates
+$\boldsymbol\eta=[\Re\mathrm{vec}\,\bG;\Im\mathrm{vec}\,\bG]$,
+\begin{equation}
+\bJ_n=\sum_{p=1}^{P}4\beta(a_{n,p},\sigma^2)\,
+\mathbf{u}_{n,p}\mathbf{u}_{n,p}^{T}.
+\label{eq:fisher}
+\end{equation}
+\textbf{Each magnitude measurement contributes rank-one information, not rank
+two.} Crediting both quadratures overstates it and gives a bound too low by
+% src: results/track_b/constrained_crlb.json (unconstrained_rank1), 400 trials
+$0.17$--$4.64$~dB across our $36$ points. An identifiability check settles the
+form: at $K=3$, $P=3$ the per-row problem is unidentifiable and
+\eqref{eq:fisher} is correctly singular, whereas the rank-two construction
+claims full rank.
+
+Because row $n$ of $\bG\bS$ enters only measurement row $n$, $\bJ$ is
+\emph{block diagonal across receive elements}. \textbf{This is Step 1 of the
+argument}, and it is why an unstructured estimator --- and any estimator
+attaining the unconstrained bound --- is flat in $N$ under a normalised metric.
+
+\subsection{Constrained bound on the geometric manifold}
+
+The unconstrained bound governs estimators treating $\bG$ as $2NK$ free
+parameters. HS-GS exploits \eqref{eq:chan}, whose parameters
+$\boldsymbol\phi\in\mathbb{R}^{3\sum_k L_k}$ number about $45$,
+\emph{independent of $N$}. The textbook form $\bD(\bD^T\bJ\bD)^{-1}\bD^T$ with
+$\bD=\partial\boldsymbol\eta/\partial\boldsymbol\phi$ is unusable, $\bD$ being
+rank deficient: at $N=8$ its mean numerical rank is $40.4$ against $\approx
+44.7$ parameters, and $28.1\%$ of realisations have $3\sum_k L_k>2NK$. We use
+the Gorman--Hero / Stoica--Ng tangent-space form~\cite{gorman1990,stoica1998}
+with $\bU$ an orthonormal basis of $\range(\bD)$:
+\begin{equation}
+\mathrm{CCRB}=\bU(\bU^T\bJ\bU)^{-1}\bU^T,
+\label{eq:ccrb}
+\end{equation}
+which depends on the tangent \emph{space} and is invariant to
+over-parameterisation. Both bounds average over the same realisations as the
+estimator curves.
+
+\textbf{Bias caveat.} Both bounds constrain the covariance of \emph{unbiased}
+estimators. All estimators here run to a fixed budget with a shrinking update,
+and HS-GS additionally truncates rank, so none is unbiased and neither bound
+applies strictly. The CCRB is the primary reference in Fig.~\ref{fig:main}
+because it is the one matched to the estimator's model class; the unconstrained
+bound is plotted as a secondary line and governs EM-GS only.
+
+\section{Numerical Results}
+
+Unless stated, $N=32$, $K=3$, $P=30$, RSR $12$~dB, $400$ paired trials per SNR
+point, with both estimators handed identical realisations.
+
+\subsection{Main result against the bounds}
+\label{sec:main}
+
+% src: results/p12/B1.json (bridging run), 400 trials/point
+HS-GS improves on EM-GS by $+2.46$ to $+3.05$~dB across the sweep
+(six-point mean $+2.68$~dB; ratio-of-sums $+2.33$ to $+2.96$~dB), and the
+projection is active in $100\%$ of trials at this cell (Fig.~\ref{fig:main}).
+
+The benchmark makes that number interpretable. EM-GS tracks the unconstrained
+% src: results/track_b/constrained_crlb.json, N32_P30, vs results/p12/B1.json
+bound to within $0.143$~dB for SNR $\ge5$~dB, so the bound is informative
+rather than vacuous. The geometric CCRB lies $7.05$--$7.11$~dB \emph{below} it
+at this configuration: that gap is what the structural model is worth in
+principle, and HS-GS recovers part of it, remaining above the CCRB at all six
+points by $4.39$--$4.93$~dB.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{fig/fig1_nmse_bridging.pdf}
+\caption{NMSE at $N=32$, $K=3$, $P=30$, RSR $12$~dB, $400$ paired trials per
+point. The geometric CCRB is the primary reference; the unconstrained CRLB is
+shown faint because it does not model the prior and governs EM-GS only.
+Neither bound governs a biased estimator.}
+\label{fig:main}
+\end{figure}
+
+\subsection{Aperture scaling: the predicted sign reversal}
+\label{sec:aperture}
+
+Step 4 predicts the gain turns negative at small aperture. Sweeping
+$N\in\{8,16,32\}$ over $12$ operating points each ($2$ pilot counts $\times\,6$
+% src: results/track_b/b3/*.npz, mean over P in {10,30} x 6 SNR values
+SNR values), the mean gain is $-0.19$, $+0.78$ and $+2.85$~dB. \textbf{Under
+the same averaging EM-GS varies by $0.012$~dB} --- exactly as
+\S\ref{sec:crlb} requires of an estimator whose information is block diagonal
+in $N$.
+
+At $N=8$ the projection is inactive in $42.5\%$ of trials, and where active it
+truncates genuine components: the gain is $+1.47$~dB at $-5$~dB SNR but
+$-2.23$~dB at high SNR, because truncation bias does not shrink with noise
+while the variance term does. \emph{This is the predicted failure, measured.}
+The sign of any scalar summary at $N=8$ depends on the pooling rule, so we
+report per-point values.
+
+\subsection{Path count is the wrong coordinate}
+\label{sec:pathcount}
+
+Holding $N=32$ and varying only the path count, with $L$ identical across users
+% src: trackB_hankel_emgs/results/experiment_C_path_count.csv, 300 trials/point
+at SNR $=5$~dB, the gain decays monotonically from $+7.04$~dB at $L=2$ to
+$-0.12$~dB at $L=16=\rmax$, while EM-GS moves by $0.191$~dB in total. So the
+operative variable is channel complexity relative to capacity, and aperture
+matters only because it sets the capacity.
+
+\subsection{Effective rank, and what the prior does versus the estimator}
+\label{sec:effrank}
+
+Path count is still imperfect: clustered or unequal-strength paths occupy fewer
+effective dimensions. We index by the Roy--Vetterli effective
+rank~\cite{royvetterli2007} of the lifting,
+$\reff=\exp(-\sum_i p_i\ln p_i)$ with $p_i=\sigma_i/\sum_j\sigma_j$,
+normalised by capacity, $\rho=\reff/\rmax$.
+
+Re-indexing the sweep of \S\ref{sec:pathcount} moves the zero crossing from
+$L/\rmax=0.90$ to $\rho=0.518$, and the useful region becomes
+$\rho\lesssim0.5$ --- a statement about any channel rather than one
+simulator's $L$ values. Across $N\in\{16,32,64\}$ the crossing is
+% src: reports/trackD_partB9_analysis.json B1_collapse
+$0.588$, $0.518$, $0.544$, a spread of $0.070$ over a fourfold change in
+aperture (Fig.~\ref{fig:boundary}).
+
+\textbf{The crossing belongs to the prior, not to the estimator, and the two
+must be stated separately.} Pushing past the crossing with the proposed
+% src: results/p12/B2.json, 120-300 trials/cell
+estimator never yields a negative: at $\rho=0.608$ and $0.735$ ($N=16$) it
+gives $+0.078$ and $+0.000$~dB, and at $\rho=0.596$ and $0.669$ ($N=64$),
+$+0.044$ and $+0.018$~dB. The reason is abstention: at $\rho=0.735$ the
+selector returns $\hat r\ge\rmax$ in $38.8\%$ of trials, and where it does the
+estimator is exactly EM-GS. Forcing the projection active at that same cell
+% src: results/p12/B2_forced.json -- DIAGNOSTIC ONLY, not the proposed method
+gives $-0.075$~dB, CI $[-0.186,-0.026]$. So the prior does become harmful past
+the crossing, and the abstention rule is what prevents the estimator from
+following it down. \textbf{$\dhs\ge0$ is a property of the selector, not
+evidence that the prior is never harmful.}
+
+\textbf{The gain magnitude does not collapse onto the same axis.} Over the
+window both arrays cover, $N=16$ lies above $N=64$ by a mean of $0.493$~dB and
+a maximum of $0.901$~dB, one-signed throughout. \emph{We have no account of
+it.} The one candidate we tested --- that the selector's rank grid is coarser
+at small capacity --- is refuted: varying the pencil at fixed $N=32$ and fixed
+% src: results/p12/B3.json, 250 trials/point
+$\rho$ gives a span of $0.390$~dB over admissible-rank counts $8$ to $16$ with
+\emph{no monotone trend}, and the dependence runs mildly backwards. A pair with
+opposite matrix shapes but nearly equal rank counts ($24\times9$ and
+$8\times25$) gives $+3.199$ and $+3.121$~dB, so the effect tracks the rank
+count and not the shape.
+
+\textbf{$\rho$ is a design-time coordinate, not a receiver-observable one},
+since $\reff$ is computed on the noiseless channel. The selector's abstention
+rate is observable and is monotone in $\rho$ at fixed aperture, but it is
+confounded by capacity: at $N=64$ a cell at $\rho=0.501$ abstains in $0.0\%$ of
+% src: reports/p12/a3_abstention_vs_rho.json, 16 adaptive-order cells
+trials while at $N=16$ a cell at $\rho=0.371$ abstains in $4.0\%$, so no single
+threshold separates the useful region. An observable proxy therefore exists
+within an aperture but has not been established across apertures.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.92\columnwidth]{fig/fig2_boundary.pdf}
+\caption{$\dhs$ against $\rho=\reff/\rmax$ for $N\in\{16,32,64\}$. The
+boundary \emph{location} is stable across a fourfold change in aperture; the
+gain \emph{magnitude} is not, and that residual is unexplained.}
+\label{fig:boundary}
+\end{figure}
+
+\subsection{Cross-generator prediction}
+\label{sec:crossgen}
+
+A relation fitted and evaluated on the same data proves little. We froze the
+$\rho$-to-gain relation obtained above, committed numerical predictions to
+version control, and only then ran two channel generators that played no part
+in constructing it. The rule is piecewise-linear interpolation on a fixed
+eight-point table --- no regression, no spline --- so it re-executes exactly.
+
+% src: reports/trackD_partB9_analysis.json, B6_xiao.B6_xiao_clustered
+\textbf{Clustered Saleh--Valenzuela.} At $\rho=0.331$ the relation predicted
+$+1.30$~dB; the measurement over $276$ trials gave $+1.173$~dB, CI
+$[+1.017,+1.380]$ --- an error of $0.13$~dB.
+
+% src: reports/trackD_partB9_analysis.json, B8_cui_measured
+\textbf{A second, independently specified configuration.} At $\rho=0.400$ the
+prediction was $+0.648$~dB with interval $[+0.367,+1.015]$; the measurement
+over $266$ trials gave $+0.963$~dB, CI $[+0.808,+1.086]$ --- an error of
+$0.315$~dB, inside the stated interval but on its upper edge.
+
+\textbf{Scope.} These are \emph{cross-generator} tests, not out-of-model tests:
+both generators still produce channels of the form \eqref{eq:chan}, and only
+the distribution over $(L_k,\alpha_{\ell,k},\theta_{\ell,k})$ changes. They
+show $\rho$ transfers across path distributions, not that it survives a
+violation of the ULA model.
+
+\subsection{Users, cost, and where the projection belongs}
+\label{sec:kinv}
+
+% src: reports/trackD_partB9_analysis.json, cells B2_K{2,3,4}
+\textbf{$K$-invariance.} At fixed pilot adequacy $P/2K=3.33$ the gain varies by
+$0.094$~dB across $K\in\{2,3,4\}$ for SNR $\ge5$~dB. Pooled over all SNR the
+spread is $0.294$~dB against a pre-registered falsifier of $0.3$~dB --- missed
+by $0.006$~dB, and reported rather than dropped.
+
+% src: results/track_b/timing.json; results/p12/B4.json, 300 trials
+\textbf{Cost.} Order selection is $57.7$--$85.5\%$ of runtime. A coarse-to-fine
+search over a stride-$3$ grid with local refinement returns the same $\hat r$
+in $93.3\%$ of trials, cuts candidate evaluations from $16.0$ to $9.6$ and the
+selection stage by $1.68\times$, at an aggregate cost of $0.083$~dB.
+
+% src: results/p12/B5.json, 300 trials/point, shared \hat r
+\textbf{Placement is SNR-dependent, and the effect is small.} Comparing
+interleaved projection against a single post-hoc Cadzow projection at the same
+selected order, interleaving is \emph{worse} at $0$~dB ($-0.164$~dB, CI
+$[-0.317,-0.066]$), indistinguishable from $+5$ to $+15$~dB, and better only at
+$+20$~dB ($+0.168$~dB, CI $[+0.102,+0.246]$); the six-point mean is
+$+0.003$~dB. Interleaving is therefore not required in this classical
+iteration, and we do not claim it is --- a single projection recovers nearly
+all of the benefit at a fraction of the cost.
+
+\section{Limitations and Conclusion}
+
+A magnitude-only receiver's information is rank one per measurement and block
+diagonal across elements, so aperture is usable only through cross-element
+structure. The ULA Hankel prior supplies it, with capacity $\lceil N/2\rceil$;
+the prior therefore helps only below a fraction of that capacity, and the
+predicted sign reversal at small aperture is observed. The governing coordinate
+is $\reff/\rmax$, whose boundary location is stable across a fourfold change in
+aperture and which predicted the gain on two unseen channel distributions to
+$0.13$ and $0.315$~dB.
+
+\textbf{Limitations.} All results are simulation only, with no measured
+hardware and no recorded channel data. They cover geometric ULA channels of the
+form \eqref{eq:chan} at the array sizes, pilot counts and generators tested,
+and the cross-generator tests change the distribution but not the model family;
+no claim is made beyond them. The gain magnitude does not collapse onto the
+proposed axis and its residual of $0.493$~dB is unexplained. $\rho$ is not
+receiver-observable. Two of the three boundary crossings cannot be bracketed
+from the negative side by the proposed estimator, because abstention prevents
+it; $\rho\approx0.75$ is in any case unreachable at $N=64$, where the path
+% src: rydberg_sim/channel.py:245 raises above L=48 at N=64
+generator fails above $L=48$ ($\rho\approx0.67$). We establish no fundamental
+bound: the CRLB and CCRB govern unbiased estimators and every estimator here is
+biased.
+
+\begin{thebibliography}{99}
+\bibitem{cui2025} M.~Cui, Q.~Zeng, and K.~Huang, ``Towards atomic MIMO
+receivers,'' \emph{IEEE J. Sel. Areas Commun.}, vol.~43, no.~3, pp.~659--673,
+2025.
+
+\bibitem{gong2025mag} T.~Gong \emph{et al.}, ``Rydberg atomic quantum receivers
+for classical wireless communication and sensing,'' \emph{IEEE Wireless
+Commun.}, vol.~32, no.~5, pp.~90--100, 2025.
+
+\bibitem{gerchberg1972} R.~W.~Gerchberg and W.~O.~Saxton, ``A practical
+algorithm for the determination of phase from image and diffraction plane
+pictures,'' \emph{Optik}, vol.~35, pp.~237--246, 1972.
+
+\bibitem{xiao2026} J.~Xiao, J.~Wang, M.~Zeng, H.~Xu, X.~Li, and
+A.~Nallanathan, ``Channel estimation for Rydberg atomic quantum receivers:
+unrolled phase retrieval from holographic snapshots,'' \emph{IEEE Signal
+Process. Lett.}, vol.~33, pp.~1696--1700, 2026.
+
+\bibitem{xu2025} B.~Xu, J.~Zhang, Z.~Chen, B.~Cheng, Z.~Liu, Y.-C.~Wu, and
+B.~Ai, ``Channel estimation for Rydberg atomic receivers,'' \emph{IEEE Wireless
+Commun. Lett.}, vol.~14, no.~9, pp.~2957--2961, 2025.
+\todo{VERIFY CITATION: start page 2957 or 2961? The bib note is
+self-contradictory and no PDF is in the repository.}
+
+\bibitem{cadzow1988} J.~A.~Cadzow, ``Signal enhancement---a composite property
+mapping algorithm,'' \emph{IEEE Trans. Acoust., Speech, Signal Process.},
+vol.~36, no.~1, pp.~49--62, 1988.
+
+\bibitem{markovsky2008} I.~Markovsky, ``Structured low-rank approximation and
+its applications,'' \emph{Automatica}, vol.~44, no.~4, pp.~891--909, 2008.
+
+\bibitem{royvetterli2007} O.~Roy and M.~Vetterli, ``The effective rank: a
+measure of effective dimensionality,'' in \emph{Proc. Eur. Signal Process.
+Conf. (EUSIPCO)}, 2007, pp.~606--610.
+
+\bibitem{gorman1990} J.~D.~Gorman and A.~O.~Hero, ``Lower bounds for parametric
+estimation with constraints,'' \emph{IEEE Trans. Inf. Theory}, vol.~36, no.~6,
+pp.~1285--1301, 1990.
+
+\bibitem{stoica1998} P.~Stoica and B.~C.~Ng, ``On the Cram\'er--Rao bound under
+parametric constraints,'' \emph{IEEE Signal Process. Lett.}, vol.~5, no.~7,
+pp.~177--179, 1998.
+\end{thebibliography}
+
+\end{document}
