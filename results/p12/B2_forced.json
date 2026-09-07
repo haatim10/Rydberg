@@ -1,0 +1,87 @@
+{
+ "cell": "B2_forced_order_diagnostic",
+ "config": {
+  "K": 3,
+  "P": 20,
+  "rsr_db": 10.0,
+  "operator": {
+   "exact_step": "em_gs",
+   "max_iter": 100,
+   "select_iter": 25
+  },
+  "generator": "trackD make_world",
+  "forced_order": "cap - 1, so the projection is always active",
+  "WARNING": "DIAGNOSTIC ONLY. An estimator that cannot abstain is not the method Paper 1 proposes. Never quote the forced column as HS-GS."
+ },
+ "points": [
+  {
+   "tag": "N16_L7",
+   "N": 16,
+   "L": 7,
+   "cap": 8,
+   "forced_order": 7,
+   "rho_measured": 0.542,
+   "n": 250,
+   "seconds": 434.6,
+   "abstention_rate": 0.12,
+   "mean_L_hat": 4.868,
+   "delta_with_abstention_db": 0.2760899673156359,
+   "ci_with_abstention": [
+    0.19997254210416124,
+    0.43021094225957457
+   ],
+   "delta_forced_active_db": 0.099371808406433,
+   "ci_forced_active": [
+    0.06331149835886496,
+    0.12849908668389165
+   ],
+   "forced_negative_and_significant": false
+  },
+  {
+   "tag": "N16_L9",
+   "N": 16,
+   "L": 9,
+   "cap": 8,
+   "forced_order": 7,
+   "rho_measured": 0.608,
+   "n": 250,
+   "seconds": 422.8,
+   "abstention_rate": 0.192,
+   "mean_L_hat": 5.332,
+   "delta_with_abstention_db": 0.04845549691601114,
+   "ci_with_abstention": [
+    0.0,
+    0.16409924689712518
+   ],
+   "delta_forced_active_db": 0.043364483573418156,
+   "ci_forced_active": [
+    -0.012947843950703142,
+    0.09231954411227683
+   ],
+   "forced_negative_and_significant": false
+  },
+  {
+   "tag": "N16_L14",
+   "N": 16,
+   "L": 14,
+   "cap": 8,
+   "forced_order": 7,
+   "rho_measured": 0.735,
+   "n": 250,
+   "seconds": 413.0,
+   "abstention_rate": 0.388,
+   "mean_L_hat": 5.78,
+   "delta_with_abstention_db": 0.0,
+   "ci_with_abstention": [
+    0.0,
+    0.0
+   ],
+   "delta_forced_active_db": -0.07525401528299769,
+   "ci_forced_active": [
+    -0.1863370905421115,
+    -0.02558916668983402
+   ],
+   "forced_negative_and_significant": true
+  }
+ ]
+}

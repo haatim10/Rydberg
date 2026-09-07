@@ -42,3 +42,10 @@ results/track_d/sweeps/*.json
 # Track D stage-5 (PROMPT 9 Part C) per-epoch weights: same rationale as stage 3.
 results/track_d/stage5/*/ep[0-9][0-9][0-9].pt
 results/track_d/stage5/*/checkpoint.pt
+
+# PROMPT 12 Part C: per-epoch snapshots and the resume checkpoint are dead
+# weight once select_epoch has copied the chosen epoch to best.pt (~6 MB each
+# x 13 epochs x 6+ runs). curves.csv, result.json, val_per_trial.npy and
+# best.pt ARE tracked, so every reported number stays reproducible.
+results/p12/partC/*/ep[0-9][0-9][0-9].pt
+results/p12/partC/*/checkpoint.pt
