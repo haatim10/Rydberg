@@ -34,6 +34,14 @@ if [ ! -f results/p12/B4.json ]; then
   launch B4 python3 scratch/p12_partB4.py
 fi
 
+# B2 addendum: the forced-order diagnostic. B2 established that at N=16 the
+# selector abstains in essentially every trial once rho is high, so Delta_HS is
+# identically zero and the crossing cannot be bracketed from the negative side.
+# This separates "the effect is absent" from "abstention hides it".
+if [ ! -f results/p12/B2_forced.json ]; then
+  launch B2forced python3 scratch/p12_partB2_forced.py
+fi
+
 # Part C, in the brief's priority order: the focused pair carries the small
 # number (+0.078 dB) and is where seed noise could be fatal, so it goes first.
 for run in C1_U1_seed2 C1_H1_seed2 C1_U1_seed3 C1_H1_seed3 \
