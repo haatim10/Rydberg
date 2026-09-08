@@ -41,6 +41,44 @@ def cells():
     return [(N, P) for N in NS for P in PS]
 
 
+def tasks():
+    """One task per (N, P, SNR) point. Sharding at this granularity lets the
+    expensive N=32 cell spread across workers, and checkpointing at this
+    granularity means an interruption costs one point, not a whole cell."""
+    return [(N, P, si, s) for (N, P) in cells()
+            if (N, P) != (32, 30)
+            for si, s in enumerate(SNRS)]
+
+
+def one_point(N, P, si, snr):
+    num_e, num_h, den, lhat, act = [], [], [], [], []
+    t0 = time.time()
+    for t in range(N_TRIALS):
+        w = trackb_world(SEED0 + 10_000 * N + 1000 * P + 100 * si + t,
+                         N=N, P=P, snr_db=snr, rsr_db=12.0)
+        G = np.asarray(w.G)
+        e = em_gs_only(w, TD_KW["max_iter"])
+        r = hs_gs_auto(w.S, w.Z, w.B, w.sigma2, **TD_KW)
+        a, b = nmse_parts(e, G); num_e.append(a); den.append(b)
+        num_h.append(nmse_parts(r.G_hat, G)[0])
+        lhat.append(int(r.L_hat))
+        act.append(bool(r.L_hat < hankel_rank_cap(N)))
+    den_a = np.asarray(den)
+    d = 10 * np.log10(np.asarray(num_e) / den_a) - \
+        10 * np.log10(np.asarray(num_h) / den_a)
+    ci = boot_ci_median(d)
+    em_db = float(10 * np.log10(np.sum(num_e) / np.sum(den_a)))
+    hs_db = float(10 * np.log10(np.sum(num_h) / np.sum(den_a)))
+    return {"N": N, "P": P, "snr_db": snr, "n": N_TRIALS,
+            "seconds": round(time.time() - t0, 1),
+            "em_gs_db": em_db, "hs_gs_db": hs_db,
+            "delta_ratio_of_sums_db": em_db - hs_db,
+            "delta_median_db": float(np.median(d)),
+            "boot_ci95_median": list(ci),
+            "mean_L_hat": float(np.mean(lhat)),
+            "active_frac": float(np.mean(act))}
+
+
 def one_cell(N, P):
     rows = []
     for si, snr in enumerate(SNRS):
@@ -90,19 +128,22 @@ def main(argv=None) -> int:
     ap.add_argument("--n-shards", type=int, default=1)
     a = ap.parse_args(argv)
     OUT.mkdir(parents=True, exist_ok=True)
-    cs = cells()
-    for i in range(a.shard, len(cs), a.n_shards):
-        N, P = cs[i]
-        f = OUT / f"N{N}_P{P}.json"
+    ts = tasks()
+    for i in range(a.shard, len(ts), a.n_shards):
+        N, P, si, snr = ts[i]
+        cell = OUT / f"N{N}_P{P}.json"
+        if cell.exists():
+            continue                      # whole cell already assembled
+        f = OUT / f"pt_N{N}_P{P}_s{si}.json"
         if f.exists():
             print(f"skip (done): {f.name}", flush=True)
             continue
-        if (N, P) == (32, 30):
-            print("skip (served from results/p12/B1.json): N32_P30", flush=True)
-            continue
-        f.write_text(json.dumps(one_cell(N, P), indent=1) + "\n",
-                     encoding="utf-8")
-        print(f"wrote {f}", flush=True)
+        r = one_point(N, P, si, snr)
+        f.write_text(json.dumps(r) + "\n", encoding="utf-8")
+        print(f"  [ap] N={N:2d} P={P:2d} SNR {snr:+5.1f}  "
+              f"ros {r['delta_ratio_of_sums_db']:+.3f}  "
+              f"med {r['delta_median_db']:+.3f}  "
+              f"act {r['active_frac']:.3f}  {r['seconds']:.0f}s", flush=True)
     return 0
 
 
