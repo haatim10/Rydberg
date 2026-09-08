@@ -188,6 +188,16 @@ def main():
         fig.savefig(OUT / f"fig1_twopanel.{ext}", facecolor="white")
     plt.close(fig)
 
+    # A shorter copy for paper/paper1/haatim_hsgs_letter_restyled.tex. Same
+    # panels and same data; the restyled prose runs longer and needs the
+    # vertical space. The frozen letter keeps the 2.55 in version above.
+    fig2, ax2s = plt.subplots(1, 2, figsize=(7.16, 1.95))
+    panel_a(ax2s[0])
+    panel_b(ax2s[1], S)
+    fig2.subplots_adjust(wspace=0.34)
+    fig2.savefig(OUT / "fig1_twopanel_compact.pdf", facecolor="white")
+    plt.close(fig2)
+
     # ---- every number the manuscript quotes from these panels -------------
     d = em - hs
     print("PANEL (a), configuration A, N=32 P=30")
