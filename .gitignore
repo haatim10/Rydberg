@@ -49,3 +49,12 @@ results/track_d/stage5/*/checkpoint.pt
 # best.pt ARE tracked, so every reported number stays reproducible.
 results/p12/partC/*/ep[0-9][0-9][0-9].pt
 results/p12/partC/*/checkpoint.pt
+
+# PROMPT 16 Tier 0.5 (seeding the +1.902 dB headline).
+# Same convention as stage 4, stage 5 and p12/partC: the scientific record --
+# best.pt, curves.csv, val_per_trial.npy -- is tracked, while the per-epoch
+# snapshots and the resume checkpoint are not. They are ~6 MB each and
+# regenerable from the recorded config and seed. The per-epoch files are kept
+# ON DISK because the PROMPT 15 A1 forensics needed exactly them.
+results/p16/tier05/*/ep[0-9][0-9][0-9].pt
+results/p16/tier05/*/checkpoint.pt
