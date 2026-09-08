@@ -17,6 +17,7 @@ Run:  PYTHONPATH=. python3 scratch/p12_partC_eval.py
 from __future__ import annotations
 
 import json
+import os
 import time
 from dataclasses import replace
 from pathlib import Path
@@ -36,7 +37,7 @@ STAGE4 = Path("results/track_d/stage4")
 STAGE5 = Path("results/track_d/stage5")
 STAGE2_U1 = Path("results/track_d/stage2/B3_80k_13ep/best.pt")
 STAGE3_H1 = Path("results/track_d/stage3/H1_hs_urformer_80k/best.pt")
-OUT = Path("reports/p12")
+OUT = Path(os.environ.get("PARTC_OUT", "reports/p12"))   # PROMPT 15: re-score to reports/p15
 
 FULL_SNR = (-10.0, 20.0)
 HIGH_SNR = (5.0, 20.0)
@@ -84,8 +85,22 @@ def load_path(path, *, hankel, P=20):
 
 
 def eval_models(models: dict, snr_range, n_test=N_TEST, P=20):
-    """One pass, identical worlds for every arm."""
+    """One pass, identical worlds for every arm.
+
+    PROMPT 15 A1 FIX. ``TrackDConfig().train.init`` defaults to ``"random"``
+    (config.py:324); every stage script overrides it to ``"spectral"`` before
+    building an evaluation dataset, and the arms are TRAINED with the spectral
+    initialiser. This function did not, so it fed the networks a random
+    ``G0`` and every number PROMPT 12 Part C reported was measured off-model.
+    The defect was invisible to a reproducibility check because
+    ``make_initial_G("random", ..., seed=trial)`` is seeded per trial and
+    therefore perfectly deterministic -- just wrong. Determinism and
+    correctness are different properties.
+
+    Pinned by ``tests/test_trackd_eval_reproducibility.py``.
+    """
     cfg = TrackDConfig()
+    cfg = replace(cfg, train=replace(cfg.train, init="spectral"))
     ecfg = replace(cfg, system=replace(cfg.system, P=P),
                    data=replace(cfg.data, snr_range_db=snr_range))
     ds = TrackDDataset("test", sysc=ecfg.system, datac=ecfg.data,
