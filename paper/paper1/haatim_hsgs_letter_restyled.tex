@@ -73,28 +73,27 @@ Campus, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
 % +2.93 / -0.25 / 0.163 dB -> Sec. IV-B; +2.46..+3.05 dB -> Sec. IV-A;
 % 8.73 and ceil(N/2) -> Sec. I and Sec. II; 0.13 / 0.315 dB -> Sec. IV-E.
 \begin{abstract}
-Multi-user channel estimation for an atomic receiver measuring only the
-magnitude of the incident field, in the presence of a known additive reference
-beam, is studied in this letter. The problem is one of biased phase retrieval,
-for which the Fisher information is shown to be rank one per measurement and
-block diagonal across the receive elements, so that the normalised per-element
-information is independent of the array size and the aperture is exploitable
-only through cross-element structure. For a uniform linear array, the Hankel
-lifting of each channel column supplies such a structure with a capacity of
-$\lceil N/2\rceil$ ranks, from which it is predicted that a rank prior is
-informative only when the channel occupies a small fraction of that capacity,
-and harmful otherwise. An estimator enforcing this structure within an exact
-expectation--maximization Gerchberg--Saxton iteration, with the model order
-selected from a held-out pilot residual, is proposed. The predicted behaviour is
-observed: a gain of $+2.93$~dB at $N=32$ and a loss of $0.25$~dB at $N=8$ in
-summed squared error, averaged over twelve operating points per aperture, the
-unstructured baseline varying by at most $0.163$~dB. The reversal is a property
-of that statistic alone; under a paired per-trial median the same $N=8$ cells
-yield $+0.225$~dB, the selector abstaining in $42\%$ of the trials.
-The governing variable is shown to be the effective rank relative to capacity
-rather than the path count, and predicts the gain on two channel distributions
-to which it was not fitted, with errors of $0.13$ and $0.315$~dB. Results are
-simulation only, and the derived bounds do not govern biased estimators.
+Multi-user channel estimation is studied for an atomic receiver that measures
+only the magnitude of the incident field, in the presence of a known reference
+beam. The problem is one of biased phase retrieval. Its Fisher information is
+shown to be rank one per measurement and block diagonal across the receive
+elements, so the normalised per-element information does not grow with the
+array size. Aperture is therefore usable only through cross-element structure.
+On a uniform linear array the Hankel lifting of each channel column supplies
+such a structure, with a capacity of $\lceil N/2\rceil$ ranks. A rank prior is
+accordingly predicted to help only below a small fraction of that capacity, and
+to harm above it. An estimator enforcing the structure inside an exact
+expectation--maximization Gerchberg--Saxton iteration is proposed, the model
+order being selected from a held-out pilot residual. The predicted behaviour is
+observed. In summed squared error, averaged over twelve operating points per
+aperture, the gain is $+2.93$~dB at $N=32$ and $-0.25$~dB at $N=8$, while the
+unstructured baseline varies by at most $0.163$~dB. The reversal belongs to
+that statistic alone: under a paired per-trial median the same $N=8$ cells give
+$+0.225$~dB, the selector abstaining in $42\%$ of trials. The governing
+variable is shown to be the effective rank relative to capacity, not the path
+count. Used on two channel distributions to which it was not fitted, it
+predicts the gain to within $0.13$ and $0.315$~dB. Results are simulation only;
+the derived bounds do not govern biased estimators.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -529,7 +528,7 @@ across apertures.
 
 \begin{figure}[!htb]
 \centering
-\includegraphics[width=0.86\columnwidth]{fig/fig2_boundary.pdf}
+\includegraphics[width=0.86\columnwidth]{fig/fig2_boundary_clean.pdf}
 \caption{$\dhs$ versus $\rho=\reff/\rmax$ for $N\in\{16,32,64\}$. The boundary
 location is stable across a fourfold change in aperture; the gain magnitude is
 not, and that residual is unexplained.}
