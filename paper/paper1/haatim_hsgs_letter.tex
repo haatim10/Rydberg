@@ -60,6 +60,9 @@ Campus, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
 
 \maketitle
 
+% Every number in this abstract is sourced where it is stated in the body:
+% +2.85 / -0.19 / 0.012 dB -> Sec. IV-B; +2.46..+3.05 dB -> Sec. IV-A;
+% 8.73 and ceil(N/2) -> Sec. I and Sec. II; 0.13 / 0.315 dB -> Sec. IV-E.
 \begin{abstract}
 A receiver that measures only field magnitude, with a known additive
 reference, makes multi-user channel estimation a biased phase-retrieval
@@ -278,6 +281,10 @@ parameters. HS-GS exploits \eqref{eq:chan}, whose parameters
 $\boldsymbol\phi\in\mathbb{R}^{3\sum_k L_k}$ number about $45$,
 \emph{independent of $N$}. The textbook form $\bD(\bD^T\bJ\bD)^{-1}\bD^T$ with
 $\bD=\partial\boldsymbol\eta/\partial\boldsymbol\phi$ is unusable, $\bD$ being
+% src: results/track_b/constrained_crlb.json, mean jacobian_rank over the 12
+% N=8 cells = 40.380; 3*mean(sum L_k) = 3 x 14.875 = 44.66; mean(3 sum L_k >
+% 2NK = 48) over 6400 stored trials = 28.1%. Verified in
+% reports/HSGS_PAPER_PROVENANCE.md:205-214.
 rank deficient: at $N=8$ its mean numerical rank is $40.4$ against $\approx
 44.7$ parameters, and $28.1\%$ of realisations have $3\sum_k L_k>2NK$. We use
 the Gorman--Hero / Stoica--Ng tangent-space form~\cite{gorman1990,stoica1998}
@@ -356,15 +363,23 @@ at this configuration: that gap is what the structural model is worth in
 principle, and HS-GS recovers part of it, remaining above the CCRB at all six
 points by $4.39$--$4.93$~dB.
 
-\begin{figure}[!t]
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=\columnwidth]{fig/fig1_nmse_bridging.pdf}
-\caption{NMSE at $N=32$, $K=3$, $P=30$, RSR $12$~dB, $400$ paired trials per
-point. The geometric CCRB is the primary reference; the unconstrained CRLB is
-shown faint because it does not model the prior and governs EM-GS only.
-Neither bound governs a biased estimator.}
+\includegraphics[width=\textwidth]{fig/fig1_twopanel.pdf}
+\caption{\textbf{Both panels are configuration~A} --- $n_{\mathrm{cz}}=4$,
+$T=100$, selection budget $25$, RSR $12$~dB, $K=3$, $400$ paired trials per
+point --- so the aperture panel and the benchmark panel share one operator.
+\textbf{(a)} NMSE at $N=32$, $P=30$. The geometric CCRB is the primary
+reference; the unconstrained CRLB is faint because it does not model the prior
+and governs EM-GS only. Neither bound governs a biased estimator.
+\textbf{(b)} Aperture. $\dhs$ against $N$ at both pilot counts, each point the
+mean over the six SNR values; filled markers are the paired per-trial median
+(primary), open markers the ratio of summed errors, and the two disagree at
+$N=8$. EM-GS's own NMSE is overlaid on the right-hand axis, whose span is fixed
+at $\pm3$~dB so that a flat line reads as flat: the structured curve moves
+across aperture and the unstructured one does not.}
 \label{fig:main}
-\end{figure}
+\end{figure*}
 
 \subsection{Aperture scaling: the predicted sign reversal}
 \label{sec:aperture}
@@ -378,6 +393,8 @@ the same averaging EM-GS varies by $0.012$~dB} --- exactly as
 \S\ref{sec:crlb} requires of an estimator whose information is block diagonal
 in $N$.
 
+% src: results/track_b/b3/N8_P*.npz, configuration B, 'active' field and the
+% per-SNR ratio-of-sums
 At $N=8$ the projection is inactive in $42.5\%$ of trials, and where active it
 truncates genuine components: the gain is $+1.47$~dB at $-5$~dB SNR but
 $-2.23$~dB at high SNR, because truncation bias does not shrink with noise
