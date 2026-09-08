@@ -134,9 +134,9 @@ def panel_b(ax, S):
     # The predicted failure, marked.
     lo = min(min(S[f"N8_P{P}"]["mean_delta_median_db"] for P in PS),
              min(S[f"N8_P{P}"]["mean_delta_ratio_of_sums_db"] for P in PS))
-    ax.annotate("predicted failure:\n" + r"$L_k\!\sim\!\mathcal{U}\{3,7\}$ vs "
-                + r"$r_{\max}(8)=4$",
-                xy=(0, lo), xytext=(14, -6), textcoords="offset points",
+    ax.annotate("predicted failure: "
+                + r"$L_k\!\sim\!\mathcal{U}\{3,7\}$ vs $r_{\max}(8)=4$",
+                xy=(0, lo), xytext=(12, -2), textcoords="offset points",
                 fontsize=6.2, color="#8a2b2a", ha="left",
                 arrowprops=dict(arrowstyle="-", color="#c08a89", lw=0.6,
                                 shrinkA=1, shrinkB=2))
@@ -149,22 +149,28 @@ def panel_b(ax, S):
 
     ax2 = ax.twinx()
     ax2.grid(False)
+    # EM-GS sits at a different absolute level for each pilot count (-4.4 dB at
+    # P=10, -13.0 dB at P=30), so both are drawn and the axis is scaled to hold
+    # them. Averaging the two would cancel opposite small movements and make
+    # EM-GS look flatter than it is.
     for P in PS:
         emn = [S[f"N{N}_P{P}"]["mean_em_gs_db"] for N in NS]
-        ax2.plot(x, emn, "s:", color="#2a78d6", mew=0, lw=0.9, alpha=0.75,
-                 zorder=3, label="EM-GS NMSE" if P == 10 else None)
+        ax2.plot(x, emn, "s:", color="#2a78d6", mew=0, lw=1.3, alpha=0.9,
+                 zorder=3)
+        ax2.annotate(rf"EM-GS, $P={P}$: {max(emn) - min(emn):.3f} dB across $N$",
+                     xy=(x[2], emn[2]), xytext=(-6, 5 if P == 30 else -9),
+                     textcoords="offset points", fontsize=6.0,
+                     color="#2a78d6", ha="right")
     ax2.set_ylabel("EM-GS NMSE (dB)", color="#2a78d6")
     ax2.tick_params(axis="y", colors="#2a78d6")
-    # Give the secondary axis a visible span so a flat line reads as flat and
-    # not as an artefact of an auto-scaled axis.
     allem = [S[f"N{N}_P{P}"]["mean_em_gs_db"] for N in NS for P in PS]
-    mid = 0.5 * (min(allem) + max(allem))
-    ax2.set_ylim(mid - 3.0, mid + 3.0)
+    ax2.set_ylim(min(allem) - 1.6, max(allem) + 3.4)
 
     h1, l1 = ax.get_legend_handles_labels()
     h2, l2 = ax2.get_legend_handles_labels()
     ax.legend(h1 + h2, l1 + l2, frameon=False, loc="upper left",
-              handlelength=2.0, labelspacing=0.22, borderpad=0.15, ncol=1)
+              handlelength=1.6, labelspacing=0.2, borderpad=0.1,
+              columnspacing=0.9, handletextpad=0.4, ncol=2, fontsize=5.9)
 
 
 def main():
@@ -204,7 +210,13 @@ def main():
         act = np.mean([S[f"N{N}_P{P}"]["mean_active_frac"] for P in PS])
         print(f"  {N:>3} {med:>+8.3f} {ros:>+8.3f} {emn:>+8.3f} {act:>7.3f}")
     ems = [np.mean([S[f"N{N}_P{P}"]["mean_em_gs_db"] for P in PS]) for N in NS]
-    print(f"  EM-GS spread across N: {max(ems) - min(ems):.3f} dB")
+    print(f"  EM-GS spread across N, pooled over P: {max(ems) - min(ems):.3f} dB")
+    for P in PS:
+        v = [S[f"N{N}_P{P}"]["mean_em_gs_db"] for N in NS]
+        print(f"  EM-GS spread across N at P={P}: {max(v) - min(v):.3f} dB "
+              f"({[round(t, 3) for t in v]})")
+    print("  The pooled figure is the smaller one because the two pilot counts "
+          "move in\n  opposite directions; quote the per-P figure.")
     print("\n  wrote", OUT / "fig1_twopanel.pdf")
 
 

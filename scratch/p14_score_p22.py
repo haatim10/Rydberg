@@ -52,6 +52,16 @@ def main():
     ems = [float(np.mean([S[f"N{N}_P{P}"]["mean_em_gs_db"] for P in PS]))
            for N in NS]
     em_spread = float(max(ems) - min(ems))
+    # The pooled figure is the quantity the pre-registration named (the existing
+    # 0.012 dB was computed that way), but it cancels opposite movements at the
+    # two pilot counts. Both readings are recorded; the manuscript quotes the
+    # larger one.
+    em_by_P = {}
+    for P in PS:
+        v = [S[f"N{N}_P{P}"]["mean_em_gs_db"] for N in NS]
+        em_by_P[f"P{P}"] = {"by_N": [round(t, 3) for t in v],
+                            "spread_db": round(max(v) - min(v), 3),
+                            "ok": (max(v) - min(v)) <= EM_SPREAD_MAX}
 
     # Falsifier clause 3: the sign at N=8 is positive with a CI excluding zero.
     n8 = [p for P in PS for p in S[f"N8_P{P}"]["points"]]
@@ -72,6 +82,12 @@ def main():
         "em_gs_spread_max": EM_SPREAD_MAX,
         "em_gs_spread_point_estimate": EM_SPREAD_POINT,
         "em_gs_spread_ok": em_spread <= EM_SPREAD_MAX,
+        "em_gs_spread_per_pilot_count": em_by_P,
+        "em_gs_spread_note": (
+            "The pooled reading passes at 0.033 dB and is the quantity P22 "
+            "named. Taken per pilot count the spread is 0.163 dB at P=10, "
+            "which exceeds the 0.15 dB falsifier. Pooling cancels opposite "
+            "movements, so the manuscript quotes the per-pilot-count figure."),
         "N8_points_positive_and_significant": len(n8_pos_sig),
         "N8_points_negative_and_significant": len(n8_neg_sig),
         "N8_points_total": len(n8),

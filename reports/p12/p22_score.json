@@ -1,0 +1,79 @@
+{
+ "gate": "P22",
+ "prereg": "reports/p12/PREREG_P22.md @ 7c6708a",
+ "per_N": [
+  {
+   "N": 8,
+   "mean_ratio_of_sums_db": -0.254,
+   "mean_paired_median_db": 0.225,
+   "predicted_band": [
+    -0.35,
+    0.05
+   ],
+   "predicted_point": -0.2,
+   "existing_value": -0.19,
+   "inside_band": true,
+   "miss_db": 0.0
+  },
+  {
+   "N": 16,
+   "mean_ratio_of_sums_db": 0.966,
+   "mean_paired_median_db": 1.081,
+   "predicted_band": [
+    0.6,
+    0.95
+   ],
+   "predicted_point": 0.76,
+   "existing_value": 0.78,
+   "inside_band": false,
+   "miss_db": 0.016
+  },
+  {
+   "N": 32,
+   "mean_ratio_of_sums_db": 2.934,
+   "mean_paired_median_db": 3.226,
+   "predicted_band": [
+    2.65,
+    3.0
+   ],
+   "predicted_point": 2.83,
+   "existing_value": 2.85,
+   "inside_band": true,
+   "miss_db": 0.0
+  }
+ ],
+ "em_gs_mean_db_by_N": [
+  -8.705,
+  -8.672,
+  -8.7
+ ],
+ "em_gs_spread_db": 0.033,
+ "em_gs_spread_max": 0.15,
+ "em_gs_spread_point_estimate": 0.03,
+ "em_gs_spread_ok": true,
+ "em_gs_spread_per_pilot_count": {
+  "P10": {
+   "by_N": [
+    -4.527,
+    -4.363,
+    -4.44
+   ],
+   "spread_db": 0.163,
+   "ok": false
+  },
+  "P30": {
+   "by_N": [
+    -12.884,
+    -12.981,
+    -12.96
+   ],
+   "spread_db": 0.097,
+   "ok": true
+  }
+ },
+ "em_gs_spread_note": "The pooled reading passes at 0.033 dB and is the quantity P22 named. Taken per pilot count the spread is 0.163 dB at P=10, which exceeds the 0.15 dB falsifier. Pooling cancels opposite movements, so the manuscript quotes the per-pilot-count figure.",
+ "N8_points_positive_and_significant": 3,
+ "N8_points_negative_and_significant": 0,
+ "N8_points_total": 12,
+ "status": "FAILED"
+}

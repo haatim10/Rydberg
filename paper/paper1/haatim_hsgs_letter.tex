@@ -75,12 +75,13 @@ This predicts, before any measurement, that a rank prior helps only when the
 channel occupies a small fraction of that capacity --- and therefore that it
 must \emph{hurt} at small aperture. Both follow: enforcing the structure inside
 an exact expectation--maximization Gerchberg--Saxton iteration, with the order
-chosen from a held-out pilot residual, gains $+2.85$~dB at $N=32$ and loses
-$0.19$~dB at $N=8$ --- means over the same twelve operating points at each
-aperture --- while the unstructured baseline moves by $0.012$~dB under that
-same averaging. At the single headline cell the paired per-trial median gain
-is $+2.46$ to $+3.05$~dB across the SNR sweep; the two statistics are not
-interchangeable and we report both where they disagree.
+chosen from a held-out pilot residual, gains $+2.93$~dB at $N=32$ and loses
+$0.25$~dB at $N=8$ in summed squared error --- means over the same twelve
+operating points at each aperture --- while the unstructured baseline moves by
+at most $0.163$~dB across the same range. \textbf{The reversal is visible only in
+that statistic}: under a paired per-trial median the same $N=8$ cells give
+$+0.225$~dB, because the order selector abstains in $42\%$ of trials and those
+trials are bit-identical to the baseline. Both are reported throughout.
 The governing variable is not path count but effective rank relative to
 capacity; we use that relation to predict the gain on two channel
 distributions it was not fitted to, to errors of $0.13$ and $0.315$~dB.
@@ -134,7 +135,9 @@ At $N=8$ the capacity is $4$ while the simulated path counts are
 $L_k\sim\mathcal{U}\{3,\dots,7\}$; the constraint is frequently vacuous and,
 when active, truncates genuine components. \emph{A sign reversal at small $N$
 is predicted by the argument, not discovered afterwards}, and
-\S\ref{sec:aperture} reports it as such.
+\S\ref{sec:aperture} reports it as such --- in summed squared error, the
+quantity a bound governs. It does not appear in a median, for a reason
+\S\ref{sec:effrank} makes precise.
 
 The remaining difficulty is knowing \emph{when} ``a small fraction of capacity''
 holds. A qualitative appeal to sparsity is unusable: a $16$-path channel on a
@@ -147,16 +150,14 @@ capacity, and \S\ref{sec:crossgen} tests that replacement prospectively.
 
 \textbf{Contributions.}
 \begin{enumerate}
-\item The information argument above, with a Rician Cram\'er--Rao bound in
-which each magnitude measurement contributes \emph{rank-one} information, and a
-geometry-constrained bound in tangent-space form because the parameterisation
-is rank deficient.
-\item The aperture-scaling result, presented as a test of a prediction the
-argument makes in advance.
-\item Replacement of the path-count heuristic by $\reff/\rmax$, with the
-capacity $\rmax=\lceil N/2\rceil$ derived, and a measurement separating what
-the \emph{prior} does from what the \emph{estimator} does.
-\item Two cross-generator predictions, each registered before measurement.
+\item The information argument above, with a Rician bound in which each
+magnitude measurement contributes \emph{rank-one} information and a
+geometry-constrained bound in tangent-space form.
+\item The aperture result, as a test of a prediction made in advance.
+\item Replacement of path count by $\reff/\rmax$, with $\rmax=\lceil N/2\rceil$
+derived, separating what the \emph{prior} does from what the \emph{estimator}
+does.
+\item Two cross-generator predictions, registered before measurement.
 \end{enumerate}
 
 \section{System Model and Estimator}
@@ -286,7 +287,7 @@ $\bD=\partial\boldsymbol\eta/\partial\boldsymbol\phi$ is unusable, $\bD$ being
 % 2NK = 48) over 6400 stored trials = 28.1%. Verified in
 % reports/HSGS_PAPER_PROVENANCE.md:205-214.
 rank deficient: at $N=8$ its mean numerical rank is $40.4$ against $\approx
-44.7$ parameters, and $28.1\%$ of realisations have $3\sum_k L_k>2NK$. We use
+44.7$ parameters. We use
 the Gorman--Hero / Stoica--Ng tangent-space form~\cite{gorman1990,stoica1998}
 with $\bU$ an orthonormal basis of $\range(\bD)$:
 \begin{equation}
@@ -333,9 +334,9 @@ the pilot-count cells ($10$--$35$); $20$ everywhere else.}
  & $T$ & sel. & $P$ & RSR & Gen. & trials & SNR (dB) & used in \\
 \midrule
 A & 100 & 25 & 10, 30 & 12 & TB & 300--400 & $\{-5..20\}$ &
-  \S\ref{sec:main}, \S\ref{sec:kinv} \\
-B & 50 & 20 & 10, 30 & 12 & TB & 400 & $\{-5..20\}$ &
-  \S\ref{sec:aperture} \\
+  \S\ref{sec:main}, \S\ref{sec:aperture}, \S\ref{sec:kinv} \\
+B & 50 & 20 & 30 & 12 & TB & 400 & $\{-5..20\}$ &
+  \S\ref{sec:kinv} (timing) \\
 C & 100 & 25 & $20^\dagger$ & 10 & TD & 60--1000 & $\mathcal{U}[-10,20]$ &
   \S\ref{sec:effrank}--\S\ref{sec:kinv} \\
 D & 50 & 20 & 30 & 12 & TB & 300 & $5$ &
@@ -381,26 +382,62 @@ across aperture and the unstructured one does not.}
 \label{fig:main}
 \end{figure*}
 
-\subsection{Aperture scaling: the predicted sign reversal}
+\subsection{Aperture scaling, and which statistic reverses}
 \label{sec:aperture}
 
-Step 4 predicts the gain turns negative at small aperture.
-\textbf{Configuration~B}, sweeping
+Step 4 predicts the gain turns negative at small aperture. We swept
 $N\in\{8,16,32\}$ over $12$ operating points each ($2$ pilot counts $\times\,6$
-% src: results/track_b/b3/*.npz, configuration B, mean over P in {10,30} x 6 SNR
-SNR values), the mean gain is $-0.19$, $+0.78$ and $+2.85$~dB. \textbf{Under
-the same averaging EM-GS varies by $0.012$~dB} --- exactly as
-\S\ref{sec:crlb} requires of an estimator whose information is block diagonal
-in $N$.
+SNR values) at \textbf{configuration~A}, so that this panel and
+Fig.~\ref{fig:main}(a) share one operator. \textbf{The two pooling rules
+disagree at $N=8$ and agree everywhere else}, so both are reported:
+% src: results/p14/aperture_summary.json, configuration A, 400 trials/point;
+% N=32 P=30 served from results/p12/B1.json (same cell, same operator)
 
-% src: results/track_b/b3/N8_P*.npz, configuration B, 'active' field and the
-% per-SNR ratio-of-sums
-At $N=8$ the projection is inactive in $42.5\%$ of trials, and where active it
-truncates genuine components: the gain is $+1.47$~dB at $-5$~dB SNR but
-$-2.23$~dB at high SNR, because truncation bias does not shrink with noise
-while the variance term does. \emph{This is the predicted failure, measured.}
-The sign of any scalar summary at $N=8$ depends on the pooling rule, so we
-report per-point values.
+\begin{center}\footnotesize
+\begin{tabular}{cccc}
+\toprule
+$N$ & ratio of sums & paired median & EM-GS NMSE \\
+\midrule
+$8$  & $\mathbf{-0.254}$ & $\mathbf{+0.225}$ & $-8.705$ \\
+$16$ & $+0.966$ & $+1.081$ & $-8.672$ \\
+$32$ & $+2.934$ & $+3.226$ & $-8.700$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{EM-GS varies by at most $0.163$~dB across the same fourfold
+change in aperture} --- $0.163$~dB at $P=10$ and $0.097$~dB at $P=30$, against
+a structured gain that moves by over $3$~dB. (Pooling the pilot counts first
+gives $0.033$~dB, but they move in opposite directions, so we quote the larger
+figure.) This is exactly what \S\ref{sec:crlb} requires of an estimator whose
+information is block diagonal in $N$.
+
+\textbf{The predicted reversal is a ratio-of-sums phenomenon.} At $N=8$ the
+projection is inactive in $41.8\%$ of trials on average, rising from $12\%$ at
+$-5$~dB to $59\%$ ($P=10$) and $79\%$ ($P=30$) at $+20$~dB as the selector
+declines a constraint it cannot afford. Where it is active it truncates genuine components, and the ratio
+of summed errors turns over accordingly, running from $+1.272$~dB at $-5$~dB
+SNR to $-2.613$~dB at $+20$~dB ($P=10$), because truncation bias does not
+shrink with noise while the variance term does.
+\emph{That is the predicted failure, measured.}
+
+\textbf{The paired median does not reverse, and we do not claim it does.} At
+$N=8$ it is $+0.000$~dB at nine of the twelve points, positive and significant
+at the other three, and negative-and-significant at none. The mechanism is the
+one \S\ref{sec:effrank} sets out: abstention makes most trials bit-identical to
+EM-GS and pins the median at zero, while the active minority dominates a sum of
+squared errors. So Step~4's prediction is confirmed on the statistic a bound
+governs and is \emph{invisible} to the one we otherwise treat as primary. A
+reader who took only the median away would conclude the prior is never harmful;
+\S\ref{sec:effrank} shows it is not.
+
+% src: reports/p12/p22_score.json
+\textbf{P22, registered before this sweep ran, failed.} The predicted bands
+were $[-0.35,+0.05]$, $[+0.60,+0.95]$ and $[+2.65,+3.00]$~dB: $N=8$ and $N=32$
+landed inside, $N=16$ missed by $0.016$~dB. The EM-GS spread was predicted at
+$\le0.15$~dB: $0.033$~dB pooled, which is what the prediction named, but
+$0.163$~dB at $P=10$ alone, which would fail it. A failed prediction licenses
+no reporting but the measurement.
 
 \subsection{Path count is the wrong coordinate}
 \label{sec:pathcount}
@@ -454,11 +491,7 @@ report ratio-of-sums values that do go negative. Abstention makes the majority
 of trials bit-identical to EM-GS, which pins the \emph{median} at exactly zero;
 it does nothing about the minority in which the projection is active and
 truncates genuine components, and those trials dominate a sum of squared
-errors. Under configuration~A at $N=8$, $P=10$, $+20$~dB the same cell gives a
-% src: results/p14/aperture/N8_P10.json, configuration A, 400 trials
-median of
-$+0.000$~dB and a ratio-of-sums of $-2.613$~dB, with the projection active in
-$40.7\%$ of trials. \textbf{So $\dhs\ge0$ is a property of the selector under a
+errors. \S\ref{sec:aperture} is the same effect at $N=8$. \textbf{So $\dhs\ge0$ is a property of the selector under a
 median statistic only. It is neither evidence that the prior is never harmful
 nor a guarantee about mean-square error}, and where the two statistics disagree
 we report both.
@@ -535,16 +568,12 @@ by $0.006$~dB, and reported rather than dropped.
 
 % src: results/track_b/timing.json (config B); results/p12/B4.json (config C)
 \textbf{Cost.} Order selection is $57.7$--$85.5\%$ of runtime. A coarse-to-fine
-search over a stride-$3$ grid with local refinement (configuration~C) returns
-the same $\hat r$
-in $93.3\%$ of trials and cuts the selection stage by $1.68\times$
-($16.0\to9.6$ candidate evaluations). \textbf{It did not meet its
-pre-registered acceptance criterion.} That criterion was a degradation of at
-most $0.05$~dB; the aggregate cost is $0.083$~dB. The paired per-trial
-degradation is $0.000$~dB only because the two searches agree on $93.3\%$ of
-trials and are then bit-identical, so that statistic understates the cost and
-we do not quote it alone. We report the accelerated search as an option that
-missed its gate, not as a validated substitute.
+stride-$3$ search (configuration~C) cuts the selection stage by $1.68\times$
+($16.0\to9.6$ evaluations) and returns the same $\hat r$ in $93.3\%$ of trials,
+but \textbf{missed its pre-registered gate}: the criterion was $\le0.05$~dB and
+the aggregate cost is $0.083$~dB. Its paired median degradation of $0.000$~dB
+understates that, for the same reason abstention does above, so we report it as
+an option that missed its gate and not as a validated substitute.
 
 % src: results/p12/B5.json, 300 trials/point, shared \hat r, configuration A
 \textbf{Placement is SNR-dependent, and the effect is small} (configuration~A).
