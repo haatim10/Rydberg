@@ -75,11 +75,27 @@ PRIORITY = ["C1_U1_seed2", "C1_H1_seed2", "C1_U1_seed3", "C1_H1_seed3",
 
 
 def run_cfg(cfg: TrackDConfig, spec: dict) -> TrackDConfig:
-    """Identical to the stage-4/5 config except for the SNR range and seed."""
+    """Identical to the stage-4/5 config except for the SNR range and seed.
+
+    PROMPT 15 A1 FIX. The docstring's claim was false: this did NOT match the
+    stage-4 config, because ``TrackDConfig().train.init`` defaults to
+    ``"random"`` (config.py:324) and ``stage4.main()`` overrides it to
+    ``"spectral"`` before training. Every arm trained here therefore learned
+    from a RANDOM initial estimate while the stage-4 arms it was compared
+    against learned from the spectral one. The checkpoints record it:
+    stage4/C_U1_snr5_20 has train.init='spectral', every results/p12/partC arm
+    has train.init='random'.
+
+    That makes the PROMPT 12 Part C contrasts uninterpretable -- P19's "seed
+    spread" varies the seed AND the initialiser -- and no re-evaluation can
+    repair it, because the defect is in the weights. The arms must be retrained
+    with this line present.
+    """
     return replace(
         cfg,
         data=replace(cfg.data, n_train=N_TRAIN, snr_range_db=spec["snr"]),
-        train=replace(cfg.train, seed=cfg.train.seed + 1000 * spec["seed"]),
+        train=replace(cfg.train, seed=cfg.train.seed + 1000 * spec["seed"],
+                      init="spectral"),
         model=replace(cfg.model, filter_init="random", use_transformer=True,
                       use_hankel=spec["hankel"], hankel_rank=HANKEL_RANK,
                       hankel_mode="fixed", hankel_gate="none"))

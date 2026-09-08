@@ -1,0 +1,188 @@
+{
+ "P19_seed_spread": {
+  "status": "FAILED",
+  "n_seeds": 3,
+  "per_seed": {
+   "seed1": {
+    "delta_h_db": 0.0777955336603382,
+    "ci95": [
+     0.049745243040561604,
+     0.11193261492902692
+    ]
+   },
+   "seed2": {
+    "delta_h_db": 0.24462055500936764,
+    "ci95": [
+     0.20038984874544127,
+     0.2872103464316851
+    ]
+   },
+   "seed3": {
+    "delta_h_db": 0.6319992087563531,
+    "ci95": [
+     0.5928237878746276,
+     0.6649495698945884
+    ]
+   }
+  },
+  "across_seed_sd_db": 0.2843221537320123,
+  "across_seed_range_db": 0.5542036750960149,
+  "threshold_sd_max": 0.12,
+  "threshold_range_max": 0.25,
+  "COLLAPSE_CLAIM_UNSUPPORTED": true,
+  "note": "CIs above are over TEST REALISATIONS; the seed spread is the separate quantity reported here."
+ },
+ "P20_delta_h_balanced": {
+  "status": "FAILED",
+  "delta_h_high_snr_ge5_db": 0.17391960521571193,
+  "ci95": [
+   0.09718011600097043,
+   0.2505308684973784
+  ],
+  "delta_h_pooled_db": -0.18796001700944687,
+  "per_bin": [
+   {
+    "bin": [
+     -10,
+     -5
+    ],
+    "n": 346,
+    "median_diff_db": -0.1874822805120211,
+    "boot_ci95_median": [
+     -0.2284263240880755,
+     -0.15945460473165263
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     -5,
+     0
+    ],
+    "n": 354,
+    "median_diff_db": -0.4736325121534706,
+    "boot_ci95_median": [
+     -0.5415944461230906,
+     -0.4090614748177881
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     0,
+     5
+    ],
+    "n": 317,
+    "median_diff_db": -0.6698512280645019,
+    "boot_ci95_median": [
+     -0.7621304966147271,
+     -0.5885750256127089
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     5,
+     10
+    ],
+    "n": 331,
+    "median_diff_db": -0.32123471265775727,
+    "boot_ci95_median": [
+     -0.43700008009871993,
+     -0.23669620723220142
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     10,
+     15
+    ],
+    "n": 336,
+    "median_diff_db": 0.128881707558552,
+    "boot_ci95_median": [
+     0.062206117649141635,
+     0.2830762697502891
+    ],
+    "ci_excludes_zero": true
+   },
+   {
+    "bin": [
+     15,
+     20
+    ],
+    "n": 316,
+    "median_diff_db": 0.918565147983859,
+    "boot_ci95_median": [
+     0.7781985209664813,
+     1.0465315874170287
+    ],
+    "ci_excludes_zero": true
+   }
+  ],
+  "predicted_band_high_snr": [
+   -0.1,
+   0.35
+  ],
+  "predicted_point": 0.1,
+  "max_bin_db": 0.918565147983859,
+  "threshold_no_bin_above": 0.5,
+  "RECOVERS_ABOVE_BAND": false,
+  "tension_note": "if Delta_H recovers above +0.35 dB the recommendation and the negative result are in tension and Paper 2 must say so"
+ },
+ "P21_logdb_control": {
+  "gradient_share": {
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ],
+   "grad_share": [
+    0.09274544984318604,
+    0.12095867490592939,
+    0.14558466042816573,
+    0.15198525284519773,
+    0.18053932167677406,
+    0.30818664030074705
+   ],
+   "grad_share_below_5dB": 0.35928878517728113,
+   "span_max_over_min": 3.322930028608723
+  },
+  "span_max_over_min": 3.322930028608723,
+  "threshold_span_max": 4.0,
+  "logdb_vs_unbalanced_high_snr_db": 2.2282470428095156,
+  "logdb_vs_unbalanced_ci": [
+   2.1703393708375742,
+   2.309824965662429
+  ],
+  "logdb_minus_balanced_high_snr_db": 0.342785101008122,
+  "logdb_minus_balanced_ci": [
+   0.3055610370675357,
+   0.39177906294924014
+  ],
+  "status": "HELD",
+  "REPRODUCES_BALANCED": true,
+  "cost_note": "if this holds, Paper 2 must position per-bin reweighting as one of at least two adequate fixes rather than as THE fix"
+ }
+}

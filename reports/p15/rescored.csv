@@ -1,0 +1,18 @@
+quantity,stored,rescored,difference,validity,note
+P19 Delta_H seed1 (dB),0.6896,0.0778,-0.6118,VALID,"stage-4 pair, trained spectral; re-scored value equals the published stage-4 row +0.0778 exactly"
+P19 Delta_H seed2 (dB),0.2416,0.2446,0.0031,INVALID -- arm trained with init='random',trained by scratch/p12_partC.py with init='random'
+P19 Delta_H seed3 (dB),0.6339,0.632,-0.0019,INVALID -- arm trained with init='random',trained by scratch/p12_partC.py with init='random'
+P19 across-seed SD (dB),0.2442,0.2843,0.0401,INVALID -- arm trained with init='random',mixes one spectral-trained and two random-trained pairs
+P19 across-seed range (dB),0.4481,0.5542,0.1061,INVALID -- arm trained with init='random',same confound
+P20 Delta_H SNR>=5 (dB),0.3946,0.1739,-0.2207,INVALID -- arm trained with init='random',"C2_H1_balanced trained with init='random'; band was [-0.10,+0.35]"
+P20 Delta_H pooled (dB),-0.0814,-0.188,-0.1065,INVALID -- arm trained with init='random',
+"P20 top-bin [15,20) (dB)",1.3082,0.9186,-0.3896,INVALID -- arm trained with init='random',the TENSION figure; falls from +1.308 to +0.919 on re-evaluation
+"P20 bin (-10, -5) median (dB)",-0.1254,-0.1875,-0.062,INVALID -- arm trained with init='random',CI excludes zero in both
+"P20 bin (-5, 0) median (dB)",-0.386,-0.4736,-0.0876,INVALID -- arm trained with init='random',CI excludes zero in both
+"P20 bin (0, 5) median (dB)",-0.5825,-0.6699,-0.0874,INVALID -- arm trained with init='random',CI excludes zero in both
+"P20 bin (5, 10) median (dB)",-0.1826,-0.3212,-0.1386,INVALID -- arm trained with init='random',CI excludes zero in both
+"P20 bin (10, 15) median (dB)",0.3755,0.1289,-0.2466,INVALID -- arm trained with init='random',CI excludes zero in both
+"P20 bin (15, 20) median (dB)",1.3082,0.9186,-0.3896,INVALID -- arm trained with init='random',CI excludes zero in both
+P21 gradient-share span,3.3229,3.3229,0.0,VALID,"a property of the loss function, not of any trained model -- unaffected"
+P21 log vs unbalanced SNR>=5 (dB),2.4184,2.2282,-0.1902,INVALID -- arm trained with init='random',threshold was >= +1.2 dB
+P21 log minus balanced SNR>=5 (dB),0.584,0.3428,-0.2412,INVALID -- arm trained with init='random',margin was +/-0.5 dB; verdict flips FAILED -> HELD on re-evaluation alone

@@ -175,3 +175,37 @@ inside the trained loop (`reports/trackD_stage3_report.md:117`). That contrast
 is recorded in `docs/structure-vs-training.md` and is deliberately **not** cited
 in the Paper 1 letter, because the companion work is neither on arXiv nor under
 review; see `docs/open-todos.md` item 3.
+
+---
+
+# WITHDRAWN — see reports/p15/PART_A.md
+
+**Every number in this report was measured off-model and none of it may be
+used.** PROMPT 15 Part A established two defects in the PROMPT 12 Part C
+scripts, both mine:
+
+1. `scratch/p12_partC_eval.py` evaluated with `train.init="random"`, the
+   `TrackDConfig` default, instead of the `"spectral"` initialiser every stage
+   script sets and every arm was trained with.
+2. `scratch/p12_partC.py` **trained** the seed-2, seed-3, balanced and log arms
+   with the same wrong initialiser, while the stage-4 arms they were compared
+   against were trained spectrally. The checkpoints record it.
+
+Defect 2 means the contrasts cannot be repaired by re-scoring: P19's "seed
+spread" varies the seed *and* the initialiser. `reports/p15/rescored.csv`
+records stored, re-scored and difference for every quantity, with a validity
+column; the re-scored values are shown to size the error, not as results.
+
+Three conclusions in this report are withdrawn outright:
+
+- the claim that stage 4's own `evaluate()` no longer reproduces its stored
+  rows — it does, bitwise; seed 1 re-scores to exactly the published `+0.0778`;
+- the P20 TENSION finding — re-scored, `Delta_H` over SNR >= 5 is `+0.174` dB,
+  inside the pre-registered band;
+- the claim that a log-domain loss beats per-bin reweighting by `+0.584` dB —
+  re-scored the margin is `+0.343` dB, inside the `±0.5` dB equivalence margin,
+  so P21's committed prediction held rather than failed.
+
+The scripts are fixed and `tests/test_trackd_eval_reproducibility.py` pins the
+initialiser at both training and evaluation. The arms must be retrained before
+any of P19-P21 can be scored.

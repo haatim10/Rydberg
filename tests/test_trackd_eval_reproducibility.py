@@ -119,3 +119,32 @@ def test_stored_stage4_rows_reproduce_from_committed_checkpoints():
             err_msg=(f"{k}: stored rows do not reproduce from best.pt -- the "
                      "results file and the checkpoint have drifted apart"),
         )
+
+
+def test_partC_training_config_sets_spectral_init():
+    """The PROMPT 12 Part C training driver must not inherit the 'random'
+    default either. This is the defect that invalidated those runs: the arms
+    were TRAINED from a random initial estimate while the stage-4 arms they
+    were compared against were trained from the spectral one, so the contrast
+    varied the initialiser as well as the seed."""
+    from dataclasses import replace  # noqa: F401  (used by run_cfg)
+    from scratch.p12_partC import run_cfg
+    from trackD_urformer.config import TrackDConfig
+
+    spec = {"snr": (5.0, 20.0), "seed": 2, "hankel": False}
+    assert run_cfg(TrackDConfig(), spec).train.init == "spectral"
+
+
+@pytest.mark.parametrize("rel,expected", [
+    ("results/track_d/stage4/C_U1_snr5_20/best.pt", "spectral"),
+    ("results/track_d/stage4/C_H1_snr5_20/best.pt", "spectral"),
+])
+def test_checkpoints_record_the_initialiser_they_were_trained_with(rel, expected):
+    """Checkpoints carry their training config; assert the stage-4 arms are the
+    spectral ones, so a future comparison against them can be checked rather
+    than assumed."""
+    f = Path(rel)
+    if not f.exists():
+        pytest.skip(f"{rel} not in this checkout")
+    cfg = torch.load(f, map_location="cpu", weights_only=False)["config"]
+    assert cfg["train"]["init"] == expected
