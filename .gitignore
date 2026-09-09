@@ -58,3 +58,12 @@ results/p12/partC/*/checkpoint.pt
 # ON DISK because the PROMPT 15 A1 forensics needed exactly them.
 results/p16/tier05/*/ep[0-9][0-9][0-9].pt
 results/p16/tier05/*/checkpoint.pt
+
+# PROMPT 17 Tier 1 (fourteen runs in four gated batches).
+# Same convention as p16/tier05: the scientific record -- best.pt, curves.csv,
+# val_per_trial.npy, result.json -- is tracked, while the per-epoch snapshots
+# and the resume checkpoint are not. The per-epoch files are kept ON DISK,
+# because the PROMPT 15 A1 forensics needed exactly them to establish which
+# epoch a checkpoint came from.
+results/p17/tier1/*/ep[0-9][0-9][0-9].pt
+results/p17/tier1/*/checkpoint.pt
