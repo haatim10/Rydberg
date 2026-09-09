@@ -5,14 +5,20 @@
 \citation{xu2025}
 \citation{xiao2026}
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {II}System Model and Assumptions}{1}{}\protected@file@percent }
+\newlabel{sec:model}{{II}{1}{}{}{}}
 \citation{xu2025}
 \citation{cadzow1988}
 \citation{markovsky2008}
-\citation{cadzow1988}
+\citation{chen2014emac}
+\citation{jin2016aloha}
+\citation{haldar2014loraks}
+\citation{tang2013offgrid}
+\citation{balan2015}
+\citation{cui2025}
+\citation{xu2025}
 \@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Uplink of the atomic receiver. $K$ single-antenna users transmit pilots $\mathbf  {S}$ over a geometric multipath channel to $N$ vapour cells arranged as a uniform linear array. Each cell is interrogated by probe and coupling lasers and illuminated by a known reference beam $\mathbf  {B}$. Photodetection reports the magnitude of the total field, which is where the phase is lost, and the estimator sees only $\mathbf  {Z}$.}}{2}{}\protected@file@percent }
 \newlabel{fig:system}{{1}{2}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {II}System Model and Assumptions}{2}{}\protected@file@percent }
-\newlabel{sec:model}{{II}{2}{}{}{}}
 \newlabel{eq:obs}{{1}{2}{}{}{}}
 \newlabel{eq:chan}{{2}{2}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {III}Proposed Estimator}{2}{}\protected@file@percent }
@@ -21,43 +27,38 @@
 \newlabel{eq:cap}{{3}{2}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}The estimator}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Choosing the order without an oracle}{2}{}\protected@file@percent }
-\citation{chen2014emac}
-\citation{jin2016aloha}
-\citation{haldar2014loraks}
-\citation{tang2013offgrid}
-\citation{balan2015}
-\citation{cui2025}
-\citation{xu2025}
 \citation{gorman1990}
 \citation{stoica1998}
 \@writefile{toc}{\contentsline {section}{\numberline {IV}Performance References}{3}{}\protected@file@percent }
 \newlabel{sec:crlb}{{IV}{3}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}What an amplitude measurement does and does not reveal}{3}{}\protected@file@percent }
-\newlabel{eq:fisher}{{4}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Information in an amplitude measurement}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}A reference that accounts for the structure}{3}{}\protected@file@percent }
-\newlabel{eq:ccrb}{{5}{3}{}{}{}}
+\newlabel{eq:ccrb}{{4}{3}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {V}Numerical Results}{3}{}\protected@file@percent }
 \newlabel{sec:results}{{V}{3}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Experimental setup}{3}{}\protected@file@percent }
 \newlabel{sec:setup}{{\mbox  {V-A}}{3}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces The four measurement configurations. $P$ is itself swept in configuration~C's user-count cells ($13$--$27$) and pilot-count cells ($10$--$35$).}}{3}{}\protected@file@percent }
+\newlabel{tab:config}{{I}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Performance against the references}{3}{}\protected@file@percent }
+\newlabel{sec:main}{{\mbox  {V-B}}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Aperture, and which statistic reverses}{3}{}\protected@file@percent }
+\newlabel{sec:aperture}{{\mbox  {V-C}}{3}{}{}{}}
 \citation{royvetterli2007}
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces The four measurement configurations. $P$ is itself swept in configuration~C's user-count cells ($13$--$27$) and pilot-count cells ($10$--$35$).}}{4}{}\protected@file@percent }
-\newlabel{tab:config}{{I}{4}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Performance against the references}{4}{}\protected@file@percent }
-\newlabel{sec:main}{{\mbox  {V-B}}{4}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Aperture, and which statistic reverses}{4}{}\protected@file@percent }
-\newlabel{sec:aperture}{{\mbox  {V-C}}{4}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Both panels are configuration~A ($n_{\mathrm  {cz}}=4$, $T=100$, order search $25$, RSR $12$~dB, $K=3$, $400$ paired trials per point), so they share one operator. (a)~NMSE against SNR at $N=32$, $P=30$; the unconstrained reference is faint because it does not model the constraint, and neither reference governs a biased estimator. (b)~$\Delta _{\mathrm  {HS}}$ against $N$ at both pilot counts, each point the mean over six SNR values. Filled markers are the paired per-trial median, open markers the ratio of summed errors; the two disagree at $N=8$. The baseline's own NMSE is overlaid on the right-hand axis.}}{4}{}\protected@file@percent }
+\newlabel{fig:main}{{2}{4}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Path count is the wrong coordinate}{4}{}\protected@file@percent }
 \newlabel{sec:pathcount}{{\mbox  {V-D}}{4}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Effective rank, and the constraint versus the estimator}{4}{}\protected@file@percent }
 \newlabel{sec:effrank}{{\mbox  {V-E}}{4}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Both panels are configuration~A ($n_{\mathrm  {cz}}=4$, $T=100$, order search $25$, RSR $12$~dB, $K=3$, $400$ paired trials per point), so they share one operator. (a)~NMSE against SNR at $N=32$, $P=30$; the unconstrained reference is faint because it does not model the constraint, and neither reference governs a biased estimator. (b)~$\Delta _{\mathrm  {HS}}$ against $N$ at both pilot counts, each point the mean over six SNR values. Filled markers are the paired per-trial median, open markers the ratio of summed errors; the two disagree at $N=8$. The baseline's own NMSE is overlaid on the right-hand axis.}}{5}{}\protected@file@percent }
-\newlabel{fig:main}{{2}{5}{}{}{}}
+\bibcite{cui2025}{1}
 \@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces $\Delta _{\mathrm  {HS}}$ against $\rho =r_{\mathrm  {eff}}/r_{\max }$ for $N\in \{16,32,64\}$. The boundary location is stable across a fourfold change in aperture; the gain magnitude is not, and that residual is unexplained.}}{5}{}\protected@file@percent }
 \newlabel{fig:boundary}{{3}{5}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Prediction on unseen channel distributions}{5}{}\protected@file@percent }
 \newlabel{sec:crossgen}{{\mbox  {V-F}}{5}{}{}{}}
-\bibcite{cui2025}{1}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Users, cost, and where the projection belongs}{5}{}\protected@file@percent }
+\newlabel{sec:kinv}{{\mbox  {V-G}}{5}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Limitations and Conclusion}{5}{}\protected@file@percent }
 \bibcite{gong2025mag}{2}
 \bibcite{gerchberg1972}{3}
 \bibcite{xiao2026}{4}
@@ -72,8 +73,5 @@
 \bibcite{royvetterli2007}{13}
 \bibcite{gorman1990}{14}
 \bibcite{stoica1998}{15}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Users, cost, and where the projection belongs}{6}{}\protected@file@percent }
-\newlabel{sec:kinv}{{\mbox  {V-G}}{6}{}{}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Limitations and Conclusion}{6}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{References}{6}{}\protected@file@percent }
 \gdef \@abspage@last{6}

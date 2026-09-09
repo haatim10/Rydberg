@@ -68,37 +68,27 @@ Campus, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
 % +2.93 / 0.25 / 0.163 / +0.225 / 42% -> Sec. V-C; 8.73 -> Sec. I;
 % 0.13 / 0.315 -> Sec. V-F.
 \begin{abstract}
-Receivers built from Rydberg atoms sense a radio field through an optical
-transition, and the quantity they report is the field's amplitude alone; the
-phase never reaches the output. Estimating a multi-user channel from such a
-receiver is therefore harder than ordinary linear estimation.
-
-We study when it helps to tell the estimator in advance that the channel cannot
-be arbitrary. On a uniform linear array the channel across antennas is a sum of
-a few sinusoids, one per propagation path --- a strong constraint, but a limited
-one, since the array size fixes how much structure it can carry. We impose that
-constraint inside an iterative amplitude-only estimator and choose how hard to
-impose it from the pilots alone, using no knowledge of the true channel. Two
-properties of the receiver predict the outcome beforehand: each amplitude
-reading pins the channel down in one direction only, and readings at different
-antennas say nothing about one another, so adding antennas does not by itself
-improve accuracy per antenna. A larger array helps only an estimator that uses
-how the channel varies from one antenna to the next.
-
-The constraint helps when the channel is simple relative to what the array can
-represent, and hurts otherwise. Averaged over twelve operating points at each
-array size, it gains $+2.93$~dB at $32$ antennas and loses $0.25$~dB at $8$,
-while the unconstrained baseline varies by at most $0.163$~dB across the same
-range. The loss appears only in summed squared error; under a per-trial median
-the same cells give $+0.225$~dB, because the estimator declines the constraint
-in $42\%$ of trials and is then identical to the baseline. What governs the
-outcome is not the number of paths but how much of the array's capacity the
-channel occupies, and that quantity predicted the gain on two channel
-distributions it was never fitted to, to within $0.13$ and $0.315$~dB.
-
-Results are simulation only. The bounds computed here describe unbiased
-estimators and every estimator studied is biased, so they serve as references
-rather than limits.
+Rydberg atomic receivers sense a radio field through an optical transition and
+report its amplitude alone, so the phase is lost at the point of measurement.
+This paper asks when it helps to constrain the channel in such a receiver. On a
+uniform linear array the channel across antennas is a sum of a few sinusoids,
+which is a strong constraint but a bounded one: the array size fixes how much
+structure it can carry. Two properties of the receiver settle the question in
+advance. Each amplitude reading constrains the channel in one direction only,
+and readings at different antennas are independent of one another, so extra
+antennas do not improve accuracy per antenna unless the estimator exploits how
+the channel varies across them. The constraint should therefore help when the
+channel is simple relative to the array's capacity and hurt otherwise, which is
+what we measure: averaged over twelve operating points per array size, it gains
+$+2.93$~dB at $32$ antennas and loses $0.25$~dB at $8$, while the unconstrained
+baseline varies by at most $0.163$~dB. The loss appears only in summed squared
+error; under a per-trial median the same cells give $+0.225$~dB, because the
+estimator declines the constraint in $42\%$ of trials. The governing quantity is
+not the path count but the fraction of the array's capacity the channel
+occupies, and it predicted the gain on two unseen channel distributions to
+within $0.13$ and $0.315$~dB. Results are simulation only, and the bounds
+computed here govern unbiased estimators while every estimator studied is
+biased.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -127,21 +117,19 @@ rebuilding hardware. One consequence organises everything that follows: the
 optical readout responds to the \emph{amplitude} of the radio field, so the
 phase is destroyed at the point of measurement and never appears at the output.
 
-Channel estimation for such a receiver is therefore not a linear inverse
-problem. Recovering a complex channel from amplitude-only measurements is a
-phase-retrieval problem, non-convex and without a closed-form solution, and it
-is made tractable here by a known reference field added at the array, which
+Channel estimation is therefore not a linear inverse problem: recovering a
+complex channel from amplitude-only measurements is phase retrieval, non-convex
+and without a closed form, made tractable here by a known reference field that
 converts relative phase into observable amplitude. Existing estimators for this
-receiver take the problem as given and improve the solver: alternating
-projection in the style of Gerchberg and Saxton~\cite{gerchberg1972}, gradient
-descent with a rank projection~\cite{xu2025}, or an unrolled network trained on
-simulated channels~\cite{xiao2026}. What none of them addresses is when
-constraining the channel is worth doing at all. A structural constraint is
+receiver improve the solver --- alternating
+projection~\cite{gerchberg1972}, gradient descent with a rank
+projection~\cite{xu2025}, or an unrolled network~\cite{xiao2026} --- but none
+addresses when constraining the channel is worth doing at all. A constraint is
 reported as helpful because it helped at the array size and channel richness
-that were simulated, and there is no account of the conditions under which it
-would stop helping, or start hurting. That gap is the subject of this paper:
-under what conditions does imposing structure on the channel actually improve a
-magnitude-only estimator, and how could a designer tell in advance?
+simulated, with no account of when it would stop helping or start hurting. That
+gap is the subject of this paper: under what conditions does imposing structure
+actually improve a magnitude-only estimator, and how could a designer tell in
+advance?
 
 \textbf{Contributions.}
 \begin{itemize}
@@ -231,17 +219,15 @@ $(N-p)\times(p+1)$, the largest rank it can carry is
 \rmax(N)=\max_p\min(N-p,\,p+1)=\lceil N/2\rceil,
 \label{eq:cap}
 \end{equation}
-and if $L_k\ge\rmax(N)$ the constraint says nothing. This is the sense in which
-the array size limits how much structure the model can express, and it yields a
-prediction available before any simulation: at $N=8$ the capacity is $4$ while
-the simulated path counts run from $3$ to $7$, so the constraint is frequently
-vacuous and, when it does bite, removes genuine components of the channel. A
-rank constraint should therefore help at large aperture and harm at small.
+and if $L_k\ge\rmax(N)$ the constraint says nothing. This yields a prediction
+available before any simulation: at $N=8$ the capacity is $4$ while the
+simulated path counts run from $3$ to $7$, so the constraint is frequently
+vacuous and, when it does bite, removes genuine components. A rank constraint
+should therefore help at large aperture and harm at small.
 
-The user count cancels from this comparison. The structural model uses
-$3\sum_k L_k$ parameters against $2NK$ unstructured, and the ratio does not
-depend on $K$, so the gain is expected to be invariant to the number of users
-at fixed pilot adequacy.
+The user count cancels: the structural model uses $3\sum_k L_k$ parameters
+against $2NK$ unstructured, a ratio independent of $K$, so the gain is expected
+to be invariant to the number of users at fixed pilot adequacy.
 
 \subsection{The estimator}
 
@@ -252,8 +238,7 @@ truncates to the $r$ largest singular values and $\Hank_p^{\dagger}$ averages
 along antidiagonals. One application is \emph{not} idempotent: it is a single
 step of an alternating projection between the set of rank-$r$ matrices and the
 set of Hankel matrices, so the number of sweeps is part of the operator's
-definition and not a tuning detail. We claim no new projection algorithm;
-Cadzow's~\cite{cadzow1988} is used as given. With the projection disabled the
+definition and not a tuning detail. With the projection disabled the
 estimator reproduces EM-GS to $\max|\text{diff}|=0$, so the projection is
 provably the only difference between the two arms compared throughout.
 
@@ -270,101 +255,68 @@ the estimator \emph{abstains}, falling back exactly to EM-GS. This is designed
 behaviour rather than a failure mode, and it turns out to carry much of the
 method's protection against a badly chosen constraint.
 
-Subspace methods such as root-MUSIC and ESPRIT recover $\{\psi_{\ell,k}\}$
-% Named without a citation on purpose: see docs/open-todos.md item 2. The
-% argument depends only on both methods needing the signal subspace, not on
-% any specific result in those papers, and no verified entry exists here.
-directly from the signal subspace, which would make the structure explicit
-rather than imposed. That subspace, however, requires either multiple snapshots
-or the complex field, and with magnitude-only single-snapshot data it becomes
-identifiable only after phase retrieval has already succeeded --- at which
-point the channel is estimated and there is nothing left to do. We therefore
-regularise toward the exponential-sum manifold instead of parameterising it.
+Subspace methods such as root-MUSIC and ESPRIT would recover
+% Named without a citation on purpose: see docs/open-todos.md item 2.
+$\{\psi_{\ell,k}\}$ directly, but they need the signal subspace, which requires
+either multiple snapshots or the complex field. With magnitude-only
+single-snapshot data that subspace is identifiable only after phase retrieval
+has succeeded, so we regularise toward the exponential-sum manifold rather than
+parameterising it.
 
 Structured low-rank Hankel recovery for sums of exponentials is well developed
-outside this setting. EMaC~\cite{chen2014emac}, ALOHA~\cite{jin2016aloha} and
-LORAKS~\cite{haldar2014loraks} recover such a matrix from \emph{partial linear}
-observations by convex relaxation with recovery guarantees, and gridless
-line-spectrum and atomic-norm methods~\cite{tang2013offgrid} likewise assume
-linear measurements and a separation condition. Both families differ from the
-present problem in the same way: the measurement here is a modulus, so the map
-is not linear, no convex relaxation applies, and the projection can act only as
+for \emph{linear} measurements~\cite{chen2014emac,jin2016aloha,haldar2014loraks},
+as are gridless line-spectrum methods under a separation
+condition~\cite{tang2013offgrid}. Neither applies here: the measurement is a
+modulus, so no convex relaxation is available and the projection can act only as
 a regulariser inside a non-convex iteration.
 
 \section{Performance References}
 \label{sec:crlb}
 
-\subsection{What an amplitude measurement does and does not reveal}
+\subsection{Information in an amplitude measurement}
 
-Conditioned on the channel, the pilots and the reference, the noiseless field at
-one element and one pilot instant is a fixed complex number, and the observation
-is its magnitude corrupted by complex Gaussian noise. The resulting density is
-Rician, and it depends on that complex number only through its modulus. A
-measurement of this kind therefore constrains the channel along a single
-direction in parameter space: it says how large the field is, and nothing about
-which way it points. Writing $\boldsymbol\eta$ for the real and imaginary parts
-of $\bG$ stacked, the information contributed by element $n$ is a sum of $P$
-rank-one terms,
-\begin{equation}
-\bJ_n=\sum_{p=1}^{P}4\beta(a_{n,p},\sigma^2)\,
-\mathbf{u}_{n,p}\mathbf{u}_{n,p}^{T},
-\label{eq:fisher}
-\end{equation}
-with $\beta$ a scalar depending on the field magnitude $a_{n,p}$ and the noise
-power, and $\mathbf{u}_{n,p}$ the direction the measurement constrains.
-
-\textbf{This is not new and we do not claim it.} Balan~\cite{balan2015} gives
-the rank-one form in general, for any likelihood depending on a complex field
-only through its modulus, and Cui \emph{et al.}~\cite{cui2025} derive the exact
-Rician case for this observation model as a sum of rank-one terms. We restate
-it because the consequence we need follows from it and, as far as we are aware,
-has not been drawn. Crediting both quadratures instead --- treating each
-measurement as if it constrained two directions --- overstates the information
+Each observation is Rician and depends on the noiseless field only through its
+modulus, so it constrains the channel along a single direction: the information
+it contributes is rank one~\cite{balan2015}, and for this observation model the
+exact Rician form is derived in~\cite{cui2025}. Crediting both quadratures
 % src: results/track_b/constrained_crlb.json (unconstrained_rank1), 400 trials,
 % the 36 points of the N x P x SNR grid shared by configurations A and B
-and yields a reference too low by $0.17$--$4.64$~dB across our $36$ operating
-points. An identifiability check settles which form is right: at $K=3$, $P=3$
-the per-element problem is unidentifiable and \eqref{eq:fisher} is correctly
-singular, whereas the rank-two construction reports full rank. We note also
-that the existing bound for this receiver~\cite{xu2025} is computed from a
-linearised model, whereas \eqref{eq:fisher} keeps the exact Rician form.
+instead yields a reference too low by $0.17$--$4.64$~dB across our $36$
+operating points, and at $K=3$, $P=3$ it reports full rank where the per-element
+problem is in fact unidentifiable. The existing bound for this
+receiver~\cite{xu2025} is computed from a linearised model; the one used here
+keeps the exact Rician form.
 
-\textbf{The consequence.} Because the $n$th row of $\bG\bS$ enters only the
-$n$th row of the measurement, $\bJ$ is block diagonal across receive elements.
-The per-element estimation problem is then unchanged by adding elements, so
-normalised per-element information does not grow with $N$, and an unstructured
-estimator gains nothing from a larger array. Aperture is available only to an
-estimator that couples elements together --- which is what \eqref{eq:cap}
-supplies.
+The consequence matters more here than the form. Because the $n$th row of
+$\bG\bS$ enters only the $n$th row of the measurement, the information matrix
+is block diagonal across receive elements, so the per-element problem is
+unchanged by adding elements and normalised per-element information does not
+grow with $N$. An unstructured estimator therefore gains nothing from a larger
+array, and aperture is available only to an estimator that couples elements ---
+which is what \eqref{eq:cap} supplies.
 
 \subsection{A reference that accounts for the structure}
 
 The ordinary Cram\'er--Rao bound describes an estimator that treats every
-channel entry as a free unknown. The proposed estimator does no such thing: it
-uses the fact that the channel is a sum of a few sinusoids, and it should not be
-judged against a reference that ignores that fact. The constrained bound is the
-corresponding limit for estimators that do use it, and the gap between the two
-is what the structure is worth in principle. Under the geometric model the
-parameters $\boldsymbol\phi$ number about $45$ and, unlike the $2NK$
-unstructured coordinates, that count does not grow with $N$.
-
-The textbook constrained form is unusable here because the map from geometric
+channel entry as a free unknown. The proposed estimator instead uses the fact
+that the channel is a sum of a few sinusoids, and the constrained bound is the
+corresponding limit for estimators that do; the gap between the two is what the
+structure is worth in principle. Under the geometric model the parameters number
+about $45$ and, unlike the $2NK$ unstructured coordinates, that count does not
+grow with $N$. The textbook constrained form is unusable because the Jacobian
 % src: results/track_b/constrained_crlb.json, mean jacobian_rank over the 12
 % N=8 cells = 40.380; 3*mean(sum L_k) = 3 x 14.875 = 44.66; mean(3 sum L_k >
 % 2NK = 48) over 6400 stored trials = 28.1%. Verified in
 % reports/HSGS_PAPER_PROVENANCE.md:205-214.
-parameters to channel entries has a rank-deficient Jacobian $\bD$ --- at $N=8$
-its mean numerical rank is $40.4$ against $\approx44.7$ parameters. We use
-instead the tangent-space form of Gorman and Hero and of Stoica and
-Ng~\cite{gorman1990,stoica1998},
+$\bD$ is rank deficient, its mean numerical rank at $N=8$ being $40.4$ against
+$\approx44.7$ parameters, so we use the tangent-space
+form~\cite{gorman1990,stoica1998}
 \begin{equation}
 \mathrm{CCRB}=\bU(\bU^T\bJ\bU)^{-1}\bU^T,
 \label{eq:ccrb}
 \end{equation}
-where $\bU$ is an orthonormal basis for the directions the geometric model can
-actually reach. This depends on that set of directions and not on how the model
-is parameterised, which is what makes it well defined when $\bD$ is rank
-deficient.
+with $\bU$ an orthonormal basis for the directions the geometric model can
+reach, which is well defined when $\bD$ is not full rank.
 
 Both references constrain the covariance of \emph{unbiased} estimators. Every
 estimator here runs to a fixed iteration budget with a shrinking update, and the
@@ -380,38 +332,32 @@ only.
 \subsection{Experimental setup}
 \label{sec:setup}
 
-Channels are drawn from the geometric model \eqref{eq:chan} with the parameters
-of Section~\ref{sec:model}. Two generators are used. The first, written for this
-work and denoted TB in Table~\ref{tab:config}, draws a fresh channel per trial
-at a fixed SNR per operating point. The second, denoted TD, draws the SNR itself
-per trial uniformly over $[-10,20]$~dB and bins results afterwards, which is why
-its SNR column is marked $\mathcal{U}$; it exists because the effective-rank
-sweeps needed many cells at many channel richnesses, and a per-trial draw covers
-the range at lower cost. SNR and RSR are as defined in
-Section~\ref{sec:model}, both measured at the array, and noise enters before the
-modulus.
+Channels follow \eqref{eq:chan} with the parameters of
+Section~\ref{sec:model}. Two generators are used: TB in Table~\ref{tab:config}
+draws a fresh channel per trial at a fixed SNR per operating point, and TD draws
+the SNR itself per trial uniformly over $[-10,20]$~dB and bins afterwards, which
+is what its $\mathcal{U}$ entry denotes. SNR and RSR are as defined in
+Section~\ref{sec:model}, both at the array, and noise enters before the modulus.
 
 Unless a sweep varies them, $N=32$ elements serve $K=3$ users at RSR $12$~dB
-with $300$ to $400$ trials per operating point, and the pilot count is stated
-per result. Trials are paired: within an operating point both estimators receive
-bit-identical channels, pilots, reference and noise, so a per-trial difference
-between them carries no realisation noise. The reported statistic is the paired
-per-trial median within an SNR bin, with bootstrap $95\%$ intervals over trials;
-where a curve is compared against a reference we use the ratio of summed errors
-instead, that being what a bound on mean-squared error governs, and both are
-reported wherever they disagree. With the projection disabled the proposed
-estimator reproduces the baseline bit for bit, so the projection is the only
-difference between the arms throughout.
+with $300$ to $400$ trials per point, the pilot count stated per result. Trials
+are paired: both estimators receive bit-identical channels, pilots, reference
+and noise, so a per-trial difference carries no realisation noise. The reported
+statistic is the paired per-trial median within an SNR bin with bootstrap
+$95\%$ intervals over trials; where a curve is compared against a reference we
+use the ratio of summed errors, and both are reported wherever they disagree.
+With the projection disabled the estimator reproduces the baseline bit for bit,
+so the projection is the only difference between the arms throughout.
 
-Four configurations appear rather than one because the results were produced
-over time at different operating points, and collapsing them would misrepresent
-what was measured. They share the estimator and the held-out order rule, and
-differ in the iteration budget $T$, the order-search budget, the pilot count,
-the RSR and the generator. Configurations A and B differ only in $T$ and the
-search budget, and at the one cell measured both ways the difference is
+Four configurations appear because the results were produced over time at
+different operating points, and collapsing them would misrepresent what was
+measured. All share the estimator and the order rule, differing in $T$, the
+order-search budget, the pilot count, the RSR and the generator. A and B differ
+only in $T$ and the search budget, and at the one cell measured both ways
 % src: reports/p12/PREREG_P22.md; results/p12/B1.json (T=100, ros mean 2.536)
 % vs results/track_b/b3/N32_P30_snr*.npz (T=50, ros mean 2.531)
-$0.005$~dB. Every number below carries its configuration label.
+the difference is $0.005$~dB. Every number below carries its configuration
+label.
 
 \begin{table}[!t]
 \caption{The four measurement configurations. $P$ is itself swept in
@@ -444,7 +390,7 @@ sweep, with a six-point mean of $+2.68$~dB and a ratio-of-sums improvement of
 $+2.33$ to $+2.96$~dB, the projection being active in $100\%$ of trials at this
 cell.
 
-The references make that number interpretable. The baseline tracks the
+The baseline tracks the
 % src: results/track_b/constrained_crlb.json, N32_P30, vs results/p12/B1.json.
 % The bounds depend on (N,P,K,RSR,SNR) and the generator, not on T or the
 % selection budget, so they are common to configurations A and B.
@@ -500,21 +446,18 @@ estimator that does not couple elements.
 
 The predicted reversal is a ratio-of-sums phenomenon. At $N=8$ the projection is
 inactive in $41.8\%$ of trials on average, rising from $12\%$ at $-5$~dB to
-$59\%$ at $P=10$ and $79\%$ at $P=30$ at $+20$~dB, as the selector declines a
-constraint it cannot afford. Where the constraint is active it removes genuine
-components, and the ratio of summed errors turns over accordingly, running from
-$+1.272$~dB at $-5$~dB to $-2.613$~dB at $+20$~dB at $P=10$, because truncation
-bias does not shrink with the noise while the variance term does. This is the
-predicted failure, measured.
+$59\%$ at $P=10$ and $79\%$ at $P=30$ at $+20$~dB. Where it is active it removes
+genuine components, and the ratio of summed errors turns over accordingly, from
+$+1.272$~dB at $-5$~dB to $-2.613$~dB at $+20$~dB at $P=10$, truncation bias not
+shrinking with the noise while the variance term does.
 
-The paired median does not reverse, and we do not claim it does. At $N=8$ it is
+The paired median does not reverse. At $N=8$ it is
 $+0.000$~dB at nine of the twelve points, positive and significant at the other
 three, and negative and significant at none. Abstention makes most trials
 bit-identical to the baseline and pins the median at zero, while the active
 minority dominates a sum of squared errors. The prediction is therefore
-confirmed on the statistic a bound governs and is invisible to the one we
-otherwise treat as primary. A reader taking only the median away would conclude
-that the constraint is never harmful, and it is.
+confirmed on the statistic a bound governs and invisible to the one we otherwise
+treat as primary.
 
 % src: reports/p12/p22_score.json
 The bands registered before this sweep ran were $[-0.35,+0.05]$,
@@ -538,17 +481,15 @@ relative to capacity, and aperture matters only because it sets that capacity.
 \subsection{Effective rank, and the constraint versus the estimator}
 \label{sec:effrank}
 
-Path count remains imperfect as a coordinate, because clustered or
-unequal-strength paths occupy fewer effective dimensions than their number
-suggests. We index instead by the Roy--Vetterli effective
-rank~\cite{royvetterli2007} of the lifting,
+Path count is still imperfect, because clustered or unequal-strength paths
+occupy fewer effective dimensions than their number suggests. We index instead
+by the Roy--Vetterli effective rank~\cite{royvetterli2007} of the lifting,
 $\reff=\exp(-\sum_i p_i\ln p_i)$ with $p_i=\sigma_i/\sum_j\sigma_j$, normalised
-by capacity as $\rho=\reff/\rmax$. That this is needed at all is easy to see: a
+as $\rho=\reff/\rmax$. A $16$-path channel on a $32$-element array is
 % src: reports/trackD_normalization.md:55, Track B Experiment C re-indexed;
 % recomputed 8.694 at the same 200-trial budget, 8.669 at 1000 trials.
-$16$-path channel on a $32$-element array is algebraically full rank yet has
-effective rank $8.73$, so its lifting is compressible with nothing sparse about
-it.
+algebraically full rank yet has effective rank $8.73$, so its lifting is
+compressible with nothing sparse about it.
 
 Re-indexing the path-count sweep at configuration~D moves the zero crossing from
 $L/\rmax=0.90$ to $\rho=0.518$, and the useful region becomes
@@ -563,8 +504,8 @@ configuration~C --- and only the $N=32$ crossing is bracketed by measurements on
 both sides. The other two are extrapolated from the positive side, because
 abstention prevents the proposed estimator from producing negative values there.
 
-That last point separates the constraint from the estimator, and the two must be
-stated apart. Past the crossing at configuration~C the paired per-trial median
+That separates the constraint from the estimator. Past the crossing at
+configuration~C the paired per-trial median
 % src: results/p12/B2.json, 120-300 trials/cell, configuration C
 never becomes negative: at $\rho=0.608$ and $0.735$ for $N=16$ it is $+0.078$
 and $+0.000$~dB, and at $\rho=0.596$ and $0.669$ for $N=64$ it is $+0.044$ and
@@ -573,14 +514,11 @@ $\hat r\ge\rmax$ in $38.8\%$ of trials and the estimator is then exactly the
 % src: results/p12/B2_forced.json -- DIAGNOSTIC ONLY, not the proposed method
 baseline. Forcing the projection active at that same cell, as a diagnostic that
 is not the proposed method, gives $-0.075$~dB with a confidence interval of
-$[-0.186,-0.026]$. The constraint does become harmful past the crossing; the
-abstention rule is what stops the typical trial from following it down.
-
-This does not contradict the negative values reported above; the difference is
-the statistic, by the mechanism just given. So $\dhs\ge0$ is a property of the
-selector under a median statistic only, and is neither evidence that the
-constraint is never harmful nor a guarantee about mean-square error. Where the
-two statistics disagree, both are reported.
+$[-0.186,-0.026]$. The constraint does become harmful past the crossing, and
+abstention is what stops the typical trial from following it down. So
+$\dhs\ge0$ is a property of the selector under a median statistic only, and is
+neither evidence that the constraint is never harmful nor a guarantee about
+mean-square error.
 
 The magnitude of the gain does not collapse onto the same axis. Over the window
 % src: reports/trackD_partB9_analysis.json PRIMARY_internal_N16_vs_N64, config C
@@ -634,21 +572,20 @@ $+0.648$~dB with interval $[+0.367,+1.015]$, and the measurement over $266$
 trials gave $+0.963$~dB with a confidence interval of $[+0.808,+1.086]$, an
 error of $0.315$~dB --- inside the stated interval but on its upper edge.
 
-These are cross-generator tests and not out-of-model tests. Both generators
-still produce channels of the form \eqref{eq:chan}, and only the distribution
-over $(L_k,\alpha_{\ell,k},\theta_{\ell,k})$ changes. They show that $\rho$
-transfers across path distributions, not that it survives a violation of the
-ULA model.
+These are cross-generator and not out-of-model tests: both generators still
+produce channels of the form \eqref{eq:chan}, and only the distribution over
+$(L_k,\alpha_{\ell,k},\theta_{\ell,k})$ changes. They show that $\rho$ transfers
+across path distributions, not that it survives a violation of the ULA model.
 
 \subsection{Users, cost, and where the projection belongs}
 \label{sec:kinv}
 
 % src: reports/trackD_partB9_analysis.json, cells B2_K{2,3,4}, configuration C
 At configuration~C and fixed pilot adequacy $P/2K=3.33$, the gain varies by
-$0.094$~dB across $K\in\{2,3,4\}$ for SNR $\ge5$~dB, which is the invariance to
-user count that the parameter-ratio argument predicts. Pooled over all SNR the
-spread is $0.294$~dB against a pre-registered falsifier of $0.3$~dB, missed by
-$0.006$~dB, and reported rather than dropped.
+$0.094$~dB across $K\in\{2,3,4\}$ for SNR $\ge5$~dB, the invariance the
+parameter-ratio argument predicts. Pooled over all SNR the spread is $0.294$~dB
+against a pre-registered falsifier of $0.3$~dB, missed by $0.006$~dB and
+reported rather than dropped.
 
 % src: results/track_b/timing.json (config B). The coarse-to-fine search that
 % missed its pre-registered gate (0.083 dB against a 0.05 dB criterion,
@@ -663,7 +600,7 @@ same selected order, at configuration~A, interleaving is worse at $0$~dB
 ($-0.164$~dB, interval $[-0.317,-0.066]$), indistinguishable from $+5$ to
 $+15$~dB, and better only at $+20$~dB ($+0.168$~dB, interval
 $[+0.102,+0.246]$), the six-point mean being $+0.003$~dB. Interleaving is
-therefore not required in this classical iteration and we do not claim it is.
+therefore not required in this classical iteration.
 
 Since placement is a wash, what the estimator contributes is not \emph{where}
 the projection is applied but \emph{whether} it is applied at all and at what
@@ -675,14 +612,13 @@ mechanism explained on the way to one.
 
 \section{Limitations and Conclusion}
 
-An amplitude-only receiver's information is rank one per measurement and block
-diagonal across elements, so aperture is usable only through cross-element
-structure. The exponential-sum structure of a ULA channel supplies it, with a
-capacity of $\lceil N/2\rceil$; the constraint therefore helps only below a
-fraction of that capacity, and the predicted sign reversal at small aperture is
-observed. The governing coordinate is $\reff/\rmax$, whose boundary location is
-stable across a fourfold change in aperture and which predicted the gain on two
-unseen channel distributions to within $0.13$ and $0.315$~dB.
+An amplitude-only receiver's information is block diagonal across elements, so
+aperture is usable only through cross-element structure; the exponential-sum
+structure of a ULA channel supplies it, with capacity $\lceil N/2\rceil$. The
+constraint therefore helps only below a fraction of that capacity, the predicted
+sign reversal at small aperture is observed, and the governing coordinate
+$\reff/\rmax$ predicted the gain on two unseen channel distributions to within
+$0.13$ and $0.315$~dB.
 
 \textbf{Limitations.} All results are simulation only, with no measured
 hardware and no recorded channel data. They cover geometric ULA channels of the
