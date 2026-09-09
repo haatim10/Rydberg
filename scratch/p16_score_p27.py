@@ -43,6 +43,11 @@ ARMS = {
               "results/p16/tier05/C1_seed2/best.pt"),
     "seed3": ("results/p16/tier05/U1_seed3/best.pt",
               "results/p16/tier05/C1_seed3/best.pt"),
+    # PROMPT 17 Part B: seed 1 retrained under the UNIFIED driver, same seed
+    # (20260827) as the published pair. Present so the driver effect can be
+    # measured rather than assumed; see reports/p16/SEED1_CONDITIONAL.md.
+    "seed1u": ("results/p16/tier05/U1_seed1/best.pt",
+               "results/p16/tier05/C1_seed1/best.pt"),
 }
 
 # ---- transcribed from PREREG_P27.md, committed before any run -------------
@@ -127,11 +132,38 @@ def main() -> int:
             "bins": [b["bin"] for b in r["bins"]],
         }
 
-    vals = np.array([seeds[t]["high_snr_ge5_db"] for t in seeds])
+    # Two groupings: the published seed 1, and the unified-driver seed 1.
+    def group(tag1):
+        ts = [tag1, "seed2", "seed3"]
+        v = np.array([seeds[t]["high_snr_ge5_db"] for t in ts if t in seeds])
+        pb = np.array([seeds[t]["per_bin_db"] for t in ts if t in seeds])
+        dev = {t: abs(seeds[t]["high_snr_ge5_db"]
+                      - np.mean([seeds[o]["high_snr_ge5_db"]
+                                 for o in ts if o != t and o in seeds]))
+               for t in ts if t in seeds}
+        return {"seeds": [t for t in ts if t in seeds],
+                "values": [round(float(x), 4) for x in v],
+                "mean": round(float(v.mean()), 4),
+                "sd": round(float(v.std(ddof=1)), 4) if v.size > 1 else None,
+                "range": round(float(v.max() - v.min()), 4) if v.size > 1 else None,
+                "per_bin_mean": [round(float(x), 4) for x in pb.mean(axis=0)],
+                "deviation_from_mean_of_others": {k: round(float(x), 4)
+                                                  for k, x in dev.items()},
+                "outlier": max(dev, key=dev.get)}
+    groups = {"published_seed1": group("seed1")}
+    if "seed1u" in seeds:
+        groups["unified_seed1"] = group("seed1u")
+        d = (seeds["seed1u"]["high_snr_ge5_db"]
+             - seeds["seed1"]["high_snr_ge5_db"])
+        groups["driver_effect_at_seed1_db"] = round(float(d), 4)
+
+    vals = np.array([seeds[t]["high_snr_ge5_db"]
+                     for t in ("seed1", "seed2", "seed3") if t in seeds])
     sd = float(vals.std(ddof=1)) if vals.size > 1 else None
     rng = float(vals.max() - vals.min()) if vals.size > 1 else None
     mean = float(vals.mean())
-    per_bin = np.array([seeds[t]["per_bin_db"] for t in seeds])
+    per_bin = np.array([seeds[t]["per_bin_db"]
+                        for t in ("seed1", "seed2", "seed3") if t in seeds])
     bin_mean = per_bin.mean(axis=0)
 
     p27a_held = sd is not None and sd <= P27A_SD_MAX
@@ -175,6 +207,7 @@ def main() -> int:
                             "HEADLINE IS SINGLE-SEED and Paper 2 must say so "
                             "in those words, in the abstract and at first "
                             "quotation")},
+        "groupings": groups,
         "note": ("CIs in per_seed are over TEST REALISATIONS. The seed spread "
                  "is the separate quantity reported as seed_spread_*."),
     }
@@ -194,6 +227,16 @@ def main() -> int:
     print(f"  {'mean':<7} {mean:>+9.4f}   seed SD {sd}, range {rng}")
     print("\n  per-bin three-seed mean:",
           [f"{v:+.3f}" for v in bin_mean])
+    for gname, g in groups.items():
+        if not isinstance(g, dict):
+            print(f"\n  driver effect at seed 1: {g:+.4f} dB "
+                  f"(unified minus published)")
+            continue
+        print(f"\n  [{gname}] seeds {g['seeds']}")
+        print(f"    values {g['values']}  mean {g['mean']:+.4f}  "
+              f"SD {g['sd']}  range {g['range']}")
+        print(f"    deviations {g['deviation_from_mean_of_others']} "
+              f"-> outlier {g['outlier']}")
     print("  wrote", OUT)
     return 0
 
