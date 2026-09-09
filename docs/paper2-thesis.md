@@ -91,6 +91,20 @@ falsifiable: the rise is **monotone** across all six bins; the top bin is
 **+2.628 dB**; and there is **no low-SNR cost** — the two lowest bins are
 non-negative, though the second one's interval includes zero.
 
+**The absence of a low-SNR cost is stronger than it looks, and is now the
+paper's most interesting single result.** Across all three seeds the balanced
+arm is better in **18 of 18 bin-by-seed cells**, 17 of them with a CI excluding
+zero. The two lowest bins carry weights of 0.056 and 0.111 — down-weighted by
+18× and 9× relative to unit mean — and the balanced arm still wins there
+(three-seed means +0.052 and +0.202 dB, every seed positive). The reweighting
+therefore does **not** trade low-SNR accuracy for high-SNR accuracy, which is
+what a reweighting is usually suspected of. It improves the quantity it was
+weighted away from. [FACT, `reports/p16/PART_A_P27.md`]
+
+A reading, offered as hypothesis and not established: the conventional loss was
+so dominated by the low-SNR tail that the network underfit everywhere, and
+rebalancing stops wasting capacity rather than relocating it. [HYP]
+
 **Every interval in that table is over test realisations, not over seeds.**
 The seed spread is a different quantity and is not yet measured; see §3.1.
 Conflating the two is exactly the error that produced the withdrawn P19, and
@@ -118,10 +132,29 @@ We have **no valid seed-variance estimate for any quantity in this
 repository.** The only figure we ever had, 0.244 dB, came from arms trained
 with the wrong initialiser and is withdrawn.
 
-PROMPT 16 Part B is measuring exactly one of these — the seed spread of the
-+1.902 dB gain, over three seeds — and P27 is pre-registered in
-`reports/p16/PREREG_P27.md`. Until it reports, **+1.902 dB is a single-seed
-result** and the manuscript must not imply otherwise.
+**Measured for one quantity as of PROMPT 17.** The seed spread of the
++1.902 dB gain, over three seeds, pre-registered as P27 in
+`reports/p16/PREREG_P27.md` and scored in `reports/p16/PART_A_P27.md`:
+
+| seed | gain at SNR ≥ 5 (dB) | CI over test realisations |
+|---|---|---|
+| 1 | +1.9024 | [+1.823, +1.986] |
+| 2 | +2.2427 | [+2.158, +2.322] |
+| 3 | +2.3691 | [+2.257, +2.452] |
+
+Three-seed mean **+2.171**, SD **0.241**, range **0.467**, and
+`mean − 2·SD = +1.689 > 0`, so the effect is separated from no-effect on three
+seeds. P27a and P27b both held.
+
+**Two caveats the manuscript must carry.** Three seeds give two degrees of
+freedom, so the SD has large sampling uncertainty and any statement made from
+it must say it was evaluated on three seeds. And seed 1 is the outlier of the
+three, with its two arms trained by different drivers — the spread above is not
+yet quotable as a *seed* spread until the unified-driver re-run of seed 1
+lands. See `reports/p16/SEED1_CONDITIONAL.md`.
+
+**Every other number in §2 remains unreplicated.** +2.231 and the pilot-count
+results are still single-seed.
 
 The decision rule is fixed in advance and repeated here so it cannot be
 softened afterwards: if the seed spread is large enough that the three-seed
@@ -195,6 +228,38 @@ letter's deadline. If Paper 2 is submitted as a letter first, §3.2 must appear
 in it as a stated limitation, not omitted.
 
 ---
+
+## 4b. Training budget, selection rule, and selected epoch — three things, not one
+
+Table I of the quarantined draft reports "Training samples / epochs
+`80,000 / 13`" as though that were the whole story. Four different epoch
+numbers are in play and they are all consistent, but only if they are named
+separately. The rewrite must split the single Table I row into three.
+
+| quantity | value | where it comes from |
+|---|---|---|
+| **config default** | `epochs = 50` | `TrackDConfig().train.epochs` — **never used.** Both `stage2.py` and `stage5.py` override it with a module constant `EPOCHS = 13`. Dead config; do not report it. |
+| **training budget** | **13 epochs**, 80,000 samples | the number actually trained. This is the `80,000 / 13` in Table I. |
+| **selection rule** | **one standard error** | `select_epoch(..., "one_se")`, `stage2.py:81`. Picks the earliest epoch whose validation NMSE is within one SE of the best, not the best itself. |
+| **best-validation epoch** | 9 (`B3_80k_13ep`), 12 (`C1_snr_balanced_P20`) | `selection.best_epoch` |
+| **selected epoch** | **6** (`B3_80k_13ep`), **8** (`C1_snr_balanced_P20`) | `chosen_epoch`, and what `best.pt` actually holds |
+
+Two consequences the draft does not currently state.
+
+**The two arms of the `+1.902` contrast were selected at different epochs** —
+6 and 8. That is what the one-SE rule is for and it is not a defect, but a
+reader comparing two checkpoints is entitled to know they were not stopped at
+the same point. It must be in the table.
+
+**"Epoch 9 in both compared checkpoints" describes a different pair.** That is
+the stage-4 focused-training pair (`C_U1_snr5_20`, `C_H1_snr5_20`), both
+selected at epoch 9. It is not the pair behind `+1.902`. The two are easy to
+confuse and the manuscript should not.
+
+For the PROMPT 16 Tier 0.5 runs the same rule gave selected epochs 6, 6, 8, 8
+against 13 trained — the unbalanced arms consistently earlier than the balanced
+ones, which is itself a small piece of evidence that the balanced objective
+keeps improving for longer.
 
 ## 5. Mechanical requirements for the manuscript
 
