@@ -1,7 +1,7 @@
 {
  "prereg": "reports/p16/PREREG_P27.md @ b4a1dc8",
  "contrast": "U1 (uniform loss) - C1 (balanced loss); positive = balanced better",
- "n_seeds": 3,
+ "n_seeds": 4,
  "n_test": 2000,
  "P": 20,
  "per_seed": {
@@ -208,6 +208,74 @@
      20
     ]
    ]
+  },
+  "seed1u": {
+   "high_snr_ge5_db": 1.902430137798893,
+   "ci95_over_test_realisations": [
+    1.82344306833566,
+    1.9857318813839022
+   ],
+   "n": 983,
+   "per_bin_db": [
+    0.03847027903365119,
+    0.04422590338091803,
+    0.5113582628192539,
+    1.3526797485427053,
+    1.9742509414242804,
+    2.6276210218417653
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     0.0011837052180418972,
+     0.07979899811434063
+    ],
+    [
+     -0.010580096926088078,
+     0.10452037639371747
+    ],
+    [
+     0.43163168832632515,
+     0.5875525427627935
+    ],
+    [
+     1.2404740522263857,
+     1.4391661431834883
+    ],
+    [
+     1.8491653399716306,
+     2.063935617556308
+    ],
+    [
+     2.5145004166732576,
+     2.772132485077652
+    ]
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
   }
  },
  "bins": [
@@ -271,6 +339,67 @@
   "value": 1.6887,
   "separated": true,
   "consequence": "headline may be stated with the seed spread alongside it"
+ },
+ "groupings": {
+  "published_seed1": {
+   "seeds": [
+    "seed1",
+    "seed2",
+    "seed3"
+   ],
+   "values": [
+    1.9024,
+    2.2427,
+    2.3691
+   ],
+   "mean": 2.1714,
+   "sd": 0.2414,
+   "range": 0.4667,
+   "per_bin_mean": [
+    0.0524,
+    0.2015,
+    0.6915,
+    1.4721,
+    2.1892,
+    3.12
+   ],
+   "deviation_from_mean_of_others": {
+    "seed1": 0.4035,
+    "seed2": 0.1069,
+    "seed3": 0.2966
+   },
+   "outlier": "seed1"
+  },
+  "unified_seed1": {
+   "seeds": [
+    "seed1u",
+    "seed2",
+    "seed3"
+   ],
+   "values": [
+    1.9024,
+    2.2427,
+    2.3691
+   ],
+   "mean": 2.1714,
+   "sd": 0.2414,
+   "range": 0.4667,
+   "per_bin_mean": [
+    0.0524,
+    0.2015,
+    0.6915,
+    1.4721,
+    2.1892,
+    3.12
+   ],
+   "deviation_from_mean_of_others": {
+    "seed1u": 0.4035,
+    "seed2": 0.1069,
+    "seed3": 0.2966
+   },
+   "outlier": "seed1u"
+  },
+  "driver_effect_at_seed1_db": 0.0
  },
  "note": "CIs in per_seed are over TEST REALISATIONS. The seed spread is the separate quantity reported as seed_spread_*."
 }
