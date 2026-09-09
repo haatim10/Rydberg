@@ -45,6 +45,13 @@ REPORT = Path("reports/p16/tier05_runs.json")
 # both at cfg.train.seed = 20260827. The offsets below match the convention
 # scratch/p12_partC.py used, so seed labels stay comparable across turns.
 RUNS: dict[str, dict] = {
+    # seed offset 0 reproduces the published pair's seed (20260827) under the
+    # UNIFIED driver. Added under PROMPT 17 Part B after the seed-1 conditional
+    # fired: seed 1 was the outlier of the three, so its driver difference and
+    # its seed are confounded and the spread cannot be quoted until seed 1 is
+    # re-run here. See reports/p16/SEED1_CONDITIONAL.md.
+    "U1_seed1": {"balanced": False, "seed": 0},
+    "C1_seed1": {"balanced": True, "seed": 0},
     "U1_seed2": {"balanced": False, "seed": 2},
     "U1_seed3": {"balanced": False, "seed": 3},
     "C1_seed2": {"balanced": True, "seed": 2},
