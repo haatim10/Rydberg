@@ -119,27 +119,34 @@ def panel_a(ax):
 
 
 def panel_b(ax, S):
+    """Decluttered: three legend entries instead of five, no inline numbers.
+
+    The earlier version carried a four-entry two-column legend, two inline
+    annotations spelling out the EM-GS spread, and an arrowed annotation at
+    N=8 -- five separate text objects over six lines. The spread figures live
+    in the body text and in the Sec. IV-B table, so they are dropped here; the
+    filled/open marker convention moves to the caption; and the legend names
+    the pilot count only.
+    """
     x = np.arange(len(NS))
     cols = {10: "#e34948", 30: "#8c3fb5"}
-    ax.axhline(0.0, color="#666", lw=0.7, ls="-", zorder=1)
+    ax.axhline(0.0, color="#b9b7b1", lw=0.7, zorder=1)
 
     for P in PS:
         med = [S[f"N{N}_P{P}"]["mean_delta_median_db"] for N in NS]
         ros = [S[f"N{N}_P{P}"]["mean_delta_ratio_of_sums_db"] for N in NS]
+        # Filled + solid = paired median (primary); open + dashed = ratio of
+        # sums. One colour per pilot count, so the legend needs one entry each.
         ax.plot(x, med, "o-", color=cols[P], mew=0, zorder=6,
-                label=rf"$\Delta_{{\rm HS}}$, $P={P}$ (paired median)")
+                label=rf"$P={P}$")
         ax.plot(x, ros, "^--", color=cols[P], mfc="white", mew=0.9, lw=0.9,
-                zorder=5, label=rf"$\Delta_{{\rm HS}}$, $P={P}$ (ratio of sums)")
+                zorder=5)
 
-    # The predicted failure, marked.
     lo = min(min(S[f"N8_P{P}"]["mean_delta_median_db"] for P in PS),
              min(S[f"N8_P{P}"]["mean_delta_ratio_of_sums_db"] for P in PS))
-    ax.annotate("predicted failure: "
-                + r"$L_k\!\sim\!\mathcal{U}\{3,7\}$ vs $r_{\max}(8)=4$",
-                xy=(0, lo), xytext=(12, -2), textcoords="offset points",
-                fontsize=6.2, color="#8a2b2a", ha="left",
-                arrowprops=dict(arrowstyle="-", color="#c08a89", lw=0.6,
-                                shrinkA=1, shrinkB=2))
+    ax.annotate("predicted failure", xy=(0, lo), xytext=(9, -1),
+                textcoords="offset points", fontsize=6.4, color="#8a2b2a",
+                ha="left", va="center")
 
     ax.set_xticks(x)
     ax.set_xticklabels([str(N) for N in NS])
@@ -153,14 +160,10 @@ def panel_b(ax, S):
     # P=10, -13.0 dB at P=30), so both are drawn and the axis is scaled to hold
     # them. Averaging the two would cancel opposite small movements and make
     # EM-GS look flatter than it is.
-    for P in PS:
+    for i, P in enumerate(PS):
         emn = [S[f"N{N}_P{P}"]["mean_em_gs_db"] for N in NS]
-        ax2.plot(x, emn, "s:", color="#2a78d6", mew=0, lw=1.3, alpha=0.9,
-                 zorder=3)
-        ax2.annotate(rf"EM-GS, $P={P}$: {max(emn) - min(emn):.3f} dB across $N$",
-                     xy=(x[2], emn[2]), xytext=(-6, 5 if P == 30 else -9),
-                     textcoords="offset points", fontsize=6.0,
-                     color="#2a78d6", ha="right")
+        ax2.plot(x, emn, "s:", color="#2a78d6", mew=0, lw=1.2, alpha=0.85,
+                 zorder=3, label="EM-GS (right axis)" if i == 0 else None)
     ax2.set_ylabel("EM-GS NMSE (dB)", color="#2a78d6")
     ax2.tick_params(axis="y", colors="#2a78d6")
     allem = [S[f"N{N}_P{P}"]["mean_em_gs_db"] for N in NS for P in PS]
@@ -169,8 +172,8 @@ def panel_b(ax, S):
     h1, l1 = ax.get_legend_handles_labels()
     h2, l2 = ax2.get_legend_handles_labels()
     ax.legend(h1 + h2, l1 + l2, frameon=False, loc="upper left",
-              handlelength=1.6, labelspacing=0.2, borderpad=0.1,
-              columnspacing=0.9, handletextpad=0.4, ncol=2, fontsize=5.9)
+              handlelength=1.8, labelspacing=0.25, borderpad=0.15,
+              handletextpad=0.5, fontsize=6.6)
 
 
 def main():
@@ -187,6 +190,16 @@ def main():
     for ext in ("pdf", "png"):
         fig.savefig(OUT / f"fig1_twopanel.{ext}", facecolor="white")
     plt.close(fig)
+
+    # A shorter copy for paper/paper1/haatim_hsgs_letter_restyled.tex. Same
+    # panels and same data; the restyled prose runs longer and needs the
+    # vertical space. The frozen letter keeps the 2.55 in version above.
+    fig2, ax2s = plt.subplots(1, 2, figsize=(7.16, 1.95))
+    panel_a(ax2s[0])
+    panel_b(ax2s[1], S)
+    fig2.subplots_adjust(wspace=0.34)
+    fig2.savefig(OUT / "fig1_twopanel_compact.pdf", facecolor="white")
+    plt.close(fig2)
 
     # ---- every number the manuscript quotes from these panels -------------
     d = em - hs

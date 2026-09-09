@@ -1,0 +1,81 @@
+% System-model figure for Paper 1, Section II.
+%
+% Convention checked against the reference material in the project directory
+% before drawing:
+%   * SystemModel.pdf (this project's own model document) -- the terminology
+%     "receive element = one vapour cell interrogated by one photodetector",
+%     the probe/coupling laser pair, and the signal chain
+%     h -> E = GS+B+W -> Omega = |E| -> Delta f -> Z.
+%   * Cui, Zeng and Huang, "Towards atomic MIMO receivers" -- users left,
+%     atomic array right, reference field drawn as a separate incident beam.
+%   * Xu et al., "Channel estimation for Rydberg atomic receivers" -- pilots
+%     labelled on the uplink arrows.
+%   * Gong et al. survey -- level of physical detail: the vapour cell and the
+%     two lasers appear, the energy-level diagram does not.
+%
+% Deliberately NOT drawn: atomic level structure, Autler-Townes lineshapes,
+% optical bench detail. The figure exists to show where the phase is lost.
+\begin{tikzpicture}[
+  font=\scriptsize,
+  cell/.style={draw=black!70, fill=blue!6, rounded corners=1pt,
+               minimum width=7mm, minimum height=4mm, inner sep=1pt},
+  usr/.style={draw=black!70, fill=black!3, rounded corners=1pt,
+              minimum width=5.5mm, minimum height=3.6mm, inner sep=1pt},
+  blk/.style={draw=black!70, fill=black!3, rounded corners=1.5pt,
+              minimum width=12mm, minimum height=8mm, align=center,
+              inner sep=1.5pt},
+  sig/.style={-{Stealth[length=1.5mm]}, black!75, line width=0.35pt},
+  laser/.style={-{Stealth[length=1.3mm]}, red!65!black, line width=0.4pt},
+  ref/.style={-{Stealth[length=1.5mm]}, teal!55!black, line width=0.5pt},
+]
+
+% ---------------- users -------------------------------------------------
+\foreach \i/\y in {1/1.35, 2/0.55, 3/-0.25} {
+  \node[usr] (u\i) at (0, \y) {$s_{\i}$};
+}
+\node[font=\scriptsize, align=center] at (0, -1.15) {$K$ users};
+
+% ---------------- array -------------------------------------------------
+\foreach \i/\y in {1/1.65, 2/0.85, 3/0.05, 4/-1.05} {
+  \node[cell] (c\i) at (3.30, \y) {};
+}
+\node[font=\scriptsize] at (3.30, -0.50) {$\vdots$};
+\node[right=0.8mm of c1, font=\tiny] {$n{=}1$};
+\node[right=0.8mm of c4, font=\tiny] {$n{=}N$};
+\node[font=\scriptsize, align=center] at (3.30, -1.72)
+  {$N$ vapour cells, $d=\lambda/2$};
+
+% ---------------- propagation -------------------------------------------
+\draw[sig] (u1) -- (c1);
+\draw[sig] (u1) -- (c3);
+\draw[sig] (u2) -- (c2);
+\draw[sig] (u2) -- (c4);
+\draw[sig] (u3) -- (c3);
+\node[font=\tiny, inner sep=0.5pt] at (1.30, 1.96)
+  {$L_k$ paths, angles $\theta_{\ell,k}$};
+
+% ---------------- reference beam ----------------------------------------
+\draw[ref] (2.62, 2.46) -- (3.05, 1.88);
+\node[font=\tiny, teal!45!black, anchor=west, inner sep=0.5pt]
+  at (2.55, 2.60) {known reference beam $\mathbf{B}$};
+
+% ---------------- probe and coupling lasers -----------------------------
+\draw[laser] (2.52, -0.96) -- (2.92, -1.01);
+\draw[laser] (2.52, -1.22) -- (2.92, -1.11);
+\node[font=\tiny, red!55!black, anchor=east, align=right, inner sep=0.5pt]
+  at (2.48, -1.10) {probe,\\[-1.5pt]coupling};
+
+% ---------------- readout and estimator ---------------------------------
+\node[blk] (pd) at (5.25, 0.55) {photo-\\detection};
+\node[blk] (est) at (7.20, 0.55) {estimator};
+
+\draw[sig] (3.72, 0.55) -- (pd);
+\draw[sig] (pd) -- node[above, font=\tiny, inner sep=1.2pt] {$\mathbf{Z}$} (est);
+\draw[sig] (est) -- ++(1.05, 0)
+  node[right, font=\scriptsize, inner sep=1.2pt] {$\widehat{\mathbf{G}}$};
+
+\node[font=\tiny, align=center, inner sep=1pt] at (5.25, -0.62)
+  {$|\cdot|$ acts here:\\[-1.5pt]phase is lost};
+\draw[black!45, line width=0.3pt] (5.25, -0.22) -- (5.25, 0.10);
+
+\end{tikzpicture}

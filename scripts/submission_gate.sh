@@ -78,7 +78,7 @@ fi
 if grep -q 'label{sec:results}' "$BASE.tex"; then
   missing=$(awk '
     /\\label\{sec:results\}/      { inres=1 }
-    /\\section\{Limitations/       { inres=0 }
+    /\\section\{(Limitations|Conclusion)/ { inres=0 }
     inres && /\\subsection\{/ {
       if (cur != "" && !seen) print cur
       cur=$0; sub(/.*\\subsection\{/,"",cur); sub(/\}.*/,"",cur); seen=0

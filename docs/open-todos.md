@@ -106,3 +106,57 @@ premise corrected under PROMPT 12 A1: the families differ in *operating point*
 and in the *reported statistic*, not in the Cadzow sweep count. The rest of
 B1 is correct — `T` and the selection budget genuinely do differ across
 subsections, and the blanket sentence in §II has been deleted accordingly.
+
+## 5. Balan citation fields (Section IV-A)
+
+**Status: cited, fields not verified.**
+
+PROMPT 18 D3 requires ceding priority on the rank-one-per-measurement result to
+Balan and to Cui *et al.* The Cui citation is already reference [1] and is
+solid. The Balan entry reads:
+
+> R. Balan, "The Fisher information matrix and the Cramér–Rao bound in a
+> non-AWGN model for the phase retrieval problem," in *Proc. Int. Conf.
+> Sampling Theory Appl. (SampTA)*, 2015.
+
+The author, the result and the venue class are right. **The year, the exact
+title wording and the page range are not verified** — this container has no
+network access and the paper is not in the repository. The brief asked for a
+`\todo{VERIFY CITATION}` marker, but PROMPT 14 A3 removed the `\todo` macro
+precisely so that nothing unresolved can render, and gate S1 fails on any
+rendered TODO. Recording it here instead keeps both rules: nothing unresolved
+ships, and nothing is silently asserted. A `%` comment above the entry points
+here.
+
+PROMPT 18 D3 also asks for the specific Cui *et al.* lemma number. That is not
+pinned: the citation is to the paper, not to a numbered lemma, because the
+lemma numbering could not be checked against the PDF from here.
+
+**To close:** verify Balan's year, venue and pages, and pin the Cui lemma
+number, both from the sources.
+
+## 6. Content cut from Paper 1 for the page budget (PROMPT 18 Part F)
+
+**Status: removed from the manuscript, results files untouched.**
+
+Two passages were cut in the order the brief prescribes. Neither result is
+withdrawn; both remain in the repository and can be restored if a page is
+found.
+
+**Coarse-to-fine order search** (`results/p12/B4.json`, configuration C). Cut
+the sentence that it reduces the selection stage by `1.68×`, from `16.0` to
+`9.6` candidate evaluations, returning the same order in `93.3%` of trials,
+while missing its pre-registered gate of `≤ 0.05` dB at an aggregate cost of
+`0.083` dB, with a paired median degradation of `0.000` dB. What survives is
+the runtime share, `57.7–85.5%`, which is what makes the point that order
+selection and not the projection is the place to optimise.
+
+**Pencil sweep detail** (`results/p12/B3.json`, configuration C). Cut the span
+of `0.390` dB over admissible-rank counts `8` to `16`, and the matched-shape
+pair `24×9` and `8×25` at `+3.199` and `+3.121` dB. The conclusion they support
+— no monotone trend, and the effect tracks rank count rather than matrix shape
+— is retained in one sentence.
+
+**Note that the second cut removes the paper's only direct evidence** for the
+matched-shape claim, which now rests on an assertion. If a reviewer challenges
+it, the numbers above are the answer and should be restored.
