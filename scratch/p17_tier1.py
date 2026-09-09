@@ -242,8 +242,14 @@ def main(argv=None) -> int:
     RESULTS.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
     info = train_run(a.run)
-    cur = json.loads(REPORT.read_text()) if REPORT.exists() else {}
-    cur[a.run] = info
+    # Each run owns one file; the aggregate is rebuilt by scanning them. Four
+    # concurrent runs of near-identical length can finish inside the same
+    # read-modify-write of a shared JSON and silently drop an entry, which
+    # Tier 0.5 escaped only because its queue staggered the launches.
+    (RESULTS / a.run / "result.json").write_text(
+        json.dumps(info, indent=1) + "\n", encoding="utf-8")
+    cur = {p.parent.name: json.loads(p.read_text())
+           for p in sorted(RESULTS.glob("*/result.json"))}
     REPORT.write_text(json.dumps(cur, indent=1) + "\n", encoding="utf-8")
     print(f"  [{a.run}] done in {info['train_seconds']}s, epoch "
           f"{info['chosen_epoch']}, val {info['chosen_val_db']:.3f} dB")
