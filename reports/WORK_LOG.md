@@ -1,7 +1,11 @@
-# Work log — Paper 1 finished, Paper 2 blocked
+# Work log — Paper 1 finished, Paper 2 measuring its own seed noise
 
-Covers everything since PROMPT 14, ending at commit `23d4d00`. Working tree is
-clean, local and remote are in sync, and nothing is running.
+Covers everything since PROMPT 14. Sections 1–5 were written at commit
+`23d4d00` and are left as they were; **§7 and §8 are the current state** and
+correct them where they have gone stale.
+
+At the time of writing, Tier 1 batch C1 — four training runs, about three hours
+wall clock — is running. Nothing else is.
 
 ---
 
@@ -48,7 +52,7 @@ unsupported, *and* the work that was meant to replace it is invalid.
 | **A** | diagnose non-reproducible evaluation, fix, re-score, blast radius, Paper 1 exposure check | **DONE** — gate passed |
 | **B** | B1 projection-disabled at inference; B2 three-design per-bin table | **BLOCKED** — reads from mis-trained arms |
 | **C** | pre-register P24–P26, retrain three tiers with more seeds | **BLOCKED** — needs retraining first |
-| **D** | write `docs/paper2-thesis.md` | **NOT STARTED** — needs no compute, offered, awaiting your go-ahead |
+| **D** | write `docs/paper2-thesis.md` | **DONE** under PROMPT 16 Part C — see §7 |
 
 ---
 
@@ -208,7 +212,11 @@ fixed at ±3 dB, which stopped being true when that axis was widened.
 
 ---
 
-## 6. What is waiting on you
+## 6. What was waiting on you at `23d4d00` — both answered since
+
+You answered both: the retraining budget was authorised as Tier 0.5 (PROMPT 16)
+and Tier 1 (PROMPT 17), and the thesis document was written. Kept as written
+so the record shows what was asked and when.
 
 1. **Retraining budget for Paper 2.** The three PROMPT 15 Part C tiers
    (mixed-SNR, balanced, log) each need retraining with the correct
@@ -219,3 +227,124 @@ fixed at ±3 dB, which stopped being true when that axis was widened.
    retrofitted to them. One edit is needed against the brief's version: the
    "evaluation path" nuisance source is no longer hypothetical — it is
    measured, and the initialiser is the example. Offered, not started.
+
+---
+
+## 7. PROMPT 16 and 17 — the headline is seeded, the spread is real
+
+### Tier 0.5: the loss-design effect survives three seeds
+
+Six runs, one driver, all `init="spectral"`. Contrast is `U1` (conventional
+loss) − `C1` (SNR-balanced loss); positive means the balanced loss wins. Full
+scoring in `reports/p16/PART_A_P27.md`, thresholds fixed in
+`reports/p16/PREREG_P27.md` before any run started.
+
+| quantity | value |
+|---|---|
+| per-seed gain at SNR ≥ 5 dB | +1.902, +2.242, +2.369 dB |
+| three-seed mean | **+2.171** dB |
+| SD **over seeds** | **0.241** dB |
+| mean − 2·SD | **+1.689** dB |
+
+**P27a and P27b both held** against the pre-registered thresholds. The
+separation rule fired positive, so this is Paper 2's headline: the balanced
+loss is separated from no-effect on three seeds.
+
+The result worth a sentence in the paper is not the headline but **A3**: the
+balanced arm is better in *all* eighteen bin × seed cells, seventeen of them
+with a bootstrap CI over test realisations excluding zero — including the two
+lowest SNR bins, which the balanced loss deliberately down-weights by factors
+of 18 and 9. A reweighting is normally suspected of trading one regime for
+another. This one improves the regime it weighted away from.
+
+### The one confound was checked, and it is exactly zero
+
+Seed 1 was the outlier by the rule fixed in `reports/p16/SEED1_CONDITIONAL.md`
+(committed before scoring), and seed 1 was also the only seed trained by a
+different script. Those two things varying together is the confound that cost
+PROMPT 15 a whole turn, so seed 1 was retrained under the unified driver.
+
+**The re-run produced bitwise identical weights** — `max|diff| = 0.000e+00`,
+same selected epochs (6 and 8). Driver effect **0.0000 dB**; the two groupings
+in `reports/p16/p27_score.json` agree to every digit. The Tier 0.5 spread is a
+genuine seed spread and is quotable as one.
+
+### `docs/paper2-thesis.md`
+
+Written, committed before the Tier 1 numbers land, so the framing cannot be
+retrofitted to them. It carries the §4b reconciliation of the epoch-selection
+question and states the "evaluation path" nuisance source as measured rather
+than hypothetical, with the initialiser as the worked example.
+
+### Tier 1 — running now
+
+Fourteen runs in four gated batches, one driver for all of them
+(`scratch/p17_tier1.py`, launched one batch at a time by
+`scratch/p17_queue.sh`).
+
+| batch | runs | what it measures |
+|---|---|---|
+| **C1** | 4 | seed variance on Δ_H = **+0.078** dB (focused training) |
+| C2 | 4 | seed variance on Δ_H = **+1.209** dB (mixed-SNR) |
+| C3 | 3 | H1 under the balanced loss |
+| C4 | 3 | U1 under the log-domain loss |
+
+**C1 is the decisive one and is the gate.** The retired collapse claim rested
+on `+0.078` being a small number; whether it is a *stable* small number has
+never been measured with valid arms. If its across-seed SD exceeds 0.35 dB, or
+the three-seed range exceeds 0.5 dB, C2–C4 do not launch — nothing downstream
+is worth running against an unstable anchor. Predictions and both decision
+branches are fixed in `reports/p16/PREREG_P28.md`, committed standing alone at
+`e95c7ec` before C1 started.
+
+P30 and P31 will be labelled **re-registrations**, not registrations: the
+invalid `init="random"` runs already produced `+0.174` and `+0.343` for those
+two contrasts, so those numbers are not unseen and it would be dishonest to
+score them as if they were.
+
+---
+
+## 8. Current state
+
+### Paper 1
+
+Two versions are finished and frozen at `99a27e0`, both 5 pages, all eight
+submission gates passing: `haatim_hsgs_letter.tex` and
+`haatim_hsgs_letter_restyled.tex`.
+
+A **third version exists on branch `paper1-restructure`** and is not merged. It
+carries the advisor restructure — abstract rewritten to one paragraph of about
+215 words, three-paragraph introduction, Section II split into system model and
+assumptions with a new TikZ system figure, the Cramér–Rao exposition cut to its
+result, priority ceded where it was overclaimed, and a setup subsection with
+the configuration table.
+
+**No number changed.** Verified mechanically: zero new decimals against
+`99a27e0`, and all eleven dropped occurrences accounted for by two authorised
+cuts and one duplicate.
+
+It is **6 pages**, so gate S2 fails. The shape of the overflow has changed
+though — page 6 now holds *nothing but the bibliography*, and the body ends on
+page 5. Getting to 5 needs either about 400 words out of the results
+themselves or fewer citations. Both are your call; the prose is as far down as
+it goes without touching results.
+
+### Paper 2
+
+Still quarantined at `wip/spl2/` behind a status banner. Its central claim — the
+fifteenfold collapse — remains dead and the draft has not been restructured.
+What has changed since §1 was written is that Paper 2 now has a *different*
+headline that survives seeds (§7), and Tier 1 is measuring whether the number
+the dead claim was built on is stable enough to report at all.
+
+Manuscript editing of Paper 2 has not been authorised in any turn since
+PROMPT 15 and has not been started.
+
+### What is waiting on you
+
+1. **Paper 1 page count.** 6 pages on `paper1-restructure`, overflow is
+   references. Cut results, cut citations, or accept 6.
+2. **Whether `paper1-restructure` merges.** It is pushed and awaiting your
+   review; nothing has been merged into the frozen letter.
+3. **Nothing on Tier 1** until C1 is scored. If the C1 gate fails, the report
+   will say so and C2–C4 will not have launched.
