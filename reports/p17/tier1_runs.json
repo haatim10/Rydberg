@@ -206,6 +206,213 @@
   "best_val_db": -17.181486660474356,
   "train_seconds": 6623.3
  },
+ "C1_H1_seed3": {
+  "arm": "arm1b_full_random",
+  "spec": {
+   "hankel": true,
+   "snr": [
+    5.0,
+    20.0
+   ],
+   "loss": "ratio",
+   "seed": 3
+  },
+  "params": {
+   "tie_layers": false,
+   "T_UR": 10,
+   "per_layer": [
+    {
+     "layer": 0,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 1,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 2,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 3,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 4,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 5,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 6,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 7,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 8,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 9,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    }
+   ],
+   "totals": {
+    "filter_net": 970,
+    "gate": 10,
+    "transformer": 1585920,
+    "all_parameters": 1586900
+   },
+   "note": "untied: per-layer sums equal the total"
+  },
+  "warmstart": null,
+  "run": "C1_H1_seed3",
+  "P": 20,
+  "train_seed": 20263827,
+  "init": "spectral",
+  "n_train": 80000,
+  "epochs": 13,
+  "history": [
+   {
+    "epoch": 0,
+    "train_loss": -15.547780287100611,
+    "val_nmse_db": -15.656666285184253,
+    "lr": 0.000985470908713026,
+    "seconds": 839.3
+   },
+   {
+    "epoch": 1,
+    "train_loss": -15.871209971115212,
+    "val_nmse_db": -15.944530484633166,
+    "lr": 0.000942728012826605,
+    "seconds": 477.1
+   },
+   {
+    "epoch": 2,
+    "train_loss": -16.13487904362477,
+    "val_nmse_db": -16.177441372870444,
+    "lr": 0.0008742553740855506,
+    "seconds": 480.7
+   },
+   {
+    "epoch": 3,
+    "train_loss": -16.42856041558121,
+    "val_nmse_db": -16.50196814948741,
+    "lr": 0.0007840323733655781,
+    "seconds": 492.7
+   },
+   {
+    "epoch": 4,
+    "train_loss": -16.70337510936004,
+    "val_nmse_db": -16.667725686673556,
+    "lr": 0.0006773024435212678,
+    "seconds": 483.7
+   },
+   {
+    "epoch": 5,
+    "train_loss": -16.87642366741231,
+    "val_nmse_db": -16.814246178081536,
+    "lr": 0.0005602683401276615,
+    "seconds": 484.4
+   },
+   {
+    "epoch": 6,
+    "train_loss": -17.012493608616392,
+    "val_nmse_db": -16.884213139676895,
+    "lr": 0.00043973165987233864,
+    "seconds": 481.5
+   },
+   {
+    "epoch": 7,
+    "train_loss": -17.127894697150655,
+    "val_nmse_db": -16.956555188129375,
+    "lr": 0.00032269755647873233,
+    "seconds": 489.4
+   },
+   {
+    "epoch": 8,
+    "train_loss": -17.213067827257333,
+    "val_nmse_db": -17.015800691368884,
+    "lr": 0.00021596762663442218,
+    "seconds": 517.5
+   },
+   {
+    "epoch": 9,
+    "train_loss": -17.32133582651313,
+    "val_nmse_db": -17.03224954113391,
+    "lr": 0.00012574462591444943,
+    "seconds": 519.2
+   },
+   {
+    "epoch": 10,
+    "train_loss": -17.391276251720676,
+    "val_nmse_db": -17.07824545307759,
+    "lr": 5.727198717339522e-05,
+    "seconds": 477.4
+   },
+   {
+    "epoch": 11,
+    "train_loss": -17.444800292603723,
+    "val_nmse_db": -17.083327286504964,
+    "lr": 1.4529091286973998e-05,
+    "seconds": 475.7
+   },
+   {
+    "epoch": 12,
+    "train_loss": -17.476736992529048,
+    "val_nmse_db": -17.08860740443467,
+    "lr": 0.0,
+    "seconds": 485.4
+   }
+  ],
+  "selection": {
+   "rule": "one_se",
+   "best_epoch": 12,
+   "se_db": 0.09721289328832564,
+   "threshold_db": -16.991394511146343,
+   "chosen_epoch": 8,
+   "n_within_1se": 5
+  },
+  "chosen_epoch": 8,
+  "chosen_val_db": -17.015800691368884,
+  "best_val_db": -17.08860740443467,
+  "train_seconds": 6705.7
+ },
  "C1_U1_seed2": {
   "arm": "arm1b_full_random",
   "spec": {
