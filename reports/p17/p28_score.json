@@ -1,0 +1,275 @@
+{
+ "prereg": "reports/p16/PREREG_P28.md @ e95c7ec",
+ "contrast": "U1 (no prior) - H1 (Hankel prior, rank 7); positive = the structural prior is better",
+ "design": "focused training, SNR in [5,20] for train and test",
+ "n_seeds": 3,
+ "n_test": 2000,
+ "P": 20,
+ "test_snr_range": [
+  5.0,
+  20.0
+ ],
+ "checkpoint_provenance": {
+  "U1_seed1": {
+   "epoch": 9,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "use_hankel": false
+  },
+  "H1_seed1": {
+   "epoch": 9,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "use_hankel": true
+  },
+  "U1_seed2": {
+   "epoch": 9,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "use_hankel": false
+  },
+  "H1_seed2": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "use_hankel": true
+  },
+  "U1_seed3": {
+   "epoch": 9,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "use_hankel": false
+  },
+  "H1_seed3": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "use_hankel": true
+  }
+ },
+ "per_seed": {
+  "seed1": {
+   "high_snr_ge5_db": 0.0777955336603382,
+   "ci95_over_test_realisations": [
+    0.049745243040561604,
+    0.11193261492902692
+   ],
+   "ci_excludes_zero": true,
+   "n": 2000,
+   "ratio_of_sums_db_SECONDARY": -0.05897710684458016,
+   "per_bin_db": [
+    -0.075663683584823,
+    0.12967399504927002,
+    0.232209804776641
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.12639909829220386,
+     -0.019832726756867914
+    ],
+    [
+     0.07986105123674392,
+     0.19195772339099548
+    ],
+    [
+     0.17229070253633982,
+     0.28673927463822935
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed2": {
+   "high_snr_ge5_db": 0.05678435681167571,
+   "ci95_over_test_realisations": [
+    0.014484028389416537,
+    0.09706571396773213
+   ],
+   "ci_excludes_zero": true,
+   "n": 2000,
+   "ratio_of_sums_db_SECONDARY": -0.07721545852537182,
+   "per_bin_db": [
+    -0.1421870407023773,
+    0.08641090737270041,
+    0.3265215709165705
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.19172435442830638,
+     -0.0886907517973512
+    ],
+    [
+     0.01979682711211339,
+     0.14941726257880525
+    ],
+    [
+     0.22906137302539697,
+     0.39898735299326743
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed3": {
+   "high_snr_ge5_db": -0.07551234595276934,
+   "ci95_over_test_realisations": [
+    -0.11231955915867609,
+    -0.033799037750526395
+   ],
+   "ci_excludes_zero": true,
+   "n": 2000,
+   "ratio_of_sums_db_SECONDARY": -0.23399784757307251,
+   "per_bin_db": [
+    -0.300898692993683,
+    -0.016012138224500205,
+    0.21766819990273767
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.35974702031411177,
+     -0.25661633470543066
+    ],
+    [
+     -0.0697177670079352,
+     0.04918962189792708
+    ],
+    [
+     0.15699963216609802,
+     0.2987956709899642
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    false,
+    true
+   ],
+   "bins": [
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  }
+ },
+ "bins": [
+  [
+   5,
+   10
+  ],
+  [
+   10,
+   15
+  ],
+  [
+   15,
+   20
+  ]
+ ],
+ "seed1_reproduction": {
+  "published_db": 0.0778,
+  "published_ci95": [
+   0.0497,
+   0.1119
+  ],
+  "published_per_bin_db": [
+   -0.0757,
+   0.1297,
+   0.2322
+  ],
+  "measured_db": 0.0778,
+  "abs_error_db": 4e-06,
+  "tolerance_db": 0.001,
+  "reproduced": true,
+  "meaning": "if false, the scorer is reading different worlds or a different path and NO verdict below may be trusted"
+ },
+ "three_seed_mean_high_snr_db": 0.0197,
+ "seed_spread_sd_db": 0.0831,
+ "seed_spread_range_db": 0.1533,
+ "three_seed_mean_per_bin_db": [
+  -0.1729,
+  0.0667,
+  0.2588
+ ],
+ "seed_spread_sd_per_bin_db": [
+  0.1157,
+  0.0748,
+  0.0591
+ ],
+ "P28a": {
+  "prediction": "across-seed SD <= 0.35 dB",
+  "point_estimate": 0.18,
+  "measured_sd_db": 0.0831,
+  "status": "HELD"
+ },
+ "P28b": {
+  "prediction": "+0.078 is the MIDDLE of the three seed values",
+  "seed_values_db": [
+   0.0778,
+   0.0568,
+   -0.0755
+  ],
+  "seed1_rank_0_is_smallest": 2,
+  "prior_probability_under_exchangeability": 0.3333333333333333,
+  "status": "FAILED"
+ },
+ "P28c": {
+  "prediction": "all three seeds give Delta_H > 0 at SNR >= 5",
+  "measured_min_db": -0.0755,
+  "status": "FAILED"
+ },
+ "separation": {
+  "rule": "mean - 2*SD > 0 across seeds",
+  "value": -0.1465,
+  "separated": false,
+  "consequence": "Paper 2 must say the focused-training advantage is WITHIN SEED VARIATION and cannot be distinguished from zero at this sample size -- NOT that it is zero, which three seeds cannot establish either"
+ },
+ "gate_on_C2_C4": {
+  "rule": "stop if P28a fails or three-seed range > 0.5",
+  "range_db": 0.1533,
+  "stop": false,
+  "consequence": "C2 may launch once P29 is committed standing alone"
+ },
+ "note": "CIs in per_seed are over TEST REALISATIONS. The seed spread is the separate quantity reported as seed_spread_*. Three seeds give two degrees of freedom, so the SD itself carries large sampling uncertainty and any statement made from it must say it was evaluated on three seeds."
+}
