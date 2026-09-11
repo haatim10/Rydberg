@@ -124,19 +124,41 @@ it. The first casualty of the protocol we propose was our own method, and we
 report it because a result that survives an author's attempt to keep it is
 worth more than one that was never tested.
 
+\textbf{Related work on SNR-dependent loss design.} The imbalance itself is
+known and we do not claim it. Wiesmayr \emph{et al.}~\cite{wiesmayr2023bler}
+state it directly for ML-assisted detection and decoding: a system learns one
+parameter set while operating over a range of SNRs, the training data is
+sampled from that range, and the aggregate loss is then dominated by the
+low-SNR samples, because a small relative improvement at low SNR moves the cost
+further than a large one at high SNR. They propose SNR deweighting as the
+remedy. Work on deep OFDM channel estimation has separately examined training
+on SNR-restricted samples, reporting the expected trade of low-noise accuracy
+against high-noise accuracy.\todo{VERIFY CITATION: arXiv:2401.05436, fields
+unconfirmed} What we take from that line of work is the mechanism and the
+remedy. What is not taken from it, and what this paper is about, is the
+consequence for \emph{attribution}: that a known training defect manufactures
+apparent evidence for a structural prior, so that crediting the prior without
+controlling for the defect is unsound. Wiesmayr \emph{et al.} identify the
+pathology and fix it; they do not ask what it does to the evidence.
+
 \textbf{Contributions.}
 \begin{enumerate}
 \item An attribution decomposition of an unrolled estimator's gain, separating
 the learned filter, the attention block, and unrolling itself against a matched
 non-unrolled control.
-\item Identification of the confound: per-sample normalized error over mixed
-SNR concentrates the gradient at low SNR, so any mechanism that improves
-high-SNR behaviour will appear to add information. We give a matched-adequacy
-protocol that separates the two.
-\item A corrected loss that is not a workaround but a fix, gaining
-$+2.171$~dB at SNR~$\ge5$~dB over three seeds with no low-SNR penalty ---
-indeed with a gain in every bin of every seed, including the two bins the
-weighting penalizes most.
+\item The consequence of a known training pathology for \emph{attribution}:
+per-sample normalized error over mixed SNR concentrates the gradient at low
+SNR~\cite{wiesmayr2023bler}, so any mechanism that improves high-SNR behaviour
+will appear to add information, and a structural prior credited on that
+evidence is credited for the training's failure rather than its own
+contribution. We give a matched-adequacy protocol that separates the two.
+\item Two properties of the structural contrast that a scalar hides: a per-bin
+sign pattern that replicates across training designs and seeds, and a
+dependence of the reported sign on the averaging window.
+\item Confirmation that the known remedy~\cite{wiesmayr2023bler} transfers to
+unrolled magnitude-only estimation, gaining $+2.171$~dB at SNR~$\ge5$~dB over
+three seeds --- with a gain in every bin of every seed, including the two bins
+the weighting penalizes most.
 \item A demonstration that pilot efficiency and pilot-count generalization are
 distinct and are conflated by a single reported curve.
 \item \textcolor{red}{[STUB]} The structural-prior contribution, pending C2.
@@ -216,6 +238,10 @@ least-squares headroom, which is a reference and not a bound.}
 
 \subsection{The confound}
 
+The mechanism in this subsection is the one stated
+in~\cite{wiesmayr2023bler}; what is new here is its magnitude in an unrolled
+magnitude-only estimator, and what it does to attribution.
+
 The training loss is the per-sample normalized error
 $\|\hat\bG-\bG\|_F^2/\|\bG\|_F^2$, averaged over a batch drawn across the
 whole SNR range. Because the normalized error of a low-SNR realization is
@@ -292,10 +318,15 @@ Test realizations & 2{,}000 (paired) \\
 \end{tabular}
 \end{table}
 
-\subsection{A corrected loss, not a workaround}
+\subsection{The known remedy transfers to this setting}
 \label{sec:balanced}
 
-The confound is a property of the loss, so we fix the loss. We weight each
+The confound is a property of the loss, and the remedy for it is already
+known~\cite{wiesmayr2023bler}. This subsection reports what it is worth here.
+That is a confirmation, not a contribution, and it is placed first only because
+the rest of the section is easier to read once the loss is fixed.
+
+We weight each
 sample by a static per-bin factor $w(b)=c/m(b)$, where $m(b)$ is the mean
 per-sample normalized error in bin $b$ measured once before training, with $c$
 set so the weights have unit mean. This requires no schedule, no tuning, and
@@ -382,26 +413,106 @@ whose weights the balancing divides by about $18$ and $9$.}
 \label{fig:allcells}
 \end{figure}
 
+\subsection{The structural contrast is not a scalar: a per-bin sign pattern}
+\label{sec:signpattern}
+
+Reported as one number, the structural gain $\Delta_H$ is a weighted average of
+two opposing effects. Per bin, the prior \emph{costs} accuracy at low SNR and
+\emph{buys} it at high SNR, and the sign flips exactly once.
+
+\begin{table}[!t]
+\caption{Per-bin structural gain $\Delta_H$, three-seed mean, positive = the
+prior is better. Every one of the eighteen underlying bin-by-seed cells in the
+mixed design has a bootstrap $95\%$ CI over test realizations excluding zero.}
+\label{tab:signs}
+\centering
+\small
+\begin{tabular}{lrrr}
+\toprule
+SNR bin (dB) & mixed & SD over seeds & focused \\
+\midrule
+% src: reports/p19/p29_score.json three_seed_mean_per_bin_db
+$[-10,-5)$ & $-0.120$ & $0.036$ & --- \\
+$[-5,0)$   & $-0.400$ & $0.103$ & --- \\
+$[0,5)$    & $-0.293$ & $0.157$ & --- \\
+% src: reports/p17/p28_score.json three_seed_mean_per_bin_db
+$[5,10)$   & $+0.457$ & $0.052$ & $-0.173$ \\
+$[10,15)$  & $+1.403$ & $0.089$ & $+0.067$ \\
+$[15,20)$  & $+2.290$ & $0.082$ & $+0.259$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Two things about Table~\ref{tab:signs} are worth separating.
+
+\textbf{The ordering replicates and the crossing does not.} Every arm we have
+measured --- three seeds of mixed-SNR training, three of focused training, and
+an earlier arm under the balanced loss --- places every negative bin before
+every positive one. On all three mixed seeds the sequence is exactly
+$-\,-\,-\,+\,+\,+$ with all eighteen intervals excluding zero. But the bin at
+which the sign turns moves by up to two positions between arms. The ordering is
+the property that survives; the crossing SNR is not, and neither is any scalar
+summary that depends on where it falls.
+
+\textbf{The magnitude collapses under matched adequacy while the ordering does
+not.} Comparing the two columns, focused training leaves the shape intact and
+reduces the size of every bin by roughly an order of magnitude.
+
+\subsection{The averaging window decides the reported sign}
+\label{sec:window}
+
+Because the per-bin contributions have opposite signs, the number one reports
+depends on the window the average is taken over --- both which bins are inside
+it and how trials are combined within it. Across three seeds of each design:
+
+\begin{itemize}
+\item mixed-SNR, restricted to SNR~$\ge5$: $+1.209$, $+1.351$, $+1.298$~dB by
+paired per-trial median; $+0.723$, $+0.856$, $+0.901$~dB by ratio of sums.
+Positive under both.
+\item mixed-SNR, pooled over the whole range: $+0.129$, $+0.225$, $+0.196$~dB
+by median; $-0.214$, $-0.146$, $-0.141$~dB by ratio of sums. \emph{Sign
+disagreement.}
+\item focused training, SNR~$\ge5$: $+0.078$, $+0.057$, $-0.076$~dB by median;
+$-0.059$, $-0.077$, $-0.234$~dB by ratio of sums. Negative under ratio of sums
+on every seed.
+\end{itemize}
+
+\textbf{The reason is measurable and we measured it.} The paired median weights
+every trial equally; the ratio of sums weights each trial by its own squared
+error. Sorting trials by the no-prior arm's error, the top two deciles carry
+$51.2\%$ of the total and contribute $-0.134$~dB, while the remaining eight
+contribute essentially nothing. That is not a conditioning effect separate from
+SNR: within an SNR bin the rank correlation between the baseline error and
+$\Delta_H$ is $-0.009$, $-0.046$ and $+0.147$, against $-0.161$ overall and
+$+0.198$ against SNR itself. The sum of squared errors is dominated by low-SNR
+realizations, which is exactly where Table~\ref{tab:signs} says the prior costs
+accuracy.
+
+\textbf{It is not the mechanism that produces the same symptom in the classical
+estimator}, where a selection rule abstains on most trials and pins the median
+at zero. The unrolled arm has no such rule: the projection is applied
+unconditionally, and it moves the estimate on every one of the $10$ layers of
+every one of $2000$ trials on every seed, with no trial anywhere near
+inactive.
+
 \subsection{The structural prior under matched adequacy}
 \label{sec:prior}
 
-\stub{STRUCTURAL-PRIOR SECTION}{The whole subsection, pending batches C2 and
-C3. Three things are already established and will survive whichever P29
-outcome fires, and they are recorded here so the section is written from them
-rather than around them. First, under focused training $\Delta_H$ has no
-stable sign: three seeds give $+0.078$, $+0.057$ and $-0.076$~dB, every
-bootstrap CI over test realizations excluding zero, and the across-seed SD is
-$0.083$~dB --- small, so this is a statement about the effect and not about
-noise. Second, the paired per-trial median and the ratio of sums disagree in
-sign, and the reason is measured: the sum of squared errors is dominated by
-low-SNR realizations, which is exactly where the prior costs accuracy. It is
-\emph{not} the abstention mechanism of the classical estimator --- the
-projection is active on every layer of every one of $2000$ trials on every
-seed. Third, the per-bin ordering, a cost at low SNR turning into a benefit at
-high SNR, replicates on every arm measured, across two initializers, two
-training designs, two losses and four seeds; the SNR at which it crosses does
-not, moving across three bin boundaries. The reportable object is that
-ordering, not any scalar.}
+\stub{STRUCTURAL-PRIOR SECTION}{The headline comparison and its figure,
+pending batch C3. Its per-bin and averaging-window content has been promoted
+out into Secs.~\ref{sec:signpattern} and~\ref{sec:window}; what remains to be
+written here is the scalar contrast across training designs and the claim the
+paper makes from it. The measured inputs are: $\Delta_H=+1.286$~dB under
+mixed-SNR training, across-seed SD $0.072$, $\text{mean}-2\,\text{SD}=+1.142$,
+positive on every seed and under both pooling rules; against $+0.020$~dB under
+matched focused training, SD $0.083$, $\text{mean}-2\,\text{SD}=-0.147$, one
+seed of three significantly negative. The claim is that the contrast changes
+\emph{category} rather than shrinking by a factor --- from an effect that
+survives every check to one whose sign depends on the seed drawn and the
+statistic used. C3 tests whether a third way of removing the training
+imbalance, reweighting the loss without narrowing the training range, does the
+same thing; the section is not written until it reports, because a claim about
+training adequacy in general rests on more than one way of fixing it.}
 
 \subsection{Pilot efficiency is not pilot-count generalization}
 
@@ -443,15 +554,23 @@ each $P$; the solid curve is one network trained at $P=20$.}
 
 \section{Conclusion}
 
-Per-sample normalized error over a mixed-SNR training set concentrates
-$89.7\%$ of the gradient below $5$~dB and leaves the high-SNR regime
-underfitted, so any mechanism that improves high-SNR behaviour --- a structural
-prior among them --- will appear to add information it need not have supplied.
-Rebalancing the loss, a change of a few lines with no architectural addition,
-gains $+2.171$~dB at SNR~$\ge5$~dB across three seeds and improves every one of
-eighteen bin-by-seed cells, including the two bins the weighting itself
-penalizes most. We recommend the matched-adequacy control be run before a
-structural prior is credited, and note that it cost us our own result first.
+A training loss averaged over a wide SNR range is dominated by its low-SNR
+tail~\cite{wiesmayr2023bler}; here that amounts to $89.7\%$ of the gradient
+below $5$~dB and leaves the high-SNR regime underfitted. The consequence we
+draw from it is about evidence rather than about performance: any mechanism
+that improves high-SNR behaviour will appear to add information it need not
+have supplied, so a structural prior credited on an uncontrolled comparison is
+credited for the training's failure. We recommend the matched-adequacy control
+be run before a structural prior is credited, and note that it cost us our own
+result first.
+
+Two properties of the structural contrast survive that control and a single
+number does not report either: the per-bin sign pattern, which replicates
+across training designs and seeds while the SNR at which it crosses does not,
+and the dependence of the reported sign on the averaging window. Applying the
+known remedy~\cite{wiesmayr2023bler} to this setting gains $+2.171$~dB at
+SNR~$\ge5$~dB across three seeds and improves every one of eighteen
+bin-by-seed cells, including the two the weighting itself penalizes most.
 
 \stub{CONCLUSION, structural-prior sentence}{One or two sentences stating what
 the control did to $\Delta_H$, pending C2. The claim the retired draft made

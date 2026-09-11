@@ -3,46 +3,60 @@
 \citation{monga2021}
 \citation{xiao2026}
 \citation{cui2025}
+\citation{wiesmayr2023bler}
+\citation{wiesmayr2023bler}
+\citation{wiesmayr2023bler}
+\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
 \citation{xu2025}
 \citation{gerchberg1972}
 \citation{xiao2026}
-\@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {II}System Model and Estimator}{1}{}\protected@file@percent }
-\newlabel{eq:fwd}{{1}{1}{}{}{}}
-\citation{xu2025}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Attribution of the unrolled estimator's gain over EM-GS at $80$k training samples. ``Unclaimed'' is the remainder of the genie-aided least-squares headroom, which is a reference and not a bound.}}{2}{}\protected@file@percent }
-\newlabel{fig:attr}{{1}{2}{}{}{}}
+\citation{wiesmayr2023bler}
+\@writefile{toc}{\contentsline {section}{\numberline {II}System Model and Estimator}{2}{}\protected@file@percent }
+\newlabel{eq:fwd}{{1}{2}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {III}Attribution and the Matched-Adequacy Protocol}{2}{}\protected@file@percent }
 \newlabel{sec:protocol}{{III}{2}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Where the gain comes from}{2}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}The confound}{2}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Configuration.}}{2}{}\protected@file@percent }
-\newlabel{tab:params}{{I}{2}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Attribution of the unrolled estimator's gain over EM-GS at $80$k training samples. ``Unclaimed'' is the remainder of the genie-aided least-squares headroom, which is a reference and not a bound.}}{2}{}\protected@file@percent }
+\newlabel{fig:attr}{{1}{2}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}The protocol}{2}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Numerical Results}{2}{}\protected@file@percent }
-\newlabel{sec:results}{{IV}{2}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}A corrected loss, not a workaround}{2}{}\protected@file@percent }
-\newlabel{sec:balanced}{{\mbox  {IV-A}}{2}{}{}{}}
+\citation{xu2025}
+\citation{wiesmayr2023bler}
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Configuration.}}{3}{}\protected@file@percent }
+\newlabel{tab:params}{{I}{3}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Numerical Results}{3}{}\protected@file@percent }
+\newlabel{sec:results}{{IV}{3}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}The known remedy transfers to this setting}{3}{}\protected@file@percent }
+\newlabel{sec:balanced}{{\mbox  {IV-A}}{3}{}{}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Cause and effect. Upper: per-bin gradient share under the per-sample normalized loss and under SNR balancing. Lower: the resulting per-bin gain, paired per-trial median with bootstrap $95\%$ CI over test realizations, on the seed for which the prediction was registered.}}{3}{}\protected@file@percent }
 \newlabel{fig:balanced}{{2}{3}{}{}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Every bin, every seed. The gain from SNR balancing, paired per-trial median with bootstrap $95\%$ CI over test realizations, for each of three training seeds. All eighteen cells are positive, including the two lowest bins, whose weights the balancing divides by about $18$ and $9$.}}{3}{}\protected@file@percent }
-\newlabel{fig:allcells}{{3}{3}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}The correction improves the regime it penalizes}{3}{}\protected@file@percent }
 \newlabel{sec:18of18}{{\mbox  {IV-B}}{3}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}The structural prior under matched adequacy}{3}{}\protected@file@percent }
-\newlabel{sec:prior}{{\mbox  {IV-C}}{3}{}{}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Every bin, every seed. The gain from SNR balancing, paired per-trial median with bootstrap $95\%$ CI over test realizations, for each of three training seeds. All eighteen cells are positive, including the two lowest bins, whose weights the balancing divides by about $18$ and $9$.}}{4}{}\protected@file@percent }
+\newlabel{fig:allcells}{{3}{4}{}{}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {II}{\ignorespaces Per-bin structural gain $\Delta _H$, three-seed mean, positive = the prior is better. Every one of the eighteen underlying bin-by-seed cells in the mixed design has a bootstrap $95\%$ CI over test realizations excluding zero.}}{4}{}\protected@file@percent }
+\newlabel{tab:signs}{{II}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-C}}The structural contrast is not a scalar: a per-bin sign pattern}{4}{}\protected@file@percent }
+\newlabel{sec:signpattern}{{\mbox  {IV-C}}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}The averaging window decides the reported sign}{4}{}\protected@file@percent }
+\newlabel{sec:window}{{\mbox  {IV-D}}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-E}}The structural prior under matched adequacy}{4}{}\protected@file@percent }
+\newlabel{sec:prior}{{\mbox  {IV-E}}{4}{}{}{}}
 \citation{xiao2026}
+\citation{wiesmayr2023bler}
+\citation{wiesmayr2023bler}
 \bibstyle{IEEEtran}
 \bibdata{refs}
 \bibcite{gregor2010}{1}
 \bibcite{monga2021}{2}
 \bibcite{xiao2026}{3}
 \bibcite{cui2025}{4}
-\bibcite{xu2025}{5}
-\bibcite{gerchberg1972}{6}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-D}}Pilot efficiency is not pilot-count generalization}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{4}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Pilot efficiency against pilot-count generalization at $5$~dB, on identical realizations. The dashed diamonds are separate networks trained at each $P$; the solid curve is one network trained at $P=20$.}}{4}{}\protected@file@percent }
-\newlabel{fig:pilots}{{4}{4}{}{}{}}
-\@writefile{toc}{\contentsline {section}{References}{4}{}\protected@file@percent }
-\gdef \@abspage@last{4}
+\bibcite{wiesmayr2023bler}{5}
+\bibcite{xu2025}{6}
+\bibcite{gerchberg1972}{7}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Pilot efficiency against pilot-count generalization at $5$~dB, on identical realizations. The dashed diamonds are separate networks trained at each $P$; the solid curve is one network trained at $P=20$.}}{5}{}\protected@file@percent }
+\newlabel{fig:pilots}{{4}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-F}}Pilot efficiency is not pilot-count generalization}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {V}Conclusion}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{5}{}\protected@file@percent }
+\gdef \@abspage@last{5}
