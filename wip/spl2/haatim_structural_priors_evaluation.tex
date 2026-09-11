@@ -1,12 +1,20 @@
 % =====================================================================
-% QUARANTINED -- DO NOT SUBMIT OR FORWARD.  Moved here under PROMPT 16 Part D.
+% INCOMPLETE -- DO NOT SUBMIT OR FORWARD.  Quarantined under PROMPT 16 Part D;
+% the settled spine was rewritten under PROMPT 19 Part E.
 %
-% This draft asserts a RETIRED claim: that a matched-adequacy control collapses
-% the structural advantage fifteenfold, from +1.209 dB to +0.078 dB. The word
-% "fifteen" appears three times and those two numbers four times each. The
-% experiment that was meant to establish the collapse -- PROMPT 12 Part C --
-% was invalid: its arms were trained with init='random' while the arms they
-% were compared against were trained with init='spectral'
+% WHY IT STILL MAY NOT GO OUT: the title, the abstract and the whole
+% structural-prior section are deliberately UNWRITTEN. They render in red as
+% \stub{} blocks, each naming what it waits on. They wait on batch C2, because
+% the three possible outcomes are three different papers and those three
+% sections are where a paper commits to one.
+%
+% The RETIRED claim -- that a matched-adequacy control collapses the structural
+% advantage fifteenfold, from +1.209 dB to +0.078 dB -- has been removed from
+% the body, along with its figure, its supporting numbers (+2.653, +1.629) and
+% its CI. "fifteen" now survives only inside a stub, as an instruction that it
+% must not return. The experiment meant to establish the collapse -- PROMPT 12
+% Part C -- was invalid: its arms were trained with init='random' while the
+% arms they were compared against were trained with init='spectral'
 % (reports/p16/validity.csv, reports/p15/PART_A.md).
 %
 % The fifteenfold INTERPRETATION has no support, because the seed distribution
@@ -36,6 +44,10 @@
 \usepackage{xcolor}
 
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+% Deliberately unwritten section, under PROMPT 19 Part E2. Renders in red so a
+% stub cannot ship unnoticed. Each one names what it is waiting on.
+\newcommand{\stub}[2]{\par\medskip\noindent\textcolor{red}{\textbf{[STUB ---
+#1]}\\ \emph{#2}}\par\medskip}
 
 \DeclareMathOperator{\rank}{rank}
 \newcommand{\bG}{\mathbf{G}}
@@ -49,7 +61,19 @@
 
 \begin{document}
 
-\title{On the Evaluation of Structural Priors in Unrolled\\
+% TITLE IS A STUB (PROMPT 19 E2). The old title names structural priors as the
+% subject, and whether they are the subject depends on which P29 outcome fires:
+%   (a) mixed Delta_H stable near +1.2  -> the paper is about a prior whose
+%       value depends on training adequacy, and the old title stands;
+%   (b) mixed Delta_H also sign-unstable -> the paper is about a quantity the
+%       literature reports at a resolution it does not have, and the title must
+%       say so;
+%   (c) mixed Delta_H stable but smaller -> the paper is a loss-design paper
+%       with a corrected structural-prior figure, and the title should lead
+%       with the loss.
+% Placeholder below is the working title, not a decision.
+\title{\textcolor{red}{[WORKING TITLE --- see PROMPT 19 E2]}\\
+On the Evaluation of Structural Priors in Unrolled\\
 Channel Estimation for Rydberg Atomic Receivers}
 
 \author{Abdullah~Haatim%
@@ -61,20 +85,15 @@ f20220519@pilani.bits-pilani.ac.in).}}
 \maketitle
 
 \begin{abstract}
-Adding an explicit structural prior to an unrolled channel estimator usually
-improves the reported metric, and the improvement is usually attributed to the
-prior. We show that in magnitude-only channel estimation for Rydberg atomic
-receivers, most of that improvement is an artifact of how such estimators are
-trained and scored. Normalized error averaged per sample over a mixed-SNR
-training set puts $89.7\%$ of the gradient below $5$~dB, leaving the
-high-SNR regime underfitted; a structural prior then supplies at high SNR what
-training did not. Train both arms adequately and a $+1.209$~dB structural
-advantage falls by a factor of fifteen, to $+0.078$~dB. The first casualty of
-this control was our own structured estimator. We propose a matched-adequacy
-protocol, show that simply rebalancing the loss recovers $+1.902$~dB at
-SNR~$\ge5$~dB at no low-SNR cost, and show that pilot efficiency and
-pilot-count generalization are distinct quantities differing by $2.231$~dB.
-Results are simulation only.
+\textcolor{red}{[ABSTRACT IS A STUB --- PROMPT 19 E2.]} It cannot be written
+until batch C2 settles which of the three P29 outcomes fires, because the
+three are three different papers and the abstract is the sentence that commits
+to one. What it must contain either way: the gradient-concentration finding
+($89.7\%$ of the gradient below $5$~dB, a per-bin share spanning a factor of
+$30.0$); the matched-adequacy protocol; the corrected loss and its
+$+2.171$~dB three-seed gain at SNR~$\ge5$~dB with no low-SNR cost; the
+pilot-efficiency distinction at $2.231$~dB; and simulation-only scope. What it
+must not contain until C2 reports: any scalar for the structural gain.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -98,13 +117,12 @@ a per-sample normalized error, averaged over a training set spanning a wide
 SNR range.
 
 \textbf{This is a finding about evaluation practice, and we did not arrive at
-it as critics.} We built a Hankel-structured unrolled estimator, measured a
-clear $+1.209$~dB advantage at high SNR, and believed it. The control
-described in Sec.~\ref{sec:protocol} was run to characterize that advantage,
-not to remove it. It removed it: the same contrast under matched training
-adequacy is $+0.078$~dB. The first casualty of the protocol we propose was our
-own method, and we report it because a result that survives an author's
-attempt to keep it is worth more than one that was never tested.
+it as critics.} We built a Hankel-structured unrolled estimator, measured an
+advantage at high SNR, and believed it. The control described in
+Sec.~\ref{sec:protocol} was run to characterize that advantage, not to remove
+it. The first casualty of the protocol we propose was our own method, and we
+report it because a result that survives an author's attempt to keep it is
+worth more than one that was never tested.
 
 \textbf{Contributions.}
 \begin{enumerate}
@@ -112,14 +130,28 @@ attempt to keep it is worth more than one that was never tested.
 the learned filter, the attention block, and unrolling itself against a matched
 non-unrolled control.
 \item Identification of the confound: per-sample normalized error over mixed
-SNR concentrates the gradient at low SNR, and a structural prior compensates
-for the resulting high-SNR underfitting. We give a matched-adequacy protocol
-that separates the two.
-\item A corrected loss that is not a workaround but a fix, recovering
-$+1.902$~dB at SNR~$\ge5$~dB with no low-SNR penalty.
+SNR concentrates the gradient at low SNR, so any mechanism that improves
+high-SNR behaviour will appear to add information. We give a matched-adequacy
+protocol that separates the two.
+\item A corrected loss that is not a workaround but a fix, gaining
+$+2.171$~dB at SNR~$\ge5$~dB over three seeds with no low-SNR penalty ---
+indeed with a gain in every bin of every seed, including the two bins the
+weighting penalizes most.
 \item A demonstration that pilot efficiency and pilot-count generalization are
 distinct and are conflated by a single reported curve.
+\item \textcolor{red}{[STUB]} The structural-prior contribution, pending C2.
 \end{enumerate}
+
+\stub{INTRODUCTION, structural-prior claim}{One paragraph stating what the
+control did to $\Delta_H$, and the corresponding contribution item. It cannot
+be written until batch C2 reports, because the three P29 outcomes give three
+different claims: a stable gain whose value depends on training adequacy; a
+quantity with no stable sign under any design; or a stable gain materially
+smaller than first reported. What is already established and belongs here
+whichever fires: under focused training $\Delta_H$ has no stable sign across
+three seeds, and the per-bin ordering --- a cost at low SNR, a benefit at high
+SNR --- replicates on every arm measured while the SNR at which it crosses does
+not.}
 
 \section{System Model and Estimator}
 
@@ -141,11 +173,10 @@ data-consistency step followed by a learned filter, a gate, and a
 Transformer block across users~\cite{xiao2026}.
 
 We implement this estimator faithfully on the geometric ULA model of
-\eqref{eq:fwd} rather than reproducing any published result: the operating
-point differs, and reaching the reported behaviour required roughly four times
-the stated data budget. Nothing here should be read as a reproduction or a
-validation of prior work, nor as a critique of any specific paper. The
-convention we examine is near-universal, and our own estimator uses it.
+\eqref{eq:fwd} rather than reproducing any published result; the operating
+point differs. Nothing here should be read as a reproduction or a validation of
+prior work, nor as a critique of any specific paper. The convention we examine
+is near-universal, and our own estimator uses it.
 
 \textbf{The reference curve is genie-aided.} Where a reference appears, it is
 an unstructured least-squares estimate formed from the \emph{true} phase of
@@ -214,16 +245,12 @@ and initialization.
 what does not was compensating for training inadequacy.
 \end{enumerate}
 
-Applying it, and reporting what it did to our own method: over $[5,20]$~dB the
-structural advantage under mixed-SNR training is
-% src: reports/trackD_stage4_report.md:74-78
-$+1.209$~dB. Under matched focused training it is $+0.078$~dB, CI
-$[+0.050,+0.112]$ --- a fifteenfold collapse (Fig.~\ref{fig:confound}). The
-mechanism is visible in the absolute numbers: focused training gains the
-unstructured arm $+2.653$~dB but the structured arm only $+1.629$~dB. The
-unstructured network learns the array geometry by itself once it is given
-adequate gradient in that regime, leaving the explicit projection little to
-add.
+\stub{RESULT OF APPLYING THE PROTOCOL}{The paragraph reporting what the control
+did to $\Delta_H$, and its figure. Waiting on batch C2, which measures the
+seed spread of the mixed-SNR contrast; the focused contrast is already measured
+on three seeds. No scalar may be quoted here until then, and the figure must be
+rebuilt from C2 and C3 rather than repurposed --- the retired one plotted a
+single seed of each design as though the pair were a measurement.}
 
 \textbf{Scope of this negative result.} It holds at $N=32$, $K=3$, this data
 budget, and the two pilot counts tested. It is not a general claim that
@@ -234,15 +261,6 @@ richness the structured network degrades least
 % src: reports/trackD_stage5_eval.json C5_path_richness_ood
 ($+0.48$~dB against $+0.73$~dB). The prior buys robustness here; it is the
 in-distribution accuracy claim that does not survive the control.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{fig/fig2_confound.pdf}
-\caption{The structural gain $\Delta_H$ under mixed-SNR training and under
-matched focused training. Both arms are retrained identically; only the
-training SNR range differs.}
-\label{fig:confound}
-\end{figure}
 
 \section{Numerical Results}
 \label{sec:results}
@@ -289,16 +307,26 @@ $1.9$ after balancing against $30.0$ before, and the share below $5$~dB falls
 from $0.897$ to $0.427$ against an ideal of $0.5$ --- a slight
 over-correction.
 
-The estimation result is better than we predicted. Against an
-identically-trained unbalanced baseline, balancing gains
-% src: reports/trackD_stage5_eval.json P13_balanced_vs_uniform_P20.contrast
-$+1.902$~dB at SNR~$\ge5$~dB, CI $[+1.823,+1.986]$, rising monotonically to
-$+2.628$~dB in the top bin. We had pre-registered a low-SNR \emph{cost} of
-$-0.10$ to $-0.40$~dB on the reasoning that the lowest bin's weight falls
-about eighteenfold. There was no cost: the measured low-SNR change is
-$+0.135$~dB, CI $[+0.101,+0.172]$. Down-weighting the bins that dominated the
-gradient did not harm them, because they were over-served rather than merely
-well-served.
+The estimation result is better than we predicted, and it is measured on three
+seeds rather than one. Against identically-trained unbalanced baselines,
+% src: reports/p16/p27_score.json per_seed
+balancing gains $+1.902$, $+2.242$ and $+2.369$~dB at SNR~$\ge5$~dB, a mean of
+$\mathbf{+2.171}$~dB. Each seed's bootstrap $95\%$ confidence interval
+\emph{over test realizations} excludes zero. The spread \emph{over seeds} is a
+separate quantity and is reported as one: its standard deviation is
+$0.241$~dB, on three seeds and therefore two degrees of freedom, so it is
+indicative rather than precise. Taking the conservative combination,
+$\text{mean}-2\,\text{SD}=+1.689$~dB, the effect is separated from zero across
+seeds.
+
+We had pre-registered a low-SNR \emph{cost} of $-0.10$ to $-0.40$~dB on the
+reasoning that the lowest bin's weight falls about eighteenfold. There was no
+cost. On the seed for which the prediction was registered the low-SNR change is
+% src: reports/trackD_stage5_eval.json P13_balanced_vs_uniform_P20
+$+0.135$~dB, CI over test realizations $[+0.101,+0.172]$; across the three
+seeds the two lowest bins gain $+0.052$ and $+0.202$~dB on average. Downweighting
+the bins that dominated the gradient did not harm them, because they were
+over-served rather than merely well-served.
 
 The gap to the genie-aided reference at SNR~$\ge5$~dB falls from $+2.897$ to
 $+1.000$~dB. Below $5$~dB the balanced estimator passes that reference by up
@@ -311,9 +339,69 @@ the channel geometry is not so restricted.
 \includegraphics[width=\columnwidth]{fig/fig3_balanced_loss.pdf}
 \caption{Cause and effect. Upper: per-bin gradient share under the per-sample
 normalized loss and under SNR balancing. Lower: the resulting per-bin gain,
-paired per-trial median with bootstrap $95\%$ CI.}
+paired per-trial median with bootstrap $95\%$ CI over test realizations, on the
+seed for which the prediction was registered.}
 \label{fig:balanced}
 \end{figure}
+
+\subsection{The correction improves the regime it penalizes}
+\label{sec:18of18}
+
+The obvious objection to a reweighting is that it trades one regime for
+another: whatever the high-SNR bins gain, the down-weighted low-SNR bins must
+have paid. Here they did not, and the check is exhaustive rather than pooled.
+
+Fig.~\ref{fig:allcells} plots every SNR bin for every seed.
+% src: reports/p16/p27_score.json bins, per_seed.*.per_bin_db
+\textbf{All eighteen bin-by-seed cells favour the balanced loss}, and seventeen
+of the eighteen have a bootstrap $95\%$ confidence interval over test
+realizations that excludes zero; the single exception is seed~1's $[-5,0)$~dB
+bin at $+0.044$~dB, CI $[-0.011,+0.105]$. The three-seed means rise
+monotonically across the range, from $+0.052$~dB in $[-10,-5)$ to $+3.120$~dB
+in $[15,20)$.
+
+The two lowest bins are the ones that matter for the objection, because the
+weighting divides their contribution by about $18$ and $9$ relative to unit
+mean. They gain anyway. The correction is therefore not a transfer between
+regimes: it improves the quantity it was weighted away from.
+
+We offer a reading of why, as a hypothesis and not as a result. Under the
+per-sample loss the gradient was so dominated by the low-SNR tail that the
+network was underfitted \emph{everywhere}, spending capacity on realizations
+from which little is recoverable. Rebalancing does not move performance from
+one regime to another; it stops wasting it. Testing that claim directly would
+require an ablation we have not run.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=\columnwidth]{fig/fig5_allcells.pdf}
+\caption{Every bin, every seed. The gain from SNR balancing, paired per-trial
+median with bootstrap $95\%$ CI over test realizations, for each of three
+training seeds. All eighteen cells are positive, including the two lowest bins,
+whose weights the balancing divides by about $18$ and $9$.}
+\label{fig:allcells}
+\end{figure}
+
+\subsection{The structural prior under matched adequacy}
+\label{sec:prior}
+
+\stub{STRUCTURAL-PRIOR SECTION}{The whole subsection, pending batches C2 and
+C3. Three things are already established and will survive whichever P29
+outcome fires, and they are recorded here so the section is written from them
+rather than around them. First, under focused training $\Delta_H$ has no
+stable sign: three seeds give $+0.078$, $+0.057$ and $-0.076$~dB, every
+bootstrap CI over test realizations excluding zero, and the across-seed SD is
+$0.083$~dB --- small, so this is a statement about the effect and not about
+noise. Second, the paired per-trial median and the ratio of sums disagree in
+sign, and the reason is measured: the sum of squared errors is dominated by
+low-SNR realizations, which is exactly where the prior costs accuracy. It is
+\emph{not} the abstention mechanism of the classical estimator --- the
+projection is active on every layer of every one of $2000$ trials on every
+seed. Third, the per-bin ordering, a cost at low SNR turning into a benefit at
+high SNR, replicates on every arm measured, across two initializers, two
+training designs, two losses and four seeds; the SNR at which it crosses does
+not, moving across three bin boundaries. The reportable object is that
+ordering, not any scalar.}
 
 \subsection{Pilot efficiency is not pilot-count generalization}
 
@@ -355,18 +443,20 @@ each $P$; the solid curve is one network trained at $P=20$.}
 
 \section{Conclusion}
 
-Most of the apparent benefit of adding an explicit structural prior to an
-unrolled channel estimator, in this setting, is an artifact of the training
-convention rather than information supplied by the prior. Per-sample
-normalized error over a mixed-SNR training set concentrates $89.7\%$ of the
-gradient below $5$~dB and leaves the high-SNR regime underfitted; a prior that
-helps there is credited with information it did not supply. Under a
-matched-adequacy control the effect falls fifteenfold, from $+1.209$ to
-$+0.078$~dB. Rebalancing the loss --- a change of a few lines, no
-architectural addition --- recovers $+1.902$~dB at SNR~$\ge5$~dB at no
-low-SNR cost, considerably more than the prior appeared to offer. We recommend
-the control be run before a structural prior is credited, and note that it
-cost us our own result first.
+Per-sample normalized error over a mixed-SNR training set concentrates
+$89.7\%$ of the gradient below $5$~dB and leaves the high-SNR regime
+underfitted, so any mechanism that improves high-SNR behaviour --- a structural
+prior among them --- will appear to add information it need not have supplied.
+Rebalancing the loss, a change of a few lines with no architectural addition,
+gains $+2.171$~dB at SNR~$\ge5$~dB across three seeds and improves every one of
+eighteen bin-by-seed cells, including the two bins the weighting itself
+penalizes most. We recommend the matched-adequacy control be run before a
+structural prior is credited, and note that it cost us our own result first.
+
+\stub{CONCLUSION, structural-prior sentence}{One or two sentences stating what
+the control did to $\Delta_H$, pending C2. The claim the retired draft made
+here --- a fifteenfold collapse --- is withdrawn and must not return in any
+form.}
 
 \textbf{Limitations.} All results are simulation only, with no measured
 hardware and no recorded channel data. They cover the geometric ULA model of
