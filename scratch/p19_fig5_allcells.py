@@ -49,10 +49,12 @@ plt.rcParams.update({
 })
 BLUE, AMBER, AQUA = "#2a78d6", "#eda100", "#1baf7a"
 INK, MUTED = "#0b0b0b", "#52514e"
-# Bins are labelled by their lower edge. Six interval labels of the form
-# "[-10,-5)" collide at 3.45 in, and rotating them costs more vertical space
-# than the figure has; the axis label carries the convention instead.
-BINLAB = ["$-10$", "$-5$", "$0$", "$5$", "$10$", "$15$"]
+# Interval labels, rotated, to match Fig. 2 on the facing column -- two
+# different bin-labelling conventions in adjacent figures is the kind of thing
+# a reader notices and an author does not. Horizontal interval labels collide
+# at 3.45 in, so they are rotated exactly as Fig. 2 rotates its own.
+BINLAB = ["$[-10,-5)$", "$[-5,0)$", "$[0,5)$", "$[5,10)$", "$[10,15)$",
+          "$[15,20)$"]
 SEEDS = [("seed1", BLUE, "o"), ("seed2", AMBER, "s"), ("seed3", AQUA, "^")]
 
 
@@ -71,12 +73,18 @@ def draw(ax, d, bins, ylim, show_xlabel, dodge):
                 label=f"seed {tag[-1]}")
     ax.axhline(0.0, color=INK, linewidth=0.8, zorder=1)
     ax.set_xticks(list(bins))
-    ax.set_xticklabels([BINLAB[b] for b in bins])
+    # Six interval labels only fit rotated; two fit flat, and rotating them
+    # would spend a fifth of the panel's height on two words.
+    rot = len(list(bins)) > 2
+    ax.set_xticklabels([BINLAB[b] for b in bins],
+                       rotation=45 if rot else 0,
+                       ha="right" if rot else "center",
+                       rotation_mode="anchor" if rot else None, fontsize=6.8)
     ax.set_xlim(min(bins) - 0.5, max(bins) + 0.5)
     ax.set_ylim(*ylim)
     ax.set_ylabel("gain (dB)")
     if show_xlabel:
-        ax.set_xlabel("SNR bin, lower edge (dB); bins are 5 dB wide")
+        ax.set_xlabel("SNR bin (dB)")
 
 
 def main() -> int:
@@ -85,7 +93,7 @@ def main() -> int:
     assert (vals > 0).all(), "figure asserts 18 of 18 positive; data disagrees"
 
     fig, (ax1, ax2) = plt.subplots(
-        2, 1, figsize=(3.45, 3.20), height_ratios=[1.9, 1.0])
+        2, 1, figsize=(3.45, 3.30), height_ratios=[2.0, 1.0])
 
     draw(ax1, d, range(6), (-0.25, 4.15), show_xlabel=False, dodge=0.20)
     ax1.legend(loc="upper left", frameon=False, handletextpad=0.3,
