@@ -7,9 +7,20 @@
 % experiment that was meant to establish the collapse -- PROMPT 12 Part C --
 % was invalid: its arms were trained with init='random' while the arms they
 % were compared against were trained with init='spectral'
-% (reports/p16/validity.csv, reports/p15/PART_A.md). The two NUMBERS are sound;
-% the fifteenfold INTERPRETATION has no support, because the seed distribution
-% it assumes was never validly measured.
+% (reports/p16/validity.csv, reports/p15/PART_A.md).
+%
+% The fifteenfold INTERPRETATION has no support, because the seed distribution
+% it assumes was never validly measured. Of the two numbers:
+%
+%   +1.209 dB  remains a valid measurement OF ONE SEED. Whether it is typical
+%              of its own seed distribution is unmeasured; batch C2 measures it.
+%
+%   +0.078 dB  is valid as a measurement of seed 1 and MISLEADING as a
+%              quantity. Three seeds give +0.078, +0.057 and -0.076
+%              (reports/p17/PART_C_C1.md): it is the MAXIMUM of the three, not
+%              a typical value, and its sign survives neither a change of seed
+%              nor a change of pooling rule -- under ratio-of-sums it is
+%              negative on all three seeds. Do not quote it as a point value.
 %
 % The current framing, and what may and may not be claimed, is in
 %     docs/paper2-thesis.md
