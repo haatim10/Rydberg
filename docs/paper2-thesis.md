@@ -5,6 +5,26 @@ Tier 1 retraining. Committing the framing before the budget is set is what
 stops the budget being chosen to produce a headline rather than to answer a
 question.
 
+> ## REVISION 2 — 2026-09-11, under PROMPT 20 Part C
+>
+> **Reason: a prior-art hit, plus the Tier 1 measurements landing.** Two
+> different kinds of new information, and they are kept apart below because
+> they carry different risks.
+>
+> **Sections 1 through 5 are left exactly as first written.** That is
+> deliberate. This document's value is that it predates the numbers, and
+> editing it in place to match them would destroy the only property that makes
+> it worth having. Everything new is in **§6**, which says which of the
+> original sections it supersedes.
+>
+> **This is not a retrofit, and here is the test of that.** The framings were
+> written down in advance as the three outcomes of `reports/p17/PREREG_P29.md`,
+> committed standing alone before batch C2 ran, with numeric triggers evaluated
+> in a fixed order. Outcome (a) was selected *by that rule*, not chosen after
+> the fact. The prior-art hit is a different matter: it is genuinely new
+> information that no pre-registration could have anticipated, and it changes
+> the contribution split rather than any measurement.
+
 This supersedes the version specified in PROMPT 15, which must not be copied.
 That version was built around four quantified nuisance sources; two of them
 have since been withdrawn — the seed SD came from invalidly-initialised arms,
@@ -277,3 +297,144 @@ keeps improving for longer.
    SPL. But that judgement was made when there were four quantified nuisance
    sources; with two withdrawn and the prior's value open, a letter reporting
    the diagnostic and the fix is the more honest scope until Tier 1 runs.
+
+---
+
+# 6. REVISION 2 — what supersedes what
+
+Added 2026-09-11 under PROMPT 20 Part C. Sections 1–5 above are the record as
+it stood before the Tier 1 measurements and before the prior-art hit. This
+section says where they are now wrong.
+
+## 6.1 The contribution split, after the prior-art hit
+
+Wiesmayr, Marti, Dick, Song and Studer, *"Bit Error and Block Error Rate
+Training for ML-Assisted Communication"* (arXiv:2210.14103 v3, 2023),
+**Section 4, "SNR Deweighted Training"**, states the loss-imbalance mechanism
+this paper was built on and proposes per-condition deweighting as the remedy.
+Full classification in `reports/p20/claim_audit.md`.
+
+### Established elsewhere — cite, do not establish
+
+- The aggregate loss over a wide SNR range is dominated by low-SNR samples,
+  because a small relative improvement at low SNR moves the cost more than a
+  large one at high SNR.
+- The consequence: the high-SNR regime is underfitted.
+- The remedy: reweight the loss by SNR condition.
+
+**§2.1 above is superseded in framing, not in fact.** The gradient-share
+numbers stand — 89.7% below 5 dB, a span of 30.0 — and they are still the one
+result no training defect can reach. What changes is that they measure the
+*magnitude in this system* of a published phenomenon, in an NMSE loss rather
+than the BER/BLER losses Wiesmayr treat. They are not a discovery.
+
+### This paper's contribution
+
+1. **That the pathology corrupts attribution.** Wiesmayr identify and fix it,
+   for detection and decoding. They do not ask what it does to the *evidence*
+   for structural priors: that a known training defect manufactures apparent
+   support for a prior, and that crediting a prior without controlling for it
+   is unsound. This is now the paper's claim.
+2. **The matched-adequacy control**, and the fact that it was run and
+   overturned our own result.
+3. **The sign-pattern finding** — `- - - + + +`, the prior costing accuracy
+   below +5 dB and buying it above, replicating on every seed of two designs
+   with every CI excluding zero.
+4. **The averaging-window finding** — the sign of the reported gain depends on
+   how the average is taken, and the reason is measured rather than asserted.
+5. **The pilot-curve ambiguity.**
+
+### Secondary, and stated as secondary
+
+The remedy **transfers** to unrolled, magnitude-only channel estimation:
+`+2.171` dB at SNR ≥ 5 across three seeds, winning **all 18 bin×seed cells**
+including the two it down-weights by about 18× and 9×.
+
+**That last detail may or may not still be novel.** The supplied description of
+Wiesmayr §4 does not say whether they report the effect on the *deweighted*
+regime. It is `[UNVERIFIED]` and is item 5.1 of `docs/open-todos.md`. It is the
+single claim whose status most changes what remains here.
+
+**§2.2 above is superseded in status.** `+2.171` was written there as the
+paper's headline. It is no longer the headline; it is confirmation.
+
+## 6.2 What is no longer unknown
+
+**§3.1 is superseded.** Seed variance is now measured for three quantities, all
+on three seeds with `init='spectral'`, all pre-registered before the runs:
+
+| quantity | three-seed mean | SD over seeds | source |
+|---|---|---|---|
+| balanced-vs-conventional loss gain | +2.171 dB | 0.241 | `reports/p16/PART_A_P27.md` |
+| Δ_H, mixed-SNR training | +1.286 dB | 0.072 | `reports/p19/PART_B.md` |
+| Δ_H, focused training | +0.020 dB | 0.083 | `reports/p17/PART_C_C1.md` |
+
+The seed-1 driver confound §3.1 warns about was resolved at exactly **0.0000 dB**
+on bitwise identical weights, so those spreads are quotable as seed spreads.
+
+**§3.2 is superseded, and this is the largest change.** It said the structural
+prior's value under any training design was unknown and that Paper 2 could
+claim neither that the advantage is illusory nor that it is real. Both designs
+are now measured on three seeds each:
+
+- **Mixed-SNR training:** +1.286 dB, SD 0.072, `mean − 2·SD = +1.142`, positive
+  on every seed and under both pooling rules. Real, stable, substantial.
+- **Matched focused training:** +0.020 dB, SD 0.083, `mean − 2·SD = −0.147`,
+  one of three seeds significantly negative, ratio-of-sums negative on all
+  three. No stable sign.
+
+So the paper may now say what §3.2 forbade — but not in the shape the retired
+draft said it. The claim is **not** that a number shrank by a factor. It is
+that the same contrast **changes category** when both arms are trained
+adequately in the regime of interest.
+
+**The retired claims stay retired.** The fifteenfold collapse is not
+rehabilitated by outcome (a); it was a bad description of what had been
+measured, and it remains one.
+
+One correction to §3.2's own text while we are here: it says "the two *numbers*
+1.209 and 0.078 are sound". That was true when written and is now misleading.
+`+1.209` is sound and, it turns out, **conservative** — it is the *smallest* of
+its three seeds (P29b failed in that direction). `+0.078` is sound as a
+measurement of seed 1 and misleading as a quantity — it is the *largest* of its
+three, and its sign survives neither a change of seed nor of pooling rule.
+
+**§4 is superseded.** Tier 1 was not deferred to the thesis chapter; it ran.
+C1 and C2 are complete, C3 is running, C4 follows. The standing recommendation
+in §4 to carry §3.2 as a stated limitation no longer applies in that form.
+
+## 6.3 What is still unknown
+
+**§3.3 stands unchanged.** Whether a log-domain per-sample loss is a better fix
+than per-bin reweighting is still unsupported, and batch C4 is the test.
+
+**C4 matters more than it did.** Wiesmayr deweight by condition. A log-domain
+per-sample loss divides out the scale factor exactly rather than by a step
+function over bins, and needs neither bin edges nor weight estimation. If the
+log loss beats bin reweighting, that is a **delta on published work** rather
+than a replication of it. If it does not, the paper says so.
+
+Two items added to the unknown column, neither of them measurable here:
+
+- **Whether anyone has applied SNR deweighting to unrolled estimators
+  specifically.** Not searched. It bears on how much of `+2.171` is a transfer
+  result and how much is a re-run.
+- **Whether the pilot-curve train-versus-evaluate ambiguity has been identified
+  before.** **Not searched at all** — so its novelty is unsupported rather than
+  supported. Highest-priority item in `docs/open-todos.md`.
+
+**The standing caveat on all of §6.1:** the prior-art check was three web
+searches, not a systematic sweep.
+
+## 6.4 Mechanical requirements — amendments to §5
+
+- **§5 item 2 is already discharged.** The span reads 30.0 in both places in
+  the draft; it was corrected under PROMPT 16 Part D. PROMPT 20's brief
+  restates it as outstanding, and it is not.
+- **§5 item 4, the title, still stands and is still blocked.** But the reason
+  has changed: it is no longer blocked on the structural prior's value, which
+  is now measured. It is blocked on C3, and on the fact that the paper's
+  subject is now attribution rather than the loss convention.
+- **New requirement:** every anticipated claim carries its citation at first
+  mention, and the manuscript nowhere implies the loss-imbalance mechanism was
+  identified here.
