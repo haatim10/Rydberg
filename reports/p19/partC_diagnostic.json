@@ -1,0 +1,512 @@
+{
+ "C1a": {
+  "question": "does something in the learned arm play the role abstention plays in Paper 1 at N=8?",
+  "paper1_reference_abstention_fraction_N8": 0.42,
+  "checkpoint_provenance": {
+   "seed1": {
+    "epoch": 9,
+    "init": "spectral",
+    "train_seed": 20260827,
+    "use_hankel": true
+   },
+   "seed2": {
+    "epoch": 8,
+    "init": "spectral",
+    "train_seed": 20262827,
+    "use_hankel": true
+   },
+   "seed3": {
+    "epoch": 8,
+    "init": "spectral",
+    "train_seed": 20263827,
+    "use_hankel": true
+   }
+  },
+  "gate_configuration": {
+   "seed1": {
+    "hankel_gate": "none",
+    "hankel_rank": 7,
+    "hankel_mode": "fixed",
+    "hankel_iters": 1
+   },
+   "seed2": {
+    "hankel_gate": "none",
+    "hankel_rank": 7,
+    "hankel_mode": "fixed",
+    "hankel_iters": 1
+   },
+   "seed3": {
+    "hankel_gate": "none",
+    "hankel_rank": 7,
+    "hankel_mode": "fixed",
+    "hankel_iters": 1
+   }
+  },
+  "gate_note": "hankel_gate='none' means URformerLayer takes the G_lin = proj branch unconditionally: there is no learned gate, no sigma^2 dependence and no per-trial switch. Any abstention-like behaviour would have to come from the projection itself being inactive, which is what the activity numbers measure.",
+  "unprojected_threshold_rel": 0.001,
+  "activity": {
+   "seed1": {
+    "n_test": 2000,
+    "n_layers": 10,
+    "per_layer_median_rel": [
+     0.15968,
+     0.114441,
+     0.079563,
+     0.067349,
+     0.061061,
+     0.05758,
+     0.051386,
+     0.054879,
+     0.050095,
+     0.043967
+    ],
+    "per_layer_mean_rel": [
+     0.161412,
+     0.118634,
+     0.085138,
+     0.072876,
+     0.066624,
+     0.063182,
+     0.056945,
+     0.06027,
+     0.056034,
+     0.050048
+    ],
+    "all_calls_quantiles": {
+     "p0": 0.01475,
+     "p1": 0.02351,
+     "p5": 0.030062,
+     "p25": 0.047281,
+     "p50": 0.069263,
+     "p75": 0.101198,
+     "p95": 0.164601,
+     "p99": 0.207374,
+     "p100": 0.277142
+    },
+    "per_trial_max_quantiles": {
+     "p0": 0.073999,
+     "p1": 0.092768,
+     "p5": 0.110321,
+     "p25": 0.137673,
+     "p50": 0.15968,
+     "p75": 0.183494,
+     "p95": 0.219025,
+     "p99": 0.245166,
+     "p100": 0.277142
+    },
+    "frac_trials_every_layer_below_1e-3": 0.0,
+    "frac_trials_every_layer_below_1e-2": 0.0,
+    "frac_calls_below_1e-3": 0.0
+   },
+   "seed2": {
+    "n_test": 2000,
+    "n_layers": 10,
+    "per_layer_median_rel": [
+     0.161439,
+     0.132269,
+     0.082702,
+     0.068927,
+     0.061255,
+     0.05315,
+     0.05581,
+     0.056473,
+     0.049783,
+     0.045569
+    ],
+    "per_layer_mean_rel": [
+     0.162799,
+     0.135648,
+     0.087827,
+     0.074408,
+     0.066769,
+     0.05887,
+     0.060866,
+     0.062282,
+     0.055756,
+     0.051059
+    ],
+    "all_calls_quantiles": {
+     "p0": 0.01652,
+     "p1": 0.02352,
+     "p5": 0.029981,
+     "p25": 0.047774,
+     "p50": 0.070812,
+     "p75": 0.106606,
+     "p95": 0.169566,
+     "p99": 0.209934,
+     "p100": 0.275756
+    },
+    "per_trial_max_quantiles": {
+     "p0": 0.083528,
+     "p1": 0.101168,
+     "p5": 0.114903,
+     "p25": 0.139129,
+     "p50": 0.161799,
+     "p75": 0.185412,
+     "p95": 0.220877,
+     "p99": 0.249637,
+     "p100": 0.275756
+    },
+    "frac_trials_every_layer_below_1e-3": 0.0,
+    "frac_trials_every_layer_below_1e-2": 0.0,
+    "frac_calls_below_1e-3": 0.0
+   },
+   "seed3": {
+    "n_test": 2000,
+    "n_layers": 10,
+    "per_layer_median_rel": [
+     0.161137,
+     0.135823,
+     0.084835,
+     0.074258,
+     0.063545,
+     0.057075,
+     0.05657,
+     0.053631,
+     0.048521,
+     0.045487
+    ],
+    "per_layer_mean_rel": [
+     0.162575,
+     0.138916,
+     0.089704,
+     0.078793,
+     0.068837,
+     0.062887,
+     0.061864,
+     0.059539,
+     0.054277,
+     0.050966
+    ],
+    "all_calls_quantiles": {
+     "p0": 0.015816,
+     "p1": 0.023573,
+     "p5": 0.030893,
+     "p25": 0.0491,
+     "p50": 0.072104,
+     "p75": 0.10785,
+     "p95": 0.170499,
+     "p99": 0.20975,
+     "p100": 0.275562
+    },
+    "per_trial_max_quantiles": {
+     "p0": 0.081302,
+     "p1": 0.101695,
+     "p5": 0.116057,
+     "p25": 0.139658,
+     "p50": 0.161548,
+     "p75": 0.185336,
+     "p95": 0.220608,
+     "p99": 0.249209,
+     "p100": 0.275562
+    },
+    "frac_trials_every_layer_below_1e-3": 0.0,
+    "frac_trials_every_layer_below_1e-2": 0.0,
+    "frac_calls_below_1e-3": 0.0
+   }
+  }
+ },
+ "C1b": {
+  "bins": [
+   [
+    -10,
+    -5
+   ],
+   [
+    -5,
+    0
+   ],
+   [
+    0,
+    5
+   ],
+   [
+    5,
+    10
+   ],
+   [
+    10,
+    15
+   ],
+   [
+    15,
+    20
+   ]
+  ],
+  "convention": "U1 - H1, positive = the arm carrying the structural prior is better",
+  "rows": [
+   {
+    "arm": "mixed-SNR Delta_H, seed 1",
+    "design": "mixed [-10,20]",
+    "init": "spectral",
+    "valid": true,
+    "source": "reports/p12/PART_A.md A2, from trackD_stage3_results.json",
+    "per_bin": [
+     -0.111,
+     -0.506,
+     -0.451,
+     0.398,
+     1.305,
+     2.226
+    ],
+    "signs": [
+     "-",
+     "-",
+     "-",
+     "+",
+     "+",
+     "+"
+    ],
+    "all_negatives_precede_all_positives": true,
+    "flip_between_bins": [
+     2,
+     3
+    ]
+   },
+   {
+    "arm": "focused Delta_H, seed 1",
+    "design": "focused [5,20]",
+    "init": "spectral",
+    "valid": true,
+    "source": "reports/p17/p28_score.json",
+    "per_bin": [
+     null,
+     null,
+     null,
+     -0.0757,
+     0.1297,
+     0.2322
+    ],
+    "signs": [
+     null,
+     null,
+     null,
+     "-",
+     "+",
+     "+"
+    ],
+    "all_negatives_precede_all_positives": true,
+    "flip_between_bins": [
+     3,
+     4
+    ]
+   },
+   {
+    "arm": "focused Delta_H, seed 2",
+    "design": "focused [5,20]",
+    "init": "spectral",
+    "valid": true,
+    "source": "reports/p17/p28_score.json",
+    "per_bin": [
+     null,
+     null,
+     null,
+     -0.1422,
+     0.0864,
+     0.3265
+    ],
+    "signs": [
+     null,
+     null,
+     null,
+     "-",
+     "+",
+     "+"
+    ],
+    "all_negatives_precede_all_positives": true,
+    "flip_between_bins": [
+     3,
+     4
+    ]
+   },
+   {
+    "arm": "focused Delta_H, seed 3",
+    "design": "focused [5,20]",
+    "init": "spectral",
+    "valid": true,
+    "source": "reports/p17/p28_score.json",
+    "per_bin": [
+     null,
+     null,
+     null,
+     -0.3009,
+     -0.016,
+     0.2177
+    ],
+    "signs": [
+     null,
+     null,
+     null,
+     "-",
+     "-",
+     "+"
+    ],
+    "all_negatives_precede_all_positives": true,
+    "flip_between_bins": [
+     4,
+     5
+    ]
+   },
+   {
+    "arm": "Delta_H under the balanced loss (P20)",
+    "design": "mixed [-10,20]",
+    "init": "random",
+    "valid": false,
+    "source": "reports/p15/partC_scores.json P20_delta_h_balanced",
+    "per_bin": [
+     -0.1875,
+     -0.4736,
+     -0.6699,
+     -0.3212,
+     0.1289,
+     0.9186
+    ],
+    "signs": [
+     "-",
+     "-",
+     "-",
+     "-",
+     "+",
+     "+"
+    ],
+    "all_negatives_precede_all_positives": true,
+    "flip_between_bins": [
+     3,
+     4
+    ]
+   }
+  ],
+  "every_arm_negatives_precede_positives": true,
+  "flip_positions": [
+   [
+    2,
+    3
+   ],
+   [
+    3,
+    4
+   ],
+   [
+    4,
+    5
+   ]
+  ]
+ },
+ "C1c": {
+  "source": "reports/trackD_stage4_results.json part_c per-trial rows (seed 1 only)",
+  "median_delta_db": 0.0778,
+  "ratio_of_sums_db": -0.059,
+  "deciles_by_baseline_nmse": [
+   {
+    "decile": 1,
+    "median_baseline_nmse": 0.003319,
+    "share_of_sum_u": 0.0166,
+    "median_delta_db": 0.0888,
+    "frac_delta_positive": 0.575
+   },
+   {
+    "decile": 2,
+    "median_baseline_nmse": 0.004804,
+    "share_of_sum_u": 0.0244,
+    "median_delta_db": 0.2309,
+    "frac_delta_positive": 0.625
+   },
+   {
+    "decile": 3,
+    "median_baseline_nmse": 0.006397,
+    "share_of_sum_u": 0.0328,
+    "median_delta_db": 0.2255,
+    "frac_delta_positive": 0.625
+   },
+   {
+    "decile": 4,
+    "median_baseline_nmse": 0.008265,
+    "share_of_sum_u": 0.0424,
+    "median_delta_db": 0.2753,
+    "frac_delta_positive": 0.675
+   },
+   {
+    "decile": 5,
+    "median_baseline_nmse": 0.011031,
+    "share_of_sum_u": 0.0565,
+    "median_delta_db": 0.0976,
+    "frac_delta_positive": 0.575
+   },
+   {
+    "decile": 6,
+    "median_baseline_nmse": 0.014843,
+    "share_of_sum_u": 0.0755,
+    "median_delta_db": 0.146,
+    "frac_delta_positive": 0.58
+   },
+   {
+    "decile": 7,
+    "median_baseline_nmse": 0.019882,
+    "share_of_sum_u": 0.102,
+    "median_delta_db": 0.0334,
+    "frac_delta_positive": 0.53
+   },
+   {
+    "decile": 8,
+    "median_baseline_nmse": 0.026783,
+    "share_of_sum_u": 0.1379,
+    "median_delta_db": -0.0768,
+    "frac_delta_positive": 0.47
+   },
+   {
+    "decile": 9,
+    "median_baseline_nmse": 0.038269,
+    "share_of_sum_u": 0.195,
+    "median_delta_db": -0.0553,
+    "frac_delta_positive": 0.47
+   },
+   {
+    "decile": 10,
+    "median_baseline_nmse": 0.05724,
+    "share_of_sum_u": 0.317,
+    "median_delta_db": -0.1255,
+    "frac_delta_positive": 0.41
+   }
+  ],
+  "top_two_deciles": {
+   "share_of_sum_u": 0.5119,
+   "ratio_of_sums_db": -0.134
+  },
+  "bottom_eight_deciles": {
+   "share_of_sum_u": 0.4881,
+   "ratio_of_sums_db": 0.0211
+  },
+  "overall_spearman_baseline_nmse_vs_delta": -0.1606,
+  "overall_spearman_snr_vs_delta": 0.1984,
+  "within_bin_spearman": [
+   {
+    "bin": [
+     5,
+     10
+    ],
+    "n": 700,
+    "spearman_baseline_nmse_vs_delta": -0.0087,
+    "p_value": 0.8172674302536541
+   },
+   {
+    "bin": [
+     10,
+     15
+    ],
+    "n": 648,
+    "spearman_baseline_nmse_vs_delta": -0.0465,
+    "p_value": 0.23672561633511627
+   },
+   {
+    "bin": [
+     15,
+     20
+    ],
+    "n": 652,
+    "spearman_baseline_nmse_vs_delta": 0.1471,
+    "p_value": 0.00016285174104396566
+   }
+  ],
+  "reading": "if the within-bin correlations are ~0 while the overall one is not, baseline conditioning adds nothing beyond SNR and the pooling disagreement IS the bin structure"
+ }
+}

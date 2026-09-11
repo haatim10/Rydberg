@@ -181,7 +181,103 @@ def sign_analysis(rows: list[dict]) -> dict:
     }
 
 
+# --- C1c: what DOES explain the pooling disagreement? ----------------------
+# Runs on the stored stage-4 per-trial rows, so it needs no model pass at all.
+# The paired median weights every trial equally; the ratio of sums weights each
+# trial by its own squared error. So the two disagree exactly when the trials
+# carrying the error mass differ systematically from the typical trial.
+STAGE4 = Path("reports/trackD_stage4_results.json")
+
+
+def pooling_account() -> dict:
+    from scipy.stats import spearmanr
+
+    pc = json.loads(STAGE4.read_text())["part_c"]
+    u = np.asarray(pc["per_trial_nmse"]["C_U1_snr5_20"], dtype=np.float64)
+    h = np.asarray(pc["per_trial_nmse"]["C_H1_snr5_20"], dtype=np.float64)
+    snr = np.asarray(pc["snr_db"], dtype=np.float64)
+    dl = 10.0 * np.log10(u / h)          # per-trial Delta_H in dB
+
+    order = np.argsort(u)                 # ascending baseline NMSE
+    k = len(u) // 10
+    deciles = []
+    for j in range(10):
+        idx = order[j * k:(j + 1) * k]
+        deciles.append({
+            "decile": j + 1,
+            "median_baseline_nmse": round(float(np.median(u[idx])), 6),
+            "share_of_sum_u": round(float(u[idx].sum() / u.sum()), 4),
+            "median_delta_db": round(float(np.median(dl[idx])), 4),
+            "frac_delta_positive": round(float((dl[idx] > 0).mean()), 3)})
+
+    top, rest = order[-2 * k:], order[:-2 * k]
+    # Does baseline conditioning matter BEYOND SNR? If the decile trend is just
+    # SNR re-expressed, the correlation must vanish inside a bin.
+    within = []
+    for lo, hi in ((5, 10), (10, 15), (15, 20)):
+        m = (snr >= lo) & (snr < hi)
+        r, p = spearmanr(u[m], dl[m])
+        within.append({"bin": [lo, hi], "n": int(m.sum()),
+                       "spearman_baseline_nmse_vs_delta": round(float(r), 4),
+                       "p_value": float(p)})
+    r_all, p_all = spearmanr(u, dl)
+    r_snr, p_snr = spearmanr(snr, dl)
+
+    return {
+        "source": str(STAGE4) + " part_c per-trial rows (seed 1 only)",
+        "median_delta_db": round(float(np.median(dl)), 4),
+        "ratio_of_sums_db": round(float(10 * np.log10(u.sum() / h.sum())), 4),
+        "deciles_by_baseline_nmse": deciles,
+        "top_two_deciles": {
+            "share_of_sum_u": round(float(u[top].sum() / u.sum()), 4),
+            "ratio_of_sums_db": round(
+                float(10 * np.log10(u[top].sum() / h[top].sum())), 4)},
+        "bottom_eight_deciles": {
+            "share_of_sum_u": round(float(u[rest].sum() / u.sum()), 4),
+            "ratio_of_sums_db": round(
+                float(10 * np.log10(u[rest].sum() / h[rest].sum())), 4)},
+        "overall_spearman_baseline_nmse_vs_delta": round(float(r_all), 4),
+        "overall_spearman_snr_vs_delta": round(float(r_snr), 4),
+        "within_bin_spearman": within,
+        "reading": ("if the within-bin correlations are ~0 while the overall "
+                    "one is not, baseline conditioning adds nothing beyond "
+                    "SNR and the pooling disagreement IS the bin structure"),
+    }
+
+
 def main() -> int:
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--c1c-only", action="store_true",
+                    help="recompute only C1c and merge into the existing "
+                         "report; needs no model pass")
+    a = ap.parse_args()
+    if a.c1c_only:
+        cur = json.loads(OUT.read_text()) if OUT.exists() else {}
+        cur["C1c"] = pooling_account()
+        OUT.write_text(json.dumps(cur, indent=1) + "\n", encoding="utf-8")
+        c = cur["C1c"]
+        print("=== C1c: what explains the pooling disagreement ===")
+        print(f"  median {c['median_delta_db']:+.4f} vs ratio-of-sums "
+              f"{c['ratio_of_sums_db']:+.4f}")
+        print(f"  {'decile':>7} {'share sum u':>12} {'median dl':>11} {'frac>0':>7}")
+        for d in c["deciles_by_baseline_nmse"]:
+            print(f"  {d['decile']:>7} {d['share_of_sum_u']:>12.4f} "
+                  f"{d['median_delta_db']:>+11.4f} "
+                  f"{d['frac_delta_positive']:>7.3f}")
+        print(f"  top two deciles: {c['top_two_deciles']['share_of_sum_u']:.3f}"
+              f" of the error mass, ratio-of-sums "
+              f"{c['top_two_deciles']['ratio_of_sums_db']:+.4f} dB")
+        print(f"  overall spearman(baseline NMSE, dl) = "
+              f"{c['overall_spearman_baseline_nmse_vs_delta']:+.3f}; "
+              f"spearman(SNR, dl) = {c['overall_spearman_snr_vs_delta']:+.3f}")
+        for w in c["within_bin_spearman"]:
+            print(f"    within {w['bin']}: "
+                  f"{w['spearman_baseline_nmse_vs_delta']:+.3f} "
+                  f"(p={w['p_value']:.2g}, n={w['n']})")
+        print("  wrote", OUT)
+        return 0
+
     torch.set_num_threads(1)
     base = TrackDConfig()
     cfg = replace(base, train=replace(base.train, init="spectral"))
@@ -225,6 +321,7 @@ def main() -> int:
             "activity": activity,
         },
         "C1b": sign_analysis(SIGN_TABLE),
+        "C1c": pooling_account(),
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
