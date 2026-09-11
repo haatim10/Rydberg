@@ -1,0 +1,424 @@
+{
+ "prereg": "reports/p17/PREREG_P29.md @ 157eca6",
+ "contrast": "U1 (no prior) - H1 (Hankel prior, rank 7); positive = the structural prior is better",
+ "design": "mixed-SNR training and test on [-10,20]",
+ "n_seeds": 3,
+ "n_test": 2000,
+ "P": 20,
+ "checkpoint_provenance": {
+  "U1_seed1": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "use_hankel": null,
+   "snr_range_db": [
+    -10.0,
+    20.0
+   ]
+  },
+  "H1_seed1": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "use_hankel": true,
+   "snr_range_db": [
+    -10.0,
+    20.0
+   ]
+  },
+  "U1_seed2": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "use_hankel": false,
+   "snr_range_db": [
+    -10.0,
+    20.0
+   ]
+  },
+  "H1_seed2": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "use_hankel": true,
+   "snr_range_db": [
+    -10.0,
+    20.0
+   ]
+  },
+  "U1_seed3": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "use_hankel": false,
+   "snr_range_db": [
+    -10.0,
+    20.0
+   ]
+  },
+  "H1_seed3": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "use_hankel": true,
+   "snr_range_db": [
+    -10.0,
+    20.0
+   ]
+  }
+ },
+ "per_seed": {
+  "seed1": {
+   "ge5_median_db": 1.2087832804496124,
+   "ge5_ci95_over_test_realisations": [
+    1.1412094594471753,
+    1.3284078785891005
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": 0.7231613086798584,
+   "ge5_n": 983,
+   "pooled_median_db": 0.12890721145411144,
+   "pooled_ratio_of_sums_db": -0.21433976106660216,
+   "per_bin_db": [
+    -0.11080442409919666,
+    -0.5057723309937268,
+    -0.45122509883539585,
+    0.39783302692698896,
+    1.3050850116418573,
+    2.2257789301726483
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.17608669627161777,
+     -0.07785828849366516
+    ],
+    [
+     -0.5879582842626561,
+     -0.43237217615114587
+    ],
+    [
+     -0.5229249424849254,
+     -0.35411871914911686
+    ],
+    [
+     0.24918970992227507,
+     0.46597657957164884
+    ],
+    [
+     1.1708146337360852,
+     1.3804685489401853
+    ],
+    [
+     2.0466233299548833,
+     2.3602048568059786
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed2": {
+   "ge5_median_db": 1.35139132762761,
+   "ge5_ci95_over_test_realisations": [
+    1.2367892278663977,
+    1.4540217956344037
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": 0.855847495576612,
+   "ge5_n": 983,
+   "pooled_median_db": 0.2246960774849871,
+   "pooled_ratio_of_sums_db": -0.14622820099058503,
+   "per_bin_db": [
+    -0.160037681240897,
+    -0.2996859021128686,
+    -0.1376584305304771,
+    0.4805983007157817,
+    1.425403681312357,
+    2.3826048123912233
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.18035726918350825,
+     -0.12341464803151357
+    ],
+    [
+     -0.3633974462075573,
+     -0.25513390961689364
+    ],
+    [
+     -0.23694704800205457,
+     -0.04174157243503096
+    ],
+    [
+     0.3894316305561727,
+     0.5852018096255023
+    ],
+    [
+     1.2817183708047022,
+     1.570815291928401
+    ],
+    [
+     2.2643923843305593,
+     2.470052137525684
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed3": {
+   "ge5_median_db": 1.2983601172589232,
+   "ge5_ci95_over_test_realisations": [
+    1.2214183467726905,
+    1.4119729908688416
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": 0.9012033300950009,
+   "ge5_n": 983,
+   "pooled_median_db": 0.19557296997331974,
+   "pooled_ratio_of_sums_db": -0.14049356241599986,
+   "per_bin_db": [
+    -0.08998321856773281,
+    -0.3944115979481575,
+    -0.2911093284436177,
+    0.49298979024925416,
+    1.4786053842168743,
+    2.2615247647663033
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.1176814456172307,
+     -0.05741098526732946
+    ],
+    [
+     -0.4492936660768654,
+     -0.32543046966958356
+    ],
+    [
+     -0.39650910802166806,
+     -0.18803932349689134
+    ],
+    [
+     0.3885830037725171,
+     0.6003984947131933
+    ],
+    [
+     1.3342363769082128,
+     1.6331020310953408
+    ],
+    [
+     2.0517510020520824,
+     2.4395613826745155
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  }
+ },
+ "bins": [
+  [
+   -10,
+   -5
+  ],
+  [
+   -5,
+   0
+  ],
+  [
+   0,
+   5
+  ],
+  [
+   5,
+   10
+  ],
+  [
+   10,
+   15
+  ],
+  [
+   15,
+   20
+  ]
+ ],
+ "seed1_reproduction": {
+  "published_ge5_db": 1.209,
+  "published_ge5_ci95": [
+   1.139,
+   1.33
+  ],
+  "published_pooled_db": 0.1289,
+  "published_per_bin_db": [
+   -0.111,
+   -0.506,
+   -0.451,
+   0.398,
+   1.305,
+   2.226
+  ],
+  "measured_ge5_db": 1.2088,
+  "measured_pooled_db": 0.1289,
+  "abs_error_db": 0.000217,
+  "tolerance_db": 0.005,
+  "reproduced": true,
+  "meaning": "if false, the scorer is reading different worlds or a different path and NO verdict below may be trusted"
+ },
+ "three_seed_mean_ge5_db": 1.2862,
+ "seed_spread_sd_db": 0.0721,
+ "seed_spread_range_db": 0.1426,
+ "mean_minus_2sd_db": 1.142,
+ "three_seed_mean_per_bin_db": [
+  -0.1203,
+  -0.4,
+  -0.2933,
+  0.4571,
+  1.403,
+  2.29
+ ],
+ "seed_spread_sd_per_bin_db": [
+  0.036,
+  0.1032,
+  0.1568,
+  0.0517,
+  0.0889,
+  0.0822
+ ],
+ "P29a": {
+  "prediction": "across-seed SD <= 0.45 dB",
+  "point_estimate": 0.2,
+  "measured_sd_db": 0.0721,
+  "status": "HELD"
+ },
+ "P29b": {
+  "prediction": "+1.209 is the MIDDLE of the three seed values",
+  "seed_values_db": [
+   1.2088,
+   1.3514,
+   1.2984
+  ],
+  "seed1_rank_0_is_smallest": 0,
+  "status": "FAILED"
+ },
+ "P29c": {
+  "prediction": "all three seeds give Delta_H > 0 at SNR >= 5",
+  "measured_min_db": 1.2088,
+  "status": "HELD"
+ },
+ "P29d": {
+  "prediction": "per-bin signs are - - - + + + on every seed",
+  "per_seed_signs": {
+   "seed1": "---+++",
+   "seed2": "---+++",
+   "seed3": "---+++"
+  },
+  "per_seed_held": {
+   "seed1": true,
+   "seed2": true,
+   "seed3": true
+  },
+  "status": "HELD"
+ },
+ "outcome": {
+  "fired": "a",
+  "because": [
+   "mean 1.2862 >= 0.9"
+  ],
+  "consequence": "the collapse claim survives in corrected, stronger form: a stable substantial gain under mixed-SNR training against a quantity with no stable sign under focused training",
+  "rule": "PREREG_P29 order: b-tests first, then a, else c"
+ },
+ "note": "CIs in per_seed are over TEST REALISATIONS. The seed spread is the separate quantity reported as seed_spread_*. Three seeds give two degrees of freedom."
+}
