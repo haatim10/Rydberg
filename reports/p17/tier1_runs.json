@@ -1654,5 +1654,212 @@
   "chosen_val_db": -6.55670476648511,
   "best_val_db": -6.679738647866078,
   "train_seconds": 10606.2
+ },
+ "C3_H1bal_seed1": {
+  "arm": "arm1b_full_random",
+  "spec": {
+   "hankel": true,
+   "snr": [
+    -10.0,
+    20.0
+   ],
+   "loss": "balanced",
+   "seed": 1
+  },
+  "params": {
+   "tie_layers": false,
+   "T_UR": 10,
+   "per_layer": [
+    {
+     "layer": 0,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 1,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 2,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 3,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 4,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 5,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 6,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 7,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 8,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    },
+    {
+     "layer": 9,
+     "filter_net": 97,
+     "gate": 1,
+     "transformer": 158592,
+     "total": 158690
+    }
+   ],
+   "totals": {
+    "filter_net": 970,
+    "gate": 10,
+    "transformer": 1585920,
+    "all_parameters": 1586900
+   },
+   "note": "untied: per-layer sums equal the total"
+  },
+  "warmstart": null,
+  "run": "C3_H1bal_seed1",
+  "P": 20,
+  "train_seed": 20260827,
+  "init": "spectral",
+  "n_train": 80000,
+  "epochs": 13,
+  "history": [
+   {
+    "epoch": 0,
+    "train_loss": -12.869745917420039,
+    "val_nmse_db": -5.124533277410394,
+    "lr": 0.000985470908713026,
+    "seconds": 1492.5
+   },
+   {
+    "epoch": 1,
+    "train_loss": -13.717015319330155,
+    "val_nmse_db": -5.795849044632569,
+    "lr": 0.000942728012826605,
+    "seconds": 865.7
+   },
+   {
+    "epoch": 2,
+    "train_loss": -13.972032031674068,
+    "val_nmse_db": -5.9178904320934205,
+    "lr": 0.0008742553740855506,
+    "seconds": 865.7
+   },
+   {
+    "epoch": 3,
+    "train_loss": -14.103423602762675,
+    "val_nmse_db": -6.030990064882884,
+    "lr": 0.0007840323733655781,
+    "seconds": 812.9
+   },
+   {
+    "epoch": 4,
+    "train_loss": -14.239386631730271,
+    "val_nmse_db": -6.1388917909405025,
+    "lr": 0.0006773024435212678,
+    "seconds": 817.5
+   },
+   {
+    "epoch": 5,
+    "train_loss": -14.352875244839032,
+    "val_nmse_db": -6.173454513861337,
+    "lr": 0.0005602683401276615,
+    "seconds": 846.2
+   },
+   {
+    "epoch": 6,
+    "train_loss": -14.462103226852667,
+    "val_nmse_db": -6.273206508205807,
+    "lr": 0.00043973165987233864,
+    "seconds": 815.2
+   },
+   {
+    "epoch": 7,
+    "train_loss": -14.580986922676331,
+    "val_nmse_db": -6.32490105152695,
+    "lr": 0.00032269755647873233,
+    "seconds": 859.9
+   },
+   {
+    "epoch": 8,
+    "train_loss": -14.675096327404948,
+    "val_nmse_db": -6.378166650470281,
+    "lr": 0.00021596762663442218,
+    "seconds": 880.8
+   },
+   {
+    "epoch": 9,
+    "train_loss": -14.754853602565387,
+    "val_nmse_db": -6.423868181262266,
+    "lr": 0.00012574462591444943,
+    "seconds": 822.2
+   },
+   {
+    "epoch": 10,
+    "train_loss": -14.8133035355195,
+    "val_nmse_db": -6.445216614947313,
+    "lr": 5.727198717339522e-05,
+    "seconds": 822.3
+   },
+   {
+    "epoch": 11,
+    "train_loss": -14.852447161555562,
+    "val_nmse_db": -6.456865810415444,
+    "lr": 1.4529091286973998e-05,
+    "seconds": 820.9
+   },
+   {
+    "epoch": 12,
+    "train_loss": -14.876323692621288,
+    "val_nmse_db": -6.463663372181353,
+    "lr": 0.0,
+    "seconds": 809.2
+   }
+  ],
+  "selection": {
+   "rule": "one_se",
+   "best_epoch": 12,
+   "se_db": 0.12187775346204889,
+   "threshold_db": -6.341785618719304,
+   "chosen_epoch": 8,
+   "n_within_1se": 5
+  },
+  "chosen_epoch": 8,
+  "chosen_val_db": -6.378166650470281,
+  "best_val_db": -6.463663372181353,
+  "train_seconds": 11532.9
  }
 }
