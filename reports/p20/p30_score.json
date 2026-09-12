@@ -1,0 +1,414 @@
+{
+ "prereg": "reports/p20/PREREG_P30.md @ da632bd",
+ "re_registration": true,
+ "re_registration_note": "The invalid random-init arm already reported +0.174 for this quantity with sign sequence - - - - + +. The predictions were made knowing that and are correspondingly weaker; every verdict here must be labelled a re-registration wherever it is quoted.",
+ "contrast": "C1 (balanced, no prior) - H1bal (balanced, prior); positive = the structural prior is better",
+ "n_test": 2000,
+ "P": 20,
+ "checkpoint_provenance": {
+  "C1_seed1": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "use_hankel": false
+  },
+  "H1bal_seed1": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "use_hankel": true
+  },
+  "U1_seed1": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "use_hankel": false
+  },
+  "C1_seed2": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "use_hankel": false
+  },
+  "H1bal_seed2": {
+   "epoch": 7,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "use_hankel": true
+  },
+  "U1_seed2": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "use_hankel": false
+  },
+  "C1_seed3": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "use_hankel": false
+  },
+  "H1bal_seed3": {
+   "epoch": 7,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "use_hankel": true
+  },
+  "U1_seed3": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "use_hankel": false
+  }
+ },
+ "per_seed": {
+  "seed1": {
+   "ge5_median_db": -0.08176421428828107,
+   "ge5_ci95_over_test_realisations": [
+    -0.16842911272112815,
+    -0.003586114033735034
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": -0.38754243236172164,
+   "pooled_median_db": -0.3258372642718923,
+   "pooled_ratio_of_sums_db": -0.3536309615502236,
+   "per_bin_db": [
+    -0.20663024189929818,
+    -0.5414525071813512,
+    -0.7844721713361391,
+    -0.48753881000514987,
+    -0.09023152891404695,
+    0.5271503764016341
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.2419627700055389,
+     -0.16333351754367298
+    ],
+    [
+     -0.631049487763395,
+     -0.4983073206702846
+    ],
+    [
+     -0.8463837023416136,
+     -0.6927800268767879
+    ],
+    [
+     -0.6105767170125542,
+     -0.3793424567301056
+    ],
+    [
+     -0.20516217712454576,
+     -0.015124342202360808
+    ],
+    [
+     0.4054202096122436,
+     0.6686289998005677
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed2": {
+   "ge5_median_db": -0.09850848837767145,
+   "ge5_ci95_over_test_realisations": [
+    -0.19749607058762195,
+    -0.005360846951486309
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": -0.5305766522691059,
+   "pooled_median_db": -0.4206049406044374,
+   "pooled_ratio_of_sums_db": -0.4443694342123011,
+   "per_bin_db": [
+    -0.24692133635807056,
+    -0.7109221978270981,
+    -0.9697322132230912,
+    -0.7284252256781105,
+    -0.19431753048943268,
+    0.7587726562272703
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.29100941427251104,
+     -0.21307940582330231
+    ],
+    [
+     -0.7770320350584391,
+     -0.6474283850475064
+    ],
+    [
+     -1.0707846246982005,
+     -0.8860895663864277
+    ],
+    [
+     -0.8624369265850742,
+     -0.5881804427041715
+    ],
+    [
+     -0.2917434384811095,
+     -0.06719769262609177
+    ],
+    [
+     0.6685730573374277,
+     0.9308258416565636
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed3": {
+   "ge5_median_db": -0.3496232518264577,
+   "ge5_ci95_over_test_realisations": [
+    -0.41355884008305743,
+    -0.2869076277634761
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": -0.7215379888870622,
+   "pooled_median_db": -0.5303192974617026,
+   "pooled_ratio_of_sums_db": -0.5080081224425441,
+   "per_bin_db": [
+    -0.2465619651511839,
+    -0.8580026030067331,
+    -1.0764694735983777,
+    -0.8589484755128485,
+    -0.4371222655390774,
+    0.41510130186676797
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.2865617621498814,
+     -0.19422153614684995
+    ],
+    [
+     -0.9455342257204515,
+     -0.7683257466890514
+    ],
+    [
+     -1.206831457411086,
+     -0.9430354025412964
+    ],
+    [
+     -0.9961552729908485,
+     -0.7634167151391189
+    ],
+    [
+     -0.5309332999124639,
+     -0.35386749801589623
+    ],
+    [
+     0.2818102625721526,
+     0.5080254871989691
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  }
+ },
+ "bins": [
+  [
+   -10,
+   -5
+  ],
+  [
+   -5,
+   0
+  ],
+  [
+   0,
+   5
+  ],
+  [
+   5,
+   10
+  ],
+  [
+   10,
+   15
+  ],
+  [
+   15,
+   20
+  ]
+ ],
+ "path_check_P27": {
+  "contrast": "U1 - C1, the published P27 quantity",
+  "published": {
+   "seed1": 1.9024,
+   "seed2": 2.2427,
+   "seed3": 2.3691
+  },
+  "measured": {
+   "seed1": 1.9024,
+   "seed2": 2.2427,
+   "seed3": 2.3691
+  },
+  "abs_error_db": {
+   "seed1": 3e-05,
+   "seed2": 4.7e-05,
+   "seed3": 3.5e-05
+  },
+  "tolerance_db": 0.002,
+  "reproduced": true,
+  "meaning": "shares worlds, path, bins and the no-prior arms with the target contrast; if false, NO verdict below may be trusted"
+ },
+ "three_seed_mean_ge5_db": -0.1766,
+ "seed_spread_sd_db": 0.15,
+ "seed_spread_range_db": 0.2679,
+ "mean_minus_2sd_db": -0.4767,
+ "three_seed_mean_per_bin_db": [
+  -0.2334,
+  -0.7035,
+  -0.9436,
+  -0.6916,
+  -0.2406,
+  0.567
+ ],
+ "seed_spread_sd_per_bin_db": [
+  0.0232,
+  0.1584,
+  0.1477,
+  0.1884,
+  0.178,
+  0.1753
+ ],
+ "anchors": {
+  "mixed_uniform_loss_delta_H": 1.2862,
+  "focused_delta_H": 0.0197,
+  "invalid_random_init_value": 0.174
+ },
+ "P30a": {
+  "prediction": "across-seed SD <= 0.35 dB",
+  "point_estimate": 0.12,
+  "measured_sd_db": 0.15,
+  "status": "HELD"
+ },
+ "P30b": {
+  "prediction": "three-seed mean <= 0.6 dB",
+  "point_estimate": 0.25,
+  "measured_mean_db": -0.1766,
+  "status": "HELD",
+  "is_the_thesis_test": true
+ },
+ "P30c": {
+  "prediction": "per-bin signs - - - + + + on every seed",
+  "per_seed_signs": {
+   "seed1": "-----+",
+   "seed2": "-----+",
+   "seed3": "-----+"
+  },
+  "per_seed_held": {
+   "seed1": false,
+   "seed2": false,
+   "seed3": false
+  },
+  "status": "FAILED",
+  "matches_invalid_arm_pattern": false,
+  "note": "if it fails by reproducing the invalid arm's - - - - + + on all three seeds, that is not noise: it says the crossing SNR moves with the loss design, which is itself reportable"
+ },
+ "separation": {
+  "rule": "mean - 2*SD > 0 across seeds",
+  "value": -0.4767,
+  "separated": false
+ },
+ "decision": {
+  "branch": "STRONG",
+  "consequence": "STRONG: removing the training imbalance dissolves most of the prior's advantage, and this now holds under two independent ways of removing it -- narrowing the training range, and reweighting the loss without narrowing it"
+ },
+ "note": "CIs in per_seed are over TEST REALISATIONS; the seed spread is the separate quantity reported as seed_spread_*. Three seeds give two degrees of freedom."
+}
