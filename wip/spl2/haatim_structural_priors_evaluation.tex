@@ -4,9 +4,12 @@
 %
 % WHY IT STILL MAY NOT GO OUT: the title, the abstract and the whole
 % structural-prior section are deliberately UNWRITTEN. They render in red as
-% \stub{} blocks, each naming what it waits on. They wait on batch C2, because
-% the three possible outcomes are three different papers and those three
-% sections are where a paper commits to one.
+% \stub{} blocks, each naming what it waits on. Batch C2 has since reported
+% and P29's outcome (a) fired, so the paper's subject is settled: it is
+% attribution. What the stubs now wait on is batch C3, which tests whether a
+% THIRD way of removing the training imbalance -- reweighting the loss without
+% narrowing the training range -- does what narrowing it did. A claim about
+% training adequacy in general rests on more than one way of fixing it.
 %
 % The RETIRED claim -- that a matched-adequacy control collapses the structural
 % advantage fifteenfold, from +1.209 dB to +0.078 dB -- has been removed from
@@ -20,8 +23,8 @@
 % The fifteenfold INTERPRETATION has no support, because the seed distribution
 % it assumes was never validly measured. Of the two numbers:
 %
-%   +1.209 dB  remains a valid measurement OF ONE SEED. Whether it is typical
-%              of its own seed distribution is unmeasured; batch C2 measures it.
+%   +1.209 dB  measured on three seeds by batch C2: mean +1.286, SD 0.072.
+%              It is the SMALLEST of its three, so it was a conservative draw.
 %
 %   +0.078 dB  is valid as a measurement of seed 1 and MISLEADING as a
 %              quantity. Three seeds give +0.078, +0.057 and -0.076
@@ -61,17 +64,17 @@
 
 \begin{document}
 
-% TITLE IS A STUB (PROMPT 19 E2). The old title names structural priors as the
-% subject, and whether they are the subject depends on which P29 outcome fires:
-%   (a) mixed Delta_H stable near +1.2  -> the paper is about a prior whose
-%       value depends on training adequacy, and the old title stands;
-%   (b) mixed Delta_H also sign-unstable -> the paper is about a quantity the
-%       literature reports at a resolution it does not have, and the title must
-%       say so;
-%   (c) mixed Delta_H stable but smaller -> the paper is a loss-design paper
-%       with a corrected structural-prior figure, and the title should lead
-%       with the loss.
-% Placeholder below is the working title, not a decision.
+% TITLE IS A STUB (PROMPT 19 E2, revised PROMPT 20 D). P29's outcome (a) fired,
+% so the branch is settled: mixed Delta_H is stable near +1.2 and the paper is
+% about a prior whose apparent value depends on training adequacy. Structural
+% priors stay the subject and the old title's shape survives.
+%
+% It is still a stub for a different reason. The prior-art hit
+% (reports/p20/claim_audit.md) moved the contribution from the loss convention
+% to ATTRIBUTION -- what a known training imbalance does to the evidence for a
+% prior -- and "On the Evaluation of ..." does not say that. The replacement
+% must name attribution, and it waits on C3 for the same reason the abstract
+% does. Placeholder below is the working title, not a decision.
 \title{\textcolor{red}{[WORKING TITLE --- see PROMPT 19 E2]}\\
 On the Evaluation of Structural Priors in Unrolled\\
 Channel Estimation for Rydberg Atomic Receivers}
@@ -85,15 +88,19 @@ f20220519@pilani.bits-pilani.ac.in).}}
 \maketitle
 
 \begin{abstract}
-\textcolor{red}{[ABSTRACT IS A STUB --- PROMPT 19 E2.]} It cannot be written
-until batch C2 settles which of the three P29 outcomes fires, because the
-three are three different papers and the abstract is the sentence that commits
-to one. What it must contain either way: the gradient-concentration finding
-($89.7\%$ of the gradient below $5$~dB, a per-bin share spanning a factor of
-$30.0$); the matched-adequacy protocol; the corrected loss and its
-$+2.171$~dB three-seed gain at SNR~$\ge5$~dB with no low-SNR cost; the
+\textcolor{red}{[ABSTRACT IS A STUB --- PROMPT 19 E2, revised PROMPT 20 D.]}
+Batch C2 has reported and P29's outcome (a) fired, so the subject is settled:
+this is a paper about \emph{attribution}. It is still unwritten because batch
+C3 tests whether reweighting the loss removes the prior's apparent advantage
+the way narrowing the training range did, and the abstract's central sentence
+depends on the answer. What it must lead with: that a known training
+imbalance~\cite{wiesmayr2023bler} manufactures apparent evidence for a
+structural prior, so a prior credited on an uncontrolled comparison is credited
+for the training's failure. What it must also carry: the matched-adequacy
+protocol; the per-bin sign pattern and the averaging-window dependence; the
 pilot-efficiency distinction at $2.231$~dB; and simulation-only scope. What it
-must not contain until C2 reports: any scalar for the structural gain.
+must \emph{not} do: lead with $+2.171$~dB, which confirms a published
+remedy rather than contributing one.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -161,19 +168,18 @@ three seeds --- with a gain in every bin of every seed, including the two bins
 the weighting penalizes most.
 \item A demonstration that pilot efficiency and pilot-count generalization are
 distinct and are conflated by a single reported curve.
-\item \textcolor{red}{[STUB]} The structural-prior contribution, pending C2.
+\item \textcolor{red}{[STUB]} The structural-prior contribution, pending C3.
 \end{enumerate}
 
 \stub{INTRODUCTION, structural-prior claim}{One paragraph stating what the
-control did to $\Delta_H$, and the corresponding contribution item. It cannot
-be written until batch C2 reports, because the three P29 outcomes give three
-different claims: a stable gain whose value depends on training adequacy; a
-quantity with no stable sign under any design; or a stable gain materially
-smaller than first reported. What is already established and belongs here
-whichever fires: under focused training $\Delta_H$ has no stable sign across
-three seeds, and the per-bin ordering --- a cost at low SNR, a benefit at high
-SNR --- replicates on every arm measured while the SNR at which it crosses does
-not.}
+control did to $\Delta_H$, and the corresponding contribution item. P29's
+outcome (a) fired, so the claim is fixed in shape: $\Delta_H$ is stable and
+substantial under mixed-SNR training ($+1.286$~dB, three seeds, SD $0.072$) and
+has no stable sign under matched focused training ($+0.020$~dB, one seed of
+three significantly negative). The contrast changes \emph{category} rather
+than shrinking by a factor. It is not written yet because batch C3 tests a
+second, independent way of removing the training imbalance, and a claim about
+training adequacy in general should not rest on one way of fixing it.}
 
 \section{System Model and Estimator}
 
@@ -272,11 +278,12 @@ what does not was compensating for training inadequacy.
 \end{enumerate}
 
 \stub{RESULT OF APPLYING THE PROTOCOL}{The paragraph reporting what the control
-did to $\Delta_H$, and its figure. Waiting on batch C2, which measures the
-seed spread of the mixed-SNR contrast; the focused contrast is already measured
-on three seeds. No scalar may be quoted here until then, and the figure must be
-rebuilt from C2 and C3 rather than repurposed --- the retired one plotted a
-single seed of each design as though the pair were a measurement.}
+did to $\Delta_H$, and its figure. C2 has reported: $+1.286$~dB on three seeds,
+SD $0.072$, against $+0.020$~dB under focused training. The paragraph waits on
+C3 so that it can state how many independent ways of removing the imbalance
+were tried, not just one. The figure must be rebuilt from C2 and C3 rather than
+repurposed --- the retired one plotted a single seed of each design as though
+the pair were a measurement.}
 
 \textbf{Scope of this negative result.} It holds at $N=32$, $K=3$, this data
 budget, and the two pilot counts tested. It is not a general claim that
@@ -422,8 +429,10 @@ two opposing effects. Per bin, the prior \emph{costs} accuracy at low SNR and
 
 \begin{table}[!t]
 \caption{Per-bin structural gain $\Delta_H$, three-seed mean, positive = the
-prior is better. Every one of the eighteen underlying bin-by-seed cells in the
-mixed design has a bootstrap $95\%$ CI over test realizations excluding zero.}
+prior is better. All eighteen underlying $\Delta_H$ cells of the mixed design
+--- three seeds by six bins --- have a bootstrap $95\%$ CI over test
+realizations excluding zero. These are a different eighteen from those of
+Fig.~\ref{fig:allcells}, which are the gain from balancing the loss.}
 \label{tab:signs}
 \centering
 \small
@@ -573,9 +582,10 @@ SNR~$\ge5$~dB across three seeds and improves every one of eighteen
 bin-by-seed cells, including the two the weighting itself penalizes most.
 
 \stub{CONCLUSION, structural-prior sentence}{One or two sentences stating what
-the control did to $\Delta_H$, pending C2. The claim the retired draft made
+the control did to $\Delta_H$, pending C3. The claim the retired draft made
 here --- a fifteenfold collapse --- is withdrawn and must not return in any
-form.}
+form; outcome (a) does not rehabilitate it, because it was a bad description of
+what had been measured, not merely a wrong number.}
 
 \textbf{Limitations.} All results are simulation only, with no measured
 hardware and no recorded channel data. They cover the geometric ULA model of
