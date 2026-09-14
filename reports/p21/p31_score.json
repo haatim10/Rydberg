@@ -1,0 +1,911 @@
+{
+ "prereg": "reports/p21/PREREG_P31.md @ c4cbc56",
+ "re_registration": true,
+ "re_registration_note": "The invalid random-init arm already reported +0.343 (log - balanced), +2.228 (log - unbalanced), span 3.32 and share 0.359. Predictions were made knowing them; every verdict here is a re-registration and must be labelled one wherever quoted.",
+ "P31c_status": "UNSCOREABLE THIS TURN. P31c asked for the per-bin sign sequence of Delta_H under log-loss training. All three C4 arms are hankel=False, so no prior-carrying log arm exists; measuring it needs three further H1-log runs, which PROMPT 21's scope forbids. Not implied to have been tested.",
+ "n_test": 2000,
+ "P": 20,
+ "checkpoint_provenance": {
+  "C1_seed1": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "spec": null
+  },
+  "U1_seed1": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "spec": null
+  },
+  "LOG_seed1": {
+   "epoch": 7,
+   "init": "spectral",
+   "train_seed": 20260827,
+   "spec": {
+    "hankel": false,
+    "snr": [
+     -10.0,
+     20.0
+    ],
+    "loss": "logdb",
+    "seed": 1
+   }
+  },
+  "C1_seed2": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "spec": null
+  },
+  "U1_seed2": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "spec": null
+  },
+  "LOG_seed2": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20262827,
+   "spec": {
+    "hankel": false,
+    "snr": [
+     -10.0,
+     20.0
+    ],
+    "loss": "logdb",
+    "seed": 2
+   }
+  },
+  "C1_seed3": {
+   "epoch": 8,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "spec": null
+  },
+  "U1_seed3": {
+   "epoch": 6,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "spec": null
+  },
+  "LOG_seed3": {
+   "epoch": 7,
+   "init": "spectral",
+   "train_seed": 20263827,
+   "spec": {
+    "hankel": false,
+    "snr": [
+     -10.0,
+     20.0
+    ],
+    "loss": "logdb",
+    "seed": 3
+   }
+  }
+ },
+ "path_check_P27": {
+  "published": {
+   "seed1": 1.9024,
+   "seed2": 2.2427,
+   "seed3": 2.3691
+  },
+  "measured": {
+   "seed1": 1.9024,
+   "seed2": 2.2427,
+   "seed3": 2.3691
+  },
+  "abs_error_db": {
+   "seed1": 3e-05,
+   "seed2": 4.7e-05,
+   "seed3": 3.5e-05
+  },
+  "tolerance_db": 0.002,
+  "reproduced": true,
+  "meaning": "shares worlds, path, bins and BOTH comparison arms with the targets; if false, no verdict below holds"
+ },
+ "log_minus_balanced": {
+  "seed1": {
+   "ge5_median_db": 0.22777200660859975,
+   "ge5_ci95_over_test_realisations": [
+    0.1826802665636471,
+    0.26092907871432836
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": 0.0963078917501875,
+   "pooled_median_db": -0.013885964978704646,
+   "pooled_ratio_of_sums_db": -0.12859094191432952,
+   "per_bin_db": [
+    -0.11461727406477618,
+    -0.16346193641526008,
+    -0.15129705922785952,
+    -0.046293633745115415,
+    0.23968401006621143,
+    0.5252605002513668
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.1475305709153516,
+     -0.09111103176327612
+    ],
+    [
+     -0.2075566439263954,
+     -0.1048603521456136
+    ],
+    [
+     -0.22139029009904476,
+     -0.10250220446388703
+    ],
+    [
+     -0.0879330159247278,
+     0.07378059286066474
+    ],
+    [
+     0.17895018426894893,
+     0.29449032536183317
+    ],
+    [
+     0.4363314310841133,
+     0.6510705178084457
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true,
+    false,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed2": {
+   "ge5_median_db": -0.02518406763773129,
+   "ge5_ci95_over_test_realisations": [
+    -0.06492081753478374,
+    0.01592274816982453
+   ],
+   "ge5_ci_excludes_zero": false,
+   "ge5_ratio_of_sums_db": -0.12518601635470059,
+   "pooled_median_db": -0.10086744516810442,
+   "pooled_ratio_of_sums_db": -0.11379666831790711,
+   "per_bin_db": [
+    -0.06422446187796782,
+    -0.18536152643479342,
+    -0.23844039711415554,
+    -0.18742414932363438,
+    -0.020389650847842944,
+    0.1367666456251797
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.1021713001325173,
+     -0.038344800834234416
+    ],
+    [
+     -0.22576630845613765,
+     -0.14069052323058884
+    ],
+    [
+     -0.32685159720575463,
+     -0.20687603028546597
+    ],
+    [
+     -0.22861079107915572,
+     -0.12479356286197607
+    ],
+    [
+     -0.0752215212296452,
+     0.020938111405004713
+    ],
+    [
+     0.06627620002692147,
+     0.19017365179936263
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true,
+    true,
+    false,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed3": {
+   "ge5_median_db": 0.15954016227275147,
+   "ge5_ci95_over_test_realisations": [
+    0.11729260934610508,
+    0.23011328798917852
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": 0.13475252519330735,
+   "pooled_median_db": 0.03158974282291993,
+   "pooled_ratio_of_sums_db": -0.03792496695207808,
+   "per_bin_db": [
+    -0.039698336735722456,
+    -0.05609923591976762,
+    0.0022185990729752803,
+    0.09082859462726667,
+    0.20012279802583333,
+    0.25887844051587017
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.07649393792659742,
+     -0.008412650547571773
+    ],
+    [
+     -0.1122205132317089,
+     -0.017078671049449712
+    ],
+    [
+     -0.03198762860618665,
+     0.04422522562169995
+    ],
+    [
+     0.02622859613447659,
+     0.14770432020291935
+    ],
+    [
+     0.09162396592796612,
+     0.31452354853000486
+    ],
+    [
+     0.16041563072095855,
+     0.33831069205936437
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    false,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  }
+ },
+ "log_minus_unbalanced": {
+  "seed1": {
+   "ge5_median_db": 2.1425200050431634,
+   "ge5_ci95_over_test_realisations": [
+    2.0250159160103625,
+    2.2181010733810886
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": 1.7083957579152749,
+   "pooled_median_db": 0.7873698010834866,
+   "pooled_ratio_of_sums_db": 0.04131000446378221,
+   "per_bin_db": [
+    -0.08601400972301985,
+    -0.09562682610828999,
+    0.348537238572467,
+    1.3409146374451275,
+    2.20270468214075,
+    3.1576631620651874
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.13795031482133724,
+     -0.03722536053969518
+    ],
+    [
+     -0.17124620832454224,
+     -0.004301224230070844
+    ],
+    [
+     0.26856997633290813,
+     0.46621665793998446
+    ],
+    [
+     1.228704340950209,
+     1.407038320048315
+    ],
+    [
+     2.080776497430861,
+     2.3082442152184797
+    ],
+    [
+     3.055073392384368,
+     3.266100669505171
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed2": {
+   "ge5_median_db": 2.1881605289914177,
+   "ge5_ci95_over_test_realisations": [
+    2.090794477598143,
+    2.262292064351218
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": 1.8032704934127048,
+   "pooled_median_db": 0.9892387936759359,
+   "pooled_ratio_of_sums_db": 0.205878151196839,
+   "per_bin_db": [
+    0.020742471559838493,
+    0.1984914199926231,
+    0.6344484204873417,
+    1.456620390812585,
+    2.2133424908364656,
+    3.1606907483913425
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.01517060383139085,
+     0.049822029370333865
+    ],
+    [
+     0.1332450202892379,
+     0.26355876339307915
+    ],
+    [
+     0.5393725043731514,
+     0.7223952476529423
+    ],
+    [
+     1.3581594578294531,
+     1.5241125842733787
+    ],
+    [
+     2.117618422632198,
+     2.3324868346390915
+    ],
+    [
+     3.027362568052193,
+     3.3463923103314004
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    false,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  },
+  "seed3": {
+   "ge5_median_db": 2.539081714312566,
+   "ge5_ci95_over_test_realisations": [
+    2.4576935153417363,
+    2.6286065127582674
+   ],
+   "ge5_ci_excludes_zero": true,
+   "ge5_ratio_of_sums_db": 2.073380921712771,
+   "pooled_median_db": 1.0451228441382536,
+   "pooled_ratio_of_sums_db": 0.2049767922210401,
+   "per_bin_db": [
+    0.007818307676008523,
+    0.10939979540685885,
+    0.6641716109294631,
+    1.6434061738123358,
+    2.5190419049700203,
+    4.003042903974704
+   ],
+   "per_bin_ci95_over_test_realisations": [
+    [
+     -0.036128385388307926,
+     0.055745428517021425
+    ],
+    [
+     0.049465179362951694,
+     0.16775427532925832
+    ],
+    [
+     0.6022737360193844,
+     0.7504931439818154
+    ],
+    [
+     1.5298314382700617,
+     1.7437162315322219
+    ],
+    [
+     2.4250521973743346,
+     2.6320487470691374
+    ],
+    [
+     3.7904645543319635,
+     4.151769447324817
+    ]
+   ],
+   "per_bin_ci_excludes_zero": [
+    false,
+    true,
+    true,
+    true,
+    true,
+    true
+   ],
+   "bins": [
+    [
+     -10,
+     -5
+    ],
+    [
+     -5,
+     0
+    ],
+    [
+     0,
+     5
+    ],
+    [
+     5,
+     10
+    ],
+    [
+     10,
+     15
+    ],
+    [
+     15,
+     20
+    ]
+   ]
+  }
+ },
+ "bins": [
+  [
+   -10,
+   -5
+  ],
+  [
+   -5,
+   0
+  ],
+  [
+   0,
+   5
+  ],
+  [
+   5,
+   10
+  ],
+  [
+   10,
+   15
+  ],
+  [
+   15,
+   20
+  ]
+ ],
+ "three_seed_mean_log_minus_balanced_db": 0.1207,
+ "seed_spread_sd_db": 0.1309,
+ "seed_spread_range_db": 0.253,
+ "mean_minus_2sd_db": -0.141,
+ "three_seed_mean_log_minus_unbalanced_db": 2.2899,
+ "seed_spread_sd_log_minus_unbalanced_db": 0.217,
+ "gradient_shares": {
+  "seed1": {
+   "under_log_loss": {
+    "bins": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      0.0,
+      5.0
+     ],
+     [
+      5.0,
+      10.0
+     ],
+     [
+      10.0,
+      15.0
+     ],
+     [
+      15.0,
+      20.0
+     ]
+    ],
+    "grad_share": [
+     0.078335,
+     0.107685,
+     0.139797,
+     0.177991,
+     0.220325,
+     0.275868
+    ],
+    "grad_share_below_5dB": 0.3258,
+    "span_max_over_min": 3.5217,
+    "estimator": "stage5 algorithm, loss parameterised"
+   },
+   "under_conventional_loss": {
+    "bins": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      0.0,
+      5.0
+     ],
+     [
+      5.0,
+      10.0
+     ],
+     [
+      10.0,
+      15.0
+     ],
+     [
+      15.0,
+      20.0
+     ]
+    ],
+    "grad_share": [
+     0.483262,
+     0.296176,
+     0.131213,
+     0.054351,
+     0.023533,
+     0.011465
+    ],
+    "grad_share_below_5dB": 0.9107,
+    "span_max_over_min": 42.1508,
+    "estimator": "stage5 algorithm, loss parameterised"
+   }
+  },
+  "seed2": {
+   "under_log_loss": {
+    "bins": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      0.0,
+      5.0
+     ],
+     [
+      5.0,
+      10.0
+     ],
+     [
+      10.0,
+      15.0
+     ],
+     [
+      15.0,
+      20.0
+     ]
+    ],
+    "grad_share": [
+     0.081072,
+     0.111137,
+     0.136678,
+     0.183617,
+     0.214199,
+     0.273298
+    ],
+    "grad_share_below_5dB": 0.3289,
+    "span_max_over_min": 3.3711,
+    "estimator": "stage5 algorithm, loss parameterised"
+   },
+   "under_conventional_loss": {
+    "bins": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      0.0,
+      5.0
+     ],
+     [
+      5.0,
+      10.0
+     ],
+     [
+      10.0,
+      15.0
+     ],
+     [
+      15.0,
+      20.0
+     ]
+    ],
+    "grad_share": [
+     0.489019,
+     0.28983,
+     0.127442,
+     0.058718,
+     0.023189,
+     0.011802
+    ],
+    "grad_share_below_5dB": 0.9063,
+    "span_max_over_min": 41.4343,
+    "estimator": "stage5 algorithm, loss parameterised"
+   }
+  },
+  "seed3": {
+   "under_log_loss": {
+    "bins": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      0.0,
+      5.0
+     ],
+     [
+      5.0,
+      10.0
+     ],
+     [
+      10.0,
+      15.0
+     ],
+     [
+      15.0,
+      20.0
+     ]
+    ],
+    "grad_share": [
+     0.076256,
+     0.106278,
+     0.134289,
+     0.176409,
+     0.211409,
+     0.29536
+    ],
+    "grad_share_below_5dB": 0.3168,
+    "span_max_over_min": 3.8733,
+    "estimator": "stage5 algorithm, loss parameterised"
+   },
+   "under_conventional_loss": {
+    "bins": [
+     [
+      -10.0,
+      -5.0
+     ],
+     [
+      -5.0,
+      0.0
+     ],
+     [
+      0.0,
+      5.0
+     ],
+     [
+      5.0,
+      10.0
+     ],
+     [
+      10.0,
+      15.0
+     ],
+     [
+      15.0,
+      20.0
+     ]
+    ],
+    "grad_share": [
+     0.486043,
+     0.294275,
+     0.12992,
+     0.055168,
+     0.022513,
+     0.012081
+    ],
+    "grad_share_below_5dB": 0.9102,
+    "span_max_over_min": 40.2324,
+    "estimator": "stage5 algorithm, loss parameterised"
+   }
+  }
+ },
+ "gradient_share_anchors": {
+  "conventional_span": 30.0,
+  "conventional_share_below_5dB": 0.897,
+  "bin_reweighted_span": 1.9,
+  "bin_reweighted_share_below_5dB": 0.427,
+  "invalid_arm_span": 3.32,
+  "invalid_arm_share_below_5dB": 0.359,
+  "comparability_note": "The conventional and bin-reweighted anchors come from stage5.gradient_shares, whose algorithm this file reproduces, so the measured spans are comparable to them. The invalid arm's 3.32 came from scratch/p12_partC.py's DIFFERENT estimator and is NOT directly comparable to either."
+ },
+ "P31a": {
+  "i_prediction": "across-seed SD <= 0.35 dB",
+  "i_point_estimate": 0.15,
+  "i_measured_sd_db": 0.1309,
+  "i_status": "HELD",
+  "ii_prediction": "|three-seed mean| <= 0.5 dB",
+  "ii_point_estimate": 0.15,
+  "ii_measured_mean_db": 0.1207,
+  "ii_status": "HELD"
+ },
+ "P31b": {
+  "prediction": "log-loss gradient-share span is NOT below 1.9",
+  "point_estimate": 2.8,
+  "measured_span_per_seed": [
+   3.5217,
+   3.3711,
+   3.8733
+  ],
+  "measured_span_mean": 3.5887,
+  "status": "HELD",
+  "if_failed_means": "the log loss flattens the gradient better than explicit reweighting while needing none of its machinery"
+ },
+ "P31c_prime": {
+  "prediction": "the log-over-balanced margin is larger at low SNR than at high SNR on every seed",
+  "per_seed_low_minus_high_db": {
+   "seed1": -0.6399,
+   "seed2": -0.201,
+   "seed3": -0.2986
+  },
+  "per_seed_held": {
+   "seed1": false,
+   "seed2": false,
+   "seed3": false
+  },
+  "status": "FAILED"
+ },
+ "decision": {
+  "branch": "EQUIVALENT",
+  "consequence": "the two are equivalent within the registered margin; the paper reports bin reweighting as adequate and the log loss as A SIMPLER ALTERNATIVE THAT IS NO BETTER, in those words, and the title claims an attribution finding with a replication attached",
+  "rule": "PREREG_P31, evaluated in its stated order"
+ },
+ "note": "CIs are over TEST REALISATIONS; the seed spread is the separate quantity in seed_spread_*. Three seeds give two degrees of freedom."
+}
