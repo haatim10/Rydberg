@@ -108,7 +108,12 @@ same problem~\cite{xu2025}.
 model} --- a magnitude-only measurement with a known additive reference,
 \eqref{eq:obs}. Nothing below depends on the vapour-cell physics, so the
 results apply to any array receiver with that measurement, of which the Rydberg
-receiver is the motivating instance.
+receiver is the motivating instance. \textbf{This is one Rydberg architecture
+and not the family}: a superheterodyne readout, in which a local reference
+drives the cell and the beat note is detected, recovers amplitude
+\emph{and} phase, and nothing here applies to it. The problem addressed is
+created by the magnitude-only readout, so an architecture that avoids that
+readout avoids the problem.
 
 This paper is organised around a single argument, stated first and tested
 afterwards.
@@ -177,7 +182,11 @@ g_k[n]=\sum_{\ell=1}^{L_k}\alpha_{\ell,k}e^{-j(n-1)\psi_{\ell,k}},\qquad
 \psi_{\ell,k}=\pi\sin\theta_{\ell,k},
 \label{eq:chan}
 \end{equation}
-with $L_k\sim\mathcal{U}\{3,7\}$~\cite{xu2025} and
+with $\alpha_{\ell,k}\sim\CN(0,\beta_k/L_k)$ so that
+$\sum_\ell\mathbb{E}|\alpha_{\ell,k}|^2=\beta_k$ is independent of the path
+count --- the path-count sweep of \S\ref{sec:pathcount} therefore varies
+channel complexity at fixed received power --- and with
+$L_k\sim\mathcal{U}\{3,7\}$~\cite{xu2025} and
 $\theta\sim\mathcal{U}(-90^\circ,90^\circ)$. The reference-to-signal ratio
 (RSR) is the reference power over the \emph{single-user} received power.
 
@@ -199,7 +208,14 @@ projection $\mathcal{P}_r(\bg)=\Hank_p^{\dagger}(\Pi_r(\Hank_p(\bg)))$, where
 $\Pi_r$ truncates to $r$ leading singular values and $\Hank_p^{\dagger}$
 averages antidiagonals. One application is \emph{not} idempotent --- it is one
 step of an alternating projection between the rank set and the Hankel set --- so
-the sweep count is part of the operator's definition. \textbf{The operator
+the sweep count is part of the operator's definition. Two consequences are
+easy to overstate and we do not: alternating projections between these sets
+need not converge to the \emph{nearest} point of their intersection, so
+$\mathcal{P}_r$ is a denoiser and not a minimum-distance structured
+approximation; and low Hankel rank is a \emph{relaxation} of
+\eqref{eq:chan}, admitting exponential sums whose modes are not unit-modulus
+and so are not spatial frequencies of a ULA. Imposing it is not the same as
+imposing the array manifold. \textbf{The operator
 settings are not uniform across \S\ref{sec:results}}: every result below is run
 at one of the four configurations of Table~\ref{tab:config}, and each number is
 tagged with the one that produced it. All four use $n_{\mathrm{cz}}=4$; the
@@ -211,7 +227,11 @@ so the projection is provably the only difference.
 columns is held out; each candidate $r\in\{1,\dots,\rmax\}$ is scored by the
 held-out magnitude residual and the minimiser is used. The in-sample residual
 cannot serve: constraining $\bG$ can only worsen the fit to the pilots used for
-fitting, so an in-sample criterion always prefers the largest candidate. When
+fitting, so an in-sample criterion always prefers the largest candidate.
+\textbf{The split is used for scoring only:} once $\hat r$ is chosen the
+estimate is refitted on all $P$ pilot columns, so HS-GS and EM-GS consume the
+same pilot budget and the full-rank identity below is exact rather than
+approximate. When
 the selector returns $\hat r\ge\rmax$ the projection is the identity and the
 estimator \emph{abstains}, falling back exactly to EM-GS. This is a designed
 behaviour and \S\ref{sec:effrank} shows it is load-bearing.
@@ -546,7 +566,11 @@ $+1.30$~dB; the measurement over $276$ trials gave $+1.173$~dB, CI
 $[+1.017,+1.380]$ --- an error of $0.13$~dB.
 
 % src: reports/trackD_partB9_analysis.json, B8_cui_measured
-\textbf{A second, independently specified configuration.} At $\rho=0.400$ the
+\textbf{A second, independently specified configuration}~\cite{precoding2408}:
+a fixed $L=10$ paths per user with $\alpha_\ell\sim\CN(0,1)$ and angles uniform
+on $(-90^\circ,90^\circ)$, in contrast to the clustered first generator. Only
+the receive-side channel configuration is borrowed; that work is not a
+competing estimator. At $\rho=0.400$ the
 prediction was $+0.648$~dB with interval $[+0.367,+1.015]$; the measurement
 over $266$ trials gave $+0.963$~dB, CI $[+0.808,+1.086]$ --- an error of
 $0.315$~dB, inside the stated interval but on its upper edge.
@@ -664,6 +688,12 @@ vol.~36, no.~1, pp.~49--62, 1988.
 
 \bibitem{markovsky2008} I.~Markovsky, ``Structured low-rank approximation and
 its applications,'' \emph{Automatica}, vol.~44, no.~4, pp.~891--909, 2008.
+
+% Entry mirrors paper/master/refs.bib. The title and arXiv identifier were
+% confirmed by the author; the AUTHOR LIST is not verifiable from this
+% container and is recorded in docs/open-todos.md for checking.
+\bibitem{precoding2408} M.~Cui, Q.~Zeng and K.~Huang, ``{MIMO} precoding for
+{Rydberg} atomic receivers,'' 2024, arXiv:2408.14366.
 
 \bibitem{royvetterli2007} O.~Roy and M.~Vetterli, ``The effective rank: a
 measure of effective dimensionality,'' in \emph{Proc. Eur. Signal Process.

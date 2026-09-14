@@ -207,3 +207,52 @@ B1 is correct — `T` and the selection budget genuinely do differ across
 subsections, and the blanket sentence in §II has been deleted accordingly.
 
 </details>
+
+---
+
+## 6. Paper A items from the external review of 14 Sep 2026
+
+Full response in `reports/p22/review_response_paperA.md`. These are the ones a
+person must close; the wording corrections are already applied to
+`paper/paper1/haatim_hsgs_letter.tex`.
+
+### 6.1 The CCRB derivation — derive it or delete the curve
+
+`U(U^T J U)^{-1} U^T` is not a reproducible specification. Needed: the real
+parameter vector, the likelihood, derivative expressions, dimensions, the
+tangent-space basis, rank conditions, and the NMSE normalisation. **If it
+cannot be derived, remove the curve and the 7.05--7.11 dB gap claim rather than
+leaving an unauditable theory section.** Largest single item on Paper A.
+
+### 6.2 Trial counts 276 and 266 against a stated 300--400
+
+Not resolved from the result files this turn. Most likely per-generator
+rejection of degenerate draws, but that is a guess and must not be written as
+an explanation until confirmed.
+
+### 6.3 Author list of `precoding2408` is unverified
+
+`reports/trackD_step0_cui_prediction.json` records `citation_verified: false`
+and notes the PDF is not in the repository. The title and arXiv identifier
+(2408.14366) were confirmed by the author; the author list is taken from
+`paper/master/refs.bib` and has not been checked against the paper.
+
+### 6.4 Predictive validation of rho against simpler descriptors
+
+The review's central novelty concern. A held-out comparison of `rho` against
+`L` and `L/r_max` under the same fitting budget and splits, reporting
+prediction error rather than visual curve alignment. Decides whether the
+effective-rank contribution stands.
+
+### 6.5 Formatting defects in the nine-page version
+
+Eq. (9)'s missing left-hand variable, the q/y inconsistency, undefined Table I
+labels, Fig. 2(b) line styles. These were not found in the five-page letter,
+which has different numbering; re-check against whichever version is submitted.
+
+### 6.6 Superseded drafts still carry "exact projection"
+
+`paper/master/`, `paper/merged/`, `paper/spl1/` and `paper/summary/` assert the
+operator is a projection onto the intersection of the rank and Hankel sets.
+That is false --- the map is not even idempotent. They are not submission
+targets and were left alone, but must be corrected if any is ever revived.
