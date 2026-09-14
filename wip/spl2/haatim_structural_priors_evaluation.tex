@@ -1,39 +1,37 @@
 % =====================================================================
-% INCOMPLETE -- DO NOT SUBMIT OR FORWARD.  Quarantined under PROMPT 16 Part D;
-% the settled spine was rewritten under PROMPT 19 Part E.
+% DRAFT -- COMPLETE BUT NOT CLEARED FOR SUBMISSION.
 %
-% WHY IT STILL MAY NOT GO OUT: the title, the abstract and the whole
-% structural-prior section are deliberately UNWRITTEN. They render in red as
-% \stub{} blocks, each naming what it waits on. Batch C2 has since reported
-% and P29's outcome (a) fired, so the paper's subject is settled: it is
-% attribution. What the stubs now wait on is batch C3, which tests whether a
-% THIRD way of removing the training imbalance -- reweighting the loss without
-% narrowing the training range -- does what narrowing it did. A claim about
-% training adequacy in general rests on more than one way of fixing it.
+% Every section is now written. The stubs that stood here from PROMPT 19 E2
+% through PROMPT 21 B are gone, and the \stub{} macro with them: the title, the
+% abstract, the structural-prior section, the introduction paragraph and the
+% conclusion sentence were all written under PROMPT 21 Part C, after batch C4
+% reported.
 %
-% The RETIRED claim -- that a matched-adequacy control collapses the structural
-% advantage fifteenfold, from +1.209 dB to +0.078 dB -- has been removed from
-% the body, along with its figure, its supporting numbers (+2.653, +1.629) and
-% its CI. "fifteen" now survives only inside a stub, as an instruction that it
-% must not return. The experiment meant to establish the collapse -- PROMPT 12
-% Part C -- was invalid: its arms were trained with init='random' while the
-% arms they were compared against were trained with init='spectral'
-% (reports/p16/validity.csv, reports/p15/PART_A.md).
+% WHAT STILL BLOCKS SUBMISSION -- both need a human with network access, and
+% both are recorded in docs/open-todos.md section 5:
 %
-% The fifteenfold INTERPRETATION has no support, because the seed distribution
-% it assumes was never validly measured. Of the two numbers:
+%   1. Whether Wiesmayr et al. (arXiv:2210.14103) report the effect of SNR
+%      deweighting on the DOWN-WEIGHTED regime. If they do, the 18-of-18 result
+%      in Sec. IV-B is anticipated and must be recast as confirmation. The
+%      abstract phrases it as a measurement, not a discovery, pending that.
+%   2. The pilot-curve train-versus-evaluate ambiguity (Sec. IV-G) was never
+%      searched. Its novelty is UNSUPPORTED rather than supported.
 %
-%   +1.209 dB  measured on three seeds by batch C2: mean +1.286, SD 0.072.
-%              It is the SMALLEST of its three, so it was a conservative draw.
+%   Also: the OFDM reference in the related-work paragraph carries
+%   \todo{VERIFY CITATION} and renders in red. Its fields could not be
+%   confirmed from this container and it must not enter the bibliography until
+%   someone reads the paper.
 %
-%   +0.078 dB  is valid as a measurement of seed 1 and MISLEADING as a
-%              quantity. Three seeds give +0.078, +0.057 and -0.076
-%              (reports/p17/PART_C_C1.md): it is the MAXIMUM of the three, not
-%              a typical value, and its sign survives neither a change of seed
-%              nor a change of pooling rule -- under ratio-of-sums it is
-%              negative on all three seeds. Do not quote it as a point value.
+% THE RETIRED CLAIM stays retired. The draft once asserted a fifteenfold
+% collapse from +1.209 dB to +0.078 dB. The experiment meant to establish it
+% was invalid -- arms trained with init='random' against arms trained with
+% init='spectral' (reports/p16/validity.csv, reports/p15/PART_A.md) -- and the
+% framing was wrong independently of that: +1.209 is the SMALLEST of its three
+% seeds and +0.078 the LARGEST of its three, with a sign that survives neither
+% a change of seed nor of pooling rule. The paper now reports a change of
+% category across three designs, not a ratio, and "fifteen" appears nowhere.
 %
-% The current framing, and what may and may not be claimed, is in
+% The framing, and what may and may not be claimed, is in
 %     docs/paper2-thesis.md
 % Do not restore this file from git history without reading that first.
 % =====================================================================
@@ -47,10 +45,6 @@
 \usepackage{xcolor}
 
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
-% Deliberately unwritten section, under PROMPT 19 Part E2. Renders in red so a
-% stub cannot ship unnoticed. Each one names what it is waiting on.
-\newcommand{\stub}[2]{\par\medskip\noindent\textcolor{red}{\textbf{[STUB ---
-#1]}\\ \emph{#2}}\par\medskip}
 
 \DeclareMathOperator{\rank}{rank}
 \newcommand{\bG}{\mathbf{G}}
@@ -64,20 +58,16 @@
 
 \begin{document}
 
-% TITLE IS A STUB (PROMPT 19 E2, revised PROMPT 20 D). P29's outcome (a) fired,
-% so the branch is settled: mixed Delta_H is stable near +1.2 and the paper is
-% about a prior whose apparent value depends on training adequacy. Structural
-% priors stay the subject and the old title's shape survives.
-%
-% It is still a stub for a different reason. The prior-art hit
-% (reports/p20/claim_audit.md) moved the contribution from the loss convention
-% to ATTRIBUTION -- what a known training imbalance does to the evidence for a
-% prior -- and "On the Evaluation of ..." does not say that. The replacement
-% must name attribution, and it waits on C3 for the same reason the abstract
-% does. Placeholder below is the working title, not a decision.
-\title{\textcolor{red}{[WORKING TITLE --- see PROMPT 19 E2]}\\
-On the Evaluation of Structural Priors in Unrolled\\
-Channel Estimation for Rydberg Atomic Receivers}
+% Title written under PROMPT 21 C2, after the results and the abstract body.
+% It is constrained by the decision rule committed in reports/p21/PREREG_P31.md
+% BEFORE batch C4 ran: the EQUIVALENT branch fired (|m| = 0.121 <= 0.50 and
+% m - 2s = -0.141 <= 0), so the log loss does NOT improve on published work and
+% the title may claim an attribution finding with a replication attached -- and
+% nothing more. "Training Adequacy Confounds" names what the paper establishes;
+% it does not claim the loss imbalance, which is wiesmayr2023bler's.
+\title{Training Adequacy Confounds the Evaluation of\\
+Structural Priors in Unrolled Channel Estimation\\
+for Rydberg Atomic Receivers}
 
 \author{Abdullah~Haatim%
 \thanks{A.~Haatim is with the Department of Electrical and Electronics
@@ -88,19 +78,29 @@ f20220519@pilani.bits-pilani.ac.in).}}
 \maketitle
 
 \begin{abstract}
-\textcolor{red}{[ABSTRACT IS A STUB --- PROMPT 19 E2, revised PROMPT 20 D.]}
-Batch C2 has reported and P29's outcome (a) fired, so the subject is settled:
-this is a paper about \emph{attribution}. It is still unwritten because batch
-C3 tests whether reweighting the loss removes the prior's apparent advantage
-the way narrowing the training range did, and the abstract's central sentence
-depends on the answer. What it must lead with: that a known training
-imbalance~\cite{wiesmayr2023bler} manufactures apparent evidence for a
-structural prior, so a prior credited on an uncontrolled comparison is credited
-for the training's failure. What it must also carry: the matched-adequacy
-protocol; the per-bin sign pattern and the averaging-window dependence; the
-pilot-efficiency distinction at $2.231$~dB; and simulation-only scope. What it
-must \emph{not} do: lead with $+2.171$~dB, which confirms a published
-remedy rather than contributing one.
+Adding a structural prior inside an unrolled channel estimator usually improves
+the reported metric, and the improvement is usually credited to the prior. We
+show that in magnitude-only channel estimation for Rydberg atomic receivers
+this evidence is not decisive, because a known training pathology manufactures
+it. A per-sample normalized error averaged over a wide SNR range is dominated
+by its low-SNR tail; here that amounts to $89.7\%$ of the gradient below
+$5$~dB, leaving the high-SNR regime underfitted, so any mechanism that helps
+there appears to supply information. We propose a matched-adequacy control:
+measure the per-bin gradient share, retrain both the structured and the
+unstructured arm with the imbalance removed, and re-measure. Applied to our own
+Hankel-structured estimator over three training designs and three seeds each,
+the structural advantage at SNR~$\ge5$~dB is $+1.286$~dB under the conventional
+loss, $+0.020$~dB when both arms are retrained on the regime of interest, and
+$-0.177$~dB when the loss is corrected instead --- positive, absent, and
+negative with nothing changed but how training distributed its effort. Two
+corrections that share no machinery agree, and a per-bin sign pattern survives
+where no scalar does. Correcting the loss is itself a published remedy, and we
+measure what it is worth here: $+2.171$~dB at SNR~$\ge5$~dB over three seeds,
+improving every one of eighteen bin-by-seed cells including the two the
+weighting penalizes most. A log-domain loss needing no bin edges is a simpler
+alternative that is no better. Separately, pilot efficiency and pilot-count
+generalization are distinct quantities differing by $2.231$~dB. Results are
+simulation only.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -168,18 +168,20 @@ three seeds --- with a gain in every bin of every seed, including the two bins
 the weighting penalizes most.
 \item A demonstration that pilot efficiency and pilot-count generalization are
 distinct and are conflated by a single reported curve.
-\item \textcolor{red}{[STUB]} The structural-prior contribution, pending C3.
+\item A measurement of the same structural prior under three training
+designs, three seeds each: its advantage is $+1.286$~dB under the conventional
+loss, $+0.020$~dB when both arms are retrained on the regime of interest, and
+$-0.177$~dB when the loss is corrected instead.
 \end{enumerate}
 
-\stub{INTRODUCTION, structural-prior claim}{One paragraph stating what the
-control did to $\Delta_H$, and the corresponding contribution item. P29's
-outcome (a) fired, so the claim is fixed in shape: $\Delta_H$ is stable and
-substantial under mixed-SNR training ($+1.286$~dB, three seeds, SD $0.072$) and
-has no stable sign under matched focused training ($+0.020$~dB, one seed of
-three significantly negative). The contrast changes \emph{category} rather
-than shrinking by a factor. It is not written yet because batch C3 tests a
-second, independent way of removing the training imbalance, and a claim about
-training adequacy in general should not rest on one way of fixing it.}
+\textbf{What the control did.} Under the conventional loss the prior is worth
+$+1.286$~dB at high SNR, on three seeds, positive under every statistic we
+tried. Retraining both arms on the high-SNR range leaves $+0.020$~dB, with one
+seed of three significantly negative. Correcting the loss instead --- leaving
+the training range untouched --- leaves $-0.177$~dB, negative on every seed.
+The quantity does not shrink by a factor; it stops keeping its sign. Two
+corrections that share no machinery agree, which is why we read the training
+design as the cause rather than an accident of either control.
 
 \section{System Model and Estimator}
 
@@ -277,13 +279,21 @@ and initialization.
 what does not was compensating for training inadequacy.
 \end{enumerate}
 
-\stub{RESULT OF APPLYING THE PROTOCOL}{The paragraph reporting what the control
-did to $\Delta_H$, and its figure. C2 has reported: $+1.286$~dB on three seeds,
-SD $0.072$, against $+0.020$~dB under focused training. The paragraph waits on
-C3 so that it can state how many independent ways of removing the imbalance
-were tried, not just one. The figure must be rebuilt from C2 and C3 rather than
-repurposed --- the retired one plotted a single seed of each design as though
-the pair were a measurement.}
+Applying it, and reporting what it did to our own method: under the
+conventional loss the structural advantage over $[5,20]$~dB is
+% src: reports/p19/p29_score.json three_seed_mean_ge5_db
+$+1.286$~dB, averaged over three training seeds. Retraining both arms on
+$[5,20]$~dB alone leaves $+0.020$~dB. Correcting the loss instead, without
+narrowing the training range, leaves
+% src: reports/p20/p30_score.json three_seed_mean_ge5_db
+$-0.177$~dB --- the prior now costs accuracy. Sec.~\ref{sec:prior} gives the
+three designs with their seed spreads.
+
+The two corrections share no machinery. One changes which channels the network
+sees; the other changes how much each channel contributes to the gradient, on
+an unchanged training set. That they agree is what makes the common cause
+credible: a single control can always be argued to have broken something
+incidental, and two unrelated ones are much harder to explain away.
 
 \textbf{Scope of this negative result.} It holds at $N=32$, $K=3$, this data
 budget, and the two pilot counts tested. It is not a general claim that
@@ -507,21 +517,99 @@ inactive.
 \subsection{The structural prior under matched adequacy}
 \label{sec:prior}
 
-\stub{STRUCTURAL-PRIOR SECTION}{The headline comparison and its figure,
-pending batch C3. Its per-bin and averaging-window content has been promoted
-out into Secs.~\ref{sec:signpattern} and~\ref{sec:window}; what remains to be
-written here is the scalar contrast across training designs and the claim the
-paper makes from it. The measured inputs are: $\Delta_H=+1.286$~dB under
-mixed-SNR training, across-seed SD $0.072$, $\text{mean}-2\,\text{SD}=+1.142$,
-positive on every seed and under both pooling rules; against $+0.020$~dB under
-matched focused training, SD $0.083$, $\text{mean}-2\,\text{SD}=-0.147$, one
-seed of three significantly negative. The claim is that the contrast changes
-\emph{category} rather than shrinking by a factor --- from an effect that
-survives every check to one whose sign depends on the seed drawn and the
-statistic used. C3 tests whether a third way of removing the training
-imbalance, reweighting the loss without narrowing the training range, does the
-same thing; the section is not written until it reports, because a claim about
-training adequacy in general rests on more than one way of fixing it.}
+Table~\ref{tab:designs} is the paper's central measurement. The prior, the
+architecture, the data budget, the pilot count and the test set are identical
+across its three rows. What differs is only how training distributed its
+effort.
+
+\begin{table}[!t]
+\caption{The structural gain $\Delta_H$ under three training designs, three
+seeds each, all arms spectrally initialized. Positive = the prior is better.
+Per-seed intervals are over test realizations; the spread is over seeds and is
+reported separately. Three seeds give two degrees of freedom.}
+\label{tab:designs}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{lccccc}
+\toprule
+Training design & $\Delta_H$ & SD$_\text{seed}$ & $\bar{x}-2s$ & sign & RoS \\
+\midrule
+% src: reports/p19/p29_score.json
+Conventional loss & $\mathbf{+1.286}$ & $0.072$ & $+1.142$ & $+\,+\,+$ &
+$+\,+\,+$ \\
+% src: reports/p17/p28_score.json
+Focused $[5,20]$ & $\mathbf{+0.020}$ & $0.083$ & $-0.147$ & $+\,+\,-$ &
+$-\,-\,-$ \\
+% src: reports/p20/p30_score.json
+Balanced loss & $\mathbf{-0.177}$ & $0.150$ & $-0.477$ & $-\,-\,-$ &
+$-\,-\,-$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Positive, absent, negative.} Under the conventional loss the prior is worth
+$+1.286$~dB at SNR~$\ge5$~dB, positive on every seed and under both pooling
+rules, and separated from zero by twice the across-seed spread. Retrain both
+arms on the high-SNR range alone and it is $+0.020$~dB, with one seed of three
+significantly \emph{negative} and the ratio of sums negative on all three.
+Correct the loss instead and it is $-0.177$~dB: negative on every seed, under
+both pooling rules, with every one of the eighteen per-bin intervals excluding
+zero.
+
+We state this as a change of category, not as a factor. A ratio between the
+first and last rows would suggest a quantity that shrank; what the table shows
+is a quantity that does not keep its sign.
+
+\textbf{Two interventions, one cause.} Focused retraining and loss correction
+have nothing in common except that each removes the imbalance of
+Sec.~\ref{sec:protocol}. One narrows what the network sees; the other reweights
+an unchanged training set. When two unrelated corrections move a measurement
+the same way, the common cause is established far more firmly than either could
+establish it alone --- and the second is the more pointed of the two, because
+it leaves the operating range untouched and so cannot be dismissed as having
+simply matched training to the test.
+
+\textbf{What we do not claim.} We have not measured $\Delta_H$ under the
+log-domain loss of Sec.~\ref{sec:logloss}: doing so needs a prior-carrying arm
+trained under that loss, which we did not train. Three designs are reported,
+not four. Nor is this a claim that the Hankel prior is useless in general. It
+holds at $N=32$, $K=3$, this data budget and these pilot counts; the same prior
+applied to the \emph{classical} estimator, where no training adequacy is at
+stake, gives a large and stable gain.
+
+\subsection{A simpler fix that is no better}
+\label{sec:logloss}
+
+Per-bin reweighting needs bin edges, a measurement pass before training to
+estimate the weights, and a choice of binning. Taking the per-sample error in
+decibels before averaging needs none of them: the logarithm divides out the
+scale factor exactly, per sample. It is the obvious simplification, so we
+tested it on three seeds.
+
+% src: reports/p21/p31_score.json three_seed_mean_log_minus_balanced_db
+Against the bin-reweighted arm it gains $+0.121$~dB at SNR~$\ge5$~dB, with an
+across-seed SD of $0.131$, so the difference is not separated from zero;
+against the conventional arm both fixes gain about the same,
+% src: reports/p21/p31_score.json three_seed_mean_log_minus_unbalanced_db
+$+2.290$~dB for the log loss. \textbf{The log-domain loss is a simpler
+alternative that is no better.} We report it because a reader will ask, and
+because a negative answer to an obvious simplification is worth one paragraph.
+
+It is not, however, better balanced. Its realized share of gradient below
+$5$~dB is
+% src: reports/p21/p31_score.json gradient_shares
+$0.317$--$0.329$ against an ideal of $0.5$, where per-bin reweighting reaches
+$0.427$; its per-bin span is $3.6$ against the reweighted arm's $1.9$. Dividing
+the scale out exactly does not equalize the gradient, because the derivative of
+a logarithm is itself inversely proportional to the error.
+
+\textbf{The imbalance is a property of the loss, not of the weights.} The same
+log-trained networks, scored under the conventional objective, put
+$0.906$--$0.911$ of the gradient below $5$~dB with a span above $40$. A model
+trained to be well balanced still exhibits the pathology the moment it is
+scored with the objective that causes it --- which is the cleanest statement we
+can give that Sec.~\ref{sec:protocol} describes the loss and not the network.
 
 \subsection{Pilot efficiency is not pilot-count generalization}
 
@@ -581,11 +669,11 @@ known remedy~\cite{wiesmayr2023bler} to this setting gains $+2.171$~dB at
 SNR~$\ge5$~dB across three seeds and improves every one of eighteen
 bin-by-seed cells, including the two the weighting itself penalizes most.
 
-\stub{CONCLUSION, structural-prior sentence}{One or two sentences stating what
-the control did to $\Delta_H$, pending C3. The claim the retired draft made
-here --- a fifteenfold collapse --- is withdrawn and must not return in any
-form; outcome (a) does not rehabilitate it, because it was a bad description of
-what had been measured, not merely a wrong number.}
+Applied to our own Hankel-structured estimator, the control turns a
+$+1.286$~dB advantage into $+0.020$~dB when both arms are retrained on the
+regime of interest, and into $-0.177$~dB when the loss is corrected instead ---
+three designs, three seeds each, nothing changed but how training distributed
+its effort.
 
 \textbf{Limitations.} All results are simulation only, with no measured
 hardware and no recorded channel data. They cover the geometric ULA model of
