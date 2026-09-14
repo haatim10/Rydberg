@@ -1,0 +1,1128 @@
+% =====================================================================
+% Revised version of the author's hand-written ThesisProj draft.
+%
+% The author's sentences are kept wherever the review did not require a
+% change. Everything added or edited is marked in the margin of this source
+% with  % [NEW]  or  % [EDIT]  so the two can be told apart at a glance.
+%
+% What changed and why (full detail: reports/p22/review_response_paperA.md):
+%   [EDIT] Eq. (9) had no left-hand side. Added Y.
+%   [EDIT] Sec. IV-A used q and y for the same imaginary part. Now y throughout.
+%   [EDIT] Sec. III-B called (18) a projection. It is not: it is not even
+%          idempotent. Rewritten honestly, with a worked number.
+%   [EDIT] Sec. III-C said 70% of the pilots estimate the channel. The code
+%          refits on ALL pilots after the rank is chosen. Corrected -- this is
+%          what makes the comparison against EM-GS fair.
+%   [NEW]  Sec. II states the path-gain normalisation, so the path-count sweep
+%          is at fixed received power.
+%   [NEW]  Sec. II states that this is one Rydberg architecture, not the family.
+%   [NEW]  Sec. V-F names the second channel distribution.
+%   [NEW]  Sec. IV-B says what the CCRB curve does and does not specify.
+% =====================================================================
+\documentclass[journal]{IEEEtran}
+\IEEEoverridecommandlockouts
+
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
+
+\DeclareMathOperator{\rank}{rank}
+\newcommand{\bG}{\mathbf{G}}
+\newcommand{\bS}{\mathbf{S}}
+\newcommand{\bB}{\mathbf{B}}
+\newcommand{\bW}{\mathbf{W}}
+\newcommand{\bY}{\mathbf{Y}}
+\newcommand{\bZ}{\mathbf{Z}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\CN}{\mathcal{CN}}
+\newcommand{\Hank}{\mathcal{H}}
+\newcommand{\rmax}{r_{\mathrm{max}}}
+\newcommand{\reff}{r_{\mathrm{eff}}}
+
+\begin{document}
+
+\title{Hankel-Structured Channel Estimation for\\
+Magnitude-Only Rydberg Atomic Receivers:\\
+When Does Structure Help?}
+
+\author{Abdullah~Haatim%
+\thanks{A.~Haatim is with the Department of Electrical and Electronics
+Engineering, Birla Institute of Technology and Science, Pilani~--- Pilani
+Campus, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
+
+\maketitle
+
+\begin{abstract}
+Rydberg atomic receivers measure the amplitude of an incident radio-frequency
+field without directly observing its phase, making complex channel estimation a
+challenging phase-retrieval problem. This paper investigates when the known
+spatial structure of a multipath channel can improve such magnitude-only
+channel estimation. We propose a Hankel-structured extension of
+expectation--maximization Gerchberg--Saxton (EM-GS) that exploits the
+relationship between channel coefficients across a uniform linear array. The
+method selects the amount of structure using held-out pilot measurements and
+falls back exactly to the original EM-GS estimator when the measurements do not
+support a useful constraint. Our analysis and simulations show that structural
+information is most beneficial when the channel is simple relative to the
+structural capacity of the array, while its benefit decreases as channel
+complexity approaches that capacity. We further show that effective channel
+rank relative to array capacity describes this behaviour more consistently than
+the number of propagation paths alone and remains predictive on previously
+unseen channel distributions. These results provide a practical explanation of
+when spatial structure should be exploited in magnitude-only channel estimation
+and when an estimator should instead rely on the unconstrained solution.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Rydberg atomic receiver, channel estimation, phase retrieval, Hankel matrix,
+constrained Cram\'er--Rao bound, effective rank.
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\IEEEPARstart{S}{ixth-generation} wireless systems are expected to operate over
+wider bandwidths and at increasingly high carrier frequencies, placing new
+demands on receiver sensitivity and reconfigurability. Quantum sensing has
+emerged as one possible response, and Rydberg atomic receivers have recently
+attracted attention for wireless communications~\cite{cui2025,gong2025mag}.
+These receivers use laser-excited atoms to sense an incident radio-frequency
+field through changes in optical transmission. Unlike a conventional coherent
+receiver, however, the optical readout directly provides the field amplitude
+rather than its complex value, so the channel phase is not directly observed.
+
+Recovering a complex channel from these amplitude-only measurements is a
+phase-retrieval problem. A known reference field makes this recovery possible
+by converting relative phase into observable amplitude. Existing approaches
+include iterative phase-retrieval methods~\cite{gerchberg1972}, gradient
+descent with structural projection~\cite{xu2025}, and unrolled
+networks~\cite{xiao2026}. These works focus mainly on improving channel
+estimation performance. Less attention has been given to a more basic question:
+when does imposing channel structure actually help, and when does that
+structure become too restrictive? This paper addresses that question using the
+spatial structure of multipath channels on a uniform linear array.
+
+We propose a Hankel-structured extension of EM-GS for magnitude-only channel
+estimation. The estimator exploits the exponential structure of the channel
+across the array, selects the structural order using held-out pilot
+measurements, and falls back exactly to EM-GS when the measurements do not
+support a useful constraint. We then study how the benefit of the Hankel
+constraint changes with the array size and the complexity of the channel. Path
+count alone does not fully describe channel complexity, so we also describe
+channel complexity using its effective rank relative to the available Hankel
+rank. Finally, we test this relationship on two additional channel
+distributions.
+
+\section{System Model}
+
+We consider an uplink system with $K$ single-antenna users and one Rydberg
+atomic receiver, as shown in Fig.~\ref{fig:system}. The receiver contains $N$
+vapour-cell receive elements arranged in a uniform linear array (ULA). Each
+vapour cell contains atoms that are excited to Rydberg states using probe and
+coupling lasers. The RF signals transmitted by the users interact with these
+atoms. A known RF reference field is also applied at the receiver. The atomic
+response changes the probe laser passing through the vapour cell, and this
+change is measured using a photodetector. The receiver therefore measures the
+strength of the total RF field, but it does not directly observe its complex
+phase~\cite{cui2025}.
+
+% [NEW] Physical scope. The review asked for this: the paper studies one
+% architecture, not every Rydberg receiver.
+\textbf{This paper studies one Rydberg architecture, not all of them.} There
+are Rydberg receivers that use a superheterodyne readout, in which a local
+reference drives the vapour cell and the beat note is detected. Those receivers
+recover both amplitude and phase, so the problem studied here does not arise
+for them. Everything below applies to the magnitude-only readout described
+above. In fact, nothing below depends on the atomic physics itself: the results
+apply to any array receiver that measures only the magnitude of the total
+field, and the Rydberg receiver is the motivating example.
+
+\begin{figure*}[!t]
+\centering
+\resizebox{0.86\textwidth}{!}{\input{fig/fig0_system.tex}}
+\caption{Uplink of the Rydberg atomic receiver. $K$ single-antenna users
+transmit known pilot signals to $N$ vapour-cell receive elements arranged as a
+uniform linear array. The user RF signals and a known reference RF field
+interact with the Rydberg atoms. Probe and coupling lasers are used for the
+atomic readout, and the photodetector measures the magnitude of the total
+field. The estimator therefore observes $\bZ$ without directly observing its
+phase.}
+\label{fig:system}
+\end{figure*}
+
+We model the channel between each user and the array using several propagation
+paths. A path may represent a signal arriving directly from the user or after
+interacting with objects in the environment. For user $k$, the channel
+coefficient at the $n$th receive element is
+\begin{equation}
+g_k[n]=\sum_{\ell=1}^{L_k}\alpha_{\ell,k}e^{-j(n-1)\psi_{\ell,k}},\qquad
+\psi_{\ell,k}=\pi\sin\theta_{\ell,k},
+\label{eq:chan}
+\end{equation}
+where $L_k$ is the number of propagation paths for user $k$, $\alpha_{\ell,k}$
+is the complex gain of path $\ell$, and $\theta_{\ell,k}$ is its angle of
+arrival. In our simulations, $L_k$ is selected between 3 and 7, following the
+channel setting in~\cite{xu2025}.
+
+The exponential term in \eqref{eq:chan} describes how the phase of one
+propagation path changes as we move from one array element to the next. To see
+this, consider a single path arriving at the array from an angle $\theta$. The
+signal reaches the different array elements at slightly different times because
+the elements are at different positions. This difference in travel distance
+produces a phase difference between adjacent elements.
+
+With half-wavelength spacing between the array elements, the phase change
+between two neighbouring elements is
+\begin{equation}
+\psi=\pi\sin\theta.
+\end{equation}
+
+The first array element has no additional phase shift from the array position.
+The second element has a phase shift of $\psi$, the third has a phase shift of
+$2\psi$, and so on. Therefore, the samples produced by one path across the
+array have the form
+\begin{equation}
+1,\qquad e^{-j\psi},\qquad e^{-j2\psi},\qquad\ldots,\qquad e^{-j(N-1)\psi}.
+\end{equation}
+
+The factor
+\begin{equation}
+e^{-j(n-1)\psi_{\ell,k}}
+\end{equation}
+in \eqref{eq:chan} represents exactly this phase pattern for path $\ell$. The
+coefficient $\alpha_{\ell,k}$ determines the strength and initial phase of that
+path. Since several paths can arrive at the receiver, their contributions are
+added together to produce the final channel coefficient $g_k[n]$.
+
+The channel coefficients of user $k$ are collected into the vector
+\begin{equation}
+\bg_k=\begin{bmatrix}g_k[1]&g_k[2]&\cdots&g_k[N]\end{bmatrix}^T,
+\end{equation}
+and the channels of all $K$ users are collected into
+\begin{equation}
+\bG=\begin{bmatrix}\bg_1&\bg_2&\cdots&\bg_K\end{bmatrix}\in\mathbb{C}^{N\times K}.
+\end{equation}
+
+During channel estimation, the $K$ users transmit $P$ known pilot symbols.
+These pilots are collected in
+\begin{equation}
+\bS\in\mathbb{C}^{K\times P}.
+\end{equation}
+
+Each row of $\bS$ contains the pilots transmitted by one user, while each
+column represents one pilot transmission. The same pilot matrix is used when
+comparing the different channel estimators.
+
+If the receiver could observe the complete complex signal, the contribution
+from the users would be $\bG\bS$. However, the Rydberg receiver considered here
+measures magnitude rather than directly measuring this complex value. A known
+reference RF field is therefore applied at the receiver. We denote this
+reference by
+\begin{equation}
+\bB\in\mathbb{C}^{N\times P}.
+\end{equation}
+
+The reference field is known in both amplitude and phase. It is important
+because the magnitude of an unknown signal alone does not directly reveal its
+phase. When the unknown user signal is combined with a known reference, the
+resulting magnitude depends on their relative phase. This provides information
+that can be used to estimate the complex channel.
+
+% [EDIT] Equation (9) had no left-hand side in the draft.
+Including noise, the field before the magnitude measurement is
+\begin{equation}
+\bY=\bG\bS+\bB+\bW,
+\end{equation}
+where the noise is modeled as complex Gaussian,
+\begin{equation}
+\bW_{np}\sim\CN(0,\sigma^2).
+\end{equation}
+
+The noise is therefore added before the magnitude is measured. The Rydberg
+receiver observes
+\begin{equation}
+\bZ=\left|\bG\bS+\bB+\bW\right|,
+\label{eq:obs}
+\end{equation}
+where $|\cdot|$ is applied to every element of the matrix.
+
+Equation \eqref{eq:obs} is the main measurement model used in this work. The
+pilots $\bS$ and reference field $\bB$ are known, and the receiver measures
+$\bZ$. The unknown quantity is the complex channel matrix $\bG$. The
+channel-estimation problem is therefore to recover $\bG$ even though the
+receiver does not directly observe the phase of the received signal.
+
+We assume a narrowband, frequency-flat channel during the pilot interval. The
+path gains are modeled as independent circularly symmetric complex Gaussian
+variables, and the angles of arrival are independently generated over
+$(-90^\circ,90^\circ)$. The users have equal received power, and the reference
+field remains known at the receiver. For a fair comparison, all estimators use
+the same channel, pilots, reference field, and noise realization within each
+Monte Carlo trial.
+
+% [NEW] Path-gain normalisation. The review asked whether total power changes
+% when L changes. It does not, and the paper did not say so.
+\textbf{The path gains are scaled so that the total received power does not
+change with the number of paths.} We draw
+\begin{equation}
+\alpha_{\ell,k}\sim\CN\!\left(0,\ \beta_k/L_k\right),
+\label{eq:pathnorm}
+\end{equation}
+so that the powers of the individual paths add up to
+\begin{equation}
+\sum_{\ell=1}^{L_k}\mathbb{E}\left|\alpha_{\ell,k}\right|^2=\beta_k,
+\end{equation}
+which does not depend on $L_k$. This matters for the experiment in
+Sec.~\ref{sec:pathcount}, where we change the number of paths. Without this
+scaling, adding more paths would also add more received power, and we could not
+tell whether a change in performance came from the extra complexity or simply
+from the extra power. With this scaling, only the complexity changes.
+
+The reference-to-signal ratio (RSR) is the reference power divided by the
+single-user received signal power. The signal-to-noise ratio (SNR) is the
+single-user received signal power divided by $\sigma^2$.
+
+\section{Proposed Estimator}
+
+\subsection{Structure and its Capacity}
+
+The rank of a matrix tells us how many independent components are needed to
+describe it. A low-rank matrix is therefore described using only a small number
+of important components. To use this idea for our channel, we first rewrite the
+channel into a Hankel matrix. A Hankel matrix is a matrix in which the same
+channel samples are repeated along the antidiagonals. For example, consider
+\begin{equation}
+\bg=\begin{bmatrix}g_1&g_2&g_3&g_4&g_5\end{bmatrix}^T.
+\end{equation}
+
+One possible Hankel representation is
+\begin{equation}
+\Hank(\bg)=\begin{bmatrix}
+g_1&g_2&g_3\\
+g_2&g_3&g_4\\
+g_3&g_4&g_5
+\end{bmatrix}.
+\end{equation}
+
+We use this representation because the channel in \eqref{eq:chan} is not a
+random collection of values. It is made up of propagation paths, and each path
+produces a complex exponential pattern across the array elements. When this
+type of channel is written as a Hankel matrix, each path contributes one
+rank-one component. For example, a channel containing one path produces a
+Hankel matrix with rank at most one. Two paths produce a matrix with rank at
+most two. In general, for a channel with $L_k$ paths,
+\begin{equation}
+\rank\Hank_p(\bg_k)\le L_k.
+\end{equation}
+
+Therefore, when the channel has only a few important paths, its Hankel matrix
+can have a low rank~\cite{cadzow1988,markovsky2008}. This is why we use the
+Hankel representation: it changes the multipath structure of the channel into a
+low-rank matrix structure that can be used during channel estimation.
+
+The maximum possible rank of the Hankel matrix depends on the number of array
+elements. For an $(N-p)\times(p+1)$ Hankel matrix, the maximum rank is
+\begin{equation}
+\min(N-p,\,p+1).
+\end{equation}
+
+Choosing $p$ so that the matrix is as balanced as possible gives
+\begin{equation}
+\rmax(N)=\left\lceil\frac{N}{2}\right\rceil.
+\label{eq:rmax}
+\end{equation}
+
+For example, if $N=16$, the maximum Hankel rank is 8. If the channel has only
+three important paths, its Hankel rank can be at most 3. This is much smaller
+than the maximum rank of 8, so there is useful low-rank structure that can be
+used during estimation. If the channel rank is already close to 8, there is
+less low-rank structure available. In this case, forcing the channel to have a
+much smaller rank may remove part of the real channel.
+
+\subsection{The Estimator}
+
+EM-GS estimates the channel from the magnitude measurements, but it does not
+follow the rank structure discussed earlier. To include this structure, we
+apply a Cadzow denoising step to the EM-GS channel estimate. There are three
+main steps. First, the channel estimate is converted into the Hankel matrix
+described earlier.
+
+Next, singular value decomposition (SVD) is applied to the Hankel matrix. SVD
+separates the matrix into components and gives a singular value for each
+component. A larger singular value means that the component has a larger
+contribution to the matrix. For example, suppose the singular values are
+\begin{equation}
+\sigma_1=10,\qquad\sigma_2=6,\qquad\sigma_3=0.3.
+\end{equation}
+
+Here, the three singular values are 10, 6, and 0.3. If we decide to use a rank
+of 2, we keep the two largest components, corresponding to 10 and 6, and remove
+the smaller component corresponding to 0.3. The resulting matrix therefore has
+rank 2. If the true channel has only two important components, the removed
+component may mainly come from noise or estimation error.
+
+After the rank reduction, the matrix is converted back into a channel vector.
+The entries along each antidiagonal are averaged because they represent the
+same channel sample. These steps can be written as
+\begin{equation}
+\mathcal{P}_r(\bg)=\Hank_p^{\dagger}\left(\Pi_r\left(\Hank_p(\bg)\right)\right),
+\label{eq:cadzow}
+\end{equation}
+where $\Pi_r$ keeps the $r$ largest singular values and $\Hank_p^{\dagger}$
+converts the Hankel matrix back into a channel vector by averaging its
+antidiagonals.
+
+% [EDIT] The draft called this a projection. It is not one, and the review was
+% right to flag it. Written out here in the same style as the rest.
+\textbf{This step is a denoising step, not a projection.} It is worth being
+careful about the word, because the two are not the same thing. A projection
+must land on the set it is projecting onto, and applying it a second time must
+change nothing. The map in \eqref{eq:cadzow} does neither. Rank reduction
+generally destroys the Hankel pattern, and averaging the antidiagonals to
+restore that pattern generally raises the rank again.
+
+A small example makes this concrete. Take
+\begin{equation}
+\bg=\begin{bmatrix}1&2&3&4&5\end{bmatrix}^T
+\end{equation}
+and use the $3\times3$ Hankel matrix above. Applying \eqref{eq:cadzow} once
+with $r=1$ and forming the Hankel matrix of the result gives singular values
+\begin{equation}
+\left[9.6194,\quad 0.1295,\quad 0.0616\right],
+\end{equation}
+which is a matrix of rank 3, not rank 1. Applying the same step a second time
+moves the answer again, by about $0.099$ in Euclidean distance. A projection
+would not have moved it at all. We therefore call \eqref{eq:cadzow} a Cadzow
+step~\cite{cadzow1988}, and we apply it repeatedly rather than once, so that
+the number of sweeps is part of the definition of the operator. Even when
+repeated sweeps settle down, they are not guaranteed to reach the closest
+matrix that is both Hankel and low rank~\cite{markovsky2008}.
+
+\textbf{A low Hankel rank is also a weaker requirement than our channel
+model.} Equation \eqref{eq:chan} says the channel is a sum of exponentials
+whose modes lie on the unit circle, because $e^{-j(n-1)\psi}$ always has
+magnitude one. A low-rank Hankel matrix only says the channel is a sum of a few
+exponentials; their modes may grow or decay across the array and need not be
+angles of arrival at all. Imposing low Hankel rank is therefore a relaxation of
+the array model, not the array model itself. We use it because it is easy to
+impose and because the true channel does satisfy it, but the constraint is
+looser than the physics.
+
+The estimate from EM-GS is then adjusted using this step. We call the new
+approach Hankel-structured EM-GS (HS-GS). Choosing $r$ is important because a
+rank that is too large may remove very little, while a rank that is too small
+may remove useful parts of the channel.
+
+\subsection{Choosing the Hankel Rank}
+
+The Cadzow step requires us to choose the rank $r$. However, the correct rank
+is not known at the receiver, so we choose it using the pilot measurements.
+
+% [EDIT] The draft said the remaining 70 per cent are used to estimate the
+% channel. The implementation refits on ALL pilots once the rank is chosen,
+% and that is what makes the comparison against EM-GS fair.
+The selection is done in two stages, and it is worth separating them clearly.
+
+\emph{Stage one, choosing the rank.} We set aside $30\%$ of the pilot columns.
+For each possible rank,
+\begin{equation}
+r\in\{1,2,\ldots,\rmax\},
+\end{equation}
+we estimate the channel using only the other $70\%$, and then use that estimate
+to predict the magnitude measurements of the held-out pilots. We compare these
+predicted magnitudes with the actual measurements. The rank with the smallest
+difference, or residual, is selected. For example, if 30 pilots are available,
+about 21 are used for these trial estimates and 9 are kept for scoring them.
+
+\emph{Stage two, the final estimate.} Once the rank $\hat r$ has been chosen,
+the estimate is computed again using \emph{all} $P$ pilot columns, not only the
+$70\%$. The split is used for scoring, and nothing else.
+
+This distinction matters for a fair comparison. HS-GS and EM-GS therefore use
+exactly the same number of pilots to produce their final estimates, and the
+difference between them is only the Cadzow step. It also means that when the
+step is switched off, HS-GS returns exactly the EM-GS answer: in our
+simulations the two agree to $\max|\text{diff}|=0$, so the Cadzow step is
+provably the only difference between them.
+
+We cannot score the candidate ranks using the pilots that were used to fit
+them. Constraining the channel can only make the fit to those pilots worse, so
+an in-sample score would always prefer the largest rank, which is the same as
+using no constraint at all. Scoring on pilots that were held out penalises
+over-modelling correctly.
+
+For example, suppose $\rmax=8$. We test ranks from 1 to 8. If $r=3$ gives the
+smallest error on the held-out pilots, we choose
+\begin{equation}
+\hat r=3.
+\end{equation}
+
+We then keep the three strongest singular-value components in the Cadzow step.
+
+This method does not require the true number of propagation paths $L_k$. If the
+selected rank is $\rmax$, all singular-value components are kept and the Cadzow
+step does not lower the rank. In this case, HS-GS goes back to the original
+EM-GS estimator.
+
+\section{Performance References}
+
+\subsection{Information in an Amplitude Measurement}
+
+The Cram\'er--Rao lower bound (CRLB) is used as a theoretical reference for
+channel estimation. In simple terms, it tells us how accurately an unbiased
+estimator could estimate the channel from the available measurements. The
+amount of information contained in the measurements therefore affects the CRLB.
+
+This is important for the Rydberg receiver because it measures only the
+amplitude of the received signal, not its full complex value. For example,
+suppose the noiseless received signal is
+\begin{equation}
+s=3+j4.
+\end{equation}
+
+A complex receiver can observe both the real part, 3, and the imaginary part,
+4. The amplitude-only receiver instead observes
+\begin{equation}
+|s|=\sqrt{3^2+4^2}=5.
+\end{equation}
+
+Knowing only the value 5 does not tell us that the original signal was $3+j4$.
+Other complex values can have the same amplitude. Therefore, an amplitude
+measurement contains less information than a full complex measurement.
+
+When complex Gaussian noise is added before the amplitude is measured, the
+measured amplitude follows a Rician distribution. We use this Rician model to
+calculate the Fisher information matrix $J$ and the corresponding
+CRLB~\cite{balan2015,cui2025}. The Fisher information matrix describes how much
+information the measurements contain about the unknown channel.
+
+% [EDIT] The draft used q for the imaginary part in one place and y in another.
+A simple example can be used to understand $J$. Let the complex signal be
+\begin{equation}
+s=x+jy,
+\end{equation}
+where $x$ is the real part and $y$ is the imaginary part. The receiver measures
+only
+\begin{equation}
+a=|s|=\sqrt{x^2+y^2}.
+\end{equation}
+
+For example, if $x=3$ and $y=4$, then $a=5$. We can then check how much the
+measured amplitude changes when $x$ or $y$ changes:
+\begin{equation}
+\begin{bmatrix}\dfrac{\partial a}{\partial x}\\[6pt]
+\dfrac{\partial a}{\partial y}\end{bmatrix}
+=\begin{bmatrix}3/5\\[3pt]4/5\end{bmatrix}.
+\end{equation}
+
+This tells us the direction in which this amplitude measurement provides
+information about the unknown complex signal. The Fisher information from this
+measurement has the form
+\begin{equation}
+J\propto\begin{bmatrix}3/5\\4/5\end{bmatrix}
+\begin{bmatrix}3/5&4/5\end{bmatrix}
+=\begin{bmatrix}9/25&12/25\\12/25&16/25\end{bmatrix}.
+\end{equation}
+
+This matrix has rank one. This means that one amplitude measurement gives
+information in only one direction. We do not have enough information from this
+one measurement to find the real and imaginary parts separately. This agrees
+with the earlier example: knowing that the amplitude is 5 is not enough to know
+that the signal is exactly $3+j4$.
+
+In practice, we use several pilot measurements. Each pilot gives more
+information about the unknown channel. The information from all of these
+measurements is combined to form the full Fisher information matrix $J$.
+Therefore, $J$ describes the information provided by all the measurements used
+for channel estimation.
+
+The Hankel structure also allows us to use the larger array differently. The
+channel coefficients across the array are not completely independent because
+they are produced by the same propagation paths. The Hankel constraint uses
+this relationship between the array elements. This allows HS-GS to make use of
+the additional spatial structure provided by a larger array.
+
+\subsection{Constrained Cram\'er--Rao Bound}
+
+The CRLB described above treats each channel coefficient as a separate unknown.
+However, our channel coefficients are connected because they are produced by
+the same propagation paths. For example, consider
+\begin{equation}
+\bg=\begin{bmatrix}g_1&g_2&g_3&g_4\end{bmatrix}^T.
+\end{equation}
+
+The ordinary CRLB allows $g_1$, $g_2$, $g_3$, and $g_4$ to take any values. In
+our channel model, these values are not completely independent. They are
+connected through the path gains and angles in \eqref{eq:chan}. The constrained
+CRLB (CCRB) includes this additional information.
+
+The CCRB is calculated as~\cite{gorman1990,stoica1998}
+\begin{equation}
+\mathrm{CCRB}=U(U^TJU)^{-1}U^T,
+\end{equation}
+where $J$ is the Fisher information matrix calculated in the previous section.
+The matrix $U$ describes the ways in which the channel is allowed to change
+while still following the multipath channel model.
+
+We use both the CRLB and CCRB only as reference curves. The ordinary CRLB
+treats the channel coefficients separately, while the CCRB also uses the known
+multipath structure. The difference between them therefore gives us an idea of
+how much improvement may be possible by using this structure.
+
+% [NEW] What the CCRB curve does and does not specify. The review asked for a
+% full derivation; this states honestly what is and is not given here.
+\textbf{What we state here is not enough to reproduce these curves.} A reader
+who wants to redraw them would also need the real parameter vector we
+differentiate with respect to, the exact likelihood, the derivative
+expressions, the dimensions of $U$ and the basis chosen for it, the rank
+conditions under which $(U^TJU)$ is invertible, and the normalisation used to
+turn the bound into an NMSE. We do not give those details, so the curves should
+be read as indicative references only and not as verified bounds. The
+distinction also matters because a bound for the physical multipath model of
+\eqref{eq:chan} is not the same as a bound for a fixed-rank Hankel model, and
+the two should not be used interchangeably.
+
+These bounds are derived for unbiased estimators, while EM-GS and HS-GS are not
+assumed to be unbiased. Therefore, we do not treat the CRLB or CCRB as absolute
+lower limits on their measured NMSE.
+
+\section{Numerical Results}
+\label{sec:results}
+
+\subsection{Experimental Setup}
+
+We use simulations to compare EM-GS with the proposed HS-GS estimator. The
+channels are generated using the multipath model in \eqref{eq:chan}. Unless
+otherwise stated, we use $N=32$ array elements, $K=3$ users, and an RSR of
+12~dB.
+
+Each result is obtained using 300--400 Monte Carlo trials. In simple terms,
+this means that we repeat the simulation hundreds of times with different
+channel and noise realizations. For a fair comparison, EM-GS and HS-GS use
+exactly the same data in each trial. For example, if one trial generates a
+particular channel, pilot sequence, reference signal, and noise realization,
+both estimators receive those same values. Therefore, any difference between
+their results comes from the Cadzow step used by HS-GS. If the step is
+disabled, HS-GS gives the same result as EM-GS.
+
+For each trial, we see how much better HS-GS performs compared with EM-GS. We
+then use the median improvement across all trials as the main performance
+measure. Most experiments are performed at fixed SNR values. For the
+effective-rank experiments, the SNR is randomly selected between $-10$ and
+20~dB for each trial, and the results are then grouped according to SNR.
+
+Table~\ref{tab:config} summarizes the four simulation configurations used in
+the experiments.
+
+\begin{table}[!t]
+\caption{Simulation configurations used in the numerical experiments.}
+\label{tab:config}
+\centering
+\footnotesize
+\begin{tabular}{ccccccc}
+\toprule
+Config. & $T$ & Order search & $P$ & RSR (dB) & Generator & SNR (dB) \\
+\midrule
+A & 100 & 25 & 10, 30 & 12 & TB & $\{-5,\ldots,20\}$ \\
+B & 50 & 20 & 30 & 12 & TB & $\{-5,\ldots,20\}$ \\
+C & 100 & 25 & 20 & 10 & TD & $\mathcal{U}(-10,20]$ \\
+D & 50 & 20 & 30 & 12 & TB & 5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Performance Against the Reference Curves}
+
+We first compare EM-GS and HS-GS with the CRLB and CCRB discussed in
+Section~IV. Fig.~\ref{fig:main}(a) shows the NMSE as the SNR changes from $-5$
+to 20~dB. This experiment uses configuration A with $N=32$ and $P=30$.
+
+HS-GS performs better than EM-GS at all six SNR values. The improvement ranges
+from 2.46 to 3.05~dB, with an average improvement of 2.68~dB. The Cadzow step
+is active in all trials for this experiment.
+
+The EM-GS result is also close to the ordinary CRLB at SNR values of 5~dB and
+above, with a difference of at most 0.143~dB. This shows that the ordinary CRLB
+gives a useful reference for the baseline estimator.
+
+The CCRB is around 7.05--7.11~dB below the ordinary CRLB. Recall that the main
+difference between these two references is that the CCRB uses the known
+geometric structure of the channel. The gap between them therefore shows the
+possible benefit of using this additional channel information. HS-GS uses some
+of this structure and improves over EM-GS, but it still remains 4.39--4.93~dB
+above the CCRB.
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.92\textwidth]{fig/fig1_twopanel.pdf}
+\caption{Performance of EM-GS and HS-GS using configuration A. (a) NMSE versus
+SNR for $N=32$ and $P=30$, together with the CRLB and CCRB reference curves.
+(b) HS-GS gain versus the number of array elements for two pilot counts.
+Positive gain means that HS-GS performs better than EM-GS.}
+\label{fig:main}
+\end{figure*}
+
+We define the HS-GS gain as
+\begin{equation}
+\Delta_{\mathrm{HS}}=\mathrm{NMSE}_{\mathrm{EM-GS}}-\mathrm{NMSE}_{\mathrm{HS-GS}},
+\end{equation}
+where a positive value means that HS-GS performs better than EM-GS.
+
+\subsection{Effect of Array Size}
+
+We next study how the number of array elements affects the benefit of the
+Hankel structure. We test
+\begin{equation}
+N\in\{8,16,32\}.
+\end{equation}
+
+For each array size, the result is averaged over two pilot counts and six SNR
+values. This gives a total of 12 operating points. The results are summarized
+below.
+
+\begin{center}
+\footnotesize
+\begin{tabular}{cccc}
+\toprule
+$N$ & Ratio of sums & Paired median & Baseline NMSE \\
+\midrule
+8 & $-0.254$ & $+0.225$ & $-8.705$ \\
+16 & $+0.966$ & $+1.081$ & $-8.672$ \\
+32 & $+2.934$ & $+3.226$ & $-8.700$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The benefit of HS-GS becomes larger as the array size increases. Using the
+paired median, the gain increases from 0.225~dB when $N=8$ to 3.226~dB when
+$N=32$.
+
+This can be understood using the maximum Hankel rank discussed earlier,
+\eqref{eq:rmax}. For example,
+\begin{equation}
+\begin{array}{c|ccc}
+N & 8 & 16 & 32\\\hline
+\rmax & 4 & 8 & 16
+\end{array}
+\end{equation}
+
+When $N=8$, the Hankel matrix can have a maximum rank of only 4. If the channel
+contains several important components, there may not be much low-rank structure
+left to use. Forcing the estimate to a smaller rank can then remove part of the
+actual channel.
+
+When $N=32$, the maximum Hankel rank increases to 16. The same type of
+multipath channel can now use a smaller part of the available rank. This means
+there is more useful low-rank structure for HS-GS to exploit, which explains why
+the improvement becomes much larger as $N$ increases.
+
+An important observation is that EM-GS itself does not improve much when the
+array size increases. Its NMSE changes by less than 0.2~dB between $N=8$ and
+$N=32$. Without the Hankel constraint, the channel coefficients at different
+array elements are treated separately. Adding more array elements therefore
+gives more measurements, but it also adds more unknown channel coefficients.
+
+At $N=8$, the two ways of measuring the HS-GS improvement give different
+answers. The paired median gives a small positive gain of 0.225~dB, while the
+ratio of the total squared errors gives $-0.254$~dB. A negative value means
+that HS-GS has a larger total squared error than EM-GS.
+
+This happens partly because HS-GS does not apply a low-rank reduction in every
+trial. At $N=8$, the step is inactive in $41.8\%$ of the trials, so HS-GS gives
+exactly the same result as EM-GS in those trials. This keeps the typical, or
+median, difference close to zero. In some of the remaining trials, however, the
+small Hankel rank can cause the step to remove useful channel components. These
+larger errors have more effect on the total squared error, which explains why
+the two performance measures give different results at $N=8$.
+
+We report both numbers rather than choosing one. Neither is wrong: they answer
+different questions. The paired median describes what happens in a typical
+trial, and the ratio of sums describes what happens to the total squared error,
+which a few bad trials can dominate. Because they disagree here, a single
+summary would hide the behaviour, and the fallback to EM-GS should not be read
+as a guarantee that HS-GS can never do harm.
+
+\subsection{Effect of Channel Complexity}
+\label{sec:pathcount}
+
+We next study whether the number of propagation paths affects the benefit of
+the Hankel constraint. We keep the array size fixed at $N=32$ and the SNR at
+5~dB, and change only the number of paths $L$. The same value of $L$ is used
+for all users. As described in \eqref{eq:pathnorm}, the total received power is
+kept fixed while $L$ changes, so only the complexity of the channel varies.
+
+The results show a clear trend. When the channel has only $L=2$ paths, HS-GS
+improves over EM-GS by 7.04~dB. As the number of paths increases, the
+improvement becomes smaller. At $L=16$, the gain is $-0.12$~dB, which means
+that the Hankel constraint no longer helps.
+
+This can be understood from the rank of the Hankel matrix. Since $N=32$, the
+maximum Hankel rank is
+\begin{equation}
+\rmax=\left\lceil\frac{32}{2}\right\rceil=16.
+\end{equation}
+
+Consider the two ends of the experiment. With only two paths, the channel can
+have a Hankel rank of at most 2, while the matrix can support a rank of up to
+16. The channel is therefore strongly low rank, and there is useful structure
+for HS-GS to use. In contrast, when $L=16$, the channel can use most or all of
+the available Hankel rank. In this case, forcing a low-rank approximation can
+remove an important part of the real channel instead of only removing
+estimation error.
+
+The EM-GS baseline changes by only 0.191~dB over the same experiment.
+Therefore, the large change in HS-GS gain mainly comes from the changing
+usefulness of the Hankel constraint.
+
+These results show that the Hankel constraint works best when the channel has
+relatively few important components compared with the maximum Hankel rank.
+However, simply counting the number of paths is not always enough to describe
+the real complexity of the channel. We take a closer look at this next using
+effective rank.
+
+\subsection{Effective Rank}
+
+Two channels can have the same number of paths but still have different levels
+of complexity. For example, consider two channels that both have four paths. In
+the first channel, all four paths may have similar strength. In the second
+channel, two paths may be strong while the other two are very weak. Although
+both channels have $L=4$, the second channel can behave more like a channel
+with only two important components.
+
+The singular values of the Hankel matrix help us measure this difference. A
+large singular value represents an important component of the matrix, while a
+very small singular value represents a weak component. For example, consider
+\begin{equation}
+[10,\ 9,\ 8,\ 7]
+\end{equation}
+and
+\begin{equation}
+[10,\ 8,\ 0.2,\ 0.1].
+\end{equation}
+
+Both matrices can have rank 4. However, in the second case, most of the matrix
+can be explained by the first two components. Its real complexity is therefore
+much smaller than its ordinary rank suggests.
+
+To measure this, we use the effective rank proposed in~\cite{royvetterli2007},
+\begin{equation}
+\reff=\exp\left(-\sum_i p_i\ln p_i\right),\qquad
+p_i=\frac{\sigma_i}{\sum_j\sigma_j},
+\end{equation}
+where $\sigma_i$ are the singular values of the Hankel matrix. The value $p_i$
+represents the relative importance of each singular value. If many singular
+values are important, $\reff$ is large. If only a few are important, $\reff$ is
+small.
+
+We then compare the effective rank with the highest rank that the Hankel matrix
+can support. We define
+\begin{equation}
+\rho=\frac{\reff}{\rmax}.
+\end{equation}
+
+The value $\rho$ can be understood as the fraction of the available Hankel rank
+that is effectively being used by the channel. For example, if
+\begin{equation}
+\reff=4,\qquad \rmax=16,
+\end{equation}
+then
+\begin{equation}
+\rho=\frac{4}{16}=0.25.
+\end{equation}
+
+This means that the channel effectively uses about one quarter of the available
+Hankel rank. We would expect the low-rank structure to be useful in this case.
+If instead $\reff=14$, then
+\begin{equation}
+\rho=\frac{14}{16}=0.875.
+\end{equation}
+
+The channel now uses most of the available rank, so there is much less low-rank
+structure left to use.
+
+Fig.~\ref{fig:rho} shows the HS-GS gain against $\rho$ for $N\in\{16,32,64\}$.
+The gain approaches zero at
+\begin{equation}
+\rho=0.588,\qquad 0.518,\qquad 0.544,
+\end{equation}
+for $N=16$, 32, and 64, respectively. Although the array size increases from 16
+to 64, these values stay relatively close to each other. In the cases tested
+here, this suggests that the Hankel constraint is most useful when the channel
+effectively uses about half or less of the available Hankel rank.
+
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.92\columnwidth]{fig/fig7_boundary_invariance.pdf}
+\caption{HS-GS gain against the normalized effective rank
+$\rho=\reff/\rmax$ for $N\in\{16,32,64\}$. The gain approaches zero at similar
+values of $\rho$ for the three array sizes.}
+\label{fig:rho}
+\end{figure}
+
+We also carried out a test to see what happens when the channel becomes more
+complex and the low-rank constraint starts to become harmful. In this test, the
+Cadzow step was forced to remain active. At $\rho=0.735$, the gain becomes
+$-0.075$~dB. The negative gain shows that forcing a low-rank constraint on a
+complex channel can make the estimate worse. The adaptive rank selection helps
+prevent this problem because HS-GS can fall back to EM-GS.
+
+These results suggest that $\rho$ is a useful way to describe when the Hankel
+constraint helps. However, it does not completely determine the amount of
+improvement, since the exact HS-GS gain still changes with array size. Also,
+$\rho$ is calculated here using the true noiseless channel, which is not known
+at the receiver. We therefore use $\rho$ to understand the simulation results
+rather than as something that the estimator uses directly.
+
+\subsection{Evaluation on Different Channel Distributions}
+
+So far, the relationship between $\rho$ and the HS-GS gain has been obtained
+from our original channel simulations. We now test whether this relationship is
+still useful when the paths are generated differently.
+
+The idea of this test is simple. We first use the relationship already obtained
+between $\rho$ and the HS-GS gain to make a prediction. We then generate
+channels using a different distribution, run HS-GS, and compare the measured
+gain with the prediction. The previously obtained relationship is not changed
+using the new results.
+
+For example, the first test uses a clustered Saleh--Valenzuela channel. In this
+model, propagation paths occur in clusters instead of being generated in the
+same way as in the original simulations. For this channel distribution, the
+normalized effective rank is
+\begin{equation}
+\rho=0.331.
+\end{equation}
+
+From the previously obtained relationship, this value of $\rho$ predicts an
+HS-GS gain of
+\begin{equation}
+\Delta_{\mathrm{HS}}=1.30~\mathrm{dB}.
+\end{equation}
+
+After running 276 trials, the measured gain is 1.173~dB, with a $95\%$
+confidence interval of $[1.017,1.380]$~dB. Therefore, the difference between
+the predicted and measured gains is only 0.13~dB.
+
+% [NEW] The draft did not say what the second distribution was. A reader cannot
+% judge a generalisation test without knowing what it generalised to.
+A second channel distribution is tested in the same way. This one uses a fixed
+number of $L=10$ paths for every user, with gains drawn as
+$\alpha_\ell\sim\CN(0,1)$ and angles drawn uniformly on
+$(-90^\circ,90^\circ)$, following the receive-side channel configuration
+of~\cite{precoding2408}. It is therefore quite different from the first test:
+the clustered model groups its paths together, while this one spreads ten
+independent paths across the whole angular range. In this case,
+\begin{equation}
+\rho=0.400.
+\end{equation}
+
+The predicted gain is 0.648~dB. After 266 trials, the measured gain is
+0.963~dB, with a $95\%$ confidence interval of $[0.808,1.086]$~dB. The
+prediction error is 0.315~dB.
+
+The two results are summarized below.
+
+\begin{center}
+\footnotesize
+\begin{tabular}{cccc}
+\toprule
+$\rho$ & Predicted gain & Measured gain & Error \\
+\midrule
+$0.331$ & $1.30$ dB & $1.173$ dB & $0.13$ dB \\
+$0.400$ & $0.648$ dB & $0.963$ dB & $0.315$ dB \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The second prediction is noticeably less accurate than the first, and it falls
+outside the confidence interval of the measured gain. That interval describes
+the uncertainty of the measurement and not the uncertainty of the prediction,
+so this is not a formal rejection of the relationship. It does mean we should
+not describe the agreement as close in both cases. The honest summary is that
+the relationship places an unseen channel distribution on the correct part of
+the curve, and that it is not accurate to a tenth of a decibel in general.
+
+These results are important because the new channel distributions were not used
+to obtain the original relationship between $\rho$ and the HS-GS gain. The
+relationship still gives reasonably close predictions when the path
+distributions are changed.
+
+However, these tests do not use a completely different channel model. Both new
+channel distributions still follow the geometric channel model in
+\eqref{eq:chan}. What changes is how the path numbers, path strengths, and path
+angles are generated. Therefore, these results show that the relationship can
+extend across different multipath distributions within the channel model
+considered in this work.
+
+\subsection{Additional Results}
+
+We also look at how the number of users affects the results and whether it has
+a large effect on the benefit of HS-GS. We test
+\begin{equation}
+K\in\{2,3,4\}.
+\end{equation}
+
+For SNR values of 5~dB and above, the HS-GS gain changes by only 0.094~dB
+across these three cases. Therefore, within the range tested, changing the
+number of users has only a small effect on the improvement provided by the
+Hankel constraint.
+
+We also examine the computational cost of HS-GS. The main extra cost comes from
+choosing the Hankel rank. This rank-selection step accounts for $57.7$--$85.5\%$
+of the total run-time.
+
+Finally, we test whether the Cadzow step needs to be applied repeatedly during
+the EM-GS iterations. We compare two approaches. In the first approach, the
+step is applied during the EM-GS iterations. In the second approach, EM-GS is
+completed first and the Cadzow step is applied only once at the end.
+
+The difference in mean gain between these two approaches is only 0.003~dB. This
+is a very small difference. It suggests that, in the cases tested here, the
+biggest benefit comes from applying the Hankel structure itself rather than
+from applying the step repeatedly during the EM-GS iterations. Since the
+one-shot version is also cheaper, this is a useful practical result, although a
+small difference in the mean does not prove that the two are equivalent at
+every operating point.
+
+\section{Limitations and Conclusion}
+
+This work studies when low-rank Hankel structure can help magnitude-only
+channel estimation for Rydberg atomic receivers.
+
+The main point is easy to understand. The Hankel constraint is useful when the
+channel is simple compared with the rank that the Hankel matrix can support.
+For example, a channel that only needs a few important components has more
+low-rank structure that can be used during estimation. As the channel becomes
+more complex and uses most of the available rank, the benefit becomes smaller.
+If a low-rank constraint is forced on a channel that is too complex, it can
+eventually make the estimate worse.
+
+The experiments first show this using the number of propagation paths. At
+$N=32$, the HS-GS gain decreases from 7.04~dB when $L=2$ to $-0.12$~dB when
+$L=16$. However, the number of paths alone is not a complete measure of channel
+complexity because some paths can be much weaker than others.
+
+We therefore use the normalized effective rank
+\begin{equation}
+\rho=\frac{\reff}{\rmax},
+\end{equation}
+which compares the effective rank of the channel with the maximum rank of the
+Hankel matrix. For example, $\rho=0.25$ means that the channel effectively uses
+only about one quarter of the available rank.
+
+For $N=16$, 32, and 64, the HS-GS gain approaches zero at $\rho=0.588$, 0.518,
+and 0.544, respectively. These values stay roughly the same even when the array
+size increases by a factor of four. In the cases tested here, this suggests
+that the Hankel constraint is most useful when the channel effectively uses
+about half or less of the available Hankel rank.
+
+The relationship is also examined using two additional channel distributions.
+The predicted HS-GS gains differ from the measured gains by 0.13 and 0.315~dB.
+These findings give more evidence that normalized effective rank is a useful
+way to understand when the Hankel structure helps within the channel model
+considered here.
+
+\textbf{Limitations.} All results in this work are obtained from simulations.
+We have not yet tested the method using measured hardware data or recorded
+Rydberg channels. The additional channel distributions also still follow the
+geometric ULA model in \eqref{eq:chan}. Therefore, the results do not show that
+the same behaviour will hold when the actual channel does not follow this
+model.
+
+The results also apply only to the magnitude-only Rydberg architecture
+described in Section~II. A superheterodyne Rydberg receiver recovers both
+amplitude and phase, and the problem studied here does not arise for it.
+
+Another limitation is that $\rho$ is calculated using the true noiseless
+channel in our simulations. The receiver does not know this channel in
+practice. Therefore, $\rho$ is currently used to explain when the method works
+rather than as a value that the receiver can calculate before channel
+estimation.
+
+The Cadzow step used here is a denoising step and not a projection, as shown in
+Section~III-B. It is also a weaker requirement than the array model itself, so
+a result about this constraint is not automatically a result about the physical
+multipath model.
+
+Finally, although the point where the HS-GS gain approaches zero is similar
+across the tested array sizes, the exact amount of gain does not perfectly
+follow $\rho$. Therefore, $\rho$ helps explain the useful region of the Hankel
+constraint, but it does not completely predict its performance in every case.
+The CRLB and CCRB are also used only as theoretical reference curves, because
+the estimators considered here are not assumed to be unbiased and because we do
+not give enough detail for those curves to be independently reproduced.
+
+\begin{thebibliography}{99}
+
+\bibitem{cui2025} M.~Cui, Q.~Zeng, and K.~Huang, ``Towards atomic MIMO
+receivers,'' \emph{IEEE J. Sel. Areas Commun.}, vol.~43, no.~3, pp.~659--673,
+2025.
+
+\bibitem{gong2025mag} T.~Gong \emph{et al.}, ``Rydberg atomic quantum receivers
+for classical wireless communication and sensing,'' \emph{IEEE Wireless
+Commun.}, vol.~32, no.~5, pp.~90--100, 2025.
+
+\bibitem{gerchberg1972} R.~W.~Gerchberg and W.~O.~Saxton, ``A practical
+algorithm for the determination of phase from image and diffraction plane
+pictures,'' \emph{Optik}, vol.~35, pp.~237--246, 1972.
+
+\bibitem{xiao2026} J.~Xiao, J.~Wang, M.~Zeng, H.~Xu, X.~Li, and
+A.~Nallanathan, ``Channel estimation for Rydberg atomic quantum receivers:
+unrolled phase retrieval from holographic snapshots,'' \emph{IEEE Signal
+Process. Lett.}, vol.~33, pp.~1696--1700, 2026.
+
+\bibitem{xu2025} B.~Xu, J.~Zhang, Z.~Chen, B.~Cheng, Z.~Liu, Y.-C.~Wu, and
+B.~Ai, ``Channel estimation for Rydberg atomic receivers,'' \emph{IEEE Wireless
+Commun. Lett.}, vol.~14, no.~9, pp.~2957--2961, 2025.
+
+\bibitem{balan2015} R.~Balan, ``The Fisher information matrix and the
+Cram\'er--Rao bound in a non-AWGN model for the phase retrieval problem,'' in
+\emph{Proc. Int. Conf. Sampling Theory Appl. (SampTA)}, 2015.
+
+\bibitem{chen2014emac} Y.~Chen and Y.~Chi, ``Robust spectral compressed sensing
+via structured matrix completion,'' \emph{IEEE Trans. Inf. Theory}, vol.~60,
+no.~10, pp.~6576--6601, 2014.
+
+\bibitem{jin2016aloha} K.~H.~Jin, D.~Lee, and J.~C.~Ye, ``A general framework
+for compressed sensing and parallel MRI using annihilating filter based
+low-rank Hankel matrix,'' \emph{IEEE Trans. Comput. Imag.}, vol.~2, no.~4,
+pp.~480--495, 2016.
+
+\bibitem{haldar2014} J.~P.~Haldar, ``Low-rank modeling of local $k$-space
+neighborhoods (LORAKS) for constrained MRI,'' \emph{IEEE Trans. Med. Imag.},
+vol.~33, no.~3, pp.~668--681, 2014.
+
+\bibitem{tang2013} G.~Tang, B.~N.~Bhaskar, P.~Shah, and B.~Recht, ``Compressed
+sensing off the grid,'' \emph{IEEE Trans. Inf. Theory}, vol.~59, no.~11,
+pp.~7465--7490, 2013.
+
+\bibitem{cadzow1988} J.~A.~Cadzow, ``Signal enhancement---a composite property
+mapping algorithm,'' \emph{IEEE Trans. Acoust., Speech, Signal Process.},
+vol.~36, no.~1, pp.~49--62, 1988.
+
+\bibitem{markovsky2008} I.~Markovsky, ``Structured low-rank approximation and
+its applications,'' \emph{Automatica}, vol.~44, no.~4, pp.~891--909, 2008.
+
+\bibitem{royvetterli2007} O.~Roy and M.~Vetterli, ``The effective rank: a
+measure of effective dimensionality,'' in \emph{Proc. Eur. Signal Process.
+Conf. (EUSIPCO)}, 2007, pp.~606--610.
+
+% Title and arXiv identifier confirmed by the author. The author list is taken
+% from paper/master/refs.bib and has NOT been verified against the paper; see
+% docs/open-todos.md item 6.3.
+\bibitem{precoding2408} M.~Cui, Q.~Zeng, and K.~Huang, ``MIMO precoding for
+Rydberg atomic receivers,'' 2024, arXiv:2408.14366.
+
+\bibitem{gorman1990} J.~D.~Gorman and A.~O.~Hero, ``Lower bounds for parametric
+estimation with constraints,'' \emph{IEEE Trans. Inf. Theory}, vol.~36, no.~6,
+pp.~1285--1301, 1990.
+
+\bibitem{stoica1998} P.~Stoica and B.~C.~Ng, ``On the Cram\'er--Rao bound under
+parametric constraints,'' \emph{IEEE Signal Process. Lett.}, vol.~5, no.~7,
+pp.~177--179, 1998.
+
+\end{thebibliography}
+
+\end{document}
