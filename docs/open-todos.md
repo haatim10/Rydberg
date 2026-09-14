@@ -124,7 +124,21 @@ P=20.
 **To close:** search the unrolled-estimator and deep-channel-estimation
 literature for any prior statement of this distinction.
 
-### 5.3 Is our weighting scheme the same as theirs?
+### 5.3 RESOLVED 14 Sep 2026 — our weighting scheme is NOT theirs
+
+**Closed by the external review.** Wiesmayr et al. Sec. 4 updates weights
+**after each epoch** from inverse accumulated losses with a stabiliser. Ours is
+a **static, pre-training, per-bin calibration**. So the manuscript is an
+adaptation of the principle, not a replication of the implementation — which
+strengthens what may be claimed, not weakens it.
+
+Item 5.1 is **not** closed by this: whether they report the effect on the
+down-weighted regime is still unknown, and it still decides whether the
+18-of-18 result is anticipated.
+
+<details><summary>Original entry</summary>
+
+### 5.3 (original) Is our weighting scheme the same as theirs?
 
 We use a static per-bin factor `w(b) = c/m(b)`, with `m(b)` the mean per-sample
 normalised error in bin `b` measured once before training and `c` set so the
@@ -135,7 +149,22 @@ different one is not in the supplied description.
 replication and must say so. If different, the difference must be stated
 plainly — neither overclaimed as a new method nor hidden.
 
-### 5.4 The second reference's fields are unconfirmed
+### 5.4 RESOLVED 14 Sep 2026 — the second reference's fields
+
+**Closed by the external review**, which supplied verified metadata and
+confirmed that Sec. IV-C of the paper compares SNR-restricted training:
+
+> Abu Shafin Mohammad Mahdee Jameel, Akshay Malhotra, Aly El Gamal and Shahab
+> Hamidi-Rad, "Deep OFDM Channel Estimation: Capturing Frequency Recurrence",
+> arXiv:2401.05436 (2024).
+
+Entered in `wip/spl2/refs.bib` as `jameel2024ofdm` and the `\todo` marker is
+gone. Someone should still verify final journal metadata if it has since been
+published.
+
+<details><summary>Original entry</summary>
+
+### 5.4 (original) The second reference's fields are unconfirmed
 
 `arXiv:2401.05436` is cited in the audit for deep OFDM channel estimation
 trained on SNR-restricted samples, reported to improve low-noise performance
@@ -176,3 +205,5 @@ premise corrected under PROMPT 12 A1: the families differ in *operating point*
 and in the *reported statistic*, not in the Cadzow sweep count. The rest of
 B1 is correct — `T` and the selection budget genuinely do differ across
 subsections, and the blanket sentence in §II has been deleted accordingly.
+
+</details>

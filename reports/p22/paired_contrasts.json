@@ -1,0 +1,117 @@
+{
+ "purpose": "Review item B1-P1 (paired seed-level contrasts) and B11-P0 (separate training-seed uncertainty from test-set uncertainty). Every interval here is over SEEDS, two-sided Student-t on 2 df. It assumes approximately normal seed-level summaries, which three runs cannot check; it is reported because mean - 2*SD is neither a confidence interval nor a guarantee.",
+ "per_design_unpaired": {
+  "conventional": {
+   "values": [
+    1.2088,
+    1.3514,
+    1.2984
+   ],
+   "mean": 1.2862,
+   "sd_over_seeds": 0.0721,
+   "t_ci95_for_seed_mean": [
+    1.1071,
+    1.4652
+   ],
+   "n_seeds": 3,
+   "df": 2
+  },
+  "focused": {
+   "values": [
+    0.0778,
+    0.0568,
+    -0.0755
+   ],
+   "mean": 0.0197,
+   "sd_over_seeds": 0.0831,
+   "t_ci95_for_seed_mean": [
+    -0.1868,
+    0.2262
+   ],
+   "n_seeds": 3,
+   "df": 2
+  },
+  "balanced": {
+   "values": [
+    -0.0818,
+    -0.0985,
+    -0.3496
+   ],
+   "mean": -0.1766,
+   "sd_over_seeds": 0.15,
+   "t_ci95_for_seed_mean": [
+    -0.5494,
+    0.1961
+   ],
+   "n_seeds": 3,
+   "df": 2
+  },
+  "gain_from_balancing": {
+   "values": [
+    1.9024,
+    2.2427,
+    2.3691
+   ],
+   "mean": 2.1714,
+   "sd_over_seeds": 0.2414,
+   "t_ci95_for_seed_mean": [
+    1.5718,
+    2.771
+   ],
+   "n_seeds": 3,
+   "df": 2
+  },
+  "log_minus_balanced": {
+   "values": [
+    0.2278,
+    -0.0252,
+    0.1595
+   ],
+   "mean": 0.1207,
+   "sd_over_seeds": 0.1309,
+   "t_ci95_for_seed_mean": [
+    -0.2044,
+    0.4458
+   ],
+   "n_seeds": 3,
+   "df": 2
+  }
+ },
+ "paired_change_from_conventional": {
+  "focused_minus_conventional": {
+   "values": [
+    -1.131,
+    -1.2946,
+    -1.3739
+   ],
+   "mean": -1.2665,
+   "sd_over_seeds": 0.1239,
+   "t_ci95_for_seed_mean": [
+    -1.5742,
+    -0.9588
+   ],
+   "n_seeds": 3,
+   "df": 2,
+   "paired_t": -17.711,
+   "p_value": 0.0032
+  },
+  "balanced_minus_conventional": {
+   "values": [
+    -1.2905,
+    -1.4499,
+    -1.648
+   ],
+   "mean": -1.4628,
+   "sd_over_seeds": 0.1791,
+   "t_ci95_for_seed_mean": [
+    -1.9076,
+    -1.018
+   ],
+   "n_seeds": 3,
+   "df": 2,
+   "paired_t": -14.149,
+   "p_value": 0.005
+  }
+ },
+ "reading": "The PAIRED changes exclude zero; the individual focused and balanced endpoints do not. The experiment establishes that the contrast moves with the training design, not that it is absent or negative."
+}
