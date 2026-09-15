@@ -421,6 +421,7 @@ comes from a small number of propagation paths. Each channel coefficient is
 treated as a free complex number.
 
 \subsection{The Estimator}
+\label{sec:estimator}
 
 EM-GS does not follow the rank structure discussed earlier. To include that
 structure, we apply a Cadzow denoising step to the channel estimate. There are
@@ -1530,7 +1531,7 @@ rather than as a value that the receiver can calculate before channel
 estimation.
 
 The Cadzow step used here is a denoising step and not a projection, as shown in
-Section~III-B. It is also a weaker requirement than the array model itself, so
+Section~\ref{sec:estimator}. It is also a weaker requirement than the array model itself, so
 a result about this constraint is not automatically a result about the physical
 multipath model.
 
