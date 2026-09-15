@@ -1451,18 +1451,70 @@ We also examine the computational cost of HS-GS. The main extra cost comes from
 choosing the Hankel rank. This rank-selection step accounts for $57.7$--$85.5\%$
 of the total run-time.
 
-Finally, we test whether the Cadzow step needs to be applied repeatedly during
-the EM-GS iterations. We compare two approaches. In the first approach, the
-step is applied during the EM-GS iterations. In the second approach, EM-GS is
-completed first and the Cadzow step is applied only once at the end.
+\subsection{Where the Structural Step is Applied}
+\label{sec:placement}
 
-The difference in mean gain between these two approaches is only 0.003~dB. This
-is a very small difference. It suggests that, in the cases tested here, the
-biggest benefit comes from applying the Hankel structure itself rather than
-from applying the step repeatedly during the EM-GS iterations. Since the
-one-shot version is also cheaper, this is a useful practical result, although a
-small difference in the mean does not prove that the two are equivalent at
-every operating point.
+Finally we test whether the Cadzow step needs to be applied during the EM-GS
+iterations at all. The two estimators being compared are HS-GS as defined
+above, which applies the step after every update, and a cheaper alternative
+that runs EM-GS to its full budget and then applies one Cadzow step to the
+result. Both use the same selected rank on each trial, so the comparison
+isolates placement and nothing else.
+
+% src: results/p22/p22_d1_placement.json, 300 paired trials per SNR,
+% configuration A; reproduces results/p12/B5.json exactly.
+We had registered in advance that applying the step during the iteration would
+be worth $0.3$ to $1.5$~dB. \textbf{It is not.} Averaged over the six SNR
+values the difference is $+0.003$~dB, and an interval over those six points,
+$[-0.12,+0.12]$~dB, contains zero comfortably. The registered prediction
+failed.
+
+\begin{center}
+\footnotesize
+\begin{tabular}{crcc}
+\toprule
+SNR (dB) & Interleaved $-$ post-hoc (dB) & 95\% CI & Median $q$ \\
+\midrule
+$-5$ & $-0.081$ & $[-0.159,+0.047]$ & 0.546 \\
+$0$ & $-0.164$ & $[-0.317,-0.066]$ & 0.266 \\
+$5$ & $+0.034$ & $[-0.050,+0.133]$ & 0.134 \\
+$10$ & $+0.010$ & $[-0.071,+0.077]$ & 0.071 \\
+$15$ & $+0.054$ & $[-0.014,+0.107]$ & 0.040 \\
+$20$ & $+0.168$ & $[+0.102,+0.246]$ & 0.022 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{That average hides a sign change.} Interleaving is significantly
+\emph{worse} at $0$~dB and significantly \emph{better} at $20$~dB, and the two
+effects are of similar size. The mean is near zero because they cancel, not
+because nothing is happening. Reporting only the mean would have been
+reporting the cancellation.
+
+\textbf{The two estimators are not producing the same estimate.} A difference
+of means cannot tell us whether two methods agree, because two different
+estimates can have the same error. So we also measured, on each trial, how far
+apart the two estimates are:
+\begin{equation}
+q_i=\frac{\bigl\|\hat\bG_i^{\text{interleaved}}
+-\hat\bG_i^{\text{post-hoc}}\bigr\|_F}{\|\bG_i\|_F},
+\label{eq:qdiv}
+\end{equation}
+which expresses the gap between them as a fraction of the channel being
+estimated. The last column of the table gives the median. At $-5$~dB the two
+estimates differ by $55\%$ of the channel norm while their errors differ by
+$0.08$~dB. At $0$~dB they differ by $27\%$ while their errors differ by
+$0.16$~dB. Even at $20$~dB, where the agreement is closest, the gap is $2.2\%$.
+
+So the honest conclusion is narrower than ``placement does not matter''. On
+this evidence the two placements are \emph{equally accurate on average while
+being visibly different estimators}, and the difference between them shrinks as
+the SNR rises. Because the post-hoc version is also much cheaper --- one Cadzow
+step instead of $T$ of them --- it is the better practical choice here, and we
+say so even though it is not the variant this paper proposes. What we cannot
+say is that the two are interchangeable: they are not the same estimate, they
+differ in opposite directions at the ends of the SNR range, and a single
+averaged number conceals both facts.
 
 \section{Limitations and Conclusion}
 
