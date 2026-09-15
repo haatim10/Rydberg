@@ -8,64 +8,75 @@
 \@writefile{toc}{\contentsline {section}{\numberline {I}Introduction}{1}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {II}System Model}{1}{}\protected@file@percent }
 \citation{xu2025}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Uplink of the Rydberg atomic receiver. $K$ single-antenna users transmit known pilot signals to $N$ vapour-cell receive elements arranged as a uniform linear array. The user RF signals and a known reference RF field interact with the Rydberg atoms. Probe and coupling lasers are used for the atomic readout, and the photodetector measures the magnitude of the total field. The estimator therefore observes $\mathbf  {Z}$ without directly observing its phase.}}{2}{}\protected@file@percent }
-\newlabel{fig:system}{{1}{2}{}{}{}}
 \newlabel{eq:chan}{{1}{2}{}{}{}}
+\newlabel{eq:obs}{{11}{2}{}{}{}}
+\newlabel{eq:pathnorm}{{12}{2}{}{}{}}
 \citation{cadzow1988}
 \citation{markovsky2008}
-\newlabel{eq:obs}{{11}{3}{}{}{}}
-\newlabel{eq:pathnorm}{{12}{3}{}{}{}}
+\citation{cui2025}
+\citation{gerchberg1972}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Uplink of the Rydberg atomic receiver. $K$ single-antenna users transmit known pilot signals to $N$ vapour-cell receive elements arranged as a uniform linear array. The user RF signals and a known reference RF field interact with the Rydberg atoms. Probe and coupling lasers are used for the atomic readout, and the photodetector measures the magnitude of the total field. The estimator therefore observes $\mathbf  {Z}$ without directly observing its phase.}}{3}{}\protected@file@percent }
+\newlabel{fig:system}{{1}{3}{}{}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {III}Proposed Estimator}{3}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-A}}Structure and its Capacity}{3}{}\protected@file@percent }
 \newlabel{eq:rmax}{{18}{3}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}The Estimator}{3}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-B}}The Baseline: EM-GS}{3}{}\protected@file@percent }
+\newlabel{sec:emgs}{{\mbox  {III-B}}{3}{}{}{}}
+\citation{cui2025}
 \citation{cadzow1988}
 \citation{markovsky2008}
+\newlabel{eq:emgs_phase}{{19}{4}{}{}{}}
+\newlabel{eq:emgs_ls}{{20}{4}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}The Estimator}{4}{}\protected@file@percent }
+\newlabel{eq:cadzow}{{22}{4}{}{}{}}
 \citation{balan2015}
 \citation{cui2025}
-\newlabel{eq:cadzow}{{20}{4}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Choosing the Hankel Rank}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {IV}Performance References}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Information in an Amplitude Measurement}{4}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Constrained Cram\'er--Rao Bound}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}1}The parameters we differentiate with respect to}{5}{}\protected@file@percent }
-\newlabel{eq:params}{{32}{5}{}{}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}2}How the channel changes when a parameter changes}{5}{}\protected@file@percent }
-\newlabel{eq:jac}{{34}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-D}}Choosing the Hankel Rank}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {IV}Performance References}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Information in an Amplitude Measurement}{5}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Constrained Cram\'er--Rao Bound}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}1}The parameters we differentiate with respect to}{6}{}\protected@file@percent }
+\newlabel{eq:params}{{34}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}2}How the channel changes when a parameter changes}{6}{}\protected@file@percent }
+\newlabel{eq:jac}{{36}{6}{}{}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}3}The information matrix}{6}{}\protected@file@percent }
-\newlabel{eq:rice}{{35}{6}{}{}{}}
-\newlabel{eq:beta}{{36}{6}{}{}{}}
-\newlabel{eq:fisher}{{37}{6}{}{}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}4}Why the bound uses a basis and not the derivatives}{6}{}\protected@file@percent }
-\newlabel{eq:ccrb}{{38}{6}{}{}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}5}Turning the bound into an NMSE}{6}{}\protected@file@percent }
-\newlabel{eq:nmsedb}{{39}{6}{}{}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}6}Checking the implementation}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}7}What the bounds do and do not govern}{6}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Simulation configurations used in the numerical experiments.}}{7}{}\protected@file@percent }
-\newlabel{tab:config}{{I}{7}{}{}{}}
+\newlabel{eq:rice}{{37}{6}{}{}{}}
+\newlabel{eq:beta}{{38}{6}{}{}{}}
+\newlabel{eq:fisher}{{39}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}4}Why the bound uses a basis and not the derivatives}{7}{}\protected@file@percent }
+\newlabel{eq:ccrb}{{40}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}5}Turning the bound into an NMSE}{7}{}\protected@file@percent }
+\newlabel{eq:nmsedb}{{41}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}6}Checking the implementation}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}7}What the bounds do and do not govern}{7}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {V}Numerical Results}{7}{}\protected@file@percent }
 \newlabel{sec:results}{{V}{7}{}{}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Experimental Setup}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Performance Against the Reference Curves}{7}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Effect of Array Size}{7}{}\protected@file@percent }
+\newlabel{sec:setup}{{\mbox  {V-A}}{7}{}{}{}}
+\newlabel{eq:nmse}{{42}{7}{}{}{}}
+\newlabel{eq:deltahs}{{43}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Performance Against the Reference Curves}{8}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Simulation configurations used in the numerical experiments. All four use the same estimator and the same held-out order rule (candidates $1\ldots  r_{\mathrm  {max}}$, $30\%$ of pilot columns held out for scoring) and all four use $n_{\mathrm  {cz}}=4$ Cadzow sweeps per application of the structural step; they differ only in operating point. $T$ is the EM-GS iteration budget and ``order search'' the iteration budget used while scoring candidate ranks. TB and TD are the two channel generators described in Section~\ref {sec:setup}. ``$\mathcal  {U}$'' means the SNR is drawn per trial and binned afterwards.}}{8}{}\protected@file@percent }
+\newlabel{tab:config}{{I}{8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Effect of Array Size}{8}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Performance of EM-GS and HS-GS using configuration A. (a) NMSE versus SNR for $N=32$ and $P=30$, together with the CRLB and CCRB reference curves. (b) HS-GS gain versus the number of array elements for two pilot counts. Positive gain means that HS-GS performs better than EM-GS.}}{9}{}\protected@file@percent }
+\newlabel{fig:main}{{2}{9}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Effect of Channel Complexity}{9}{}\protected@file@percent }
+\newlabel{sec:pathcount}{{\mbox  {V-D}}{9}{}{}{}}
 \citation{royvetterli2007}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Performance of EM-GS and HS-GS using configuration A. (a) NMSE versus SNR for $N=32$ and $P=30$, together with the CRLB and CCRB reference curves. (b) HS-GS gain versus the number of array elements for two pilot counts. Positive gain means that HS-GS performs better than EM-GS.}}{8}{}\protected@file@percent }
-\newlabel{fig:main}{{2}{8}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Effect of Channel Complexity}{8}{}\protected@file@percent }
-\newlabel{sec:pathcount}{{\mbox  {V-D}}{8}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Effective Rank}{8}{}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces HS-GS gain against the normalized effective rank $\rho =r_{\mathrm  {eff}}/r_{\mathrm  {max}}$ for $N\in \{16,32,64\}$. The gain approaches zero in a similar region of $\rho $ for the three array sizes. Only the $N=32$ crossing is bracketed by measurements of both signs; the other two are extrapolated past the last measured cell, and the $N=16$ curve sits above the $N=64$ curve at every matched $\rho $ by $0.49$~dB on average.}}{9}{}\protected@file@percent }
-\newlabel{fig:rho}{{3}{9}{}{}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-E}1}Is $\rho $ actually the right descriptor?}{9}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Effective Rank}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {V-E}1}Is $\rho $ actually the right descriptor?}{10}{}\protected@file@percent }
 \citation{precoding2408}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Evaluation on Different Channel Distributions}{10}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Additional Results}{10}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces HS-GS gain against the normalized effective rank $\rho =r_{\mathrm  {eff}}/r_{\mathrm  {max}}$ for $N\in \{16,32,64\}$. The gain approaches zero in a similar region of $\rho $ for the three array sizes. Only the $N=32$ crossing is bracketed by measurements of both signs; the other two are extrapolated past the last measured cell, and the $N=16$ curve sits above the $N=64$ curve at every matched $\rho $ by $0.49$~dB on average.}}{11}{}\protected@file@percent }
+\newlabel{fig:rho}{{3}{11}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Evaluation on Different Channel Distributions}{11}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Additional Results}{12}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Limitations and Conclusion}{12}{}\protected@file@percent }
 \bibcite{cui2025}{1}
 \bibcite{gong2025mag}{2}
 \bibcite{gerchberg1972}{3}
-\bibcite{xiao2026}{4}
-\bibcite{xu2025}{5}
+\bibcite{xu2025}{4}
+\bibcite{xiao2026}{5}
 \bibcite{balan2015}{6}
 \bibcite{chen2014emac}{7}
 \bibcite{jin2016aloha}{8}
@@ -77,6 +88,5 @@
 \bibcite{precoding2408}{14}
 \bibcite{gorman1990}{15}
 \bibcite{stoica1998}{16}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Limitations and Conclusion}{11}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{11}{}\protected@file@percent }
-\gdef \@abspage@last{12}
+\@writefile{toc}{\contentsline {section}{References}{13}{}\protected@file@percent }
+\gdef \@abspage@last{13}

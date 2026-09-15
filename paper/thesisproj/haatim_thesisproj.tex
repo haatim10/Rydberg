@@ -41,6 +41,8 @@
 \newcommand{\Hank}{\mathcal{H}}
 \newcommand{\rmax}{r_{\mathrm{max}}}
 \newcommand{\reff}{r_{\mathrm{eff}}}
+\newcommand{\ncz}{n_{\mathrm{cz}}}
+\newcommand{\dhs}{\Delta_{\mathrm{HS}}}
 
 \begin{document}
 
@@ -112,8 +114,10 @@ spatial structure of multipath channels on a uniform linear array.
 We propose a Hankel-structured extension of EM-GS for magnitude-only channel
 estimation. The estimator exploits the exponential structure of the channel
 across the array, selects the structural order using held-out pilot
-measurements, and falls back exactly to EM-GS when the measurements do not
-support a useful constraint. We then study how the benefit of the Hankel
+measurements. When the selection returns the full rank the structural step
+changes nothing and the estimator reproduces EM-GS exactly; this is a property
+of the operator, and it is not a guarantee that the selection rule avoids
+choices that hurt. We then study how the benefit of the Hankel
 constraint changes with the array size and the complexity of the channel. Path
 count alone does not fully describe channel complexity, so we also describe
 channel complexity using its effective rank relative to the available Hankel
@@ -279,10 +283,10 @@ so that the powers of the individual paths add up to
 \begin{equation}
 \sum_{\ell=1}^{L_k}\mathbb{E}\left|\alpha_{\ell,k}\right|^2=\beta_k,
 \end{equation}
-which does not depend on $L_k$. This matters for the experiment in
-Sec.~\ref{sec:pathcount}, where we change the number of paths. Without this
-scaling, adding more paths would also add more received power, and we could not
-tell whether a change in performance came from the extra complexity or simply
+which does not depend on $L_k$. This matters wherever the number of paths is
+varied. Without this scaling, adding more paths would also add more received
+power, and we could not tell whether a change in performance came from the
+extra complexity or simply
 from the extra power. With this scaling, only the complexity changes.
 
 The reference-to-signal ratio (RSR) is the reference power divided by the
@@ -322,10 +326,18 @@ most two. In general, for a channel with $L_k$ paths,
 \rank\Hank_p(\bg_k)\le L_k.
 \end{equation}
 
-Therefore, when the channel has only a few important paths, its Hankel matrix
-can have a low rank~\cite{cadzow1988,markovsky2008}. This is why we use the
-Hankel representation: it changes the multipath structure of the channel into a
+Therefore, when the channel has only a few paths, its Hankel matrix can have a
+low rank~\cite{cadzow1988,markovsky2008}. This is why we use the Hankel
+representation: it changes the multipath structure of the channel into a
 low-rank matrix structure that can be used during channel estimation.
+
+One point of care. The bound is on the number of paths, not on the number of
+\emph{strong} paths. A channel with three strong paths and five weak ones has
+Hankel rank at most 8, not 3; the weak paths still contribute rank-one
+components, however small their singular values. Such a channel is
+\emph{approximately} low rank rather than exactly low rank. The distinction
+matters, because a rank bound counts paths while the usefulness of the
+constraint depends on how many of them carry real energy.
 
 The maximum possible rank of the Hankel matrix depends on the number of array
 elements. For an $(N-p)\times(p+1)$ Hankel matrix, the maximum rank is
@@ -340,19 +352,80 @@ Choosing $p$ so that the matrix is as balanced as possible gives
 \end{equation}
 
 For example, if $N=16$, the maximum Hankel rank is 8. If the channel has only
-three important paths, its Hankel rank can be at most 3. This is much smaller
+three paths, its Hankel rank can be at most 3. This is much smaller
 than the maximum rank of 8, so there is useful low-rank structure that can be
 used during estimation. If the channel rank is already close to 8, there is
 less low-rank structure available. In this case, forcing the channel to have a
 much smaller rank may remove part of the real channel.
 
+\subsection{The Baseline: EM-GS}
+\label{sec:emgs}
+
+Our starting point is the expectation--maximization Gerchberg--Saxton
+estimator, which we call EM-GS, given by Cui \emph{et al.}~\cite[Alg.~2]{cui2025}
+as an adaptation of the classical Gerchberg--Saxton
+iteration~\cite{gerchberg1972} to this receiver. Because the whole paper is a
+comparison against it, it is worth writing down.
+
+The difficulty is that we measure $\bZ=|\bG\bS+\bB+\bW|$ and the phase is
+missing. If we knew the phase, the problem would be ordinary linear estimation.
+EM-GS therefore alternates between guessing the phase and solving the linear
+problem that the guess implies.
+
+Let $\hat\bG^{(t)}$ be the channel estimate after $t$ iterations, and let
+$\boldsymbol\Lambda^{(t)}=\hat\bG^{(t)}\bS+\bB$ be the noiseless field it
+predicts. One iteration is two steps.
+
+\emph{Expectation step.} Give every measured magnitude the phase that the
+current estimate predicts for it, producing a complex field
+\begin{equation}
+\bY^{(t)}_{np}
+=\bZ_{np}\,R(\kappa_{np})\,
+\frac{\boldsymbol\Lambda^{(t)}_{np}}{\bigl|\boldsymbol\Lambda^{(t)}_{np}\bigr|},
+\qquad
+\kappa_{np}=\frac{2\bZ_{np}\bigl|\boldsymbol\Lambda^{(t)}_{np}\bigr|}{\sigma^2},
+\label{eq:emgs_phase}
+\end{equation}
+where $R(x)=I_1(x)/I_0(x)$ is the same Bessel ratio that appears in the Rician
+model. This is the conditional mean of the noiseless field given the
+measurement and the current estimate, which is what makes the step an
+expectation step rather than a plain phase substitution. Because $R(x)<1$, the
+imputed field is \emph{shrunk} towards zero relative to the measurement, and
+the shrinkage is strongest where the measurement is least informative. At high
+SNR $R\to1$ and \eqref{eq:emgs_phase} reduces to substituting the predicted
+phase and keeping the measured magnitude.
+
+\emph{Maximization step.} Treat $\bY^{(t)}$ as if it were an observed complex
+measurement and solve the resulting least-squares problem,
+\begin{equation}
+\hat\bG^{(t+1)}
+=\bigl(\bY^{(t)}-\bB\bigr)\bS^{H}
+\bigl(\bS\bS^{H}+\varepsilon\mathbf{I}\bigr)^{-1},
+\label{eq:emgs_ls}
+\end{equation}
+with a ridge $\varepsilon$ that is set to zero in all experiments here and is
+retained only to guard against a singular pilot Gram matrix.
+
+The iteration is started from the spectral initializer of~\cite{cui2025},
+computed independently for each receive element, and not from zero. It then
+runs for a fixed budget of $T$ iterations rather than to a convergence
+tolerance, with $T$ fixed per configuration and stated with the simulation
+settings. A fixed
+budget is used because it makes the comparison between estimators exact: both
+arms get the same number of iterations, so no difference between them can come
+from one being allowed to run longer. It also means neither arm is claimed to
+have converged.
+
+Nothing in \eqref{eq:emgs_phase} or \eqref{eq:emgs_ls} knows that the channel
+comes from a small number of propagation paths. Each channel coefficient is
+treated as a free complex number.
+
 \subsection{The Estimator}
 
-EM-GS estimates the channel from the magnitude measurements, but it does not
-follow the rank structure discussed earlier. To include this structure, we
-apply a Cadzow denoising step to the EM-GS channel estimate. There are three
-main steps. First, the channel estimate is converted into the Hankel matrix
-described earlier.
+EM-GS does not follow the rank structure discussed earlier. To include that
+structure, we apply a Cadzow denoising step to the channel estimate. There are
+three parts to the step. First, the channel estimate is converted into the
+Hankel matrix described earlier.
 
 Next, singular value decomposition (SVD) is applied to the Hankel matrix. SVD
 separates the matrix into components and gives a singular value for each
@@ -415,10 +488,24 @@ the array model, not the array model itself. We use it because it is easy to
 impose and because the true channel does satisfy it, but the constraint is
 looser than the physics.
 
-The estimate from EM-GS is then adjusted using this step. We call the new
-approach Hankel-structured EM-GS (HS-GS). Choosing $r$ is important because a
-rank that is too large may remove very little, while a rank that is too small
-may remove useful parts of the channel.
+We call the resulting method Hankel-structured EM-GS (HS-GS).
+
+\textbf{Where the step is applied, precisely.} HS-GS applies the Cadzow step
+\eqref{eq:cadzow} to each column of the channel estimate \emph{after every one
+of the $T$ EM-GS updates}, not once at the end. So a single HS-GS iteration is
+the expectation step \eqref{eq:emgs_phase}, the least-squares step
+\eqref{eq:emgs_ls}, and then the structural step, in that order, with the
+result of the structural step becoming the estimate the next expectation step
+predicts from. This matters because the two orderings do not produce the same
+answer: denoising an estimate and then iterating is not the same operation as
+iterating and then denoising once, and neither is a special case of the other.
+The alternative --- running EM-GS to its full budget and applying one Cadzow
+step to the result --- is a different and cheaper estimator, and it is measured
+separately among the numerical results rather than treated as interchangeable
+with this one.
+
+Choosing $r$ is important because a rank that is too large may remove very
+little, while a rank that is too small may remove useful parts of the channel.
 
 \subsection{Choosing the Hankel Rank}
 
@@ -467,9 +554,16 @@ smallest error on the held-out pilots, we choose
 We then keep the three strongest singular-value components in the Cadzow step.
 
 This method does not require the true number of propagation paths $L_k$. If the
-selected rank is $\rmax$, all singular-value components are kept and the Cadzow
-step does not lower the rank. In this case, HS-GS goes back to the original
-EM-GS estimator.
+selected rank is $\rmax$, all singular-value components are kept, the Cadzow
+step does not lower the rank, and HS-GS returns exactly the EM-GS estimate.
+
+It is worth being exact about what that does and does not promise. It says the
+estimator has a harmless setting available, and that selecting it costs
+nothing. It does \emph{not} say the selection rule will choose that setting
+whenever the constraint would hurt. The rule scores candidate ranks on held-out
+pilots, and a rank that scores well there can still damage the estimate, so a
+selected rank below $\rmax$ is not evidence that constraining was the right
+choice on that trial.
 
 \section{Performance References}
 
@@ -777,6 +871,7 @@ excludes. The two should not be used interchangeably.
 \label{sec:results}
 
 \subsection{Experimental Setup}
+\label{sec:setup}
 
 We use simulations to compare EM-GS with the proposed HS-GS estimator. The
 channels are generated using the multipath model in \eqref{eq:chan}. Unless
@@ -792,28 +887,106 @@ both estimators receive those same values. Therefore, any difference between
 their results comes from the Cadzow step used by HS-GS. If the step is
 disabled, HS-GS gives the same result as EM-GS.
 
-For each trial, we see how much better HS-GS performs compared with EM-GS. We
-then use the median improvement across all trials as the main performance
-measure. Most experiments are performed at fixed SNR values. For the
-effective-rank experiments, the SNR is randomly selected between $-10$ and
-20~dB for each trial, and the results are then grouped according to SNR.
+\textbf{The two generators.} TB draws $L_k$ between 3 and 7 independently per
+user, with gains scaled as in \eqref{eq:pathnorm} and angles uniform on
+$(-90^\circ,90^\circ)$. TD is the generator used by the unrolled-network
+experiments this work sits alongside; it follows the same model
+\eqref{eq:chan} but fixes $L$ per cell rather than drawing it, which is what
+makes a path-count sweep possible. Both stay inside the geometric ULA family.
+
+\textbf{How error is measured.} For one trial, the normalized error of an
+estimate is
+\begin{equation}
+\mathrm{NMSE}=\frac{\|\hat\bG-\bG\|_F^2}{\|\bG\|_F^2},
+\label{eq:nmse}
+\end{equation}
+and the per-trial gain in decibels is the difference of the two arms' errors on
+\emph{that same trial},
+\begin{equation}
+\dhs^{(i)}=10\log_{10}\mathrm{NMSE}^{(i)}_{\mathrm{EM\text{-}GS}}
+-10\log_{10}\mathrm{NMSE}^{(i)}_{\mathrm{HS\text{-}GS}} .
+\label{eq:deltahs}
+\end{equation}
+Positive means HS-GS is better on that trial.
+
+\textbf{Three summaries, and they are not interchangeable.} The
+\emph{paired median} is the median of \eqref{eq:deltahs} over trials: every
+trial counts once, whatever its difficulty. The \emph{mean dB gain} averages
+\eqref{eq:deltahs} instead, so a few very good or very bad trials move it. The
+\emph{ratio of summed errors} adds the squared errors of both arms across
+trials and compares the totals, which weights trials by how hard they are and
+is therefore dominated by the worst ones. The paired median is our primary
+summary throughout; where the three disagree we say so and report more than
+one, because a disagreement between them is information about the distribution
+rather than a detail of presentation.
+
+\textbf{Aggregating operating points.} The array-size experiment has two pilot
+counts and six SNR values at each $N$, so twelve operating points. We report
+the unweighted mean of the twelve per-point summaries, not a pooled statistic
+over the trials of all twelve: pooling would weight the points by trial count
+and by how noisy each point is, which is not what a sweep over conditions is
+meant to show.
+
+\textbf{Trial counts.} Most cells use 300 to 400 paired trials. Two cells do
+not: the cross-generator tests use 276 and 266.
+% src: the shortfall is generator rejection of degenerate draws; NOT yet
+% confirmed against the generator code. Recorded in docs/open-todos.md and
+% must be resolved before submission.
+Those two counts are what the stored result files contain, and we report them
+as measured. We have not established the cause of the shortfall and do not
+assert one here.
+
+\textbf{Predictions registered before the runs.} Each experiment in this
+section was preceded by a dated record fixing what we expected to see, the threshold
+that would count as failure, and the rule that would decide. The records were
+written before the corresponding runs and scored afterwards. Four such records
+govern the results in this paper, and \emph{two of the four failed}:
+
+% src: reports/p12/partB_scores.json (P16, P17, P18) and reports/p12/p22_score.json.
+\begin{itemize}
+\item the predicted improvement of HS-GS over EM-GS at the main configuration,
+  a six-point mean in $[2.2,2.9]$~dB: \textbf{held}, measured $2.68$~dB;
+\item the predicted array-size means, one band per $N$: \textbf{failed}. The
+  $N=16$ mean came out at $0.966$~dB against a predicted $[0.60,0.95]$, missing
+  the band by $0.016$~dB, and at $N=8$ three of the twelve operating points
+  were positive with intervals excluding zero, where we had predicted the
+  method would not help;
+\item the predicted effect of the Hankel pencil choice, a span below
+  $0.30$~dB: \textbf{failed}, measured $0.391$~dB;
+\item the predicted advantage of applying the structural step during the
+  iteration rather than once at the end, predicted at $[0.3,1.5]$~dB:
+  \textbf{failed}, measured $0.003$~dB.
+\end{itemize}
+
+We report these because a paper that registers predictions and then mentions
+only the ones that held has gained nothing from registering them. Each failure
+is discussed where its experiment is presented, rather than collected out of
+sight here.
 
 Table~\ref{tab:config} summarizes the four simulation configurations used in
 the experiments.
 
 \begin{table}[!t]
-\caption{Simulation configurations used in the numerical experiments.}
+\caption{Simulation configurations used in the numerical experiments. All four
+use the same estimator and the same held-out order rule (candidates
+$1\ldots\rmax$, $30\%$ of pilot columns held out for scoring) and all four use
+$\ncz=4$ Cadzow sweeps per application of the structural step; they differ only
+in operating point. $T$ is the EM-GS iteration budget and ``order search'' the
+iteration budget used while scoring candidate ranks. TB and TD are the two
+channel generators described in Section~\ref{sec:setup}. ``$\mathcal{U}$''
+means the SNR is drawn per trial and binned afterwards.}
 \label{tab:config}
 \centering
 \footnotesize
-\begin{tabular}{ccccccc}
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{cccccccc}
 \toprule
-Config. & $T$ & Order search & $P$ & RSR (dB) & Generator & SNR (dB) \\
+Config. & $T$ & Order search & $\ncz$ & $P$ & RSR (dB) & Gen. & SNR (dB) \\
 \midrule
-A & 100 & 25 & 10, 30 & 12 & TB & $\{-5,\ldots,20\}$ \\
-B & 50 & 20 & 30 & 12 & TB & $\{-5,\ldots,20\}$ \\
-C & 100 & 25 & 20 & 10 & TD & $\mathcal{U}(-10,20]$ \\
-D & 50 & 20 & 30 & 12 & TB & 5 \\
+A & 100 & 25 & 4 & 10, 30 & 12 & TB & $\{-5,\ldots,20\}$ \\
+B & 50 & 20 & 4 & 30 & 12 & TB & $\{-5,\ldots,20\}$ \\
+C & 100 & 25 & 4 & 20 & 10 & TD & $\mathcal{U}[-10,20]$ \\
+D & 50 & 20 & 4 & 30 & 12 & TB & 5 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -912,7 +1085,18 @@ gives more measurements, but it also adds more unknown channel coefficients.
 At $N=8$, the two ways of measuring the HS-GS improvement give different
 answers. The paired median gives a small positive gain of 0.225~dB, while the
 ratio of the total squared errors gives $-0.254$~dB. A negative value means
-that HS-GS has a larger total squared error than EM-GS.
+that HS-GS has a larger total squared error than EM-GS. The open triangle in
+Fig.~\ref{fig:main}(b) marks this point: we had registered in advance that the
+method would fail at the smallest array, with a predicted ratio-of-sums value
+of $-0.20$~dB in a band $[-0.35,+0.05]$, and the measured $-0.254$~dB falls
+inside it.
+
+% src: reports/p12/p22_score.json, N8_points_positive_and_significant = 3 of 12.
+That prediction was only half right, and the half that was wrong is the more
+interesting one. Three of the twelve $N=8$ operating points came out
+\emph{positive} with intervals excluding zero. So the failure at $N=8$ is not
+uniform across conditions: it is an aggregate result that hides operating
+points where the constraint helps.
 
 This happens partly because HS-GS does not apply a low-rank reduction in every
 trial. At $N=8$, the step is inactive in $41.8\%$ of the trials, so HS-GS gives
@@ -1080,11 +1264,21 @@ every matched $\rho$ by $0.49$~dB on average.}
 \end{figure}
 
 We also carried out a test to see what happens when the channel becomes more
-complex and the low-rank constraint starts to become harmful. In this test, the
-Cadzow step was forced to remain active. At $\rho=0.735$, the gain becomes
-$-0.075$~dB. The negative gain shows that forcing a low-rank constraint on a
-complex channel can make the estimate worse. The adaptive rank selection helps
-prevent this problem because HS-GS can fall back to EM-GS.
+complex and the low-rank constraint starts to become harmful. In this test the
+Cadzow step was forced to remain active, so the estimator was denied the option
+of declining to constrain. This is a diagnostic and not the proposed method.
+% src: results/p12/B2_forced.json, N16_L14 row: delta_forced_active_db,
+% ci_forced_active, abstention_rate.
+At $\rho=0.735$, the gain becomes $-0.075$~dB with a $95\%$ interval of
+$[-0.186,-0.026]$~dB, which excludes zero. Forcing a low-rank constraint on a
+complex channel therefore does measurable harm, not merely no good.
+
+At that same operating point the unforced estimator declines to constrain on
+$38.8\%$ of trials. Selecting the full rank is what protects it, and on this
+evidence that protection is worth having. It remains a property of the
+operator rather than a property of the selection rule: these measurements show
+that abstention is available and that it is used often here, not that it is
+chosen whenever it should be.
 
 \subsubsection{Is $\rho$ actually the right descriptor?}
 
@@ -1353,14 +1547,16 @@ Commun.}, vol.~32, no.~5, pp.~90--100, 2025.
 algorithm for the determination of phase from image and diffraction plane
 pictures,'' \emph{Optik}, vol.~35, pp.~237--246, 1972.
 
+% Order follows first appearance in the text (IEEE style): xu2025 is cited
+% before xiao2026 in the introduction, so it comes first here.
+\bibitem{xu2025} B.~Xu, J.~Zhang, Z.~Chen, B.~Cheng, Z.~Liu, Y.-C.~Wu, and
+B.~Ai, ``Channel estimation for Rydberg atomic receivers,'' \emph{IEEE Wireless
+Commun. Lett.}, vol.~14, no.~9, pp.~2957--2961, 2025.
+
 \bibitem{xiao2026} J.~Xiao, J.~Wang, M.~Zeng, H.~Xu, X.~Li, and
 A.~Nallanathan, ``Channel estimation for Rydberg atomic quantum receivers:
 unrolled phase retrieval from holographic snapshots,'' \emph{IEEE Signal
 Process. Lett.}, vol.~33, pp.~1696--1700, 2026.
-
-\bibitem{xu2025} B.~Xu, J.~Zhang, Z.~Chen, B.~Cheng, Z.~Liu, Y.-C.~Wu, and
-B.~Ai, ``Channel estimation for Rydberg atomic receivers,'' \emph{IEEE Wireless
-Commun. Lett.}, vol.~14, no.~9, pp.~2957--2961, 2025.
 
 \bibitem{balan2015} R.~Balan, ``The Fisher information matrix and the
 Cram\'er--Rao bound in a non-AWGN model for the phase retrieval problem,'' in
