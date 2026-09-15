@@ -978,8 +978,8 @@ channel generators described in Section~\ref{sec:setup}. ``$\mathcal{U}$''
 means the SNR is drawn per trial and binned afterwards.}
 \label{tab:config}
 \centering
-\footnotesize
-\setlength{\tabcolsep}{3.5pt}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{cccccccc}
 \toprule
 Config. & $T$ & Order search & $\ncz$ & $P$ & RSR (dB) & Gen. & SNR (dB) \\
@@ -1470,10 +1470,11 @@ $[-0.12,+0.12]$~dB, contains zero comfortably. The registered prediction
 failed.
 
 \begin{center}
-\footnotesize
+\scriptsize
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{crcc}
 \toprule
-SNR (dB) & Interleaved $-$ post-hoc (dB) & 95\% CI & Median $q$ \\
+SNR (dB) & Inter. $-$ post-hoc (dB) & 95\% CI & Median $q$ \\
 \midrule
 $-5$ & $-0.081$ & $[-0.159,+0.047]$ & 0.546 \\
 $0$ & $-0.164$ & $[-0.317,-0.066]$ & 0.266 \\
@@ -1530,8 +1531,10 @@ If a low-rank constraint is forced on a channel that is too complex, it can
 eventually make the estimate worse.
 
 The experiments first show this using the number of propagation paths. At
-$N=32$, the HS-GS gain decreases from 7.04~dB when $L=2$ to $-0.12$~dB when
-$L=16$. However, the number of paths alone is not a complete measure of channel
+$N=32$, the HS-GS gain falls from $+7.04$~dB when $L=2$ to $+0.046$~dB when
+$L=14$, where its interval first contains zero, and to $-0.117$~dB with an
+interval excluding zero when $L=16$, where the constraint is doing measurable
+harm rather than simply failing to help. However, the number of paths alone is not a complete measure of channel
 complexity because some paths can be much weaker than others.
 
 What the experiments support is that path count must be measured \emph{relative
