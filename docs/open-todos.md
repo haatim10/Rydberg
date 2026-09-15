@@ -256,3 +256,84 @@ which has different numbering; re-check against whichever version is submitted.
 operator is a projection onto the intersection of the rank and Hankel sets.
 That is false --- the map is not even idempotent. They are not submission
 targets and were left alone, but must be corrected if any is ever revived.
+
+---
+
+## 7. PROMPT 22 (Paper 1 revision after external review)
+
+Recorded 2026-09-15 on branch `paper1-review`.
+
+### 7.1 Resolved this turn — moved out of section 6
+
+- **6.4 is done.** The held-out comparison of `rho` against `L` and `L/r_max`
+  ran as P32 (`reports/p22/PREREG_P32.md`, `reports/p22/PART_B_P32.md`). The
+  answer is negative for `rho`: it does not beat `L/r_max` under either
+  registered statistic. The comparative claim has been deleted from the
+  abstract and conclusion and `rho` is now presented as one way of normalising
+  by capacity, not as a better descriptor.
+- **The CCRB derivation is done** and verified (`reports/p22/PART_A_derivation.md`).
+  Section IV-B is now recomputable.
+
+### 7.2 Deferred deliberately (PROMPT 22 Part E)
+
+- **The full three-method placement campaign** with fixed-rank and
+  complete-method arms. Part D measured the per-trial divergence between the
+  two placements instead, which answers the substance without rebuilding the
+  paper around a different estimator.
+- **Absolute runtime and computational environment reporting.** The paper
+  reports the rank-selection share of run-time (57.7–85.5%) but no absolute
+  timings and no machine description.
+- **Trial-level forensics on the `N = 8` result.** The inactive fraction
+  (41.8%) does not by itself prove that occasional destructive truncation
+  caused the negative aggregate. Establishing that needs per-trial
+  decomposition, not a summary statistic.
+- **The tutorial-material reduction.** Whether the worked examples belong in a
+  submitted paper is a venue question, not a correctness one.
+
+### 7.3 New, found while doing PROMPT 22
+
+**7.3.1 Two scripts write to the same results path — data-loss hazard.**
+`scripts/constrained_crlb.py` (validation, 10 trials/point) and
+`scripts/constrained_crlb_fast.py` (production, 400 trials/point) both write
+`results/track_b/constrained_crlb.json`. Running the validation script to
+completion silently overwrites the 400-trial file the published curves depend
+on with 10-trial data, whose per-point jitter is ±0.31 dB — enough to move the
+published 7.05–7.11 dB gap. During this turn the validation run was cut off
+before its sweep wrote and the file was confirmed intact, but that was luck.
+Fix: give the validation script its own output path, and check the plotting
+scripts for the same assumption.
+
+**7.3.2 The thesis-style rewrite dropped content the letter had.**
+`paper/paper1/haatim_hsgs_letter.tex` carries 21 `% src:` provenance comments;
+`paper/thesisproj/haatim_thesisproj.tex` carried none until this turn. The
+rewrite also dropped the Fisher-information construction, the tangent-space
+justification, the per-SNR placement breakdown, and several limitations the
+letter states plainly — including the 0.493 dB unexplained residual and the
+fact that two of the three boundary crossings cannot be bracketed. Several
+items the external review raised against the thesis version were already
+correct in the letter. **Before submission, diff the two files and decide
+deliberately, item by item, what the thesis version is allowed to omit.**
+
+**7.3.3 A wrong number in the code, now fixed, may exist elsewhere.**
+`constrained_crlb_fast.py` claimed the path parametrisation is over-complete in
+"~42% of trials at N=8". The exact figure is 28.00%. Corrected in place. Worth
+grepping for other asserted percentages that were never computed.
+
+**7.3.4 The published crossing locations mix statistics.**
+`0.518` comes from a fixed-5-dB sweep; `0.588` and `0.544` come from the pooled
+field `pooled_SAMPLING_DESIGN_DEPENDENT` over a drawn SNR range. The manuscript
+now says so, but the cleaner fix is to recompute all three on one statistic.
+Not done this turn: it would change published numbers, which PROMPT 22 does not
+authorise.
+
+**7.3.5 The 276/266 trial counts are still unexplained.**
+Carried over from 6.2 and now stated in the manuscript as measured, with the
+cause explicitly not asserted. **This must be resolved before submission.**
+It is the one number in the paper whose provenance we cannot give.
+
+### 7.4 For the human, not for an agent turn
+
+The classical placement result (post-hoc is as good as interleaved, +0.003 dB)
+sits against Paper 2's finding that internal beats post-hoc by +1.309 dB at
+15–20 dB in the *learned* setting. That asymmetry is interesting and neither
+paper reports it. It needs the arXiv sequencing settled first.

@@ -1122,10 +1122,19 @@ the Hankel constraint. We keep the array size fixed at $N=32$ and the SNR at
 for all users. As described in \eqref{eq:pathnorm}, the total received power is
 kept fixed while $L$ changes, so only the complexity of the channel varies.
 
+% src: trackB_hankel_emgs/results/experiment_C_path_count.csv, columns
+% gain_db, gain_ci_lo, gain_ci_hi; 300 trials per row.
 The results show a clear trend. When the channel has only $L=2$ paths, HS-GS
-improves over EM-GS by 7.04~dB. As the number of paths increases, the
-improvement becomes smaller. At $L=16$, the gain is $-0.12$~dB, which means
-that the Hankel constraint no longer helps.
+improves over EM-GS by $7.04$~dB, with a $95\%$ interval of
+$[+6.73,+7.34]$~dB. As the number of paths increases the improvement falls
+steadily: $+3.56$, $+1.79$, $+1.04$, $+0.58$ and $+0.27$~dB at
+$L=4,6,8,10,12$. At $L=14$ the gain is $+0.046$~dB with an interval of
+$[-0.050,+0.136]$ that contains zero, so the constraint has stopped helping.
+At $L=16$ it is $-0.117$~dB with an interval of $[-0.206,-0.038]$ that
+excludes zero, so the constraint is doing measurable harm rather than merely
+failing to help. The distinction matters: a gain indistinguishable from zero
+and a gain reliably below zero are different findings, and only the second
+says the constraint should be switched off.
 
 This can be understood from the rank of the Hankel matrix. Since $N=32$, the
 maximum Hankel rank is
