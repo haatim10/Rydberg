@@ -56,24 +56,29 @@ Campus, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
 \maketitle
 
 \begin{abstract}
-Rydberg atomic receivers measure the amplitude of an incident radio-frequency
-field without directly observing its phase, making complex channel estimation a
-challenging phase-retrieval problem. This paper investigates when the known
-spatial structure of a multipath channel can improve such magnitude-only
-channel estimation. We propose a Hankel-structured extension of
-expectation--maximization Gerchberg--Saxton (EM-GS) that exploits the
-relationship between channel coefficients across a uniform linear array. The
-method selects the amount of structure using held-out pilot measurements and
-falls back exactly to the original EM-GS estimator when the measurements do not
-support a useful constraint. Our analysis and simulations show that structural
-information is most beneficial when the channel is simple relative to the
-structural capacity of the array, while its benefit decreases as channel
-complexity approaches that capacity. We further show that effective channel
-rank relative to array capacity describes this behaviour more consistently than
-the number of propagation paths alone and remains predictive on previously
-unseen channel distributions. These results provide a practical explanation of
-when spatial structure should be exploited in magnitude-only channel estimation
-and when an estimator should instead rely on the unconstrained solution.
+We study channel estimation for a magnitude-only Rydberg atomic receiver array,
+in which the optical readout provides the amplitude of the incident
+radio-frequency field but not its phase, so complex channel estimation becomes
+a phase-retrieval problem. Rydberg architectures that recover phase, such as a
+superheterodyne readout, are outside this scope. This paper asks when the known
+spatial structure of a multipath channel improves such magnitude-only
+estimation, and when that structure is too restrictive to help. We propose a
+Hankel-structured extension of expectation--maximization Gerchberg--Saxton
+(EM-GS) that exploits the relationship between channel coefficients across a
+uniform linear array, choosing the amount of structure from held-out pilot
+measurements. Selecting the full rank disables the structural step, and the
+estimator then returns the EM-GS answer exactly; this is a property of the
+operator and not a guarantee that the selection rule avoids harmful choices.
+Simulations show that the structural step helps when the channel is simple
+relative to the structural capacity of the array, and that its benefit falls,
+and eventually reverses, as channel complexity approaches that capacity. In a
+held-out comparison, path count normalized by that capacity predicts the
+measured gain far better than path count alone, and the prediction transfers to
+two channel distributions not used to build it. A constrained Cram\'er--Rao
+bound for the multipath model, derived and verified here, quantifies what the
+structure is worth in principle. These results give a practical account of when
+spatial structure should be exploited in magnitude-only channel estimation and
+when an estimator should rely on the unconstrained solution instead.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -1023,21 +1028,54 @@ The channel now uses most of the available rank, so there is much less low-rank
 structure left to use.
 
 Fig.~\ref{fig:rho} shows the HS-GS gain against $\rho$ for $N\in\{16,32,64\}$.
+% src: reports/trackD_partB9_analysis.json, B1_collapse.
+% zero_crossing_r_eff_over_cap and zero_crossing_is_bracketed_not_extrapolated.
 The gain approaches zero at
 \begin{equation}
 \rho=0.588,\qquad 0.518,\qquad 0.544,
 \end{equation}
-for $N=16$, 32, and 64, respectively. Although the array size increases from 16
-to 64, these values stay relatively close to each other. In the cases tested
-here, this suggests that the Hankel constraint is most useful when the channel
-effectively uses about half or less of the available Hankel rank.
+for $N=16$, 32, and 64, respectively.
+
+Three things must be said about those three numbers before anything is
+concluded from them, and each one weakens the reading.
+
+\emph{Only the middle one is measured on both sides of zero.} At $N=32$ the
+sweep contains a cell with a positive gain and a cell with a negative gain, so
+the crossing lies between two measurements. At $N=16$ and $N=64$ every measured
+cell has a positive gain, so those two crossings are obtained by continuing a
+line past the last measured point. They are extrapolations, and an
+extrapolation is a weaker number than an interpolation.
+
+\emph{The three are not the same statistic.} The $N=32$ value comes from a
+sweep at a fixed SNR of 5~dB. The other two come from cells in which the SNR is
+drawn over the whole range and the result is pooled, so their value depends on
+how many low-SNR trials happened to be drawn. Comparing a fixed-SNR number with
+two pooled ones is not a like-for-like comparison.
+
+\emph{The curves do not lie on top of each other.} Comparing $N=16$ with
+$N=64$ directly --- the one comparison here that is like-for-like, since those
+two share a design, a draw and an estimator ---
+% src: reports/trackD_partB9_analysis.json, PRIMARY_internal_N16_vs_N64;
+% mean_gap_db 0.4933, max_abs_gap_db 0.9012, sign_constant true.
+the $N=16$ curve sits above the $N=64$ curve at every matched value of $\rho$,
+by $0.49$~dB on average and by $0.90$~dB at worst. A one-signed gap of half a
+decibel is a systematic offset, not agreement.
+
+What survives is weaker than an invariance and still useful: across a factor of
+four in array size, the gain turns from clearly positive to near zero somewhere
+in the region of $\rho\approx0.5$--$0.6$, and the ordering of the curves does
+not change. In the cases tested here, the Hankel constraint is most useful when
+the channel effectively uses about half or less of the available Hankel rank.
 
 \begin{figure}[!t]
 \centering
 \includegraphics[width=0.92\columnwidth]{fig/fig7_boundary_invariance.pdf}
 \caption{HS-GS gain against the normalized effective rank
-$\rho=\reff/\rmax$ for $N\in\{16,32,64\}$. The gain approaches zero at similar
-values of $\rho$ for the three array sizes.}
+$\rho=\reff/\rmax$ for $N\in\{16,32,64\}$. The gain approaches zero in a similar
+region of $\rho$ for the three array sizes. Only the $N=32$ crossing is
+bracketed by measurements of both signs; the other two are extrapolated past
+the last measured cell, and the $N=16$ curve sits above the $N=64$ curve at
+every matched $\rho$ by $0.49$~dB on average.}
 \label{fig:rho}
 \end{figure}
 
@@ -1048,12 +1086,68 @@ $-0.075$~dB. The negative gain shows that forcing a low-rank constraint on a
 complex channel can make the estimate worse. The adaptive rank selection helps
 prevent this problem because HS-GS can fall back to EM-GS.
 
-These results suggest that $\rho$ is a useful way to describe when the Hankel
-constraint helps. However, it does not completely determine the amount of
-improvement, since the exact HS-GS gain still changes with array size. Also,
-$\rho$ is calculated here using the true noiseless channel, which is not known
-at the receiver. We therefore use $\rho$ to understand the simulation results
-rather than as something that the estimator uses directly.
+\subsubsection{Is $\rho$ actually the right descriptor?}
+
+Up to this point we have shown that $\rho$ organises the results. We have not
+shown that it organises them better than something simpler, and those are
+different claims. An earlier version of this paper made the second claim
+without testing it. This subsection tests it.
+
+We compare three candidate descriptors, each used in exactly the same way: the
+path count $L$, the normalized path count $L/\rmax$, and $\rho=\reff/\rmax$.
+The prediction rule is piecewise-linear interpolation on a fixed eight-point
+table, with no regression and no curve fitting. The table is the $N=32$
+path-count sweep, and the same eight rows are used for all three descriptors;
+only the horizontal coordinate changes. We then predict six cells at $N=16$ and
+$N=64$ that are not in the table, and compare against what was measured there.
+
+% src: reports/p22/p32_score.json and p32_score_secondary.json; prediction rule
+% verified to reproduce the 1.30 and 0.648 dB predictions quoted later in this
+% section. Pre-registered in reports/p22/PREREG_P32.md before scoring.
+\begin{center}
+\footnotesize
+\begin{tabular}{lccc}
+\toprule
+Descriptor & Mean error (dB) & Worst (dB) & Sign correct \\
+\midrule
+$L$ & 1.91 & 2.85 & 5 of 6 \\
+$L/\rmax$ & \textbf{0.34} & 1.06 & \textbf{6 of 6} \\
+$\rho=\reff/\rmax$ & 0.46 & 1.61 & 5 of 6 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The result is clear in one direction and negative in the other.
+
+\textbf{Normalizing by array capacity is what matters.} Raw path count is a
+poor predictor across array sizes, with a mean error of $1.91$~dB, and it could
+not be otherwise: $L=7$ is close to the ceiling when $\rmax=8$ and far below it
+when $\rmax=32$, so the same $L$ describes opposite situations. Dividing by
+$\rmax$ removes that problem and cuts the error by more than a factor of five.
+
+\textbf{The effective rank buys nothing beyond that.} $\rho$ is not better than
+the much simpler $L/\rmax$; it is slightly worse on both mean error and sign
+agreement. The difference between them is not resolved by six cells --- the
+paired interval on the difference is $[-0.16,+0.40]$~dB and includes zero ---
+so the honest statement is that this evidence does not separate them, and
+certainly does not favour $\rho$. Repeating the comparison on the wider
+SNR~$\ge5$~dB summary gives the same ordering, $0.56$~dB for $L/\rmax$ against
+$0.61$~dB for $\rho$.
+
+We therefore do not claim that effective rank describes this behaviour better
+than path count does. What the experiments support is narrower: \emph{path
+count normalized by the array's structural capacity} predicts when the
+constraint helps, and $\rho$ is one way of performing that normalization which
+this evidence does not distinguish from the simpler one. We continue to use
+$\rho$ in this paper because it extends naturally to channels whose paths have
+unequal strengths, where $L$ is ambiguous --- but that is a reason of
+convenience, and we report it as one.
+
+Two limits apply to $\rho$ whichever way it is read. It does not determine the
+size of the improvement, since the gain still changes with array size at
+matched $\rho$. And it is computed from the true noiseless channel, which the
+receiver does not have, so it explains the simulation results rather than
+serving as a quantity an estimator could evaluate before estimating.
 
 \subsection{Evaluation on Different Channel Distributions}
 
@@ -1184,25 +1278,36 @@ $N=32$, the HS-GS gain decreases from 7.04~dB when $L=2$ to $-0.12$~dB when
 $L=16$. However, the number of paths alone is not a complete measure of channel
 complexity because some paths can be much weaker than others.
 
-We therefore use the normalized effective rank
+What the experiments support is that path count must be measured \emph{relative
+to the array's structural capacity}. Raw path count does not transfer between
+array sizes, because $L=7$ is near the ceiling when $\rmax=8$ and far below it
+when $\rmax=32$. In a held-out test on six cells at $N=16$ and $N=64$,
+predicting from raw $L$ gives a mean error of $1.91$~dB, while predicting from
+the normalized count $L/\rmax$ gives $0.34$~dB.
+
+We use the normalized effective rank
 \begin{equation}
-\rho=\frac{\reff}{\rmax},
+\rho=\frac{\reff}{\rmax}
 \end{equation}
-which compares the effective rank of the channel with the maximum rank of the
-Hankel matrix. For example, $\rho=0.25$ means that the channel effectively uses
-only about one quarter of the available rank.
+as our normalization throughout, because it extends to channels whose paths
+have unequal strengths, where counting paths is ambiguous. On the same held-out
+test it scores $0.46$~dB, which is not better than the simpler $L/\rmax$ and
+not separated from it by six cells. \textbf{We therefore do not claim that
+effective rank describes this behaviour better than path count does}; the
+claim we make is about normalizing by capacity, and $\rho$ is one way to do it.
 
 For $N=16$, 32, and 64, the HS-GS gain approaches zero at $\rho=0.588$, 0.518,
-and 0.544, respectively. These values stay roughly the same even when the array
-size increases by a factor of four. In the cases tested here, this suggests
-that the Hankel constraint is most useful when the channel effectively uses
-about half or less of the available Hankel rank.
+and 0.544, so a factor of four in array size leaves the crossing in the same
+region. Two of those three values are extrapolated rather than bracketed by
+measurements of both signs, and the $N=16$ curve sits about $0.49$~dB above the
+$N=64$ curve at every matched $\rho$, so this is a similar region and not a
+coincident one. In the cases tested here, the Hankel constraint is most useful
+when the channel effectively uses about half or less of the available Hankel
+rank.
 
-The relationship is also examined using two additional channel distributions.
-The predicted HS-GS gains differ from the measured gains by 0.13 and 0.315~dB.
-These findings give more evidence that normalized effective rank is a useful
-way to understand when the Hankel structure helps within the channel model
-considered here.
+The relationship is also examined using two additional channel distributions
+that were not used to build it. The predicted HS-GS gains differ from the
+measured gains by 0.13 and 0.315~dB.
 
 \textbf{Limitations.} All results in this work are obtained from simulations.
 We have not yet tested the method using measured hardware data or recorded
