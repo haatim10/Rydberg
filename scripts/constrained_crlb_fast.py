@@ -114,7 +114,11 @@ def point_bounds(N, P, snr_db, rsr_db, n_trials=N_TRIALS, measure_interp=False):
             unc += float(np.trace(np.linalg.inv(Jn)))
             JD += Dn[n].T @ Jn @ Dn[n]
         # The path parametrisation is OVERCOMPLETE whenever 3*sum(L_k) exceeds
-        # the ambient real dimension 2NK -- true in ~42% of trials at N=8.
+        # the ambient real dimension 2NK. With L_k ~ U{3..7} iid and K=3 that is
+        # exactly 28.00% of trials at N=8 (2NK=48), and never at N=16 or N=32
+        # (2NK = 96 and 192 against at most 3*21 = 63 parameters). The 6400
+        # stored N=8 trials give 28.1%, matching. An earlier version of this
+        # comment said ~42%; that figure was wrong.
         # There the map theta -> G is not injective and D^T J D is genuinely
         # singular. The CCRB is still well defined, because it depends on the
         # TANGENT SPACE range(D) and not on theta being identifiable, but it

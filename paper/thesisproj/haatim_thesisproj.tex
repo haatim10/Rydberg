@@ -538,11 +538,23 @@ measurements is combined to form the full Fisher information matrix $J$.
 Therefore, $J$ describes the information provided by all the measurements used
 for channel estimation.
 
-The Hankel structure also allows us to use the larger array differently. The
-channel coefficients across the array are not completely independent because
-they are produced by the same propagation paths. The Hankel constraint uses
-this relationship between the array elements. This allows HS-GS to make use of
-the additional spatial structure provided by a larger array.
+One feature of $J$ is worth stating plainly, because it explains what a larger
+array does. Measurement $(n,p)$ depends only on row $n$ of $\bG\bS$, because
+row $n$ of the array
+produces row $n$ of the measurements and nothing else. So $J$ is
+\emph{block diagonal across the receive elements}: there is one $2K\times2K$
+block per element and no coupling between them. Adding array elements therefore
+adds measurements and unknown channel coefficients in a fixed proportion. An
+estimator that treats the channel coefficients as unrelated gains nothing from a
+larger array under a normalised error measure, because the extra measurements
+are used up by the extra unknowns.
+
+The Hankel structure breaks that proportion. The channel coefficients across the
+array are not really independent, because they are produced by the same
+propagation paths. The Hankel constraint uses this relationship between the
+array elements, so the number of quantities actually being estimated does not
+grow with $N$ in the same way. This is what allows HS-GS to make use of the
+additional spatial structure provided by a larger array.
 
 \subsection{Constrained Cram\'er--Rao Bound}
 
@@ -558,35 +570,203 @@ our channel model, these values are not completely independent. They are
 connected through the path gains and angles in \eqref{eq:chan}. The constrained
 CRLB (CCRB) includes this additional information.
 
-The CCRB is calculated as~\cite{gorman1990,stoica1998}
+The rest of this subsection gives the bound in enough detail to be recomputed.
+It is written out step by step because a reference curve nobody can redraw is
+not a reference.
+
+\subsubsection{The parameters we differentiate with respect to}
+
+The CCRB is a bound for estimators that know the channel follows
+\eqref{eq:chan}. So the unknowns are not the channel coefficients. They are the
+path parameters that generate them. For each user $k$ and each path $\ell$ we
+treat three real numbers as unknown: the spatial frequency $\psi_{\ell,k}$, and
+the real and imaginary parts of the path gain $\alpha_{\ell,k}$. Collecting
+them gives
 \begin{equation}
-\mathrm{CCRB}=U(U^TJU)^{-1}U^T,
+\boldsymbol\phi=\left\{\psi_{\ell,k},\ \mathrm{Re}\,\alpha_{\ell,k},\
+\mathrm{Im}\,\alpha_{\ell,k}\right\},
+\qquad
+m=3\sum_{k=1}^{K}L_k .
+\label{eq:params}
 \end{equation}
-where $J$ is the Fisher information matrix calculated in the previous section.
-The matrix $U$ describes the ways in which the channel is allowed to change
-while still following the multipath channel model.
 
-We use both the CRLB and CCRB only as reference curves. The ordinary CRLB
-treats the channel coefficients separately, while the CCRB also uses the known
-multipath structure. The difference between them therefore gives us an idea of
-how much improvement may be possible by using this structure.
+Two things about this are worth saying out loud. First, the angular unknown is
+the spatial frequency $\psi=\pi\sin\theta$ and not the arrival angle $\theta$,
+because $\psi$ is the variable that actually appears in \eqref{eq:chan}.
+Differentiating with respect to $\theta$ instead evaluates the bound at the
+wrong point and gives a different, wrong curve. Second, the number of paths
+$L_k$ is treated as \emph{known}. The bound is therefore a local bound for a
+receiver that already knows how many paths there are, which is more than our
+estimator knows.
 
-% [NEW] What the CCRB curve does and does not specify. The review asked for a
-% full derivation; this states honestly what is and is not given here.
-\textbf{What we state here is not enough to reproduce these curves.} A reader
-who wants to redraw them would also need the real parameter vector we
-differentiate with respect to, the exact likelihood, the derivative
-expressions, the dimensions of $U$ and the basis chosen for it, the rank
-conditions under which $(U^TJU)$ is invertible, and the normalisation used to
-turn the bound into an NMSE. We do not give those details, so the curves should
-be read as indicative references only and not as verified bounds. The
-distinction also matters because a bound for the physical multipath model of
-\eqref{eq:chan} is not the same as a bound for a fixed-rank Hankel model, and
-the two should not be used interchangeably.
+A worked count, at the setting used for our main figure. With $K=3$ users and
+$L_k$ drawn between 3 and 7, the average is $L_k=5$ per user, so
+\begin{equation}
+m=3\times(5+5+5)=45 .
+\end{equation}
+The channel itself has $2NK=2\times32\times3=192$ real numbers in it. So the
+model says those 192 numbers are really controlled by about 45. That reduction
+is the whole content of the constraint.
 
-These bounds are derived for unbiased estimators, while EM-GS and HS-GS are not
-assumed to be unbiased. Therefore, we do not treat the CRLB or CCRB as absolute
-lower limits on their measured NMSE.
+\subsubsection{How the channel changes when a parameter changes}
+
+Write the channel in real coordinates: for each element $n$, list the $K$ real
+parts and then the $K$ imaginary parts, and stack the $N$ groups. That is a
+real vector of length $2NK$. Let $D$ be the matrix of derivatives of that
+vector with respect to $\boldsymbol\phi$. Its three kinds of column come
+straight from differentiating \eqref{eq:chan},
+\begin{align}
+\frac{\partial g_k[n]}{\partial\psi_{\ell,k}}
+&=-\jmath(n-1)\,\alpha_{\ell,k}\,e^{-\jmath(n-1)\psi_{\ell,k}},
+\label{eq:jac}\\
+\frac{\partial g_k[n]}{\partial\,\mathrm{Re}\,\alpha_{\ell,k}}
+&=e^{-\jmath(n-1)\psi_{\ell,k}},
+\qquad
+\frac{\partial g_k[n]}{\partial\,\mathrm{Im}\,\alpha_{\ell,k}}
+=\jmath\,e^{-\jmath(n-1)\psi_{\ell,k}} .
+\nonumber
+\end{align}
+Each complex derivative contributes its real part to one row of $D$ and its
+imaginary part to another, matching the ordering above.
+
+\subsubsection{The information matrix}
+
+The measured amplitude is Rician, with the density
+\begin{equation}
+p(z\mid\lambda)=\frac{2z}{\sigma^2}
+\exp\!\left(-\frac{z^2+|\lambda|^2}{\sigma^2}\right)
+I_0\!\left(\frac{2z|\lambda|}{\sigma^2}\right),
+\qquad z\ge0,
+\label{eq:rice}
+\end{equation}
+where $\lambda=\bG\bS+\bB$ is the noiseless field and $I_0$ is the modified
+Bessel function of the first kind. The density depends on the parameters only
+through $a=|\lambda|$, so one measurement carries a single scalar amount of
+information,
+\begin{equation}
+I(a)=4\beta(a,\sigma^2),
+\qquad
+\beta=\frac{\mathbb{E}\!\left[z^2R^2(\kappa)\right]-a^2}{\sigma^4},
+\label{eq:beta}
+\end{equation}
+with $\kappa=2za/\sigma^2$ and $R(x)=I_1(x)/I_0(x)$. The expectation is taken
+under \eqref{eq:rice} and computed by numerical integration.
+
+That scalar is turned into a matrix by the direction in which the measurement
+is informative. Writing $c_k=e^{-\jmath\angle\lambda_{n,p}}S_{k,p}$ and
+$\mathbf{u}_{n,p}=[\mathrm{Re}\,c_1\ldots\mathrm{Re}\,c_K,\
+-\mathrm{Im}\,c_1\ldots-\mathrm{Im}\,c_K]^T$, the block of $J$ for element $n$
+is
+\begin{equation}
+J_n=\sum_{p=1}^{P}4\beta(a_{n,p},\sigma^2)\,
+\mathbf{u}_{n,p}\mathbf{u}_{n,p}^{T} .
+\label{eq:fisher}
+\end{equation}
+Every term is an outer product of one vector with itself, so every term has
+rank one. This is the same point made by the $3+\jmath4$ example above,
+now written for the full problem: a magnitude measurement informs one real
+direction, not two.
+
+\subsubsection{Why the bound uses a basis and not the derivatives}
+
+The textbook constrained bound is $D(D^TJD)^{-1}D^T$. We do not use that form,
+because $D^TJD$ is often singular here. The reason is that the path description
+is over-complete: if $m$ in \eqref{eq:params} exceeds the $2NK$ real numbers in
+the channel, different parameter sets produce the same channel and the
+derivatives cannot be independent.
+% src: exact under L_k ~ U{3,7}, K=3: P(3 sum L_k > 2NK). Verified against the
+% 6400 stored N=8 trials (28.1%) in reports/p22/PART_A_derivation.md.
+This is not a rare corner. With $K=3$ and $L_k$ between 3 and 7, it happens in
+exactly $28.0\%$ of trials at $N=8$, where the channel holds only
+$2NK=48$ real numbers. At $N=16$ and $N=32$ it never happens, because $2NK$ is
+96 and 192 against at most $3\times21=63$ parameters.
+
+The bound itself is still well defined, because it depends only on which
+directions the channel can move in --- the span of the columns of $D$ --- and
+not on the parameters being separately identifiable. So we take $U$ to be an
+orthonormal basis of that span, obtained from the singular value decomposition
+of $D$ and keeping the singular values above $10^{-9}$ times the largest. Then
+\begin{equation}
+\mathrm{CCRB}=U\!\left(U^TJU\right)^{-1}U^T .
+\label{eq:ccrb}
+\end{equation}
+This form is invariant to how the paths are parameterised, which the textbook
+form is not.
+% src: results/track_b/constrained_crlb.json, jacobian_rank and jacobian_cond
+% over all 52 computed points, 400 trials each.
+The measured number of kept directions ranges from $40.4$ to $44.6$ across our
+operating points, against the $45$ parameters an average trial has, and the
+matrix $U^TJU$ that gets inverted has a condition number of about $3.1$ at the
+main configuration and never worse than $52$ anywhere. The inverse in
+\eqref{eq:ccrb} is therefore not a delicate one.
+
+\subsubsection{Turning the bound into an NMSE}
+
+Equation \eqref{eq:ccrb} bounds a covariance, and the figures plot a normalised
+error. The trace of the CCRB bounds the expected squared error of the whole
+channel matrix, so we report
+\begin{equation}
+\mathrm{NMSE}_{\mathrm{CCRB}}
+=10\log_{10}
+\frac{\sum_{t}\mathrm{Tr}\left(\mathrm{CCRB}_t\right)}
+{\sum_{t}\left\|\bG_t\right\|_F^2},
+\label{eq:nmsedb}
+\end{equation}
+where $t$ runs over trials. Note that this is a ratio of two sums, not an
+average of per-trial ratios; the two are not the same and we use the first. The
+trials are the same 400 channel realisations the estimator curves use, so the
+bound and the measured curves are paired on the channel draws rather than
+averaged over different ones. The bound does not depend on the noise
+realisation, only on $\bG$, $\bS$, $\bB$ and $\sigma^2$.
+
+\subsubsection{Checking the implementation}
+
+Two checks are run before the bound is computed, and both are arithmetic
+identities rather than opinions.
+% src: scripts/constrained_crlb.py validate(), rerun 2026-09-15; full output in
+% reports/p22/PART_A_derivation.md.
+The first compares our real-coordinate bound against the convention that
+credits both quadratures of each measurement. Crediting both can only add
+information, so our bound must come out strictly higher. It does, by $0.73$ to
+$2.88$~dB over four test cells, paired on the same trials.
+
+The second is a high-SNR limit. As the noise falls, $\beta\to1/(2\sigma^2)$, so
+the amplitude-only bound must approach exactly $10\log_{10}2=3.0103$~dB above
+the error of a receiver that is told the true phase. Measured at 45~dB SNR, the
+gap is $3.55$~dB at $N=8$ and $3.52$~dB at $N=16$. These sit about half a
+decibel above the limit because at a finite pilot count the rank-one terms in
+\eqref{eq:fisher} have not yet averaged out; the agreement is a limit, not an
+identity at finite $P$, and we report the measured numbers rather than the
+limit alone.
+
+One measured weakness belongs here rather than in a footnote. To reach 400
+trials per point, $\beta$ is read from an interpolation table instead of being
+integrated for every measurement, and the error of that table is measured at
+run time.
+% src: results/track_b/constrained_crlb.json, beta_interp_rel_err_max per point
+% and beta_interp_rel_err_worst_over_all_points.
+Across the points plotted in this paper the largest relative error is
+$7.4\times10^{-4}$. Two points computed for a reference-power sweep that this
+paper does not plot are much worse, at $1.9\times10^{-2}$ and
+$5.0\times10^{-2}$, both at a reference-to-signal ratio of $0$~dB where the
+amplitude distribution is widest.
+
+\subsubsection{What the bounds do and do not govern}
+
+The ordinary CRLB treats the channel coefficients separately, while the CCRB
+uses the known multipath structure. The difference between them is what the
+structural model is worth in principle.
+
+Both bounds constrain unbiased estimators. EM-GS and HS-GS are not unbiased:
+both run to a fixed iteration budget, and HS-GS additionally truncates rank. So
+neither bound applies strictly, and we do not treat either as an absolute limit
+on the measured NMSE. The CCRB is the reference matched to the model class that
+HS-GS assumes; the unconstrained CRLB governs EM-GS only.
+
+A last distinction that is easy to blur. The CCRB is a bound for the physical
+multipath model of \eqref{eq:chan}. It is not a bound for a fixed-rank Hankel
+model, which is a looser description admitting channels that \eqref{eq:chan}
+excludes. The two should not be used interchangeably.
 
 \section{Numerical Results}
 \label{sec:results}

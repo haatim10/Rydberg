@@ -27,30 +27,44 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {III-C}}Choosing the Hankel Rank}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {IV}Performance References}{4}{}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-A}}Information in an Amplitude Measurement}{4}{}\protected@file@percent }
-\citation{gorman1990}
-\citation{stoica1998}
 \@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {IV-B}}Constrained Cram\'er--Rao Bound}{5}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {V}Numerical Results}{5}{}\protected@file@percent }
-\newlabel{sec:results}{{V}{5}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Experimental Setup}{5}{}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Simulation configurations used in the numerical experiments.}}{6}{}\protected@file@percent }
-\newlabel{tab:config}{{I}{6}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Performance Against the Reference Curves}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Effect of Array Size}{6}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Effect of Channel Complexity}{6}{}\protected@file@percent }
-\newlabel{sec:pathcount}{{\mbox  {V-D}}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}1}The parameters we differentiate with respect to}{5}{}\protected@file@percent }
+\newlabel{eq:params}{{32}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}2}How the channel changes when a parameter changes}{5}{}\protected@file@percent }
+\newlabel{eq:jac}{{34}{5}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}3}The information matrix}{6}{}\protected@file@percent }
+\newlabel{eq:rice}{{35}{6}{}{}{}}
+\newlabel{eq:beta}{{36}{6}{}{}{}}
+\newlabel{eq:fisher}{{37}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}4}Why the bound uses a basis and not the derivatives}{6}{}\protected@file@percent }
+\newlabel{eq:ccrb}{{38}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}5}Turning the bound into an NMSE}{6}{}\protected@file@percent }
+\newlabel{eq:nmsedb}{{39}{6}{}{}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}6}Checking the implementation}{6}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {\mbox  {IV-B}7}What the bounds do and do not govern}{6}{}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {I}{\ignorespaces Simulation configurations used in the numerical experiments.}}{7}{}\protected@file@percent }
+\newlabel{tab:config}{{I}{7}{}{}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {V}Numerical Results}{7}{}\protected@file@percent }
+\newlabel{sec:results}{{V}{7}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-A}}Experimental Setup}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-B}}Performance Against the Reference Curves}{7}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-C}}Effect of Array Size}{7}{}\protected@file@percent }
 \citation{royvetterli2007}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Performance of EM-GS and HS-GS using configuration A. (a) NMSE versus SNR for $N=32$ and $P=30$, together with the CRLB and CCRB reference curves. (b) HS-GS gain versus the number of array elements for two pilot counts. Positive gain means that HS-GS performs better than EM-GS.}}{7}{}\protected@file@percent }
-\newlabel{fig:main}{{2}{7}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Effective Rank}{7}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Performance of EM-GS and HS-GS using configuration A. (a) NMSE versus SNR for $N=32$ and $P=30$, together with the CRLB and CCRB reference curves. (b) HS-GS gain versus the number of array elements for two pilot counts. Positive gain means that HS-GS performs better than EM-GS.}}{8}{}\protected@file@percent }
+\newlabel{fig:main}{{2}{8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-D}}Effect of Channel Complexity}{8}{}\protected@file@percent }
+\newlabel{sec:pathcount}{{\mbox  {V-D}}{8}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-E}}Effective Rank}{8}{}\protected@file@percent }
 \citation{precoding2408}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces HS-GS gain against the normalized effective rank $\rho =r_{\mathrm  {eff}}/r_{\mathrm  {max}}$ for $N\in \{16,32,64\}$. The gain approaches zero at similar values of $\rho $ for the three array sizes.}}{8}{}\protected@file@percent }
-\newlabel{fig:rho}{{3}{8}{}{}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Evaluation on Different Channel Distributions}{8}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Additional Results}{8}{}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces HS-GS gain against the normalized effective rank $\rho =r_{\mathrm  {eff}}/r_{\mathrm  {max}}$ for $N\in \{16,32,64\}$. The gain approaches zero at similar values of $\rho $ for the three array sizes.}}{9}{}\protected@file@percent }
+\newlabel{fig:rho}{{3}{9}{}{}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-F}}Evaluation on Different Channel Distributions}{9}{}\protected@file@percent }
 \bibcite{cui2025}{1}
 \bibcite{gong2025mag}{2}
 \bibcite{gerchberg1972}{3}
+\@writefile{toc}{\contentsline {subsection}{\numberline {\mbox  {V-G}}Additional Results}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {VI}Limitations and Conclusion}{10}{}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{10}{}\protected@file@percent }
 \bibcite{xiao2026}{4}
 \bibcite{xu2025}{5}
 \bibcite{balan2015}{6}
@@ -63,7 +77,5 @@
 \bibcite{royvetterli2007}{13}
 \bibcite{precoding2408}{14}
 \bibcite{gorman1990}{15}
-\@writefile{toc}{\contentsline {section}{\numberline {VI}Limitations and Conclusion}{9}{}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{9}{}\protected@file@percent }
 \bibcite{stoica1998}{16}
-\gdef \@abspage@last{10}
+\gdef \@abspage@last{11}
