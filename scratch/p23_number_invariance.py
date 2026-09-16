@@ -75,25 +75,36 @@ def main() -> int:
             continue
         new = open(path, encoding="utf-8").read()
         a, b = numbers(old), numbers(new)
-        gone = a - b
-        added = b - a
         sa, sb = src_comments(old), src_comments(new)
         lost_src = sa - sb
 
+        # The rule is that no VALUE may change. PROMPT 23 C4 also requires the
+        # abstract to stop quoting numbers that the body already carries, which
+        # lowers a value's multiplicity without altering it. So a value
+        # DISAPPEARING from the document is a violation; a value appearing
+        # fewer times while still present is reported but is not.
+        lost = set(a) - set(b)
+        new_vals = set(b) - set(a)
+        fewer = {v: (a[v], b[v]) for v in set(a) & set(b) if a[v] != b[v]}
+
         print(f"\n{path}")
-        print(f"  numbers at {rev}: {sum(a.values())}   now: {sum(b.values())}")
-        if gone:
+        print(f"  distinct values at {rev}: {len(a)}   now: {len(b)}")
+        if lost:
             bad = True
-            print("  REMOVED OR CHANGED:")
-            for v, n in sorted(gone.items()):
-                print(f"    {v!r} x{n}")
-        if added:
+            print("  VALUES LOST ENTIRELY  (violation):")
+            for v in sorted(lost):
+                print(f"    {v!r} (appeared {a[v]}x)")
+        if new_vals:
             bad = True
-            print("  NEW (not present at baseline):")
-            for v, n in sorted(added.items()):
-                print(f"    {v!r} x{n}")
-        if not gone and not added:
-            print("  numbers: IDENTICAL multiset")
+            print("  NEW VALUES not at baseline  (violation unless ported):")
+            for v in sorted(new_vals):
+                print(f"    {v!r} (appears {b[v]}x)")
+        if not lost and not new_vals:
+            print("  values: IDENTICAL set — no value altered, none lost")
+        if fewer:
+            print("  multiplicity changes (allowed; value still present):")
+            for v, (x, y) in sorted(fewer.items()):
+                print(f"    {v!r}: {x} -> {y}")
         print(f"  % src: comments at {rev}: {sum(sa.values())}   now: {sum(sb.values())}")
         if lost_src:
             bad = True

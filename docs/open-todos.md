@@ -97,7 +97,63 @@ the prior-art check behind PROMPT 20 was **three web searches, not a systematic
 sweep**. The audit in `reports/p20/claim_audit.md` is only as good as that
 check. In priority order.
 
-### 5.1 Does Wiesmayr et al. report the effect on the DOWN-WEIGHTED regime?
+### 5.1 RESOLVED 16 Sep 2026 — they do NOT report it; the 18-of-18 result stands
+
+**Closed by a human reading Section 4 of arXiv:2210.14103 v3 directly.**
+
+**Answer: no.** Wiesmayr et al. do not report improvement in the down-weighted
+regime. Where they examine it, they report the opposite:
+
+- In the narrow-range DUIDD experiment, deweighted training holds a small
+  advantage at high SNR while naive training keeps an even smaller advantage at
+  the low-SNR end of the waterfall.
+- The SISO AWGN replication repeats the pattern: naive training over the range
+  is worst at high SNR and best at low SNR.
+- For the wide range they report well-balanced performance and a 0.54 dB gain
+  at 1% BLER — but that is a high-SNR operating point, and no per-bin low-SNR
+  improvement is claimed.
+
+Evidence: their Section 4, Figures 3 and 5.
+
+**Consequence.** Our 18-of-18 result — balancing improves every bin-by-seed
+cell, including the two bins the weighting divides by about 18 and 9 — is
+therefore a **finding and not a confirmation**, and the manuscript now states
+it as a contrast with their evidence rather than as a bare measurement.
+
+**Three caveats travel with that contrast and must never be dropped** (they are
+in the manuscript):
+
+1. *Different metric.* They measure bit and block error rate on a coded
+   MIMO-OFDM system; we measure normalized channel-estimation error.
+   "Improvement in the down-weighted bins" is not the same quantity.
+2. *Different mechanism.* Their weights update every epoch from inverse
+   cumulative losses, with a stability constant and normalization at the grid
+   centre. Ours come from one measurement pass before training.
+3. *Different size.* Their deweighting gain is 0.54 dB, which they describe as
+   modest but free, since it comes from the loss rather than a bigger receiver
+   or more data. Ours is +2.171 dB. Different metrics, so not directly
+   comparable, and the text says so.
+
+Also recorded from that reading, and now used in the manuscript:
+
+- Their introduction states that systems are usually trained either at a single
+  SNR or on samples drawn uniformly from the target range, apparently without
+  questioning how this affects performance at different SNRs. That is a
+  *published* statement that the convention is unexamined, and it supports our
+  motivation better than anything previously cited there.
+- At the end of Section 4 they note one could alternatively deweight using the
+  loss of a fixed baseline such as a classical system, rather than the adaptive
+  scheme they implement. **Ours is fixed** — so they raise a fixed-weight
+  variant without implementing it, and ours uses the network's own pre-training
+  loss rather than a classical baseline. The manuscript now says this.
+- Their Section 7.3 repeats the whole experiment on a second, simpler system
+  specifically to show the effect is not an artifact of one architecture. Our
+  limitations now cite that approach as what the fix to our own one-architecture
+  scope would look like.
+
+<details><summary>Original entry</summary>
+
+### 5.1 (original) Does Wiesmayr et al. report the effect on the DOWN-WEIGHTED regime?
 
 **This is the item that most changes what Paper 2 still contributes.**
 
@@ -111,6 +167,8 @@ report what happens to the deweighted regime.
 **To close:** read Section 4 of arXiv:2210.14103 v3. If they report improvement
 in the deweighted regime, N10 is anticipated and must be recast as confirmation
 rather than a finding. If they do not, it stands as apparently novel.
+
+</details>
 
 ### 5.2 Has the pilot-curve train-versus-evaluate ambiguity been identified before?
 
