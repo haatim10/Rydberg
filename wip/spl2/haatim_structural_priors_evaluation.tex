@@ -143,9 +143,14 @@ parameter set while operating over a range of SNRs, the training data is
 sampled from that range, and the aggregate loss is then dominated by the
 low-SNR samples, because a small relative improvement at low SNR moves the cost
 further than a large one at high SNR. They propose SNR deweighting as the
-remedy. Work on deep OFDM channel estimation has separately examined training
-on SNR-restricted samples, reporting the expected trade of low-noise accuracy
-against high-noise accuracy~\cite{jameel2024ofdm}. What we take from that line of work is the mechanism and the
+remedy. They also observe, in their introduction, that systems are usually
+trained either at a single SNR or on samples drawn uniformly across the target
+range, apparently without the effect on performance at different SNRs being
+questioned --- a published statement that the convention is unexamined, which
+is the gap this paper works in. Work on deep OFDM channel estimation has
+separately examined training on SNR-restricted samples, reporting the expected
+trade of low-noise accuracy against high-noise
+accuracy~\cite{jameel2024ofdm}. What we take from that line of work is the mechanism and the
 remedy. What is not taken from it, and what this paper is about, is the
 consequence for \emph{attribution}: that a known training defect manufactures
 apparent evidence for a structural prior, so that crediting the prior without
@@ -417,6 +422,16 @@ per-sample normalized error in bin $b$ measured once before training, with $c$
 set so the weights have unit mean. This requires no schedule, no tuning, and
 no change to the architecture.
 
+The differences from~\cite{wiesmayr2023bler} are worth stating exactly. Their
+weights are recomputed each epoch from inverse accumulated losses, with a
+stability constant and a normalization at the centre of their SNR grid; ours
+are computed once and never change. They also note at the end of their
+Section~4 that one could instead deweight using the loss of a fixed baseline
+such as a classical system, rather than the adaptive scheme they implement ---
+a fixed-weight variant they raise but do not implement. Ours is fixed in that
+sense, with the further difference that the weights come from the network's own
+pre-training error and not from a separate classical baseline.
+
 It works as designed. The realized per-bin gradient share spans a factor of
 % src: reports/trackD_stage5_results.json runs.C1_snr_balanced_P20
 $1.9$ after balancing against $30.0$ before, and the share below $5$~dB falls
@@ -482,6 +497,26 @@ weighting divides their contribution by about $18$ and $9$ relative to unit
 mean. They gain anyway. The correction is therefore not a transfer between
 regimes: it improves the quantity it was weighted away from.
 
+\textbf{This differs from what the prior work reports.} Wiesmayr \emph{et
+al.}~\cite{wiesmayr2023bler} do not report improvement in the regime their
+deweighting penalizes; where they examine it they report the trade. In their
+narrow-range experiment, deweighted training holds a small advantage at high
+SNR while naive training keeps a smaller one at the low end of the waterfall,
+and their replication on a simpler system repeats the pattern. Their
+wide-range result is a $0.54$~dB gain at $1\%$ block error rate, which is a
+high-SNR operating point; no per-bin low-SNR improvement is claimed.
+
+Three differences must be kept in view before that contrast is read as a
+disagreement. \emph{Metric}: they measure bit and block error rate on a coded
+MIMO-OFDM system, we measure normalized channel-estimation error, so
+``improvement in the down-weighted bins'' is not the same quantity. \emph{
+Mechanism}: their weights are recomputed each epoch from inverse accumulated
+losses with a stability constant and a normalization at the grid centre; ours
+come from one pass before training. \emph{Size}: their gain is $0.54$~dB, which
+they describe as modest but essentially free since it comes from the loss
+rather than a larger receiver or more data. Because the metrics differ, their
+number and ours are not directly comparable and we do not compare them.
+
 We offer a reading of why, as a hypothesis and not as a result: under the
 per-sample loss the low-SNR tail may dominate to the point that the network is
 underfitted \emph{everywhere}, in which case rebalancing stops wasting capacity
@@ -518,18 +553,21 @@ Fig.~\ref{fig:allcells}, which are the gain from balancing the loss.}
 \label{tab:signs}
 \centering
 \small
-\begin{tabular}{lrrr}
+\begin{tabular}{lrrrr}
 \toprule
-SNR bin (dB) & mixed & SD over seeds & focused \\
+SNR bin (dB) & mixed & SD over seeds & focused & balanced \\
 \midrule
 % src: reports/p19/p29_score.json three_seed_mean_per_bin_db
-$[-10,-5)$ & $-0.120$ & $0.036$ & --- \\
-$[-5,0)$   & $-0.400$ & $0.103$ & --- \\
-$[0,5)$    & $-0.293$ & $0.157$ & --- \\
+% src: balanced column reports/p20/p30_score.json, three-seed mean of
+% per_seed.seed{1,2,3}.per_bin_db; cross-checked against
+% reports/p20/PART_B_C3.md table B3.4.
+$[-10,-5)$ & $-0.120$ & $0.036$ & --- & $-0.233$ \\
+$[-5,0)$   & $-0.400$ & $0.103$ & --- & $-0.703$ \\
+$[0,5)$    & $-0.293$ & $0.157$ & --- & $-0.944$ \\
 % src: reports/p17/p28_score.json three_seed_mean_per_bin_db
-$[5,10)$   & $+0.457$ & $0.052$ & $-0.173$ \\
-$[10,15)$  & $+1.403$ & $0.089$ & $+0.067$ \\
-$[15,20)$  & $+2.290$ & $0.082$ & $+0.259$ \\
+$[5,10)$   & $+0.457$ & $0.052$ & $-0.173$ & $-0.692$ \\
+$[10,15)$  & $+1.403$ & $0.089$ & $+0.067$ & $-0.241$ \\
+$[15,20)$  & $+2.290$ & $0.082$ & $+0.259$ & $+0.567$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -684,7 +722,10 @@ difference}, and we prefer that wording where no margin is in view. Either way
 the log-domain loss buys no measured improvement over per-bin reweighting, and
 we report it because a reader will ask.
 
-It is not, however, better balanced. Its realized share of gradient below
+It is not, however, better balanced, and here a registered prediction of ours
+was wrong in the direction of the error: we predicted the log loss would
+over-correct \emph{less} than per-bin reweighting, and it over-corrects more.
+Its realized share of gradient below
 $5$~dB is
 % src: reports/p21/p31_score.json gradient_shares
 $0.317$--$0.329$ against an ideal of $0.5$, where per-bin reweighting reaches
@@ -768,12 +809,27 @@ training distributed its effort. The endpoints themselves are not separated
 from zero on three seeds, and we do not claim them as absent or negative.
 
 \textbf{Limitations.} All results are simulation only, with no measured
-hardware and no recorded channel data. They cover the geometric ULA model of
+hardware and no recorded channel data. They also cover one architecture, so we
+cannot separate what is a property of training design in general from what is a
+property of this network; \cite{wiesmayr2023bler} repeats its whole experiment
+on a second, simpler system precisely to rule that out, and the corresponding
+check here has not been run. They cover the geometric ULA model of
 \eqref{eq:fwd} at $N=32$, $K=3$, one data budget and the pilot counts tested;
 the negative result about structural priors is scoped to those conditions and
 is not a general claim. We establish no fundamental bound: the reference curve
 used throughout is genie-aided, presumes phase no receiver observes, and is
 passed by our own estimator at low SNR.
+
+\subsection*{Data and Pre-Registration Records}
+
+Every prediction called pre-registered above exists as a dated record written
+before the corresponding runs started. Each record fixes the threshold, the
+falsifier and the rule that would decide the outcome, and each was scored held
+or failed after the runs finished. The records, the scoring scripts and the
+per-run result files accompany this manuscript. Two of the predictions in this
+paper failed and are reported as failures in the text: the predicted low-SNR
+cost of balancing, and the prediction that the log-domain loss would correct
+the gradient share less than per-bin reweighting does.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}

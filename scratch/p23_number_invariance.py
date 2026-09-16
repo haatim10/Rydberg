@@ -138,6 +138,24 @@ def main() -> int:
             print("  VALUES LOST ENTIRELY  (violation):")
             for v in sorted(lost):
                 print(f"    {v!r} (appeared {a[v]}x)")
+        # A value may also be legitimately PORTED between Paper 2's two files
+        # (PROMPT 23 Part B). That is only allowed if the value was already in
+        # the OTHER file at the baseline -- verified here rather than trusted.
+        other = [f for f in FILES if f != path]
+        baseline_elsewhere = set()
+        for o in other:
+            txt = at_rev(rev, o)
+            if txt:
+                baseline_elsewhere |= set(numbers(txt))
+        # the corrected value counts as present wherever its wrong form was
+        baseline_elsewhere |= {nv for _, (nv, _) in CORRECTED.items()}
+        ported = {v for v in new_vals if v in baseline_elsewhere}
+        if ported:
+            print("  PORTED from the other Paper 2 file (verified at baseline):")
+            for v in sorted(ported):
+                print(f"    {v!r}")
+        new_vals = new_vals - ported
+
         declared = {v for v in new_vals if v in ILLUSTRATIVE or v in CITED}
         undeclared = new_vals - declared
         if declared:
