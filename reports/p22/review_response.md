@@ -100,7 +100,8 @@ accompany submission. What the review is right about is that the manuscript
 never points to them; a data-availability note is needed.
 
 **B3-P0, balanced per-bin results.** Already measured on the same three seeds
-and now available: −0.233, −0.704, −0.944, −0.692, −0.241, +0.567. The review
+and now available: −0.233, −0.703, −0.944, −0.692, −0.241, +0.567.
+(Corrected 16 Sep 2026: this line previously read −0.704 for the [−5,0) bin. The exact three-seed mean is −0.70346, and `reports/p20/PART_B_C3.md` table B3.4 already had −0.703. The wrong digit was transcribed from here into the manuscript and is now fixed in both.) The review
 inferred these came from "an earlier arm"; they do not, they come from batch C3
 on seeds 1–3. Space did not permit a third full per-bin column this pass — it
 is a table edit, not a measurement gap.

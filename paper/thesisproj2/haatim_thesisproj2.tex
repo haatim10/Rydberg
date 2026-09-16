@@ -43,27 +43,39 @@ Campus, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
 \maketitle
 
 \begin{abstract}
-A common way to improve an unrolled channel estimator is to add a structural
+A common way to improve a trained channel estimator is to add a structural
 constraint inside the network, and the improvement that follows is usually
-credited to that constraint. This paper shows that in magnitude-only channel
-estimation for Rydberg atomic receivers, such a comparison does not by itself
-establish the credit, because the measured improvement depends strongly on how
-the two networks were trained. A training loss averaged over a wide
-signal-to-noise ratio range is dominated by its low-noise-ratio tail; in our
-setting $89.7\%$ of the measured gradient falls below $5$~dB, so any mechanism
-that helps at high SNR can appear to supply information. We propose a
-matched-adequacy control: measure how the gradient is shared across SNR,
-retrain both the structured and the unstructured network with the imbalance
-removed, and measure the difference again. Using three training designs with
-three random seeds each, the structural gain above $5$~dB is $+1.286$~dB under
-the conventional loss, close to zero when both networks are retrained on the
-high-SNR range, and negative when the loss is corrected instead. Compared seed
-by seed, the change from conventional training is $-1.27$ and $-1.46$~dB, and
-both changes are clearly separated from zero, although the individual values
-are not. We also show that a per-bin pattern survives where no single number
-does, that correcting the loss is worth $+2.171$~dB over three seeds, and that
-a simpler log-domain loss gives no resolved difference. All results are
-simulation only.
+credited to that constraint. This paper asks whether that credit is earned, for
+magnitude-only channel estimation at a Rydberg atomic receiver.
+
+The concern is about how such networks are trained. The training loss is an
+average of the error over samples covering a wide range of signal-to-noise
+ratios. Errors at low SNR are much larger numbers than errors at high SNR, so
+when they are averaged together the large numbers decide the average, and most
+of the training effort goes to the noisy samples. A structural constraint then
+helps most in the region the network was trained least, and the improvement it
+appears to give may be repairing a training problem rather than supplying
+information the network could not have learned.
+
+We propose a control for this. Measure how the training effort is divided
+across the SNR range, retrain both the structured and the unstructured network
+with that imbalance removed, and compare them again. We apply it to our own
+Hankel-structured estimator, using three training designs and three random
+seeds for each. The structural advantage is clearly positive under the usual
+training, close to zero when both networks are retrained on the region where
+the comparison is made, and negative when the loss is corrected instead.
+Compared seed by seed, the change from the usual training is large and clearly
+separated from zero; the individual endpoint values are not, and we do not
+claim them.
+
+Two further things follow. A consistent pattern within each SNR range survives
+where a single averaged number does not, and the sign of that averaged number
+depends on how the average is taken. Correcting the loss is an adaptation of a
+published remedy and is worth a substantial gain here, improving every one of
+the eighteen bin-by-seed cells --- including the two the correction penalises
+most heavily, where the published work reports a trade rather than an
+improvement. A simpler loss taken in decibels needs no bins and gives no
+difference we can resolve. All results are simulation only.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -73,30 +85,45 @@ retrieval, Rydberg atomic receiver, structural priors.
 
 \section{Introduction}
 
-\IEEEPARstart{U}{nrolling} an iterative estimator into a trained
-network~\cite{gregor2010,monga2021} has become a standard method for channel
-estimation, including for Rydberg atomic receivers, where the magnitude-only
-readout makes the problem one of phase retrieval~\cite{xiao2026,cui2025}. A
-common next step is to add an explicit structural constraint inside the
-unrolled loop, such as a low-rank projection, and to report the resulting
-improvement as evidence that the constraint supplies information the network
+\IEEEPARstart{M}{any} channel estimators are iterative. They start from a guess
+and repeat the same step many times, each repetition improving the estimate a
+little. \emph{Unrolling} turns such an algorithm into a neural
+network~\cite{gregor2010,monga2021}: instead of repeating one fixed step $T$
+times, we lay out $T$ copies of the step side by side as $T$ layers, and let
+each layer have its own parameters that are learned from data. The shape of the
+computation stays the same as the original algorithm; what changes is that the
+numbers inside it are now trained rather than derived.
+
+This has become a standard method for channel estimation, including for Rydberg
+atomic receivers, where the receiver measures only the magnitude of the field
+and the phase is never observed, so that recovering the channel is a
+phase-retrieval problem~\cite{xiao2026,cui2025}.
+
+A common next step is to add an explicit structural constraint inside the
+unrolled loop --- something that pushes the estimate towards the shape a real
+channel ought to have, such as a low-rank step. The improvement that follows is
+then reported as evidence that the constraint supplied information the network
 could not learn by itself.
 
 This paper argues that such evidence is usually not decisive. The reason is a
-convention that is so common it is rarely written down: the training loss is a
-per-sample normalized error, averaged over a training set that spans a wide SNR
-range.
+convention so common that it is rarely examined: the network is trained to
+minimise the average error over a set of training samples whose noise levels
+span a wide range.
 
-The problem with this convention is easy to state. At low SNR the normalized
-error of any estimator is large, and at high SNR it is small. When we average
-them together, the large numbers dominate. The network therefore spends most of
-its training effort on the low-SNR samples. The high-SNR samples receive very
-little attention, so the network is not trained as well there as it could be.
+\textbf{A small example shows the problem.} Suppose the error is measured as a
+fraction of the channel's own size, and we have just two training samples. The
+noisy one has error $2$ and the clean one has error $0.02$. Their average is
+$1.01$. Now suppose training improves the clean sample by half, to $0.01$. The
+average moves to $1.005$ --- almost nothing. But improving the noisy sample by
+the same fraction, to $1$, moves the average to $0.51$. Training follows
+whatever moves the average, so it works almost entirely on the noisy sample.
+The clean sample is barely trained, not because it does not matter, but because
+its numbers are small.
 
-Now suppose we add a structural constraint to this network. The constraint
-helps most where the network was least trained, which is at high SNR. The
-measured improvement is therefore large. But that improvement is at least
-partly repairing a training problem, not supplying new information. An
+Now put a structural constraint into such a network. It will help most where
+the network is weakest, which is exactly the clean, high-SNR region. The
+measured improvement will be large. But that improvement is at least partly
+repairing a training problem rather than supplying new information, and an
 experiment that does not control for this cannot tell the two apart.
 
 \textbf{The imbalance itself is known, and we do not claim it.} Wiesmayr
@@ -105,10 +132,14 @@ assisted detection and decoding: a system learns one set of parameters while
 operating over a range of SNRs, the training data is drawn from that range, and
 the total loss is then dominated by the low-SNR samples, because a small
 relative improvement at low SNR changes the cost more than a large relative
-improvement at high SNR. They propose SNR deweighting as the remedy. Work on
-deep OFDM channel estimation has separately studied training on
-SNR-restricted samples and reports the expected trade between low-noise and
-high-noise accuracy~\cite{jameel2024ofdm}.
+improvement at high SNR. They propose SNR deweighting as the remedy. They also
+observe, in their introduction, that systems are usually trained either at a
+single SNR or on samples drawn uniformly across the target range, apparently
+without the effect on performance at different SNRs being questioned. That is a
+published statement that the convention is unexamined, which is the gap this
+paper works in. Separately, work on deep OFDM channel estimation has studied
+training on SNR-restricted samples and reports the expected trade between
+low-noise and high-noise accuracy~\cite{jameel2024ofdm}.
 
 What we take from that work is the mechanism and the remedy. What is not taken
 from it, and what this paper is about, is the consequence for
@@ -118,10 +149,10 @@ the constraint supplied the improvement. Wiesmayr \emph{et al.} identify the
 problem and fix it; they do not ask what it does to the evidence.
 
 The estimator studied here is our own. We built a Hankel-structured unrolled
-network, measured an advantage at high SNR, and believed it. The control
-described in Section~\ref{sec:protocol} was run to describe that advantage
-better. It removed it instead, and we report that on our own method for the
-same reason we would report it on anyone else's.
+network, measured an advantage at high SNR, and believed it. We then ran a
+control to describe that advantage better. It removed the advantage instead,
+and we report that on our own method for the same reason we would report it on
+anyone else's.
 
 \section{System Model and Estimator}
 
@@ -220,24 +251,41 @@ so a positive $\Delta_H$ means the structural step helps.
 
 \subsection{Where the Gradient Goes}
 
-The training loss is the per-sample normalized error
-$\|\hat\bG-\bG\|_F^2/\|\bG\|_F^2$, averaged over a batch drawn from the whole
-SNR range. As explained in the introduction, this average is dominated by the
-low-SNR samples. We measured how strongly.
-
-We define the gradient share of an SNR bin $b$ as
+First, what the network is actually asked to do. For one training sample, the
+error is measured as a fraction of the channel's own size,
 \begin{equation}
-q_b=\frac{\|g_b\|}{\sum_c\|g_c\|},
+\frac{\|\hat\bG-\bG\|_F^2}{\|\bG\|_F^2},
+\label{eq:loss}
 \end{equation}
-where $g_b$ is the gradient of the loss computed on the samples in bin $b$
-alone. We measure it over $24$ batches per bin, at the selected checkpoint,
-using all trainable parameters.
+where $\hat\bG$ is the estimate and $\bG$ the true channel. Dividing by
+$\|\bG\|_F^2$ makes the number comparable across channels of different
+strengths. Training takes a batch of samples drawn from the whole SNR range,
+averages \eqref{eq:loss} over them, and adjusts the network's parameters so
+that this average goes down. As the worked example in the introduction shows,
+such an average is decided by its largest terms, which are the noisy samples.
+We measured how strongly.
+
+The quantity to measure is where the training effort goes. Training moves the
+parameters in the direction given by the gradient of the loss, so the size of
+the gradient produced by a group of samples says how much those samples are
+steering the network. We therefore split the SNR range into bins, compute the
+gradient from the samples of one bin alone, and ask what fraction of the total
+gradient size that bin accounts for. Writing $g_b$ for the gradient computed on
+bin $b$, the \emph{gradient share} of that bin is
+\begin{equation}
+q_b=\frac{\|g_b\|}{\sum_c\|g_c\|}.
+\end{equation}
+If every bin steered the network equally, each $q_b$ would be the same. We
+measure it over $24$ batches per bin, at the selected checkpoint, using all
+trainable parameters.
 
 Two cautions about this quantity are worth stating before we use it. First,
-$\sum_b\|g_b\|$ is not the same as $\|\sum_b g_b\|$, so $q_b$ is a normalized
-share of gradient sizes and not a fraction of the total gradient. Second, an
-equal share across bins is a reference we chose, not a property that an optimal
-solution must have.
+adding up the sizes of the per-bin gradients is not the same as measuring the
+size of their sum, because gradients pointing in different directions partly
+cancel: $\sum_b\|g_b\|$ is not $\|\sum_b g_b\|$. So $q_b$ is a normalized share
+of gradient sizes, not a fraction of the total gradient. Second, an equal share
+across bins is a reference we chose. Nothing says an optimal solution must
+divide its effort equally.
 
 Measured on our estimator, $89.7\%$ of the gradient comes from trials below
 $5$~dB, and the per-bin share spans a factor of $30.0$ across the range.
@@ -246,8 +294,8 @@ This raises a concern: the high-SNR region may be receiving too little of the
 training effort, so any mechanism that improves high-SNR behaviour can look as
 though it added information. \textbf{A skewed share does not prove this by
 itself.} A small gradient can also mean a region that is already fitted well.
-Section~\ref{sec:logloss} gives a case where a network that performs well still
-shows the same skew. The share is a reason to check, not a verdict.
+The share is a reason to check, not a verdict, and we treat it that way
+throughout.
 
 \subsection{The Control}
 
@@ -272,9 +320,20 @@ the training effort rather than a small part of it.
 The second way is a \emph{balanced loss}. We keep the full SNR range and
 instead weight each sample by a fixed factor $w(b)=c/m(b)$, where $m(b)$ is the
 mean per-sample normalized error in bin $b$, measured once before training, and
-$c$ is chosen so the weights have an average of one. This is an adaptation of
-the remedy in~\cite{wiesmayr2023bler}, which updates its weights during
-training; ours are fixed in advance.
+$c$ is chosen so the weights have an average of one. A bin whose errors are
+large is therefore counted less, by exactly the factor by which its errors are
+large.
+
+This is an adaptation of the remedy in~\cite{wiesmayr2023bler}, and the
+differences are worth stating exactly. Their weights are recomputed after every
+epoch from the inverse of the accumulated losses, with a stability constant and
+a normalization at the centre of their SNR grid. Ours are computed once, before
+training starts, and never change. They also note at the end of their Section~4
+that one could instead deweight using the loss of a fixed baseline, such as a
+classical system, rather than the adaptive scheme they implement --- so a
+fixed-weight variant is raised there, though not implemented. Ours is fixed in
+that sense, with one further difference: the weights come from the network's
+own error measured before training, not from a separate classical baseline.
 
 The two interventions share no machinery. One changes which channels the
 network sees; the other changes how much each channel counts, on an unchanged
@@ -362,8 +421,9 @@ cost.
 
 The obvious objection to a reweighting is that it simply moves accuracy from
 one region to another: whatever the high-SNR bins gain, the down-weighted
-low-SNR bins must have paid. Here they did not, and the check is exhaustive
-rather than pooled.
+low-SNR bins must have paid. That is what one would expect, and it is what the
+published work on this remedy reports. Here it did not happen, and the check is
+exhaustive rather than pooled.
 
 Fig.~\ref{fig:allcells} plots every SNR bin for every seed. All eighteen
 bin-by-seed point estimates favour the balanced loss, and seventeen of them
@@ -372,17 +432,48 @@ $[-5,0)$~dB bin at $+0.044$~dB. The three-seed means rise from $+0.052$~dB in
 $[-10,-5)$ to $+3.120$~dB in $[15,20)$.
 
 The two lowest bins are the ones that matter for the objection, because the
-weighting divides their contribution by about $18$ and $9$. They improve
-anyway.
+weighting divides their contribution by about $18$ and $9$. \textbf{They
+improve anyway.}
 
-A reading of why, offered as a hypothesis and not as a result: under the
-per-sample loss the low-SNR tail may dominate so strongly that the network is
-underfitted \emph{everywhere}, in which case rebalancing stops wasting capacity
-rather than moving it. We have not tested that, and the measurement should not
-be read together with the explanation. Note also that these are eighteen
-individual intervals, not a simultaneous statement about all of them at once,
-and that a positive median in a bin does not guarantee a smaller expected
-squared error there.
+\textbf{This differs from what the prior work reports.} Wiesmayr \emph{et
+al.}~\cite{wiesmayr2023bler} do not report improvement in the regime their
+deweighting penalises; where they examine it, they report the trade. In their
+narrow-range experiment, deweighted training holds a small advantage at high
+SNR while naive training keeps an even smaller advantage at the low end of the
+waterfall, and their replication on a simpler system repeats the pattern:
+training naively across the range is worst at high SNR and best at low SNR.
+Their headline wide-range result is a gain at a high-SNR operating point, and
+no per-bin low-SNR improvement is claimed. Our measurement shows improvement
+everywhere, including the two most heavily penalised bins.
+
+\textbf{Three differences must be kept in view before that contrast is read as
+a disagreement.} They are not measuring the same thing we are, not using the
+same mechanism, and not reporting the same size of effect.
+
+\emph{The metric differs.} They measure bit and block error rate on a coded
+MIMO-OFDM system. We measure normalized channel-estimation error. ``Improvement
+in the down-weighted bins'' is not the same quantity in the two papers, and a
+trade in one need not imply a trade in the other.
+
+\emph{The mechanism differs.} Their weights are recomputed each epoch from
+inverse accumulated losses, with a stability constant and a normalization at
+the centre of their grid. Ours are computed once before training and held
+fixed. Two schemes that share a motivation need not share a behaviour.
+
+\emph{The size differs.} Their deweighting gain is $0.54$~dB at $1\%$ block
+error rate, which they describe as modest but essentially free, since it comes
+from the loss function rather than from a larger receiver or more data. The
+gain we measure is larger. Because the metrics differ, the two numbers are not
+directly comparable and we do not compare them.
+
+A reading of why our bins improve, offered as a hypothesis and not as a result:
+under the per-sample loss the low-SNR tail may dominate so strongly that the
+network is underfitted \emph{everywhere}, in which case rebalancing stops
+wasting capacity rather than moving it. We have not tested that, and the
+measurement should not be read together with the explanation. Note also that
+these are eighteen individual intervals, not a simultaneous statement about all
+of them at once, and that a positive median in a bin does not guarantee a
+smaller expected squared error there.
 
 \begin{figure}[!t]
 \centering
@@ -451,10 +542,10 @@ distinction is between a benefit that depends on the training design and an
 advantage that does not, and this experiment separates the two rather than
 denying the first.
 
-We also did not measure $\Delta_H$ under the log-domain loss of
-Section~\ref{sec:logloss}, because that would need a structured network trained
-with that loss, which we did not train. Three designs are reported here, not
-four.
+One further design is absent by construction. We did not measure $\Delta_H$
+under a loss that takes the per-sample error in decibels before averaging,
+because doing so would need a structured network trained with that loss and we
+did not train one. Three designs are reported here, not four.
 
 \subsection{A Single Number Hides a Sign Change}
 
@@ -473,8 +564,11 @@ a test-set interval excluding zero.}
 \toprule
 SNR bin (dB) & Conventional & Focused & Balanced \\
 \midrule
+% src: conventional reports/p19/p29_score.json, focused reports/p17/p28_score.json,
+% balanced reports/p20/p30_score.json three-seed mean of per_seed.seed{1,2,3}.per_bin_db,
+% cross-checked against reports/p20/PART_B_C3.md table B3.4.
 $[-10,-5)$ & $-0.120$ & --- & $-0.233$ \\
-$[-5,0)$ & $-0.400$ & --- & $-0.704$ \\
+$[-5,0)$ & $-0.400$ & --- & $-0.703$ \\
 $[0,5)$ & $-0.293$ & --- & $-0.944$ \\
 $[5,10)$ & $+0.457$ & $-0.173$ & $-0.692$ \\
 $[10,15)$ & $+1.403$ & $+0.067$ & $-0.241$ \\
@@ -575,9 +669,10 @@ error.
 scored under the conventional loss, put $0.906$ to $0.911$ of the gradient
 below $5$~dB with a span above $40$. These networks perform well and are not
 undertrained in any way we can detect. A skewed gradient share therefore cannot
-certify that training was inadequate, and the first step of the control in
-Section~\ref{sec:protocol} should be read as a prompt to check, not as a test
-that returns a verdict.
+certify that training was inadequate. This is the case promised earlier: the
+first step of our own control measures the share, and this experiment shows
+that the measurement is a prompt to check rather than a test that returns a
+verdict. We use it that way, and a reader should too.
 
 \subsection{Pilot Efficiency is not Pilot-Count Generalization}
 
@@ -641,6 +736,15 @@ difference from it.
 hardware and no recorded channel data. They cover the geometric ULA model of
 \eqref{eq:chan} at $N=32$, $K=3$, one data budget and the pilot counts tested.
 
+They also cover one architecture. Everything here is measured on a single
+unrolled network, so we cannot separate what is a property of training design
+in general from what is a property of this network in particular. There is a
+clear way to fix that, and it is not ours: Wiesmayr \emph{et
+al.}~\cite{wiesmayr2023bler} repeat their whole experiment on a second, simpler
+system precisely to show that the effect is not an artifact of one
+architecture. Repeating our control on a second estimator is what the
+corresponding check would look like here, and we have not done it.
+
 Three seeds is few. The paired analysis makes three go further than three
 separate estimates would, but it does not make three many, and every interval
 over seeds in this paper rests on two degrees of freedom.
@@ -659,9 +763,12 @@ identify which of undertraining, objective alignment or sample allocation is
 responsible.
 
 Finally, the result is scoped to the structural step defined in
-Section~\ref{sec:model}, applied unconditionally at every layer with a fixed
-rank. A structural estimator that decides when to apply itself is a different
-method and is not tested here.
+Section~\ref{sec:model}: a fixed rank, applied at every layer on every trial,
+with no rule that decides whether to apply it. This is deliberately not the
+same operator as the one in the classical estimator that motivated this work,
+which chooses its rank from held-out pilots and can decline to constrain at
+all. A structural estimator that decides when to act is a different method, and
+nothing measured here applies to it.
 
 \subsection*{Data and Pre-Registration Records}
 

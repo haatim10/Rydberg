@@ -23,6 +23,42 @@ FILES = [
     "wip/spl2/haatim_structural_priors_evaluation.tex",
 ]
 
+# Values that may legitimately appear that were not at the baseline. Each is
+# declared here with its reason so the check stays meaningful rather than being
+# quietly widened. NONE of these is a measurement.
+#
+# PROMPT 23 C2 requires a worked arithmetic example showing why low-SNR samples
+# dominate an average ("if one sample has normalized error 2 and another has
+# 0.02"). Carrying that arithmetic through produces intermediate values that
+# are illustrative, not measured.
+ILLUSTRATIVE = {
+    0.01: "worked example: the clean sample's error after a halving",
+    0.51: "worked example: the average after improving the noisy sample",
+    1.01: "worked example: the average of errors 2 and 0.02",
+    1.005: "worked example: the average after halving the clean sample's error",
+}
+
+# Values CITED from prior work, not measured here. PROMPT 23 A3 requires stating
+# the size of the prior work's deweighting gain alongside our own, so that the
+# contrast is not read as a like-for-like comparison. Supplied by the brief from
+# a human reading of arXiv:2210.14103 v3.
+CITED = {
+    0.54: "Wiesmayr et al. deweighting gain at 1% BLER (their Section 4)",
+}
+
+# A value at the baseline that was WRONG and is corrected here. This is the one
+# category that overrides the standing rule, and it is deliberately narrow: the
+# correction must be verifiable against a committed scoring artefact, and the
+# reason is recorded here rather than left to a commit message.
+CORRECTED = {
+    -0.704: (-0.703,
+             "balanced-loss three-seed mean, [-5,0) dB bin. Exact mean from "
+             "reports/p20/p30_score.json is -0.70346, and "
+             "reports/p20/PART_B_C3.md table B3.4 already carried -0.703. "
+             "-0.704 was mis-transcribed via reports/p22/review_response.md "
+             "into the manuscript in the previous turn. Both now fixed."),
+}
+
 # A number: optional sign, digits, optional thousands separators ({,} or ,),
 # optional decimal part. Captures 1,586,900 / 80{,}000 / 89.7 / -0.177 / 2.171
 NUM = re.compile(r"[-+−]?\d[\d,]*(?:\{,\})?[\d,]*(?:\.\d+)?")
@@ -85,6 +121,14 @@ def main() -> int:
         # fewer times while still present is reported but is not.
         lost = set(a) - set(b)
         new_vals = set(b) - set(a)
+        fixed = {v: CORRECTED[v] for v in lost if v in CORRECTED}
+        lost = lost - set(fixed)
+        new_vals = new_vals - {t[0] for t in fixed.values()}
+        if fixed:
+            print("  CORRECTED values (baseline was wrong; verified):")
+            for v, (nv, why) in sorted(fixed.items()):
+                print(f"    {v!r} -> {nv!r}")
+                print(f"        {why}")
         fewer = {v: (a[v], b[v]) for v in set(a) & set(b) if a[v] != b[v]}
 
         print(f"\n{path}")
@@ -94,11 +138,20 @@ def main() -> int:
             print("  VALUES LOST ENTIRELY  (violation):")
             for v in sorted(lost):
                 print(f"    {v!r} (appeared {a[v]}x)")
-        if new_vals:
+        declared = {v for v in new_vals if v in ILLUSTRATIVE or v in CITED}
+        undeclared = new_vals - declared
+        if declared:
+            print("  new values, DECLARED (not our measurements):")
+            for v in sorted(declared):
+                why = ILLUSTRATIVE.get(v) or CITED[v]
+                kind = "illustrative" if v in ILLUSTRATIVE else "cited prior work"
+                print(f"    {v!r} [{kind}] — {why}")
+        if undeclared:
             bad = True
-            print("  NEW VALUES not at baseline  (violation unless ported):")
-            for v in sorted(new_vals):
+            print("  NEW VALUES not at baseline and not declared  (violation):")
+            for v in sorted(undeclared):
                 print(f"    {v!r} (appears {b[v]}x)")
+        new_vals = undeclared
         if not lost and not new_vals:
             print("  values: IDENTICAL set — no value altered, none lost")
         if fewer:
