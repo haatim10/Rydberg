@@ -1,0 +1,126 @@
+{
+  "placement": {
+    "original": {
+      "mean_of_six_medians": -0.012462152934959324,
+      "ci95": [
+        -0.049052572403345984,
+        0.03422621416076426
+      ]
+    },
+    "matching4": {
+      "mean_of_six_medians": 0.2039516649541985,
+      "ci95": [
+        0.16866235773839192,
+        0.2420651590248788
+      ]
+    },
+    "matching1": {
+      "mean_of_six_medians": 0.23911586613927657,
+      "ci95": [
+        0.20432233938316888,
+        0.28155802463018303
+      ]
+    }
+  },
+  "matched_prediction": {
+    "calibration": "Fresh N32, P20, RSR10, T100, selection25, random SNR, pooled median",
+    "targets": "Six original N16/N64 cells, same design and statistic",
+    "method": "Piecewise linear interpolation; explicit linear endpoint extrapolation, no target fitting",
+    "MAE_db": {
+      "raw_L": 2.0674277876302103,
+      "L_over_cap": 0.07265688176385934,
+      "rho": 0.31680595365852793
+    },
+    "MAE_rho_minus_normalized_L_ci95": [
+      0.08568552124188278,
+      0.283245090812073
+    ],
+    "rows": [
+      {
+        "tag": "rho_N16_L2",
+        "measured": 4.169880199133074,
+        "predictions": {
+          "raw_L": 7.135610691258132,
+          "L_over_cap": 3.938096203579992,
+          "rho": 3.4687028672251476
+        },
+        "extrapolated": {
+          "raw_L": false,
+          "L_over_cap": false,
+          "rho": false
+        }
+      },
+      {
+        "tag": "rho_N16_L4",
+        "measured": 1.5320067187159012,
+        "predictions": {
+          "raw_L": 3.938096203579992,
+          "L_over_cap": 1.5851389079658844,
+          "rho": 1.3027087357235134
+        },
+        "extrapolated": {
+          "raw_L": false,
+          "L_over_cap": false,
+          "rho": false
+        }
+      },
+      {
+        "tag": "rho_N16_L7",
+        "measured": 0.3232095623728239,
+        "predictions": {
+          "raw_L": 1.9581273795188663,
+          "L_over_cap": 0.34925790050742456,
+          "rho": 0.1324537167038261
+        },
+        "extrapolated": {
+          "raw_L": false,
+          "L_over_cap": false,
+          "rho": true
+        }
+      },
+      {
+        "tag": "rho_N64_L8",
+        "measured": 3.962301688680677,
+        "predictions": {
+          "raw_L": 1.5851389079658844,
+          "L_over_cap": 3.938096203579992,
+          "rho": 4.389815237022569
+        },
+        "extrapolated": {
+          "raw_L": false,
+          "L_over_cap": false,
+          "rho": false
+        }
+      },
+      {
+        "tag": "rho_N64_L14",
+        "measured": 1.90550156465397,
+        "predictions": {
+          "raw_L": 0.34925790050742456,
+          "L_over_cap": 1.9581273795188663,
+          "rho": 2.131360261012129
+        },
+        "extrapolated": {
+          "raw_L": false,
+          "L_over_cap": false,
+          "rho": false
+        }
+      },
+      {
+        "tag": "rho_N64_L29",
+        "measured": 0.2489549171563213,
+        "predictions": {
+          "raw_L": -1.21546756962841,
+          "L_over_cap": 0.2971003848362301,
+          "rho": 0.3751872338381259
+        },
+        "extrapolated": {
+          "raw_L": true,
+          "L_over_cap": false,
+          "rho": false
+        }
+      }
+    ],
+    "warning": "All six target gains are positive; sign accuracy cannot validate failure detection."
+  }
+}

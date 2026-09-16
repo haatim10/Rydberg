@@ -161,9 +161,12 @@ def implementation_checks(quick: bool = False) -> None:
           f"max|diff|={np.abs(hp.unlift(hp.lift(g)) - g).max():.3e}")
 
     # 5. rank selection uses NO ground truth
-    src = (HERE.parent / "rydberg_sim" / "track_b_proposed.py").read_text()
-    body = src[src.index("def select_order_heldout"):src.index("def hs_gs(")]
+    import inspect
+    from rydberg_sim.track_b_proposed import select_order_heldout
+    # Function order in the module must not turn this into an empty slice.
+    body = inspect.getsource(select_order_heldout)
     check("5 rank selection is not an oracle",
+          bool(body.strip()) and
           all(t not in body for t in ("L_k", "world.G", "G_true", ".L_true")),
           "no ground-truth symbol appears in select_order_heldout")
 
