@@ -1,7 +1,11 @@
 # PROMPT 23 — report
 
-Branch `paper2-style`. Paper 1 untouched: `git diff f76ed63 -- paper/thesisproj/`
-is empty.
+Branch `paper2-style`, branched from `739dba4` (the end of PROMPT 22).
+
+**Paper 1 untouched this turn:** `git diff 739dba4 -- paper/thesisproj/` is
+empty. (Against `f76ed63` it is *not* empty, but that is PROMPT 22's work, not
+this turn's — `f76ed63` is the Paper 2 number baseline, not the Paper 1 freeze
+point. An earlier draft of this report cited the wrong one.)
 
 **Scope note, stated because the brief left it open.** Part C says Paper 2 must
 read like Paper 1, and Paper 1's artefact is `paper/thesisproj/`. So the full
@@ -253,7 +257,7 @@ pages                      thesis 7, submission 7  (both 7 at baseline too)
 pdflatex                   zero errors, zero undefined references,
                            zero undefined citations, both files
 tests                      450 passed in 213.77s
-Paper 1                    untouched — git diff f76ed63 -- paper/thesisproj/ empty
+Paper 1                    untouched this turn — git diff 739dba4 -- paper/thesisproj/ empty
 ```
 
 Commits on `paper2-style`:
