@@ -506,33 +506,29 @@ CCRB as absolute lower limits on their measured NMSE.
 
 \subsection{Experimental Setup}
 
-The verification campaign contains 27,300 fresh paired Monte Carlo trials
-across 73 operating cells, with 300 or 400 trials per cell, plus 2,400
-bound evaluations on the main-figure channel realizations. Trial counts were
-fixed before simulation. Within a trial, all estimators use the same channel,
-pilots, reference field, and noise.
+We use simulations to compare EM-GS with the proposed HS-GS estimator. The
+channels are generated using the multipath model in \eqref{eq:chan}. Unless
+otherwise stated, we use $N=32$ array elements, $K=3$ users, $P=30$ pilot
+signals, and an RSR of $12$~dB.
 
-The principal comparison uses $N=32$, $K=3$, $P=30$, RSR $=12$~dB,
-100 final EM-GS updates, 25 updates per candidate rank, and four Cadzow
-sweeps per structural application. The path-count sweep uses 50 final and
-20 candidate updates. The matched effective-rank experiments use $P=20$,
-RSR $=10$~dB, 100/25 updates, and SNR drawn uniformly from
-$[-10,20]$~dB on a millidecibel grid.
+For each setting, we repeat the simulation 300 or 400 times using different
+channels and noise realizations. In every trial, EM-GS and HS-GS use the same
+channel, pilots, reference field, and noise. Therefore, any difference in
+their results comes from the Hankel processing used by HS-GS.
 
-We report two different summaries. For trial $i$, let
-$e_{m,i}=\|\widehat{\bG}_{m,i}-\bG_i\|_F^2$ and
-$d_i=\|\bG_i\|_F^2$. The plotted NMSE and the paired-median gain are
-\begin{align}
-\mathrm{NMSE}_{m,\mathrm{dB}}
- &=10\log_{10}\frac{\sum_i e_{m,i}}{\sum_i d_i},\\
-\Delta_{\mathrm{med}}
- &=\operatorname{median}_i\!
- \left[10\log_{10}\frac{e_{\mathrm{EM},i}}{e_{\mathrm{HS},i}}\right].
-\end{align}
-The vertical separation of two NMSE curves is a ratio-of-sums gain; it need
-not equal $\Delta_{\mathrm{med}}$. Pointwise 95\% intervals use 4,000 paired
-bootstrap resamples. Pooled random-SNR medians are conditional on the stated
-SNR distribution.
+The main experiment uses 100 EM-GS updates. The rank is selected using 25
+updates for each possible rank, and HS-GS uses four Cadzow sweeps after each
+update. The path-count experiment uses 50 EM-GS updates and 20 updates for
+rank selection. For the effective-rank experiment, we use $P=20$, RSR
+$=10$~dB, and randomly choose the SNR between $-10$ and $20$~dB for each
+trial.
+
+We use two ways to summarize the results. The NMSE curves show the average
+squared channel-estimation error across all trials. We also compare EM-GS and
+HS-GS in each individual trial, and report the median improvement. These two
+measures can give slightly different values because they summarize the errors
+in different ways. The error bars in the figures show 95\% confidence
+intervals.
 
 \subsection{Principal Performance and Array Size}
 \label{sec:main}
