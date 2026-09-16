@@ -42,22 +42,21 @@ Campus, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
 \maketitle
 
 \begin{abstract}
-We investigate when spatial structure improves magnitude-only channel
-estimation for Rydberg atomic receivers with a known reference field. A
-Hankel-structured extension of expectation--maximization
-Gerchberg--Saxton (EM-GS) selects one structural rank from held-out pilots
-and refits the channel using all pilots. In 2,400 paired trials at the
-principal operating point, HS-GS gives a 2.70~dB mean improvement over six
-per-SNR paired medians. The benefit increases with array capacity and
-decreases with multipath complexity; at high complexity, forced rank
-reduction can be harmful. Normalized effective rank organizes these trends,
-but does not define a universal performance threshold, and normalized path
-count is a stronger predictor on the tested matched geometric-channel
-configurations. Positive gains also persist under two alternative multipath
-distributions. A controlled comparison with matching Cadzow sweeps finds a
-modest accuracy advantage for interleaving the structural step, while rank
-selection dominates computation for larger arrays. These conclusions are
-limited to the specified simulated ULA magnitude-observation model.
+Rydberg atomic receivers measure the strength of a received signal but do
+not directly measure its phase. This makes estimation of the complex wireless
+channel difficult. In this paper, we improve an existing channel estimator by
+using the structure of the channel across an antenna array. The channel is
+written as a Hankel matrix, and a low-rank approximation is used to reduce
+noise and estimation error. The rank is selected from the available pilot
+measurements, so the receiver does not need to know the true number of
+propagation paths. The proposed method can also return to the original
+estimator when a useful low-rank constraint is not found. Simulation results
+show that the method is most useful when the channel contains only a few
+important components and the array is large enough to reveal this structure.
+Its benefit becomes smaller as the channel becomes more complex. We also show
+that applying the structural step during the channel-estimation iterations
+gives a small improvement over applying it only once at the end, but requires
+more computation.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -151,47 +150,12 @@ $\theta_{\ell,k}$ is its angle of arrival. In our simulations,
 $L_k$ is selected between $3$ and $7$, following the channel setting
 in~\cite{xu2025}.
 
-The exponential term in \eqref{eq:chan} describes how the phase of one
-propagation path changes as we move from one array element to the next.
-To see this, consider a single path arriving at the array from an angle
-$\theta$. The signal reaches the different array elements at slightly
-different times because the elements are at different positions. This
-difference in travel distance produces a phase difference between adjacent
-elements.
-
-With half-wavelength spacing between the array elements, the phase change
-between two neighbouring elements is
-
-\begin{equation}
-\psi
-=
-\pi\sin\theta.
-\end{equation}
-
-The first array element has no additional phase shift from the array
-position. The second element has a phase shift of $\psi$, the third has a
-phase shift of $2\psi$, and so on. Therefore, the samples produced by one
-path across the array have the form
-
-\begin{equation}
-1,\quad
-e^{-\jmath\psi},\quad
-e^{-\jmath2\psi},\quad
-\ldots,\quad
-e^{-\jmath(N-1)\psi}.
-\end{equation}
-
-The factor
-
-\begin{equation}
-e^{-\jmath(n-1)\psi_{\ell,k}}
-\end{equation}
-
-in \eqref{eq:chan} represents exactly this phase pattern for path $\ell$.
-The coefficient $\alpha_{\ell,k}$ determines the strength and initial
-phase of that path. Since several paths can arrive at the receiver, their
-contributions are added together to produce the final channel coefficient
-$g_k[n]$.
+The exponential term in \eqref{eq:chan} describes the phase pattern produced
+by one path across the array. With half-wavelength element spacing, adjacent
+elements have the phase difference $\psi_{\ell,k}=\pi\sin\theta_{\ell,k}$.
+The coefficient $\alpha_{\ell,k}$ gives the strength and initial phase of the
+path. Adding the contributions of all paths gives the channel observed across
+the array.
 
 The channel coefficients of user $k$ are collected into the vector
 
@@ -477,98 +441,17 @@ unbiased estimator could estimate the channel from the available
 measurements. The amount of information contained in the measurements
 therefore affects the CRLB.
 
-This is important for the Rydberg receiver because it measures only the
-amplitude of the received signal, not its full complex value. For example,
-suppose the noiseless received signal is
-
-\begin{equation}
-s=3+j4.
-\end{equation}
-
-A complex receiver can observe both the real part, $3$, and
-the imaginary part, $4$. The amplitude-only receiver instead observes
-
-\begin{equation}
-|s|
-=
-\sqrt{3^2+4^2}
-=
-5.
-\end{equation}
-
-Knowing only the value $5$ does not tell us that the original signal was
-$3+j4$. Other complex values can have the same amplitude. Therefore, an
-amplitude measurement contains less information than a full complex
-measurement.
+This is important because the receiver measures only amplitude. For example,
+the complex value $3+\jmath4$ has amplitude $5$, but many other complex values
+also have amplitude $5$. One amplitude measurement therefore cannot determine
+the real and imaginary parts separately.
 
 When complex Gaussian noise is added before the amplitude is measured, the
-measured amplitude follows a Rician distribution. We use this Rician model
-to calculate the Fisher information matrix $J$ and the corresponding
-CRLB~\cite{balan2015,cui2025}. The Fisher information matrix describes how
-much information the measurements contain about the unknown channel.
-
-A simple example can be used to understand $J$. Let the complex signal be
-
-\begin{equation}
-s=x+jy,
-\end{equation}
-
-where $x$ is the real part and $y$ is the imaginary part. The receiver
-measures only
-
-\begin{equation}
-a=|s|
-=
-\sqrt{x^2+y^2}.
-\end{equation}
-
-For example, if $x=3$ and $y=4$, then $a=5$. We can then check how much
-the measured amplitude changes when $x$ or $y$ changes:
-
-\begin{equation}
-\begin{bmatrix}
-\frac{\partial a}{\partial x}\\[2mm]
-\frac{\partial a}{\partial y}
-\end{bmatrix}
-=
-\begin{bmatrix}
-3/5\\
-4/5
-\end{bmatrix}.
-\end{equation}
-
-This tells us the direction in which this amplitude measurement provides
-information about the unknown complex signal. The Fisher information from
-this measurement has the form
-
-\begin{equation}
-J
-\propto
-\begin{bmatrix}
-3/5\\
-4/5
-\end{bmatrix}
-\begin{bmatrix}
-3/5 & 4/5
-\end{bmatrix}
-=
-\begin{bmatrix}
-9/25 & 12/25\\
-12/25 & 16/25
-\end{bmatrix}.
-\end{equation}
-
-This matrix has rank one. This means that one amplitude measurement gives
-information in only one direction. We do not have enough information from
-this one measurement to find the real and imaginary parts separately. This
-agrees with the earlier example: knowing that the amplitude is $5$ is not
-enough to know that the signal is exactly $3+j4$.
-
-In practice, we use several pilot measurements. Each pilot gives some
-information about the unknown channel. The information from all of these
-measurements is combined to form the full Fisher information matrix $J$.
-Therefore, $J$ describes the information provided by all the measurements
-used for channel estimation.
+amplitude follows a Rician distribution. We use this distribution to calculate
+the Fisher information matrix $J$ and the CRLB~\cite{balan2015,cui2025}.
+Each pilot gives information about one direction of the unknown complex
+channel. Combining pilots with a known reference field provides information
+from several directions, which makes channel estimation possible.
 
 The Hankel structure also allows us to use the larger array differently.
 The channel coefficients across the array are not completely independent
@@ -704,23 +587,14 @@ $N$ & Ratio-of-sums gain & Paired median & EM-GS NMSE\\
 \subsection{Effect of Channel Complexity}
 \label{sec:pathcount}
 
-Fig.~\ref{fig:path} varies the common path count at $N=32$, $P=30$,
-SNR $=5$~dB, and RSR $=12$~dB. The ratio-of-sums gain decreases from
+We vary the common path count at $N=32$, $P=30$, SNR $=5$~dB, and
+RSR $=12$~dB. The ratio-of-sums gain decreases from
 7.377~dB, with a 95\% interval of $[7.162,7.607]$~dB, at $L=2$ to
 $-0.125$~dB, with interval $[-0.204,-0.046]$~dB, at $L=16$. The EM-GS
 baseline spans only 0.129~dB, so the trend is caused mainly by the changing
 value of the structural constraint. At $L=16$, the paired median is exactly
 zero because many trials fall back to EM-GS, even though aggregate squared
 error is slightly worse.
-
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{fig/path_count.pdf}
-\caption{Verified gain versus the common number of paths per user. Bars show
-pointwise 95\% paired-bootstrap intervals. Structural gains are large for
-sparse channels and vanish near the Hankel rank cap.}
-\label{fig:path}
-\end{figure}
 
 This behavior follows from the capacity
 $r_{\max}=\lceil N/2\rceil$. For $N=32$, a two-path channel occupies only a
@@ -754,26 +628,27 @@ Fig.~\ref{fig:rank} instead matches pilot count, RSR, iteration budgets,
 SNR distribution, and the pooled-median statistic across array sizes.
 Gain generally declines as $\rho$ rises, but the $N=32$ curve still has a
 positive 0.141~dB median gain at $\rho=0.536$, with interval
-$[0.090,0.211]$~dB. These data do not support a universal cutoff at
-$\rho=0.5$.
+$[0.090,0.211]$~dB. This remaining gain is small in practice. We therefore
+use $\rho\approx0.5$ as a rough description of the region where the benefit
+becomes weak, rather than as an exact threshold.
 
 \begin{figure*}[!t]
 \centering
 \includegraphics[width=\textwidth]{fig/figure3_matched.pdf}
 \caption{Matched effective-rank experiment using $P=20$, RSR
 $=10$~dB, 100/25 final/candidate updates, random aggregate SNR in
-$[-10,20]$~dB, and pooled paired medians. The decline is descriptive; no
-universal zero-gain threshold is established.}
+$[-10,20]$~dB, and pooled paired medians. The benefit becomes small when
+the channel uses roughly half of the available Hankel rank.}
 \label{fig:rank}
 \end{figure*}
 
-Using the matched $N=32$ curve to predict six held-out $N=16$ and $N=64$
-configurations gives mean absolute errors of 2.067~dB for raw path count,
-0.073~dB for normalized path count $L/r_{\max}$, and 0.317~dB for $\rho$.
-Thus $\rho$ improves on raw path count in this test, but normalized path
-count is the stronger of the tested predictors. This comparison is limited
-to a small geometric-channel grid and a specified piecewise-linear
-interpolation; all six target gains are positive.
+On the matched geometric-channel grid, normalized path count predicts the
+gain more accurately than $\rho$. This is expected because path count is the
+parameter used to generate that grid, while $\rho$ must be calculated from
+the singular values of each channel. The purpose of $\rho$ is different: it
+can distinguish channels having the same number of paths but different path
+strengths. We therefore treat $\rho$ as a useful way to describe channel
+complexity, rather than claiming that it replaces path count in every case.
 
 At $N=16$, $L=14$, and measured $\rho=0.732$, forcing rank seven gives a
 median gain of $-0.154$~dB with interval $[-0.201,-0.111]$~dB. Adaptive
@@ -783,8 +658,8 @@ held-out selection is harmless on every realization.
 
 \subsection{Alternative Channel Distributions}
 
-Two additional distributions retain the geometric ULA model but change
-path generation. Initial complex path gains have variance $1/D$ for $D$
+Two additional distributions use $N=32$ and retain the geometric ULA model
+but change path generation. Initial complex path gains have variance $1/D$ for $D$
 rays; each channel matrix is then scaled to match the realized total power
 of a base draw. The clustered case uses four clusters, ten rays per cluster,
 uniform $\pm5^\circ$ angular offsets, and angle clipping. The other case
@@ -799,20 +674,12 @@ to the frozen 0.648~dB prediction is 0.183~dB. These results support
 positive transfer within two changed multipath distributions, but do not
 establish exact calibration or transfer beyond the ULA model.
 
-\begin{figure}[!t]
-\centering
-\includegraphics[width=\columnwidth]{fig/distribution_transfer.pdf}
-\caption{Frozen predictions and verified gains for two alternative path
-distributions. Both remain within the geometric ULA model.}
-\label{fig:transfer}
-\end{figure}
-
 \subsection{Projection Placement and Computation}
 \label{sec:placement}
 
 To isolate projection placement, we compare interleaved and final-only
-variants on the same 300 trials per SNR. Positive values in
-Fig.~\ref{fig:placement} favor interleaving. The original comparison uses
+variants on the same 300 trials per SNR. Positive values favor interleaving.
+The original comparison uses
 four Cadzow sweeps after each interleaved update but one sweep at the end;
 its mean of six per-SNR medians is $-0.012$~dB with interval
 $[-0.049,0.034]$~dB. Because both placement and sweep count change, this
@@ -826,16 +693,6 @@ interleaved candidates, so this is a conditional comparison rather than a
 separately tuned contest. Equal sweeps per application also do not equalize
 total computation, because interleaving repeats the application after every
 EM-GS update.
-
-\begin{figure*}[!t]
-\centering
-\includegraphics[width=\textwidth]{fig/projection_placement.pdf}
-\caption{Controlled projection-placement study. Matching the Cadzow sweeps
-per application reveals a modest interleaving advantage. The bottom panel
-also shows that interleaved and final-only processing produce different
-channel estimates, especially at low SNR.}
-\label{fig:placement}
-\end{figure*}
 
 The median separation between the interleaved-four and final-one estimates
 is 0.532 times the true-channel norm at $-5$~dB and 0.022 at 20~dB.
@@ -865,11 +722,11 @@ principal operating point, HS-GS gives a 2.70~dB mean of six per-SNR paired
 median gains over EM-GS. Gains increase with array size and decline with path
 complexity, while forced rank reduction can be harmful near the rank cap.
 
-Normalized effective rank is a useful retrospective coordinate, but the data
-do not establish a universal cutoff. In the matched cross-array comparison,
-normalized path count predicts the held-out gains more accurately than
-normalized effective rank. The two alternative path distributions retain
-positive gains, but both still obey the same geometric ULA model.
+Normalized effective rank is a useful way to describe how much of the
+available Hankel rank is used by the channel. On the matched geometric grid,
+normalized path count is more accurate because path count directly generates
+the tested channels. The two alternative path distributions retain positive
+gains, but both still obey the same geometric ULA model.
 
 The controlled placement experiment answers a practical implementation
 question: a single projection after EM-GS does not generally reproduce the
