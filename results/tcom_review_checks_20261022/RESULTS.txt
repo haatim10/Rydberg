@@ -1,0 +1,137 @@
+REVIEW CHECKS AND MATCHED-BUDGET URFORMER COMPARISON - 22 OCTOBER 2026
+All earlier models, policies and scientific result files were preserved. No receiver retuning or new repair was performed. The current paper has not been edited by these checks.
+
+1. ACCEPTANCE CUTOFF
+Checked 2472 actual recovery decisions. Minimum mean fitting-loss improvement: 0.021780355.
+Changed decisions at cutoffs 1e-12,1e-10,1e-8,1e-6,1e-4,0.01: [0, 0, 0, 0, 0, 0]
+Scale-aware rounding margin changes: 0. Float32 LOSS-SCORE changes: 0, nonfinite scores: 0.
+This tests saved decisions and score arithmetic, not full float32 inference or all possible future channels. No new cutoff was selected.
+
+2. REMOVE ONE PART AT A TIME - SAME153SETTINGS,1152INDEPENDENTCHANNELS,3TRAININGRUNS
+Method                    Mean NMSE dB        BER %   Slower full p90 ms
+full                        -38.620221     0.522496                4.447
+no_recovery                 -38.113182     0.522496                4.342
+no_final_filter             -37.060368     0.522496                4.173
+neither                     -36.553329     0.522496                4.082
+Each setting receives equal weight in the dB score. BER is unchanged across these four versions on this test. Removing the final filter leaves the trained stage filters intact. The combined-removal version is also shown.
+Descriptive paired95% intervals for reference-minus-full NMSE:
+  no_recovery: [0.3535551720192994, 0.6202908674278125]
+  no_final_filter: [1.5407702722772632, 1.5793304290592107]
+  neither: [1.9133793460276873, 2.182610522404646]
+
+3. CALIBRATION ERRORS - SMALL FIXED SCREEN
+18settings: references5/20dB; SNR10/32.5/45dB; paths2/4/random3-7.192independentchannels,576conditioncases peroffset. Actual observations are identical across methods and offsets; only supplied calibration changes. All methods use the same supplied calibration in the detector.
+Input change                      Proposed NMSE   Proposed BER %   Sparse BER %   Phase-adjusted NMSE
+correct                               -38.07081         0.034361       0.033456             -38.07081
+noise_-2db                            -37.98912         0.037375       0.034813             -37.98912
+noise_-1db                            -37.92094         0.036621       0.033456             -37.92094
+noise_+1db                            -38.07883         0.033607       0.032100             -38.07883
+noise_+2db                            -36.78874         0.033306       0.030292             -36.78874
+reference_level_-1db                  -13.05813         6.177662       6.229203             -13.05813
+reference_level_+1db                  -13.33777         8.084521       8.109538             -13.33777
+reference_phase_-10deg                -14.77360         0.034361       0.033456             -38.07081
+reference_phase_-5deg                 -19.96795         0.034361       0.033456             -38.07081
+reference_phase_+5deg                 -19.94404         0.034361       0.033456             -38.07081
+reference_phase_+10deg                -14.75003         0.034361       0.033456             -38.07081
+A constant reference-phase offset can be absorbed by a rotation of the estimated channel. Absolute channel NMSE therefore changes even when magnitude predictions and BER do not. Phase-adjusted NMSE removes the KNOWN EXPERIMENTAL offset only for scoring; that information never enters inference. This does not test time-varying or independent per-antenna phase errors.
+Largest setting-level NMSE losses for noise input +2dB (loss,setting,wrong-inputNMSE,correct-inputNMSE):
+  (9.96785032683626, 'random3to7_rsr20_snr32.5_noise_+2db', -31.93852189129323, -41.90637221812949)
+  (9.087547686657821, 'L4_rsr20_snr32.5_noise_+2db', -33.00639511968859, -42.09394280634641)
+  (2.8124362323888548, 'L2_rsr20_snr32.5_noise_+2db', -41.43379450456084, -44.24623073694969)
+  (1.2898312573587631, 'L4_rsr5_snr32.5_noise_+2db', -36.43935199252693, -37.72918324988569)
+The largest losses are near the strong-reference32.5dB transition; aggregate averages alone hide this sensitivity. No new switch was tuned to remove it.
+This is a representative sensitivity screen, not a new whole153setting robustness claim. Per-range and per-method scores are retained in robustness/summary.json.
+
+4. URFORMER - ONE FIXED ARCHITECTURE, THREE SEPARATELY TRAINED RUNS
+URformer parameters perrun: [1586900, 1586900, 1586900]; selected validation epochs: [20, 19, 18].
+Same16384training examples,2048validation examples,30inputpilots,20epochs,batch32,initialLR0.001,and per-run training masks/orders as our controller. URformer uses true-channel NMSE labels and a cosine learning-rate schedule. Its spectral initialization uses only the30inputpilots. Original39pilot observations were regenerated and matched exactly before adding labels in a separate new directory.
+Architecture:10unrolledlayers,3Transformerencoders/layer,width64; no Hankel additions. This is a matched-budget adaptation to ourK=3geometric channel, not the publishedK=4clustered-channel50epoch experiment. The baseline is standalone: it does not receive our additional high-SNR EM/filter/recovery policy. The ordinary-SNR comparison directly compares the learned starts. No architecture/initialization/hyperparameter search was performed.
+
+all (153 settings)
+Method                    Mean NMSE dB    Pooled NMSE        BER %
+receiver                    -38.620221     0.00897384     0.522496
+urformer                    -13.433434     0.05913551     0.846585
+prior                       -38.113182     0.00900482     0.522496
+compact_sparse              -31.895492     0.00868525     0.489159
+em100                       -30.562237     0.02839215     0.828828
+
+ordinary (45 settings)
+Method                    Mean NMSE dB    Pooled NMSE        BER %
+receiver                    -20.241756     0.03016997     1.776440
+urformer                    -11.015732     0.11086085     2.798213
+prior                       -20.241756     0.03016997     1.776440
+compact_sparse              -18.964081     0.02657511     1.662191
+em100                       -15.116997     0.09321339     2.814987
+
+weak_target (24 settings)
+Method                    Mean NMSE dB    Pooled NMSE        BER %
+receiver                    -48.643835     0.00003879     0.000000
+urformer                    -13.678672     0.04390993     0.079798
+prior                       -45.411457     0.00023670     0.000000
+compact_sparse              -25.607369     0.00307962     0.001441
+em100                       -24.969832     0.00332493     0.003560
+
+high (45 settings)
+Method                    Mean NMSE dB    Pooled NMSE        BER %
+receiver                    -56.743762     0.00000585     0.000000
+urformer                    -14.466189     0.03738358     0.033306
+prior                       -56.512132     0.00000599     0.000000
+compact_sparse              -44.052437     0.00108104     0.000633
+em100                       -43.930143     0.00110006     0.001130
+
+5. RUNTIME - TWO ISOLATED WINDOWS AFTER ALL NUMERICAL JOBS
+Complete batch-one CPU inference,one thread,doubleprecision. All3fits must pass full-grid and weak-target p90 in both windows. Model loading and BER decoding excluded. Our receiver uses its optimized NumPy/SciPy implementation; URformer uses the prepared PyTorch implementation. These are implementation measurements, not a universal algorithmic speed limit.
+full                     fullp90=4.447ms targetp90=4.542ms maximum=21.049ms calls>10.74ms=8 all-p90-pass=True
+no_recovery              fullp90=4.342ms targetp90=4.398ms maximum=122.294ms calls>10.74ms=6 all-p90-pass=True
+no_final_filter          fullp90=4.173ms targetp90=4.348ms maximum=39.206ms calls>10.74ms=5 all-p90-pass=True
+neither                  fullp90=4.082ms targetp90=4.207ms maximum=20.030ms calls>10.74ms=5 all-p90-pass=True
+urformer                 fullp90=5.811ms targetp90=5.851ms maximum=59.686ms calls>10.74ms=10 all-p90-pass=True
+compact_sparse           fullp90=5.645ms targetp90=5.108ms maximum=30.539ms calls>10.74ms=3 all-p90-pass=True
+em100                    fullp90=5.467ms targetp90=5.420ms maximum=50.580ms calls>10.74ms=5 all-p90-pass=True
+
+6. VERIFICATION AND LIMITS
+{
+  "passed": true,
+  "urformer_conventions_and_precision": {
+    "passed": true,
+    "maximum_batch_vs_saved_difference": 0.0,
+    "maximum_float32_vs_float64_channel_difference": 1.9736298432786565e-06,
+    "maximum_exact_EM_degeneration_difference": 1.91902702471848e-12,
+    "validation_recomputed_exactly": true,
+    "selected_checkpoints": [
+      {
+        "seed": 9101,
+        "selected_epoch": 20,
+        "checkpoint_sha256": "e63f3b2362e0f727c4f6b30c27375cbcbf5b59fd7555e468b7640240c452d30e",
+        "validation_score": 0.2955413038737527,
+        "heldout_nll": 3.6797035900769126
+      },
+      {
+        "seed": 9102,
+        "selected_epoch": 19,
+        "checkpoint_sha256": "2d4434926e9dcc1ccab8ddd593b12f5e900337ff5215f058b6450ff832cb40ea",
+        "validation_score": 0.29382429184986364,
+        "heldout_nll": 3.644583934235298
+      },
+      {
+        "seed": 9103,
+        "selected_epoch": 18,
+        "checkpoint_sha256": "f68388ef93b0b558a94cf7696e6a39954b3612b37c13c0cddf33fe14e1271696",
+        "validation_score": 0.2933068500465034,
+        "heldout_nll": 3.6383292899312885
+      }
+    ],
+    "interpretation": "Checks implementation conventions and precision only. No hyperparameters or weights changed; not evidence of URformer convergence."
+  },
+  "original_predictions_and_bit_counts_rechecked": 117504,
+  "base_dispatch_max_error": 0.0,
+  "ablation_cells": 153,
+  "robustness_cells": 198,
+  "urformer_cells": 153,
+  "independent_rician_decodes": 28,
+  "all_sources_and_original_weights_unchanged": true,
+  "phase_cells_checked": 72,
+  "phase_changed_bit_counts": 0,
+  "maximum_phase_adjusted_squared_error_difference": 5.329070518200751e-15
+}
+Bootstrap intervals are descriptive and conditional on the trained runs and simulation populations. Zero observed errors do not prove zero population BER or equivalence. These checks do not test new user counts,pilot designs,hardware,or new training populations. A 20epoch budget comparison does not establish URformer convergence or reproduce its published50epoch performance.

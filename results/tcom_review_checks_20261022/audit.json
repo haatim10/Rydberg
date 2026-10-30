@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "urformer_conventions_and_precision": {
+    "passed": true,
+    "maximum_batch_vs_saved_difference": 0.0,
+    "maximum_float32_vs_float64_channel_difference": 1.9736298432786565e-06,
+    "maximum_exact_EM_degeneration_difference": 1.91902702471848e-12,
+    "validation_recomputed_exactly": true,
+    "selected_checkpoints": [
+      {
+        "seed": 9101,
+        "selected_epoch": 20,
+        "checkpoint_sha256": "e63f3b2362e0f727c4f6b30c27375cbcbf5b59fd7555e468b7640240c452d30e",
+        "validation_score": 0.2955413038737527,
+        "heldout_nll": 3.6797035900769126
+      },
+      {
+        "seed": 9102,
+        "selected_epoch": 19,
+        "checkpoint_sha256": "2d4434926e9dcc1ccab8ddd593b12f5e900337ff5215f058b6450ff832cb40ea",
+        "validation_score": 0.29382429184986364,
+        "heldout_nll": 3.644583934235298
+      },
+      {
+        "seed": 9103,
+        "selected_epoch": 18,
+        "checkpoint_sha256": "f68388ef93b0b558a94cf7696e6a39954b3612b37c13c0cddf33fe14e1271696",
+        "validation_score": 0.2933068500465034,
+        "heldout_nll": 3.6383292899312885
+      }
+    ],
+    "interpretation": "Checks implementation conventions and precision only. No hyperparameters or weights changed; not evidence of URformer convergence."
+  },
+  "original_predictions_and_bit_counts_rechecked": 117504,
+  "base_dispatch_max_error": 0.0,
+  "ablation_cells": 153,
+  "robustness_cells": 198,
+  "urformer_cells": 153,
+  "independent_rician_decodes": 28,
+  "all_sources_and_original_weights_unchanged": true,
+  "phase_cells_checked": 72,
+  "phase_changed_bit_counts": 0,
+  "maximum_phase_adjusted_squared_error_difference": 5.329070518200751e-15
+}

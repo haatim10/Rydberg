@@ -1,0 +1,222 @@
+{
+  "name": "Review checks with unchanged final receiver",
+  "version": 1,
+  "seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "source_hashes": {
+    "tcom_filter_continuation_20261019/analysis.py": "4d3826c0304f441723bd1630b74703199cad4ced507d33d847ebaf97abf9d6fa",
+    "tcom_filter_continuation_20261019/study.py": "1ce4cffa709b881508de362c7cd2aca95ba3ca8a3dba0de63f77b474ef6d0d77",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c",
+    "tcom_hybrid_20261020/analysis.py": "250112f954e80378beae3fa49b15e9dc32801084cea20e6cc791b650dedbf972",
+    "tcom_hybrid_20261020/ber.py": "48a7386b8947386fe16304dd22e6700ffd965c165758dd158773ce58396ec20e",
+    "tcom_hybrid_20261020/ber_audit.py": "1d1b9e473e7115b71934674ed14586db185b60c6a251352c25f9114b4971af9b",
+    "tcom_hybrid_20261020/checks.py": "8cc651d7302bffb41f0936be131fe4eef5b9cb71789eefe4d8fb106caf67f34c",
+    "tcom_hybrid_20261020/execution.py": "9452109557784dc847e1c6ee7eda130671ed8e0a99b2607e7b0d9a144f158fe9",
+    "tcom_hybrid_20261020/inference.py": "f980b125bcdc8aa25281756535d98cd212ddbdaf35f5ae967ecf2dc79552b8d3",
+    "tcom_hybrid_20261020/pipeline_checks.py": "2ba7f76e34b2760a8cdac4109a91e1c736a095f6ae648d9745d5eded77509d03",
+    "tcom_hybrid_20261020/study.py": "139703d9e4a1472a4e09c9b79f95e6609ad2e9c7a5fda39536033878182e29ec",
+    "tcom_hybrid_sensitivity_20261020/__init__.py": "d29eda05a0c3e0f67a6bd5d355e6108225b460bc52678202fbb39b2ee9e93b02",
+    "tcom_hybrid_sensitivity_20261020/analysis.py": "301e6dc21fe28e9a0b0cb5dd85d50d24bc77fd0eb2e6ed08b4c9a6d2247a44a8",
+    "tcom_hybrid_sensitivity_20261020/audit.py": "ea92f2df81e1cdc43c69c25464f34d7241a58ac2256eb08ae990e608634a3da1",
+    "tcom_hybrid_sensitivity_20261020/ber.py": "defd5fd11702c7a93e653ebe9047eb5381e608eda20f6949e2894206985ecdcc",
+    "tcom_hybrid_sensitivity_20261020/checks.py": "33762e9a0bc528a758935b094ab406009e91f19c965658b60121134e3866089f",
+    "tcom_hybrid_sensitivity_20261020/execution.py": "9452109557784dc847e1c6ee7eda130671ed8e0a99b2607e7b0d9a144f158fe9",
+    "tcom_hybrid_sensitivity_20261020/study.py": "134c918f903564be50ab98397d099b24008f66b239de50f076a4b62484800cdc",
+    "tcom_incumbent_guard_20261019/inference.py": "0cef3a0dc8a9f1ffa066e08896afc0d69f3a311b9ad729618ec9b760b78ab1eb",
+    "tcom_incumbent_guard_20261019/risk.py": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1",
+    "tcom_incumbent_guard_20261019/risk_data.py": "5a8474b3f87abea086c7999e7ca5ef8fbbab0b0fd57b58188db365ac85e07101",
+    "tcom_incumbent_guard_20261019/shrink.py": "f72debd9763e4a57532f635c0120fa9eaf516f94e0e360853e1155fee483ec6b",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_reliability_20261021/analysis.py": "7271287352e3d3a04a236893f4b8c6aed4b658751a2da4858099eb04b64d6c43",
+    "tcom_reliability_20261021/ber.py": "0ee76f8141f469de9b5d0b9555acb4443d147b17b2072bdb562b59724d785f1e",
+    "tcom_reliability_20261021/checks.py": "8deb713522feea8564a9fa7a58952c0cbc8557d00c0dcad11102fd130aa62f22",
+    "tcom_reliability_20261021/execution.py": "9452109557784dc847e1c6ee7eda130671ed8e0a99b2607e7b0d9a144f158fe9",
+    "tcom_reliability_20261021/inference.py": "b2807dc3d9d14dfe8fbbc7649dfcc36a2afe22f1f55ad52bd9603dd5fb4f585e",
+    "tcom_reliability_20261021/pipeline_checks.py": "46053d581a84ed46d8d4d40f82ec764d5cf3d383f5c88b07cd467b98e604ceaa",
+    "tcom_reliability_20261021/study.py": "a33085bfaec7bf7c235ff62e8d921c8f57aefb722f962e0b75b44295e5937ff1",
+    "tcom_runtime_repair_20261020/analysis.py": "e117a19d3f8e99924f1926afcff6862c7b7a2e03f97751ab368d6c65dc6234db",
+    "tcom_runtime_repair_20261020/execution.py": "dd9bad075a577f833dae8011b0909b9bf8353f2650f742b0ddeb7b1b074f7b57",
+    "tcom_runtime_repair_20261020/inference.py": "b90d476fcf7ac1f493b1f947e0de0ccec93e18628205a8251c12827491d4ae0a",
+    "tcom_runtime_repair_20261020/native.py": "7a60c4ba92259b27332382e14240b425e155576dc8a8df48b8470745cb976d77",
+    "tcom_runtime_repair_20261020/smoke_parity.py": "9df5870dfa613bfa7c10229102f394fe8db7cf80233a0e84ad0954f6eaf46124",
+    "tcom_runtime_repair_20261020/study.py": "d96e769486450b1cf56dc5fcf543bfd982bc9442a3a8d443a74831b8e0a0c031",
+    "tcom_start_ablation_20261020/starts.py": "2391e8379f5d726891207e46fa278ddfa4664d270f4cc4c916f9a2a204de3e00",
+    "tcom_start_ablation_20261020/training.py": "806a805e8adb9d85fd64027c819660ed65dc685677612afcfe470f97345048e1",
+    "tcom_start_budget_20261020/analysis.py": "1e3ff2b37ee63ac9d7f472f1761e9db48a2270aec6b232e08fd79b9e0c2a4c32",
+    "tcom_start_budget_20261020/checks.py": "7a8517fef848bb9c456569f54e9ad695ca52110f505022e38ca314372589d80d",
+    "tcom_start_budget_20261020/execution.py": "fd152c06afcdc124cbbc3659a5a5790fc6e550f0436d4123d0baef2b147fb630",
+    "tcom_start_budget_20261020/study.py": "58105b2f472e343225e28e6a50699db0ce7301289f0ffd9cc7f0e82cfd242847",
+    "tcom_review_checks_20261022/run.py": "c316e7a0c4c7a3c0518cfbf4d49909f7dd0d944dac6c5c4ed8d3175e88258457",
+    "results/tcom_reliability_20261021/protocol.json": "61e845c7211b33a7875efcb171143498266504ff8229f7dc2c00465d7fce4958",
+    "results/tcom_reliability_20261021/policy.json": "dadf7c6d9924090731017e7411144535a67334b740bfc01b8d623209a9ce5791",
+    "results/tcom_reliability_20261021/completion.json": "f21cfea9b38e4db7b3e5c9a049fec2e26632d0085c45c3caf3955161298891ea",
+    "results/tcom_reliability_20261021/nmse_summary.json": "bf549443f62f94616d4e2ccbc5718f4981486b0efed3051283fcf9535048ced4",
+    "results/tcom_reliability_20261021/ber/summary.json": "8707a910294e6142419f7dae872a5769d86c9cab5513ebd76e4b07aee95f15a9"
+  },
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9101/em_global_best.pt": "38cd26eb6883c8466abc35b1696bc230b55c67df5ea433bd1ae3df803a7420e5",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9102/em_global_best.pt": "8ba1872c91070d98f747e81bae5e9791b6ea708be7329410089f99f97ebcfffb",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9103/em_global_best.pt": "87e6ede797426f136ea8c5cac0c7b9553ec5be6b25dd75c00620663498329560"
+  },
+  "rule": {
+    "id": "max_t2_e20",
+    "metric": "max",
+    "threshold": 2.0,
+    "tail": 20
+  },
+  "ablations": {
+    "variants": [
+      "full",
+      "no_recovery",
+      "no_final_filter",
+      "neither"
+    ],
+    "grid": "Same153 final cells,128cases each,3fits; full/no_recovery predictions and counts reused after hash verification",
+    "definition": "no_final_filter disables only final post-start filter for BOTH base and alternative; stage filters/weights/table/EM/gate/acceptance unchanged; gate recomputed; neither also disables recovery",
+    "evidence": "Diagnostic intervention on frozen weights; no retraining, feature deletion, schedule tuning or final-test selection"
+  },
+  "margins": {
+    "values": [
+      1e-12,
+      1e-10,
+      1e-08,
+      1e-06,
+      0.0001,
+      0.01
+    ],
+    "scope": "All actual triggered/accepted final cases; compute mean fitting losses independently from stored predictions; float32 score arithmetic sensitivity also shown; not full float32 inference"
+  },
+  "robustness": {
+    "seed": 2026102201,
+    "data_seed": 2026102202,
+    "refs": [
+      5.0,
+      20.0
+    ],
+    "snrs": [
+      10.0,
+      32.5,
+      45.0
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "count_per_reference_path": 32,
+    "arms": [
+      [
+        "correct",
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        "noise_-2db",
+        -2.0,
+        0.0,
+        0.0
+      ],
+      [
+        "noise_-1db",
+        -1.0,
+        0.0,
+        0.0
+      ],
+      [
+        "noise_+1db",
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        "noise_+2db",
+        2.0,
+        0.0,
+        0.0
+      ],
+      [
+        "reference_level_-1db",
+        0.0,
+        -1.0,
+        0.0
+      ],
+      [
+        "reference_level_+1db",
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        "reference_phase_-10deg",
+        0.0,
+        0.0,
+        -10.0
+      ],
+      [
+        "reference_phase_-5deg",
+        0.0,
+        0.0,
+        -5.0
+      ],
+      [
+        "reference_phase_+5deg",
+        0.0,
+        0.0,
+        5.0
+      ],
+      [
+        "reference_phase_+10deg",
+        0.0,
+        0.0,
+        10.0
+      ]
+    ],
+    "methods": [
+      "receiver_9101",
+      "receiver_9102",
+      "receiver_9103",
+      "prior_9101",
+      "prior_9102",
+      "prior_9103",
+      "compact_sparse",
+      "em100"
+    ],
+    "data": "Fresh independent reference/path blocks; each physical anchor shared across SNR/method/offset. Correct physical observations never altered by supplied calibration error.",
+    "detector": "Primary: all methods use same wrong supplied reference/variance,64jointQPSKvectors independent pilot noise. Extra reference-phase-adjusted channel NMSE is scoring only, never inference.",
+    "scope": "18settings,192physicalanchors,576conditioncases; diagnostic small-grid study, not full153grid validation. Offsets not tuned based on errors."
+  },
+  "timing": {
+    "windows": 2,
+    "calls": "27newphysicalanchors reused over original17SNRs;12fit/variant arms plus compactSparse andEM100; isolated after numerical jobs",
+    "target_ms": 10.74,
+    "interpretation": "Diagnostic batch-one CPU p90; no retries to pass"
+  },
+  "statistics": {
+    "bootstrap": 10000,
+    "seed": 2026102203,
+    "paired": "Resample within independent reference/path blocks; share indices acrossSNR/method/fits/offsets",
+    "scope": "All review-study intervals descriptive,conditional on storedfits; no tuning/retraining"
+  },
+  "environment": {
+    "python": "3.12.5",
+    "torch": "2.13.0",
+    "one_thread": true
+  },
+  "created_unix": 1792666294.81391
+}

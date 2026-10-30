@@ -1,0 +1,46 @@
+URformer paper-setting reproduction attempt
+
+The published URformer accuracy was NOT reproduced by this implementation under the disclosed assumptions.
+At SNR 5 dB with 20 pilots: our final 50-epoch mean NMSE = -7.134 dB; our best-validation mean NMSE = -7.656 dB; published plotted value approximately -21.6 dB.
+The numerical checks passed. This checks our calculations; it does not establish that our code matches the authors code.
+
+All three independent fits completed 50 epochs on 20,000 training examples.
+32 antennas, 4 users, 40 rays, 20 pilots, and a 10 dB reference ratio using the paper total-signal definition.
+This is our implementation of the published equations. Author code/weights were not found.
+The paper omits important settings; every assumption is in protocol.json.
+
+Primary test results (mean normalized channel error, converted to dB; 2,000 channels per point):
+SNR dB | our URformer dB | published URformer approx. dB | our EM-GS100 dB | published EM approx. dB
+   -10 |          0.467 |                      -1.1 |          8.820 |                   8.5
+    -5 |         -0.956 |                     -10.7 |          4.174 |                   4.1
+     0 |         -3.506 |                     -17.0 |         -1.549 |                  -0.7
+     5 |         -7.134 |                     -21.6 |         -6.971 |                  -5.8
+    10 |        -10.794 |                     -26.3 |        -12.094 |                 -11.0
+    15 |        -13.749 |                     -30.1 |        -17.130 |                 -15.9
+    20 |        -15.132 |                     -31.9 |        -22.140 |                 -20.6
+
+Additional best-validation checkpoint results (selected without looking at the test set):
+SNR dB | mean NMSE dB
+   -10 |       -0.453
+    -5 |       -2.001
+     0 |       -4.398
+     5 |       -7.656
+    10 |      -11.467
+    15 |      -14.743
+    20 |      -16.402
+
+Pilot sweep (same models trained with 20 pilots; the paper does not state how models were trained for each pilot count):
+Pilots | our URformer dB | published URformer approx. dB | our EM-GS100 dB | published EM approx. dB
+    10 |         -1.521 |                     -17.4 |         -0.472 |                   0.6
+    15 |         -4.493 |                     -20.2 |         -5.105 |                  -3.1
+    20 |         -7.134 |                     -22.0 |         -6.971 |                  -5.8
+    25 |         -6.757 |                     -23.1 |         -8.059 |                  -7.6
+    30 |         -7.749 |                     -23.8 |         -9.382 |                  -8.8
+    35 |         -8.325 |                     -24.5 |        -10.395 |                  -9.9
+
+Final 50-epoch models are primary. Best models were selected using separate validation data.
+No changes to our receiver, old results, or manuscript. No test-guided tuning in this attempt.
+This four-user experiment does not establish which estimator is better on our three-user problem.
+CNN and standalone Transformer baselines were omitted because their architectures were not specified.
+
+Source: https://arxiv.org/html/2509.12586v3

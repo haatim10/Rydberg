@@ -1,0 +1,98 @@
+{
+  "purpose": "Add frozen proposed receiver to the same four-user URformer reproduction plots.",
+  "scope": "Transfer test: proposed weights trained on three users,30inputpilots,geometric3-7/2/4/8/12/16path channels; tested unchanged on four-user40ray channel and10-35pilots.",
+  "fairness": "Computed methods use identical test measurements,pilots,reference,noise variance,truth and2000physicalchannels. Training conditions differ; not a matched-training architecture comparison.",
+  "inputs": "Original observations reconstructed without rescaling,normalization,extra pilots,or new noise.",
+  "receiver": "Full unchanged receiver entry point,original selected policy and188parameter adaptive checkpoints,threefits9101/2/3. No retuning or additional refinement.",
+  "branch": "All tested cases must follow the existing ordinary-SNR adaptive branch. No high-SNR algebraic recovery is exercised; that initializer is declared forK3.",
+  "initialization": "Each method retains its published/frozen initializer: proposed spectral,URformer/classical reproduction random. No common-initializer ablation claim.",
+  "scoring": "Per-example squared error divided by true channel energy; mean linearly over2000channels and3fits,then10log10. Same as existing URformer plot.",
+  "seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "grid": [
+    [
+      20,
+      -10.0
+    ],
+    [
+      20,
+      -5.0
+    ],
+    [
+      20,
+      0.0
+    ],
+    [
+      20,
+      5.0
+    ],
+    [
+      20,
+      10.0
+    ],
+    [
+      20,
+      15.0
+    ],
+    [
+      20,
+      20.0
+    ],
+    [
+      10,
+      5.0
+    ],
+    [
+      15,
+      5.0
+    ],
+    [
+      25,
+      5.0
+    ],
+    [
+      30,
+      5.0
+    ],
+    [
+      35,
+      5.0
+    ]
+  ],
+  "source_sha256": "97aa3d7530bb6a0ee0bb1c843b8b4848ad5ab1bde12d863606913a67db4f6862",
+  "input_hashes": {
+    "results/urformer_reproduction_20261022/data/test.npz": "a7b79473a41a7b278153028ab0666eced407e4a48f589be818d5c5ca23d89824",
+    "results/urformer_reproduction_20261022/data/manifest.json": "82a1d148b532363dc9dda78f01debe42f8f1e92eece89af1a45fd0559918d2a2",
+    "results/urformer_reproduction_20261022/summary.json": "99aca76b938e6dfc30c1f6a870b58137277d06865b6a72db85a1ebf1d60f20a8",
+    "results/urformer_reproduction_20261022/published_curve_approx.json": "fae9e297c9f52bb4b7a970fc831edadcf60d57c6d80596ee564591c8f5540255",
+    "results/urformer_reproduction_20261022/completion.json": "a85e31473723e2c5dbf57babae782178dc0ab7f478c6de9a2192f0c8682611f1",
+    "results/tcom_reliability_20261021/protocol.json": "61e845c7211b33a7875efcb171143498266504ff8229f7dc2c00465d7fce4958",
+    "results/tcom_reliability_20261021/policy.json": "dadf7c6d9924090731017e7411144535a67334b740bfc01b8d623209a9ce5791",
+    "results/tcom_reliability_20261021/completion.json": "f21cfea9b38e4db7b3e5c9a049fec2e26632d0085c45c3caf3955161298891ea",
+    "results/urformer_reproduction_20261022/test/P10_snr5.npz": "1916803c553ef9d73289b7424c56f2c54e8ad6d7f701dbc63f91d690d7adbe66",
+    "results/urformer_reproduction_20261022/test/P15_snr5.npz": "2d445bff4596787768fba10ab96bd06c2cfe6a63816c4bb0d00e6f464e48d683",
+    "results/urformer_reproduction_20261022/test/P20_snr-10.npz": "552b5abe58eab86f732471703764c87999be49aaf203eb21ea92cad3f31ef09e",
+    "results/urformer_reproduction_20261022/test/P20_snr-5.npz": "6609e224df32f2a236c8b8a55d31dedc5253f244a82730076b602beef2a856eb",
+    "results/urformer_reproduction_20261022/test/P20_snr0.npz": "fd6bd14b02fea90c7b6c2a880d35a857cb88efb80753e76518c9c2e00748652a",
+    "results/urformer_reproduction_20261022/test/P20_snr10.npz": "27e65db58ce05593becac2e9dc65b83505ba296894efdde5a39fa29b10f62e19",
+    "results/urformer_reproduction_20261022/test/P20_snr15.npz": "6f884405c286cae3b8b66eda0765cb0689cdf78d07c6f37dd2f9558284c9b9fc",
+    "results/urformer_reproduction_20261022/test/P20_snr20.npz": "2f71e8f272d4d09944751de037a2ada891aea3182997c59b200f167fad99ae66",
+    "results/urformer_reproduction_20261022/test/P20_snr5.npz": "363305057fe9da84c51b1301afe35bba88e0fc9389b0e554d958425bf6a20012",
+    "results/urformer_reproduction_20261022/test/P25_snr5.npz": "1f48a1c5eb34ef974c08da8a0f82d119dc1ccc26dcbc345089d786796dc44751",
+    "results/urformer_reproduction_20261022/test/P30_snr5.npz": "399be8ed9289f70a44111f35a67c1204637d2d4cb32339d9816c6735e6ea1cd5",
+    "results/urformer_reproduction_20261022/test/P35_snr5.npz": "c3cefb97494690b9fe12ba556ef2ec7d3b383f59a94a653b14d8db470372536d"
+  },
+  "weights": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9101/em_global_best.pt": "38cd26eb6883c8466abc35b1696bc230b55c67df5ea433bd1ae3df803a7420e5",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9102/em_global_best.pt": "8ba1872c91070d98f747e81bae5e9791b6ea708be7329410089f99f97ebcfffb",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9103/em_global_best.pt": "87e6ede797426f136ea8c5cac0c7b9553ec5be6b25dd75c00620663498329560"
+  },
+  "selection": "No new training,validation selection,gate or schedule tuning. All12conditions are reported.",
+  "created_unix": 1792751664.825102
+}

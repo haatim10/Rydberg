@@ -1,0 +1,43 @@
+FAIR ARCHITECTURE AND TRAINING-LABEL COMPARISON
+
+Every model was trained from scratch on the same 20,000 examples for 50 epochs.
+Four users, 32 antennas, 20 input pilots, and nine separate pilot targets available during training.
+Same starting channel estimate, optimizer, learning-rate schedule, batch order, precision and validation rule.
+Only supervised training receives true-channel targets. No model sees the true test channel.
+The no-label versions learn from the nine withheld pilot measurements.
+Primary results use the final epoch. Separate validation-selected results are retained in summary.json.
+The pilot-count sweep tests transfer of the same models trained with 20 pilots.
+
+NMSE in dB. Lower is better.
+SNR | Proposed with labels | Proposed without labels | URformer with labels | URformer without labels | EM100
+ -10 |    -0.3488 |    -0.1601 |     0.5158 |     1.8929 |     8.8116
+  -5 |    -1.8322 |    -1.8102 |    -1.0505 |    -1.3896 |     4.1525
+   0 |    -4.3692 |    -4.3866 |    -3.6220 |    -3.7999 |    -1.5730
+   5 |    -8.1811 |    -8.1543 |    -7.1354 |    -7.0468 |    -6.9707
+  10 |   -12.5345 |   -12.5787 |   -10.7697 |   -10.5083 |   -12.0950
+  15 |   -16.8773 |   -17.3424 |   -13.7022 |   -13.1730 |   -17.1283
+  20 |   -20.8476 |   -22.0214 |   -15.0463 |   -14.4638 |   -22.1380
+
+BER in percent. Same 512 channels and 32 data symbols per channel for all methods.
+ -10 dB |  43.122355 |  43.153636 |  44.653066 |  44.180044 |  45.351410
+  -5 dB |  29.520162 |  29.633331 |  33.108266 |  31.238556 |  34.248352
+   0 dB |  11.978912 |  11.907705 |  14.547221 |  13.925171 |  15.518188
+   5 dB |   1.053619 |   1.060486 |   1.548513 |   1.601156 |   1.515198
+  10 dB |   0.003815 |   0.005341 |   0.013733 |   0.020091 |   0.006104
+  15 dB |   0.000000 |   0.000000 |   0.000509 |   0.000000 |   0.000000
+  20 dB |   0.000000 |   0.000000 |   0.000254 |   0.000000 |   0.000000
+
+Runtime: complete batch-one calls, one CPU thread, PyTorch for both architectures.
+Slower p90 across the three fits and two fixed timing windows; model loading and data detection excluded.
+proposed_supervised: all-condition p90 4.979 ms; P20 p90 4.613 ms; maximum 5.638 ms.
+proposed_selfsupervised: all-condition p90 4.979 ms; P20 p90 4.626 ms; maximum 7.645 ms.
+urformer_supervised: all-condition p90 4.702 ms; P20 p90 4.599 ms; maximum 6.076 ms.
+urformer_selfsupervised: all-condition p90 4.634 ms; P20 p90 4.522 ms; maximum 5.942 ms.
+GS100: all-condition p90 3.802 ms; P20 p90 2.783 ms; maximum 4.290 ms.
+EM10: all-condition p90 1.489 ms; P20 p90 1.225 ms; maximum 2.922 ms.
+EM100: all-condition p90 12.168 ms; P20 p90 9.608 ms; maximum 13.322 ms.
+
+Limits: this evaluates our documented URformer implementation. Its published accuracy has not been reproduced.
+The same number of training updates does not mean the same training computation or prove either model is optimally tuned.
+Intervals are descriptive and conditional on the three trained fits. Zero observed bit errors do not prove zero population BER.
+The manuscript and all earlier experiment records were preserved.

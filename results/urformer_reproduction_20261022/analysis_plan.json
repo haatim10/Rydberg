@@ -1,0 +1,15 @@
+{
+  "scope": "Created before first final-test URformer evaluation; supplements frozen training/model configuration only.",
+  "source_hashes": {
+    "urformer_reproduction_20261022/execute.py": "96dc64b0b25eaaf19435616dc80988d7609edc300d68920b82c50d230e61551f",
+    "urformer_reproduction_20261022/checks.py": "c3458203473fd0510681a59be8e0b361ce9f8d7091fc9f0ebf3dbb835fa761c3",
+    "urformer_reproduction_20261022/report.py": "b1bf58ada415f96ed916b64ac18cb3541bb81382e897731367a75e4a41beb92e",
+    "urformer_reproduction_20261022/README.txt": "09e32378108d1a3fc03cc2529b3a59708e6fc4c055d1b20bc2e2f98a97762637"
+  },
+  "primary": "Final epoch50; mean per-example normalized squared channel error at each operating point, averaged linearly across three fits then converted to dB.",
+  "additional": "Best validation checkpoint, ratio-of-error-sums and per-seed values; never choose a checkpoint by published/test curve proximity.",
+  "published_reading": "Purple marker centers from PNG; .1dB rounded, approximately .2dB visual uncertainty, not raw source data.",
+  "comparison": "Per-point differences to digitized curve; one-dB closeness is a display diagnostic, not author-defined reproducibility standard.",
+  "intervals": "2000 descriptive paired channel-bootstrap replicates conditional on three fitted models; not inference over training populations.",
+  "further_tuning": "None allowed based on final-test results in this frozen attempt."
+}

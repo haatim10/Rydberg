@@ -1,0 +1,159 @@
+{
+  "source": "arXivv3 Fig3/Fig4 purple URformer and orange EM-GS markers, automated raster center measurement",
+  "caveat": "Approximate visual reference, .1dB rounding and roughly .2dB reading uncertainty; not authors raw numerical data.",
+  "settings": [
+    {
+      "name": "fig3",
+      "x0": 105.5,
+      "x1": 1035.0,
+      "xmin": -10,
+      "xmax": 20,
+      "y0": 179.0,
+      "units_per_pixel": -0.07326007326007326,
+      "x": [
+        -10.0,
+        -5.0,
+        0.0,
+        5.0,
+        10.0,
+        15.0,
+        20.0
+      ],
+      "targets": [
+        195,
+        325,
+        411,
+        474,
+        538,
+        590,
+        615
+      ],
+      "em_targets": [
+        63,
+        123,
+        189,
+        256,
+        330,
+        398,
+        462
+      ]
+    },
+    {
+      "name": "fig4",
+      "x0": 105.5,
+      "x1": 1034.0,
+      "xmin": 10,
+      "xmax": 35,
+      "y0": 159.0,
+      "units_per_pixel": -0.053763440860215055,
+      "x": [
+        10,
+        15,
+        20,
+        25,
+        30,
+        35
+      ],
+      "targets": [
+        483,
+        535,
+        569,
+        589,
+        602,
+        616
+      ],
+      "em_targets": [
+        150,
+        218,
+        269,
+        302,
+        326,
+        344
+      ]
+    }
+  ],
+  "curves": {
+    "fig3": [
+      {
+        "x": -10.0,
+        "nmse_db_approx": -1.1,
+        "pixel_center_y": 194.0,
+        "em_nmse_db_approx": 8.5
+      },
+      {
+        "x": -5.0,
+        "nmse_db_approx": -10.7,
+        "pixel_center_y": 324.5,
+        "em_nmse_db_approx": 4.1
+      },
+      {
+        "x": 0.0,
+        "nmse_db_approx": -17.0,
+        "pixel_center_y": 410.5,
+        "em_nmse_db_approx": -0.7
+      },
+      {
+        "x": 5.0,
+        "nmse_db_approx": -21.6,
+        "pixel_center_y": 473.5,
+        "em_nmse_db_approx": -5.8
+      },
+      {
+        "x": 10.0,
+        "nmse_db_approx": -26.3,
+        "pixel_center_y": 538.5,
+        "em_nmse_db_approx": -11.0
+      },
+      {
+        "x": 15.0,
+        "nmse_db_approx": -30.1,
+        "pixel_center_y": 589.5,
+        "em_nmse_db_approx": -15.9
+      },
+      {
+        "x": 20.0,
+        "nmse_db_approx": -31.9,
+        "pixel_center_y": 614.0,
+        "em_nmse_db_approx": -20.6
+      }
+    ],
+    "fig4": [
+      {
+        "x": 10.0,
+        "nmse_db_approx": -17.4,
+        "pixel_center_y": 482.0,
+        "em_nmse_db_approx": 0.6
+      },
+      {
+        "x": 15.0,
+        "nmse_db_approx": -20.2,
+        "pixel_center_y": 535.5,
+        "em_nmse_db_approx": -3.1
+      },
+      {
+        "x": 20.0,
+        "nmse_db_approx": -22.0,
+        "pixel_center_y": 568.5,
+        "em_nmse_db_approx": -5.8
+      },
+      {
+        "x": 25.0,
+        "nmse_db_approx": -23.1,
+        "pixel_center_y": 588.5,
+        "em_nmse_db_approx": -7.6
+      },
+      {
+        "x": 30.0,
+        "nmse_db_approx": -23.8,
+        "pixel_center_y": 602.5,
+        "em_nmse_db_approx": -8.8
+      },
+      {
+        "x": 35.0,
+        "nmse_db_approx": -24.5,
+        "pixel_center_y": 615.5,
+        "em_nmse_db_approx": -9.9
+      }
+    ]
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "source_sha256": "745a0039ea934956b77b82914a14642eca18481a3de34da082da035581d18e6f",
+  "seed": 2026102205,
+  "indices": [
+    [
+      500,
+      501,
+      502
+    ],
+    [
+      600,
+      601,
+      602
+    ]
+  ],
+  "grid": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "refs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "cases_per_window": 459,
+  "methods": 17,
+  "includes": "Complete native frozen full/prior or ablated pipeline;complete spectral initialization plus10layerURformer; conversions,routing,solves included;loads/constants preloaded. Detection excluded.",
+  "precision": "float64/complex128",
+  "threads": 1,
+  "retry": "No repeat until passing; preserve all windows",
+  "interpretation": "Host software p90, not hard percall deadline. Requires all numeric/trainingjobs completed before measuring."
+}

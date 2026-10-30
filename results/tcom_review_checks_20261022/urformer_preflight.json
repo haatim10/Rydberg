@@ -1,0 +1,114 @@
+{
+  "passed": true,
+  "parameters": {
+    "tie_layers": false,
+    "T_UR": 10,
+    "per_layer": [
+      {
+        "layer": 0,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 1,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 2,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 3,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 4,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 5,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 6,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 7,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 8,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      },
+      {
+        "layer": 9,
+        "filter_net": 97,
+        "gate": 1,
+        "transformer": 158592,
+        "total": 158690
+      }
+    ],
+    "totals": {
+      "filter_net": 970,
+      "gate": 10,
+      "transformer": 1585920,
+      "all_parameters": 1586900
+    },
+    "note": "untied: per-layer sums equal the total"
+  },
+  "batch_size": 32,
+  "batch_step_seconds": [
+    0.19140887504909188,
+    0.07888991700019687,
+    0.08439329196698964,
+    0.08684749994426966,
+    0.07655395800247788,
+    0.07720454200170934,
+    0.0768015420762822,
+    0.07637158292345703
+  ],
+  "smoke_loss": [
+    0.035831380635499954,
+    0.028732897713780403,
+    0.02298443391919136,
+    0.018968703225255013,
+    0.015825968235731125,
+    0.013489657081663609,
+    0.011632855981588364,
+    0.010057032108306885
+  ],
+  "median_steady_step_seconds": 0.07700304203899577,
+  "estimated_20epoch_16384sample_onefit_minutes": 13.141852507988611,
+  "estimated_50epoch_20000sample_onefit_minutes": 40.10575106197697,
+  "cpu_threads": 1,
+  "mps": false,
+  "trained_comparison": false,
+  "notes": "Eight readiness updates on held-out test subset are a discarded smoke model; never a trained comparison or selected checkpoint. Real training must start fresh on disjoint data, with complete validation. No Hankel modules enabled."
+}

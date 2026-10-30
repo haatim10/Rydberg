@@ -1,0 +1,109 @@
+{
+  "purpose": "Independent reproduction attempt of URformer v3 explicit equations and published physical/training settings; not an exact author-code replication.",
+  "paper": "https://arxiv.org/html/2509.12586v3",
+  "published": {
+    "M": 32,
+    "K": 4,
+    "clusters": 4,
+    "rays_per_cluster": 10,
+    "doa": "Uniform[-pi/2,pi/2]",
+    "steering": "Eq2 positive exponential, unnormalized lengthM",
+    "channel": "Eq1 sqrt(M/40) sum g*a",
+    "T_UR": 10,
+    "L_enc": 3,
+    "d_model": 64,
+    "n_train": 20000,
+    "batch": 32,
+    "epochs": 50,
+    "Adam_lr": 0.001,
+    "scheduler": "CosineAnnealingLR Tmax50",
+    "loss": "Eq20 mean normalized per-example squared channel error",
+    "initializer": "Independent zero-mean complex Gaussian normalized variance",
+    "reference_ratio_db": 10,
+    "ratio_denominator": "Expected total multiuser signal power E|Hs|^2",
+    "figure3": {
+      "P": 20,
+      "snr_db": [
+        -10.0,
+        -5.0,
+        0.0,
+        5.0,
+        10.0,
+        15.0,
+        20.0
+      ]
+    },
+    "figure4": {
+      "snr_db": 5,
+      "P": [
+        10,
+        15,
+        20,
+        25,
+        30,
+        35
+      ]
+    },
+    "classical_iterations": 100
+  },
+  "assumptions_not_specified_by_paper": {
+    "code_search": "No author repository or weights linked in arXiv source/abstract; exact title+URformer+GitHub searches found none. Not proof that none exist.",
+    "gains": "Independent CN(0,1); no extra channel Frobenius normalization; expected per-entry channel power M=32 with printed unnormalized steering",
+    "channel_angles": "All40 ray angles independent uniform as TableI; no invented cluster centers or angular spread",
+    "spacing": "d=lambda/2",
+    "gain": "Known transduction scalar divided out of observations (G=1); NMSE invariant to known scaling",
+    "pilots": "One fixed CN(0,1)4x35 bank; use firstP columns. No Gram screening, orthogonalization, or oracle pilot design.",
+    "reference": "Real positive broadside constant across antennas/pilots; amplitude sqrt(10*expected signal power) for eachP",
+    "snr": "Ensemble expected signal power M/P sum|S|^2, not realized per-channel truth; variance=power/10^(SNR/10)",
+    "training_snr": "One model per seed trained on20k examples with uniform continuous SNR[-10,20] and P20. Distribution not given by authors.",
+    "training_initialization": "CN(0,1), independently redrawn each epoch; fixed independent draws for validation/test, shared across all methods",
+    "transformer": "4heads, FFNwidth256/GELU, zero dropout, linear output projection with bias. Standard random PyTorch weights; positionalembeddingN(0,.02\u00b2).",
+    "exact_printed_encoder": "A=MHSA(LN(V))+V; V=FFN(A)+A. No extra FFN LayerNorm or final LayerNorm.",
+    "filter": "Raw kappa input (no log transform), hidden32/ReLU, sigmoid output; random weights",
+    "gates": "g initialized0, alpha=.5, untied weights across10layers",
+    "optimizer": "Adam defaults betas(.9,.999),eps1e-8,no weightdecay,gradientnormclipping1; no warmstarts/deep supervision",
+    "validation": "2000 independently generated cases; primary final50epoch weights, best validation checkpoint additionally reported. Never choose using test.",
+    "test": "2000 independent channels reused across13figure positions, with common noise draws/initializers; observedP20,SNR5point used by bothfigures",
+    "figure4": "Diagnostic transfer of sameP20-trainedweights toP10..35; paper does not say whether separate models were trained perP",
+    "inference": "Float64 batched accuracy; same randominit forURformer,GS100,EM100; standalone URformer no EMtail/Hankel/recovery",
+    "curves": "Compare URformer and two specified classical methods. CNN/blackboxTransformer architectures not specified enough for exact reproduction; excluded."
+  },
+  "seeds": [
+    2026102201,
+    2026102202,
+    2026102203
+  ],
+  "counts": {
+    "train": 20000,
+    "val": 2000,
+    "test": 2000
+  },
+  "master": 2026102240,
+  "acceptance": "Do not label published performance reproduced merely because training completes. Report differences to digitized published curves and unknown settings honestly. No test-guided parameter changes.",
+  "source_hashes": {
+    "urformer_reproduction_20261022/model.py": "b874fd1cc792dc23abf25d74c9d66764a482b9fc4849e515f9d3992cbfad4250",
+    "urformer_reproduction_20261022/study.py": "1d649a4fe89ecad6a8817ae952d6c2fec36a554a80409c0efc806b33a33141ec"
+  },
+  "reference_hashes": {
+    "RAQR_CE_v1.tex": "c40ef9feffd7004f5c80065d6a7085a3e647be8bfeebd775940ded2e34d09441",
+    "fig3.eps": "96b1ea1d59fa617b5974f387e37f9c2f38c102f954e26921edbe42989a6e0618",
+    "fig3.png": "74c02309bed1b0129e450dc56d7b9d88177417af0bd9bf2e72ef292a9a346f43",
+    "fig4.eps": "aa681f962f60d52c63fb8f607f3ed81e29d085dd7ae338dc0adefe6d2f69f90e",
+    "fig4.png": "d0dc82faee4a064e603c516d47c9316e20c86c7160ccfd6acd103386ebb9c41c",
+    "paper.html": "dd4365e302e1317ce4c522a8e7db7c33f78ced47901452ee40997a72da0ff826",
+    "source.tar": "f407df20754cd0d75dc67ceca8704af344cb38c9479f5a63cc407eaffd44603e"
+  },
+  "protected_hashes": {
+    "results/tcom_reliability_20261021/protocol.json": "61e845c7211b33a7875efcb171143498266504ff8229f7dc2c00465d7fce4958",
+    "results/tcom_reliability_20261021/completion.json": "f21cfea9b38e4db7b3e5c9a049fec2e26632d0085c45c3caf3955161298891ea",
+    "results/tcom_review_checks_20261022/completion.json": "bc2d43925cc07c2d5c8d6c31c08ee3e00e528e1017c920200f49c6228973eed6",
+    "results/tcom_review_checks_20261022/urformer/protocol.json": "b02a33d7a9d1f4610b4cf400c53cbd3534fca463197410b9d78a6f02a1e03f06"
+  },
+  "environment": {
+    "python": "3.12.5",
+    "torch": "2.13.0",
+    "cpu": true,
+    "threads_per_worker": 1
+  },
+  "created_unix": 1792670566.580663
+}

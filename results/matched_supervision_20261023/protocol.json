@@ -1,0 +1,214 @@
+{
+  "question": "Architecture x supervision, with all physical/training/test conditions shared.",
+  "arms": [
+    "proposed_supervised",
+    "proposed_selfsupervised",
+    "urformer_supervised",
+    "urformer_selfsupervised"
+  ],
+  "physical": {
+    "M": 32,
+    "K": 4,
+    "rays": 40,
+    "clusters_declared": 4,
+    "rays_per_cluster": 10,
+    "channel": "Literal printed unnormalized positive-sign steering, sqrt(M/40), independent uniform ray angles and CN(0,1)gains. Same disclosed assumptions as previous reproduction.",
+    "reference_ratio_db": 10,
+    "reference_definition": "Expected total multiuser signal power; known reference/variance.",
+    "training_snr": "Uniform nominal[-10,20]dB, original20k underlying channel/noise realizations",
+    "spacing": "lambda/2",
+    "transduction": "Known scalar divided out",
+    "pilot_bank": "Same fixed Gaussian4x35 bank for every arm, first20columns are fitting pilots"
+  },
+  "training": {
+    "cases": 20000,
+    "validation_cases": 2000,
+    "context": 20,
+    "withheld": 9,
+    "total_available_pilots": 29,
+    "data": "Identical29 noisy pilot measurements available to all four arms. First20 enter each model; last9 are separate measurement targets/validation, never model inputs.",
+    "initialization": "Same spectral initializer and pilot-only unregularized LS operator for both architectures. Spectral initialization is computed only from the20context pilots.",
+    "stages": 10,
+    "epochs": 50,
+    "batch": 32,
+    "lr": 0.001,
+    "optimizer": "Adam defaults,weight_decay0",
+    "scheduler": "CosineAnnealingLR,Tmax50",
+    "gradient_clip": 1.0,
+    "precision": "float32/complex64",
+    "seeds": [
+      2026102301,
+      2026102302,
+      2026102303
+    ],
+    "orders": "Identical epoch permutation seed+20000+epoch for all four arms. Same architecture initial weights across supervision modes.",
+    "supervised_loss": "Mean per-example ||G-H||\u00b2/||H||\u00b2 on true-channel labels; labels used only in supervised workers.",
+    "selfsupervised_loss": "Mean exact Rician NLL on the9withheld magnitude measurements. Observation-only worker never opens true-channel files.",
+    "selection": "Primary: final50epoch weights,identical update counts. Secondary: minimum common heldout Rician validation NLL,epoch0eligible for every arm. No test-based selection.",
+    "augmentation": "Fixed measurement population and fixed20/9split for all arms; no arm-specific augmentation,pretraining,normalization,hyperparameter search or warmstart.",
+    "comparison_limit": "Matched examples/updates/settings,not equal training FLOPs or a proof of best achievable convergence. True labels are training targets,never inference inputs."
+  },
+  "test": {
+    "master": 2026102340,
+    "cases": 2000,
+    "grid": [
+      [
+        20,
+        -10.0
+      ],
+      [
+        20,
+        -5.0
+      ],
+      [
+        20,
+        0.0
+      ],
+      [
+        20,
+        5.0
+      ],
+      [
+        20,
+        10.0
+      ],
+      [
+        20,
+        15.0
+      ],
+      [
+        20,
+        20.0
+      ],
+      [
+        10,
+        5.0
+      ],
+      [
+        15,
+        5.0
+      ],
+      [
+        25,
+        5.0
+      ],
+      [
+        30,
+        5.0
+      ],
+      [
+        35,
+        5.0
+      ]
+    ],
+    "fresh": "Fresh physical channels/noise independent of every earlier test; common channels/noise across SNR,pilot count,arms,seeds.",
+    "primary": "P20SNRsweep; each model trained forP20. Pilot-count sweep is equally a transfer diagnostic for all arms.",
+    "calibration": "Each testedP uses power(P) for known reference/noise; same physical inputs for all methods.",
+    "truth": "Used after inference for NMSE/BER scoring only; no phase alignment or channel-dependent calibration.",
+    "inference": "SamePyTorchfloat64backend,common spectral initialization,10learnedstages,no extra EM/filter/recovery. This is the complete ordinary-SNR adaptive core,not the high-SNR hybrid.",
+    "baselines": [
+      "GS100_common_spectral",
+      "EM10_common_spectral",
+      "EM100_common_spectral"
+    ]
+  },
+  "ber": {
+    "master": 2026102341,
+    "scope": "P20sevenSNRpoints",
+    "physical_channels": 512,
+    "data_vectors_per_channel": 32,
+    "bits_per_channel": 256,
+    "detector": "Identical exact Rician likelihood over all256jointQPSK hypotheses for every estimate; known-channel detector also reported.",
+    "coupling": "Same independent data observations,bits,reference,variance for all arms and fits. Pilot/data noise independent.",
+    "calibration": "Data uses same physical noise/reference as its pilot case; no channel-truth power normalization."
+  },
+  "runtime": {
+    "master": 2026102342,
+    "windows": 2,
+    "anchors_per_window": 32,
+    "grid": [
+      [
+        20,
+        -10.0
+      ],
+      [
+        20,
+        -5.0
+      ],
+      [
+        20,
+        0.0
+      ],
+      [
+        20,
+        5.0
+      ],
+      [
+        20,
+        10.0
+      ],
+      [
+        20,
+        15.0
+      ],
+      [
+        20,
+        20.0
+      ],
+      [
+        10,
+        5.0
+      ],
+      [
+        15,
+        5.0
+      ],
+      [
+        25,
+        5.0
+      ],
+      [
+        30,
+        5.0
+      ],
+      [
+        35,
+        5.0
+      ]
+    ],
+    "threads": 1,
+    "precision": "float64/complex128",
+    "backend": "PyTorch for ALL learned/classical methods",
+    "included": "Completebatch1call: conversion,common spectral initializer,pilot solve,and all model stages. Weights loaded in advance.",
+    "excludes": "Data generation,model loading,and common data detector",
+    "order": "Both windows after all training/accuracy/BER workers exit. Prespecified random method/case order,no retry or optimization to pass.",
+    "budget_ms": 10.74,
+    "interpretation": "Host-specificp90,not per-call deadline; record maxima and overruns."
+  },
+  "statistics": "Paired channel-bootstrap2000draws,conditional on3fits; preserve SNR/method/fit pairing. Per-seed results retained; fits are not an ensemble.",
+  "publication": "Published URformer curve excluded from the measured four-arm ranking; this tests our documented implementation,not a verified author-code reproduction.",
+  "source_hashes": {
+    "matched_supervision_20261023/models.py": "e3a9296ccaf36816b5c1d560f6d097a7777be738147b2ecdb0f9549ca64e6c23",
+    "matched_supervision_20261023/checks.py": "bb259c43747c412fb4df5236d37303e9c91b8b0a713d32a9b4ce30e2fcf1018c",
+    "matched_supervision_20261023/evaluation.py": "2cd984c7669d7d0d0ec4bfc871c8e9ad70cc36941e3cb28e18e9e639792cf1bd",
+    "matched_supervision_20261023/execute.py": "4a0525278aa295bf647080d99066b9e8ef5775d9eed4a9bbe11cea66686fecd3",
+    "matched_supervision_20261023/common.py": "aed39acde551c26f224b6fa10c764d6f29c9cc0d2d45a2a799c759aadcf102c3",
+    "matched_supervision_20261023/report.py": "489700f2e24f62a5854065549f1c9f12ade505428d794a7ae1022c808dd9a835",
+    "matched_supervision_20261023/training.py": "6b21bfac913ee27a49ace4424ffcdc417bd230924cdd6ac537e2fa969007f381",
+    "matched_supervision_20261023/data.py": "3c4f845980b50da767d61f7ded59353201df88b633201a7df70af722bba2cfbb",
+    "sahure/model.py": "c6a3d53d8adae23cc2c0b1309bedd21ebd7760194359256192897bdd19aaface",
+    "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+    "urformer_reproduction_20261022/model.py": "b874fd1cc792dc23abf25d74c9d66764a482b9fc4849e515f9d3992cbfad4250",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c"
+  },
+  "input_hashes": {
+    "results/urformer_reproduction_20261022/data/train.npz": "3a2c2eac20f4454f194590cd43f59f406ac066ce6a13a37e29b137b20d1d79d5",
+    "results/urformer_reproduction_20261022/data/val.npz": "4287cfaec457322b5cf6cfdc45c33ff6744f5d72889104077e14fa36aba8a113",
+    "results/urformer_reproduction_20261022/data/manifest.json": "82a1d148b532363dc9dda78f01debe42f8f1e92eece89af1a45fd0559918d2a2",
+    "results/urformer_reproduction_20261022/protocol.json": "2b9d036b249fcd64c878a52b0eed8569c13fc5398f0070ab8d8205f66d67b111",
+    "results/urformer_reproduction_20261022/completion.json": "a85e31473723e2c5dbf57babae782178dc0ab7f478c6de9a2192f0c8682611f1",
+    "results/tcom_reliability_20261021/protocol.json": "61e845c7211b33a7875efcb171143498266504ff8229f7dc2c00465d7fce4958",
+    "results/tcom_reliability_20261021/completion.json": "f21cfea9b38e4db7b3e5c9a049fec2e26632d0085c45c3caf3955161298891ea"
+  },
+  "created_unix": 1792755065.531286
+}

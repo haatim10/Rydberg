@@ -1,0 +1,26 @@
+Proposed receiver added to the URformer comparison
+
+The green curve is our unchanged proposed receiver, averaged over its three trained fits.
+This is a transfer test. Its weights were trained with three users and30pilots on a different channel model.
+Here it sees the same four-user measurements and pilots as the computed URformer and classical methods.
+No retraining, extra EM steps, normalization or test-based tuning was performed.
+All these conditions use the original ordinary-SNR adaptive branch. This does not test high-SNR recovery for four users.
+The published URformer curve remains unreproduced; this plot cannot establish superiority over that published method.
+
+SNR sweep with20pilots. Lower NMSE is better.
+SNR | Proposed transfer | Our URformer | Our EM-GS | Published URformer approx.
+ -10 |             4.124 |        0.467 |     8.820 |                      -1.1
+  -5 |            -0.396 |       -0.956 |     4.174 |                     -10.7
+   0 |            -4.063 |       -3.506 |    -1.549 |                     -17.0
+   5 |            -7.990 |       -7.134 |    -6.971 |                     -21.6
+  10 |           -12.435 |      -10.794 |   -12.094 |                     -26.3
+  15 |           -16.643 |      -13.749 |   -17.130 |                     -30.1
+  20 |           -19.759 |      -15.132 |   -22.140 |                     -31.9
+
+Pilot sweep at SNR5dB:
+10 pilots: proposed transfer -3.640 dB; our URformer -1.521 dB; EM-GS -0.472 dB.
+15 pilots: proposed transfer -6.450 dB; our URformer -4.493 dB; EM-GS -5.105 dB.
+20 pilots: proposed transfer -7.990 dB; our URformer -7.134 dB; EM-GS -6.971 dB.
+25 pilots: proposed transfer -8.920 dB; our URformer -6.757 dB; EM-GS -8.059 dB.
+30 pilots: proposed transfer -9.967 dB; our URformer -7.749 dB; EM-GS -9.382 dB.
+35 pilots: proposed transfer -10.747 dB; our URformer -8.325 dB; EM-GS -10.395 dB.
