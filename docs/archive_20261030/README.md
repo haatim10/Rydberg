@@ -1,5 +1,7 @@
 # Research archive — 30 October 2026
 
+> **Note (branch rename, 30 October 2026).** This dated record keeps the branch names used at upload. They are now: `codex` -> `archive/complete`, `research/self-supervised-20261030` -> `research/01-foundations`, `research/tcom-receiver-20261030` -> `research/02-receiver`, `research/urformer-comparison-20261030` -> `research/03-urformer-comparison`, `research/urformer-audits-20261030` -> `research/04-urformer-audits`, `paper/merged-tcom-20261030` -> `paper/tcom-merged`. See the [branch index on `main`](https://github.com/haatim10/Rydberg#branches).
+
 This is the user-selected research archive, not a full backup of the local
 workspace. Original experiment and manuscript files retain their content and
 paths. No new training, numerical experiment or paper revision was performed
