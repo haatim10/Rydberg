@@ -1,0 +1,18 @@
+Run from the repository root using the existing .venv-paper2 Python:
+
+../../.venv-paper2/bin/python -m unittest hybrid_optshrink.test_checks -v
+../../.venv-paper2/bin/python -u -m hybrid_optshrink.run --phase benchmark
+../../.venv-paper2/bin/python -u -m hybrid_optshrink.run
+
+The last command resumes only complete saved epochs/cells under the same
+source/configuration hashes and the remaining cumulative two-hour budget.
+An exclusive lock rejects duplicate workers. Numerical failures are reported,
+not silently repaired. Do not relaunch a failed numerical run without diagnosis.
+The benchmark and execution share the compute budget. The benchmark trains
+temporary scratch models only, not any selected experimental model.
+
+Outputs: results/hybrid_optshrink/status.json, benchmark.json, pid.json,
+training/*_history.json, frozen_selection.json, test_outputs/, timing.json,
+audit.json, summary.json and RESULTS.txt. Ground truth exists only in the
+test-data folders, separate from observations and accessible to the evaluator.
+The manuscript, older experimental sources and all older results are unchanged.

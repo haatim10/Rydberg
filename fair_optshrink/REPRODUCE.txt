@@ -1,0 +1,14 @@
+Run from the Rydberg repository with ../../.venv-paper2/bin/python.
+
+1. python -m unittest fair_optshrink.test_checks -v
+2. python -u -m fair_optshrink.run --phase benchmark
+3. python -u -m fair_optshrink.run
+
+Outputs are isolated in results/fair_optshrink. status.json and run.log report
+live progress; pid.json identifies the process. The advisory lock prevents a
+duplicate driver. The same run command resumes completed validation cases and
+complete test cells; source/configuration/checkpoint changes abort resumption.
+The cumulative active-computation cap is7200seconds; reaching it preserves
+partial results and does not authorize additional computation automatically.
+The Mac must remain powered on and awake. This is not remote computation.
+No manuscript/dashboard changes, training campaign, or follow-up automation.

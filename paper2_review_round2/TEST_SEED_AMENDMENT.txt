@@ -1,0 +1,24 @@
+Pre-generation amendment to the fresh-test seed range
+8 October 2026
+
+The training protocol's draft final-test seed base, 202610086001 with
+increments of 100, overlaps master seeds used for the new diagnostic
+phases. This was detected while training was running, before the
+training_test directory or any new trained-model test data existed.
+No test estimate, error or model choice was available at amendment time.
+
+The actual evaluation base is 20261008000001, with increments of 100.
+All 56 master seeds are checked for disjointness against training,
+validation, calibration and geometry seed sets. The evaluation manifest
+retains both the superseded value and actual value. The original training
+protocol and its source hashes remain unchanged; checkpoint selection,
+training examples, budgets and all evaluation conditions remain unchanged.
+The waiting evaluator was intentionally stopped and restarted before
+generation. The training process was not stopped or changed.
+
+A related diagnostic dependency was also found: the tight-pilot P6/SNR5
+and weak-reference SNR5 diagnostic cells share a generation master seed.
+The first saved channels agree exactly. These two diagnostic phases must
+not be treated as independent replication of each other or pooled as
+independent samples. Their within-cell paired method comparisons remain
+valid. The new trained-model final tests are separate from both phases.

@@ -1,0 +1,17 @@
+SMALL ALL-PILOT RICIAN TRAINING SCREEN
+Primary: final10epoch checkpoint, original-noise all30pilot inputs. Lower NMSE is better.
+
+holdout: macro -12.3921dB; NMSE>1 rate 1.562%
+r2r_05: macro -12.8355dB; NMSE>1 rate 0.521%
+r2r_10: macro -13.3650dB; NMSE>1 rate 0.391%
+r2r_05_latest: improvement versus holdout 0.4434dB; seed gains [-0.22230215083463278, 1.109033701661767]
+r2r_10_latest: improvement versus holdout 0.9729dB; seed gains [0.7473414177308495, 1.1984180479034965]
+r2r_05_best: improvement versus holdout 0.4434dB; seed gains [-0.22230215083463278, 1.109033701661767]
+r2r_10_best: improvement versus holdout 0.9383dB; seed gains [0.7473414177308495, 1.1293094237530035]
+
+Positive improvement means lower error; negative means worse.
+best is secondary common21/9validation-selected; latest is the predeclared primary.
+Inflated-noise evaluations are diagnostics; compare methods only within the same mode.
+No OptShrink or recurrent comparison was rerun; this tests training alone.
+No historical manuscript or experiment changed. Phase diagnostic is separate under phase/.
+A positive small-screen result is not publication confirmation or proof of novelty.

@@ -1,0 +1,76 @@
+WHAT IS BEING PREDICTED?
+
+Let X=mu+W, W~CN(0,v), Z=|X|, a=|mu| and theta=arg(mu).
+Given z and a fixed mu, the phase has a von Mises law with kappa=2za/v.
+Write Rj=Ij(kappa)/I0(kappa). Then
+  q=E[X|Z=z]=z R1 exp(i theta),
+  c=E[|X-q|^2|z]=z^2(1-R1^2),
+  p=E[(X-q)^2|z]=z^2(R2-R1^2) exp(2i theta).
+The real 2x2 covariance is [[(c+Re p)/2, Im p/2],
+                           [Im p/2, (c-Re p)/2]].
+At a=0 the phase is uniform: q=0, c=z^2, p=0.
+
+This describes the missing latent phase, not the variation of an estimate
+across repeated measurements. If mu is fixed AND correct, total variance gives
+  (v/2) I_2 = E_Z Cov([Re X,Im X]|Z) + Cov_Z([Re q,Im q]).
+In particular, q always points along exp(i theta); its repeated-noise covariance
+is rank one and aligned with theta. At high field strength, the missing-phase
+uncertainty is mainly tangential, whereas q fluctuates mainly radially.
+Using the missing-phase covariance as the estimation-error covariance can
+therefore give the wrong directions even when its total size looks plausible.
+
+Frozen-update model
+The right least-squares operator is O=S^H(SS^H)^(-1), and Gnew=(Q-B)O.
+For fixed fitted mu, compute Var_Z(z R1(2z|mu|/v)) under Rice(|mu|,v).
+Scale homogeneity reduces this to a function of |mu|/sqrt(v); numerical
+Gauss-Hermite integration supplies a fixed interpolation table. This gives
+the covariance of one update under an assumed fixed field, not the covariance
+of a full estimator whose field was learned from the same noisy data.
+
+Full-map sensitivity
+For row estimator F_t: R^P -> R^(2K), approximate
+  Cov(F_t(Z)) approximately J_t diag(Var_Rice(Z_p)) J_t^T.
+J_t differentiates the initializer AND every update. The Rician variances
+are evaluated using the current fitted field and known v. This is an
+implementable local delta-method approximation. It can fail when the map is
+strongly nonlinear, the fitted field is wrong, or initialization crosses an
+eigenvector/attraction-basin boundary. It does not estimate systematic bias.
+No Fisher-direction projection is performed in this study.
+
+MSE = trace(centered covariance) + squared bias. We report both terms. Even a
+perfect covariance model cannot justify replacing total error by variance
+when the bias term is large. The finite-repeat empirical decomposition is
+reported exactly; an additional bias estimate subtracts trace(C)/(R-1) to
+show the sampling contribution to the raw empirical squared-bias estimate.
+
+Hankel lift
+If D copies each channel sample into its anti-diagonal positions, then for a
+real channel covariance C, the lifted covariance is D C D^T (with separate
+real/imaginary blocks). A 17x16 lift of 32 complex samples has 272 complex
+entries but only 32 independent sample coordinates. The covariance is
+singular in the ambient lifted space; arbitrary entrywise whitening is not
+an independent-noise model and need not preserve Hankel structure.
+For row-independent unfiltered EM, total lifted variance is the sum of each
+antenna's variance times its anti-diagonal count. Weighted covariance errors
+use squared counts. We compare block-diagonal row covariances, not pretend
+finite-sample off-row correlations are exact zeros in the empirical sample.
+
+Numerics
+Scaled Bessel functions avoid exponential overflow. For kappa>1e4, stable
+large-kappa moment expansions are used. For a^2/v>1e4, Rician magnitude
+variance uses v/2-v^2/(8a^2), with neglected relative terms O((v/a^2)^2).
+The posterior-mean-variance table uses 64x64 Gauss-Hermite points and a fixed
+logarithmic grid of 361 field-to-noise ratios, checked at doubled resolution.
+
+Prior art and claim boundary
+Delta-method propagation, von Mises moments, noise whitening, and covariance-
+aware shrinkage are established tools; these formulas alone are not novelty.
+Relevant primary sources checked on 9 October 2026:
+https://arxiv.org/abs/1811.02201 (heteroscedastic spectral shrinkage)
+https://arxiv.org/abs/2407.09687 (uncertainty exchange in phase retrieval)
+https://arxiv.org/abs/2206.05049 (predictable error statistics for denoising)
+https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.rice.html
+
+This is a diagnostic on unfiltered EM and a feasibility decision. It does not
+establish an improved filter, optimality, convergence, novelty or hardware
+performance. Prior frozen studies and the manuscript are unchanged.

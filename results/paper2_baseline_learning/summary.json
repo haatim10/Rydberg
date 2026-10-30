@@ -1,0 +1,177 @@
+{
+  "studies": [
+    {
+      "study": "memorization",
+      "matched_initial_weights": true,
+      "matched_data_order": true,
+      "scores": {
+        "final": {
+          "all": {
+            "n": 256,
+            "physical_db": -5.890539476745047,
+            "normalized_db": -4.297596421418893,
+            "normalization_gain_db": -1.5929430553261537
+          }
+        },
+        "selected": {
+          "all": {
+            "n": 256,
+            "physical_db": -5.893125499763265,
+            "normalized_db": -4.822441177609754,
+            "normalization_gain_db": -1.0706843221535118
+          }
+        }
+      },
+      "classical_validation_nmse_db": {
+        "10": {
+          "all": -19.51137502424
+        },
+        "100": {
+          "all": -61.84996982036662
+        }
+      },
+      "training_diagnostics": {
+        "physical": {
+          "initial_db": -0.07810385886950216,
+          "final_db": -14.628479229430711,
+          "improvement_db": 14.550375370561209
+        },
+        "normalized": {
+          "initial_db": -0.06757598475639776,
+          "final_db": -13.643514381932915,
+          "improvement_db": 13.575938397176518
+        }
+      },
+      "limitations": "Single-seed small-data development diagnostic. No final test. Not a published reproduction."
+    },
+    {
+      "study": "development",
+      "matched_initial_weights": true,
+      "matched_data_order": true,
+      "scores": {
+        "final": {
+          "all": {
+            "n": 512,
+            "physical_db": -4.954985053900419,
+            "normalized_db": -4.948018491219371,
+            "normalization_gain_db": -0.006966562681047654
+          },
+          "[-10,-5)": {
+            "n": 79,
+            "physical_db": -0.7266017457820071,
+            "normalized_db": -0.7682091332151415,
+            "normalization_gain_db": 0.041607387433134434
+          },
+          "[-5,0)": {
+            "n": 79,
+            "physical_db": -2.619729315160029,
+            "normalized_db": -2.722496568110715,
+            "normalization_gain_db": 0.10276725295068583
+          },
+          "[0,5)": {
+            "n": 99,
+            "physical_db": -5.6901159364477305,
+            "normalized_db": -5.712847421911118,
+            "normalization_gain_db": 0.02273148546338801
+          },
+          "[5,10)": {
+            "n": 83,
+            "physical_db": -8.107709044730347,
+            "normalized_db": -8.061478668393999,
+            "normalization_gain_db": -0.046230376336347696
+          },
+          "[10,15)": {
+            "n": 88,
+            "physical_db": -10.41090716080789,
+            "normalized_db": -9.949491101655976,
+            "normalization_gain_db": -0.4614160591519126
+          },
+          "[15,20)": {
+            "n": 84,
+            "physical_db": -11.458073503784007,
+            "normalized_db": -10.779656812307545,
+            "normalization_gain_db": -0.678416691476462
+          }
+        },
+        "selected": {
+          "all": {
+            "n": 512,
+            "physical_db": -4.88507211811515,
+            "normalized_db": -4.826535499750901,
+            "normalization_gain_db": -0.05853661836424884
+          },
+          "[-10,-5)": {
+            "n": 79,
+            "physical_db": -0.7651357976598887,
+            "normalized_db": -0.7564170641471234,
+            "normalization_gain_db": -0.008718733512765524
+          },
+          "[-5,0)": {
+            "n": 79,
+            "physical_db": -2.8502578068687248,
+            "normalized_db": -2.865278842225592,
+            "normalization_gain_db": 0.015021035356867296
+          },
+          "[0,5)": {
+            "n": 99,
+            "physical_db": -5.811638427979702,
+            "normalized_db": -5.77715006375935,
+            "normalization_gain_db": -0.03448836422035272
+          },
+          "[5,10)": {
+            "n": 83,
+            "physical_db": -7.875671991777667,
+            "normalized_db": -7.747039318548086,
+            "normalization_gain_db": -0.12863267322958002
+          },
+          "[10,15)": {
+            "n": 88,
+            "physical_db": -9.191716629343835,
+            "normalized_db": -8.88799300862772,
+            "normalization_gain_db": -0.30372362071611403
+          },
+          "[15,20)": {
+            "n": 84,
+            "physical_db": -9.738191188663837,
+            "normalized_db": -9.328544078598826,
+            "normalization_gain_db": -0.4096471100650106
+          }
+        }
+      },
+      "classical_validation_nmse_db": {
+        "10": {
+          "all": -1.2981802425348945,
+          "[-10,-5)": 4.973352028992936,
+          "[-5,0)": 0.47239933260934,
+          "[0,5)": -5.4162078971241625,
+          "[5,10)": -9.486004680448897,
+          "[10,15)": -13.627084912055945,
+          "[15,20)": -16.851243629164973
+        },
+        "100": {
+          "all": -0.30571276922013174,
+          "[-10,-5)": 5.95939279679044,
+          "[-5,0)": 1.6529667753912811,
+          "[0,5)": -4.511609956076119,
+          "[5,10)": -8.986193720427133,
+          "[10,15)": -13.963091529683386,
+          "[15,20)": -19.32566778400676
+        }
+      },
+      "training_diagnostics": {
+        "physical": {
+          "initial_db": -0.17221887420192344,
+          "final_db": -6.469792286781521,
+          "improvement_db": 6.297573412579598
+        },
+        "normalized": {
+          "initial_db": -0.12670431481298228,
+          "final_db": -6.03830618313966,
+          "improvement_db": 5.911601868326678
+        }
+      },
+      "limitations": "Single-seed small-data development diagnostic. No final test. Not a published reproduction."
+    }
+  ],
+  "validation_only": true
+}

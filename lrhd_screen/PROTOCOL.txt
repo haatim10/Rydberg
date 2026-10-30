@@ -1,0 +1,101 @@
+LRHD adaptation: small matched screen, 15 October 2026
+===================================================
+
+Question: does iterating OptShrink/Hankel structure enforcement add useful
+accuracy on our magnitude-only receiver, and what does it cost? No training,
+change to the original estimator, manuscript edit, or automatic larger study.
+
+Compatibility and limits
+------------------------
+Yin and Smith, On Low-Rank Hankel Matrix Denoising, IFAC-PapersOnLine 54(7),
+198-203 (2021), doi:10.1016/j.ifacol.2021.08.358; arxiv.org/html/2012.07433,
+Algorithm 2. Repeatedly apply data-driven singular-value shrinkage and project
+onto Hankel structure, re-estimating the singular noise tail each time. There
+is no reinjection of the original matrix. Use Pi=I. Stop when the Frobenius
+structure discrepancy ||projected-lowrank||/||projected|| <1e-5, separately
+for each user; the zero matrix stops immediately. Safety cap 1000 inner sweeps.
+Count and report every cap hit; do not describe capped results as converged.
+
+This is an independent complex-valued adaptation from the equations, not an
+authors-code reproduction. The authors' code DOI 10.3929/ethz-b-000513984 was
+inaccessible at preparation (HTTP429). The paper does not specify a subscript
+on its stopping norm, hence our explicit Frobenius convention. Conjugate SVD,
+the existing scale-normalized OptShrink D-transform guards, and anti-diagonal
+averaging are used. The paper's real additive observations/known true rank
+differ from complex, signal-dependent post-EM errors/unknown rank here.
+No optimality or convergence theorem is transferred.
+
+Model and unchanged controls
+----------------------------
+Z=|GS+B+W|, W~CN(0,v); N32 K3 P30, known reference and variance. Reuse the
+unchanged ULA simulator, spectral initialization, exact Rician posterior and
+linear solve. Filter each user's17x16 channel Hankel matrix, NEVER raw Z.
+LRHD enters after each EM step (primary) or after the last step (diagnostic).
+An outer mixing strength interpolates the denoised and unfiltered channel.
+
+Original188-parameter model: all three saved validation-selected checkpoints
+9101/9102/9103, no retraining or ensemble prediction. Strongest previous
+rank-selected in-loop OptShrink: unchanged frozen settings and online21/9
+rank selection. Include previous offline-selected OptShrink and ordinaryEM100.
+All use the same observations. Every initializer sees only the pilots passed
+to its fitting call. Rank fitting uses21; likelihood scoring uses9; selected
+rank is refitted from a new initialization using all30. No extra observations.
+
+Small matched development
+-------------------------
+12 primary cells: SNR{-10,0,10,20}, RSR12, paths{2,random3-7,16} per user.
+Eight fresh development worlds/cell (96), master seed20261015201001 with
+disjoint case indices across cells. Truth is neither saved nor used for tuning.
+Both LRHD and a NEW one-pass OptShrink control use the same candidate grid:
+ranks1..15 plus no-filter, strengths{.25,.5,.75,1}, outer budgets{5,20,50,100},
+in-loop and final-only placement. Minimum held-out Rician NLL, averaged equally
+over the three path populations at each known SNR. Tie order: fewer outer
+steps, no filter/lower rank, smaller strength. Choose separately by placement.
+Online selection then reselects one shared user rank from the same16 choices
+using21/9 pilots, retaining each method's own frozen strength and outer budget.
+Also retain offline-selected LRHD loop settings as a diagnostic.
+
+Primary LRHD and matched-onepass controls are in-loop. Final-only LRHD is a
+secondary diagnostic, not a test-selected alternative. All results reported.
+The old strongest OptShrink has a larger historical tuning budget; it stays
+as a strong additional control. No claim of globally optimal LRHD tuning.
+Development labels, true path count, or true rank never enter inference.
+SNR lookup uses10log10(3/v), never realized channel energy. Ties prefer lower
+SNR; stress uses nearest development SNR. This screening lookup is not a new
+receiver contribution. Previous strongestOptShrink retains its old lookup.
+
+Fresh test and reporting
+------------------------
+Generate only after selection freeze. Two independent master seeds
+20261015211001 and20261015221001,16worlds/cell/bank. 12primary cells plus
+weak reference(SNR5,RSR0,randompaths) and nearly noiseless(SNR60,RSR12,random)
+stress cells=448worlds. These are paired across all methods. Separate truth
+and observation files. Unique master-seed/case indices and saved hashes.
+Report equal12-cell average of dB ratio-of-summed squared error to summed
+channel power; per-cell scores; per-case NMSE>1; independent model-seed
+values; and stress results separately. Do not pool predictions as independent
+channels or combine these populations with old126-cell headline metrics.
+
+Paired within-cell/bootstrap across both banks (2000resamples) is descriptive,
+conditional on this small tuning set and the three saved models. Preserve
+the three model outputs when resampling a world. No confirmatory acceptance
+claim from these intervals, especially with only32cases/cell. Report LRHD gain
+against original, matched one-pass, and previous rank-selected OptShrink.
+
+Same backend for every timed method: PyTorchCPU one thread,double precision,
+batchone. Warm separately and rotate method order over three repeats on one
+new world per cell. Time initialization, online selection, inner loops and
+refit. Model loading and I/O excluded; offline tuning time reported separately.
+Report runtime distributions, not a hardware-independent speedup guarantee.
+
+Verification and resource limits
+-------------------------------
+Independent NumPy denoiser checks; one-sweep equality to existing OptShrink;
+zero/ties/scaling/phase/exact-lowrank behavior; nofilterEM equivalence;
+heldout isolation; deterministic replay. Hash historical sources/checkpoints
+before/after; verify unique/matched ids and generation-after-freeze. Inspect
+cap residuals and finite outputs. Save complete development cases/test cases,
+use an exclusive process lock, and require identical manifest on resume.
+At most7200seconds per invocation. Benchmark is disjoint seed20261015181001;
+timing seed20261015231001. The benchmark checks speed/numerics, not tuning.
+No network training, GPU, dashboards, or manuscript changes.

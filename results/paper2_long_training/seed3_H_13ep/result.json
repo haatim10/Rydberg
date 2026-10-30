@@ -1,0 +1,303 @@
+{
+  "run": "seed3_H_13ep",
+  "seed": 3,
+  "hankel": true,
+  "budget": 13,
+  "chosen_epoch_1based": 7,
+  "selection": {
+    "rule": "one_se",
+    "best_epoch": 9,
+    "se_db": 0.12292108305990028,
+    "threshold_db": -6.308099002796226,
+    "chosen_epoch": 6,
+    "n_within_1se": 7
+  },
+  "config": {
+    "system": {
+      "K": 3,
+      "N": 32,
+      "P": 20,
+      "L_min": 3,
+      "L_max": 7,
+      "beta": 1.0,
+      "c": 1.0,
+      "vartheta": 0.0,
+      "rsr_db": 10.0,
+      "master_seed": 20260827
+    },
+    "data": {
+      "n_train": 80000,
+      "n_val": 2000,
+      "n_test": 2000,
+      "train_seed_range": [
+        0,
+        1000000
+      ],
+      "val_seed_range": [
+        1000000,
+        2000000
+      ],
+      "test_seed_range": [
+        2000000,
+        3000000
+      ],
+      "pilot_mode": "fixed_S",
+      "fixed_S_seed": 777000001,
+      "snr_mode": "snr_range",
+      "snr_range_db": [
+        -10.0,
+        20.0
+      ],
+      "snr_fixed_db": 5.0,
+      "rsr_train_mode": "fixed",
+      "p_train_choices": null
+    },
+    "model": {
+      "T_UR": 10,
+      "d_model": 64,
+      "L_enc": 3,
+      "n_heads": 4,
+      "ffn_mult": 4,
+      "dropout": 0.0,
+      "filter_hidden": 32,
+      "filter_input": "log1p_kappa",
+      "filter_init": "random",
+      "filter_warmstart_cache": "reports/trackD_filternet_warmstart.pt",
+      "gate_init": "near_gs",
+      "use_transformer": true,
+      "use_hankel": true,
+      "hankel_rank": 7,
+      "hankel_mode": "fixed",
+      "hankel_pencil": null,
+      "hankel_iters": 1,
+      "hankel_gate": "none",
+      "hankel_gate_init": -2.0,
+      "hankel_gate_hidden": 16,
+      "log_sigma2_mean": -0.0727,
+      "log_sigma2_std": 1.998,
+      "tie_layers": false,
+      "deep_supervision": false
+    },
+    "train": {
+      "batch_size": 32,
+      "lr": 0.001,
+      "epochs": 13,
+      "optimizer": "adam",
+      "scheduler": "cosine",
+      "weight_decay": 0.0,
+      "grad_clip": 1.0,
+      "num_threads": 1,
+      "seed": 20263827,
+      "init": "spectral"
+    },
+    "numeric": {
+      "dtype": "float32"
+    },
+    "baseline": {
+      "T_GS": 100,
+      "ridge": 0.0
+    },
+    "base_sha": "54c88d5d5888923d973b6ff6a429e51da75b61df",
+    "audit_commit": "74984c7",
+    "rsr_paper_equiv_db": 5.228787452803376,
+    "gate_init_value": -2.0,
+    "eps": 1e-08
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.30189633202552796,
+      "validation_db": -5.697650604794911,
+      "lr": 0.000985470908713026,
+      "seconds": 271.8788479169598,
+      "data_order_sha256": "eb2a099d06f7930270bee9469d0038b6d55e0ba18295e14a10f18293fd83becb"
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.2606506501197815,
+      "validation_db": -5.873994542537064,
+      "lr": 0.000942728012826605,
+      "seconds": 270.6238499159808,
+      "data_order_sha256": "384b07b314c1ca3e1e519966e4d72dfa69c539cd01bb875be71a3442dd8bfead"
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.24984037915468216,
+      "validation_db": -6.032435541063102,
+      "lr": 0.0008742553740855506,
+      "seconds": 275.8824497080059,
+      "data_order_sha256": "870444cb6c5ca408e09bd4c3ec9841ec5fe95c9cd1022205df76e23ae30a4613"
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.24141918599903583,
+      "validation_db": -6.128878126273004,
+      "lr": 0.000784032373365578,
+      "seconds": 268.2803299999796,
+      "data_order_sha256": "a9d1fa1bf818df6e2d43158addb97fac0aafe1fb015bb0691ea1a4f6fae9500a"
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.23529743347465992,
+      "validation_db": -6.2401147817370894,
+      "lr": 0.0006773024435212678,
+      "seconds": 270.38994987501064,
+      "data_order_sha256": "b17d522078b2990fbf51364c46c1bcadadd1f8001ab3e0b8074f83c870ff74f4"
+    },
+    {
+      "epoch": 6,
+      "train_loss": 0.22910827559530736,
+      "validation_db": -6.304716424487715,
+      "lr": 0.0005602683401276615,
+      "seconds": 270.47063170798356,
+      "data_order_sha256": "6a18013b4096067f6c05bd61b673402bd7119539144eae18db485ac6f9c66a46"
+    },
+    {
+      "epoch": 7,
+      "train_loss": 0.22329515820145607,
+      "validation_db": -6.383315096605349,
+      "lr": 0.00043973165987233864,
+      "seconds": 279.1519723330275,
+      "data_order_sha256": "4e491c45fe106b0b3093e417e73986ded1e9da5834f0f34d397f8aec6bef8fd8"
+    },
+    {
+      "epoch": 8,
+      "train_loss": 0.2177977805018425,
+      "validation_db": -6.405000123018361,
+      "lr": 0.00032269755647873233,
+      "seconds": 274.01073579199146,
+      "data_order_sha256": "883e5dac4f2a55c21032be4085c04c169eb61afcef1c5f6dec66699add8b92c4"
+    },
+    {
+      "epoch": 9,
+      "train_loss": 0.21298586908578873,
+      "validation_db": -6.423686543656787,
+      "lr": 0.00021596762663442218,
+      "seconds": 272.5632135409978,
+      "data_order_sha256": "f53e2a28a8c8260ab336b9169fab267c590f439d6442954709fb009fab797109"
+    },
+    {
+      "epoch": 10,
+      "train_loss": 0.2087325469970703,
+      "validation_db": -6.431020085856126,
+      "lr": 0.00012574462591444943,
+      "seconds": 274.31522087502526,
+      "data_order_sha256": "76f4ca5360394cfb9941e054002476daeb8949a5ad9d6b37ba445b611e49c283"
+    },
+    {
+      "epoch": 11,
+      "train_loss": 0.2052710134357214,
+      "validation_db": -6.427341753166136,
+      "lr": 5.727198717339522e-05,
+      "seconds": 273.782180124952,
+      "data_order_sha256": "759cc8df91b1f6d9760a7f76e5c40f255415e410dc01df58c994767bd259f3aa"
+    },
+    {
+      "epoch": 12,
+      "train_loss": 0.20276993398070337,
+      "validation_db": -6.416955226518466,
+      "lr": 1.4529091286973998e-05,
+      "seconds": 270.84515320899663,
+      "data_order_sha256": "2b4f3aec7c3f0c49ca6529c4fb1fc84994de78858d4907b4dd0a29f87f25919d"
+    },
+    {
+      "epoch": 13,
+      "train_loss": 0.20118106695711613,
+      "validation_db": -6.409654565057206,
+      "lr": 0.0,
+      "seconds": 270.0555351660005,
+      "data_order_sha256": "eeff56c39561df6e6e474cdc762817fbb7183c7330fca79edb606b19fcff5f9c"
+    }
+  ],
+  "model_meta": {
+    "arm": "arm1b_full_random",
+    "spec": {
+      "use_transformer": true,
+      "filter_init": "random"
+    },
+    "params": {
+      "tie_layers": false,
+      "T_UR": 10,
+      "per_layer": [
+        {
+          "layer": 0,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 1,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 2,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 3,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 4,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 5,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 6,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 7,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 8,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        },
+        {
+          "layer": 9,
+          "filter_net": 97,
+          "gate": 1,
+          "transformer": 158592,
+          "total": 158690
+        }
+      ],
+      "totals": {
+        "filter_net": 970,
+        "gate": 10,
+        "transformer": 1585920,
+        "all_parameters": 1586900
+      },
+      "note": "untied: per-layer sums equal the total"
+    },
+    "warmstart": null
+  }
+}

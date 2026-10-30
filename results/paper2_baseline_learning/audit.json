@@ -1,0 +1,69 @@
+{
+  "source_hashes_verified": 51,
+  "runs": [
+    {
+      "study": "memorization",
+      "arm": "physical",
+      "epochs": 100,
+      "selected_epoch": 50,
+      "final_training_db": -14.628479229430711,
+      "final_validation_db": -5.890539476745047,
+      "checkpoint_replay": "exact",
+      "initial_db": {
+        "train": -0.07810385886950216,
+        "val": -0.03710220949726508
+      },
+      "max_gradient_norm": 0.6937687993049622
+    },
+    {
+      "study": "memorization",
+      "arm": "normalized",
+      "epochs": 100,
+      "selected_epoch": 30,
+      "final_training_db": -13.643514381932915,
+      "final_validation_db": -4.297596421418893,
+      "checkpoint_replay": "exact",
+      "initial_db": {
+        "train": -0.06757598475639776,
+        "val": -0.012069704979897284
+      },
+      "max_gradient_norm": 0.7393187880516052
+    },
+    {
+      "study": "development",
+      "arm": "physical",
+      "epochs": 12,
+      "selected_epoch": 4,
+      "final_training_db": -6.469792286781521,
+      "final_validation_db": -4.954985053900419,
+      "checkpoint_replay": "exact",
+      "initial_db": {
+        "train": -0.17221887420192344,
+        "val": -0.13842684280183812
+      },
+      "max_gradient_norm": 55.612823486328125
+    },
+    {
+      "study": "development",
+      "arm": "normalized",
+      "epochs": 12,
+      "selected_epoch": 4,
+      "final_training_db": -6.03830618313966,
+      "final_validation_db": -4.948018491219371,
+      "checkpoint_replay": "exact",
+      "initial_db": {
+        "train": -0.12670431481298228,
+        "val": -0.09823614990721741
+      },
+      "max_gradient_norm": 58.22710418701172
+    }
+  ],
+  "data_hashes_verified": 4,
+  "matched_initial_weights_and_order": true,
+  "validation_only": true,
+  "previous_frozen_source_entries_verified": {
+    "paper2_original_channel": 49,
+    "paper2_reproduction": 51,
+    "paper2_reproduction_diagnostic": 50
+  }
+}

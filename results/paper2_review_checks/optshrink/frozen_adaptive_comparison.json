@@ -1,0 +1,210 @@
+{
+  "scope": "Exploratory frozen adaptive10 versus independently likelihood-tuned final EM100-plus-OptShrink on identical test worlds; no retraining or test-based selection.",
+  "methods": "Adaptive model unchanged; OptShrink rank7 follows EM100 once at the end. Different update budgets: not an equal-compute architecture ablation.",
+  "uncertainty": "4000 paired whole-case bootstrap draws within each cell; common case weights for all three fixed learned seeds and OptShrink, independent draws across cells; unadjusted intervals conditional on fixed checkpoints and development selection.",
+  "input_hashes": {
+    "results/paper2_review_checks/optshrink/summary.json": "7cdb007832477fdcfcd6c8a5a4238049b1f56a27fe852136b6b8fd4758a16fd8",
+    "results/paper2_review_checks/cells/snr_-10/adaptive10_s9101.npz": "63f4015dcb12f39cda26df285212e5e6c2d675348525b9cfbd6d592373289d27",
+    "results/paper2_review_checks/cells/snr_-10/adaptive10_s9102.npz": "11275924e1828cd199244f62d4b703913cc868b357b390fc9e69db0835fd1e70",
+    "results/paper2_review_checks/cells/snr_-10/adaptive10_s9103.npz": "118e8f2d9a38c03291cfac48de907318d709724dd8e1a034d7b158781a17e9e3",
+    "results/paper2_review_checks/cells/snr_-10/em100.npz": "b561412c0297bbef3a92d6c468f41163cacef4de8af4cb5ff31b988387dad0e0",
+    "results/paper2_review_checks/cells/snr_-5/adaptive10_s9101.npz": "b65ca85d2e3dd01375098bc7f1449f1988ef977170c51c4c41b9c79acdeb22f1",
+    "results/paper2_review_checks/cells/snr_-5/adaptive10_s9102.npz": "89e68a853da138db515f34dc66a50f8c4e582bea95e3c2913fa3ccfa3d9c9919",
+    "results/paper2_review_checks/cells/snr_-5/adaptive10_s9103.npz": "24293fe60484abdc039fdfde67e1b3ae7d9b7ac60115eaa6072b7dd7b59df51c",
+    "results/paper2_review_checks/cells/snr_-5/em100.npz": "67b4759fea4ede870a01ffadb48a4a52f872bfe35f219dacac2c1e29aa3cdcad",
+    "results/paper2_review_checks/cells/snr_+0/adaptive10_s9101.npz": "8207cb9ac67345b7e826b59101dfd8cda16a63dd3fa5acef4abffc39d5f408ca",
+    "results/paper2_review_checks/cells/snr_+0/adaptive10_s9102.npz": "d2d0015c6fb77fa0165499987d5a4910d6f93b8c677eef585e5b5549e82ac2ad",
+    "results/paper2_review_checks/cells/snr_+0/adaptive10_s9103.npz": "6f364ea56bf3d1d12ce9d72b36e759562518a3136d993f84e130d8b9a7874487",
+    "results/paper2_review_checks/cells/snr_+0/em100.npz": "9c78e8efaed5b055df52473a5fc4702896b2b26550d7971a17e7342439cd1b4a",
+    "results/paper2_review_checks/cells/snr_+5/adaptive10_s9101.npz": "edf9518a8f87220d65af3330b605bc5b4042a3f4d9c51014e34bd9da6009c8f3",
+    "results/paper2_review_checks/cells/snr_+5/adaptive10_s9102.npz": "6771082cd9807d24bfd190afc13b4536c11dfeea206bc55a0d009ebaf702a60f",
+    "results/paper2_review_checks/cells/snr_+5/adaptive10_s9103.npz": "c372092fb91cadf00f6d7f83218a9b4c881b983f315f6bf8c6d8567c1d94592a",
+    "results/paper2_review_checks/cells/snr_+5/em100.npz": "65323b0645043f87fec2c2c50a6d8f3b275f37bd200e5327a403c48db72a3781",
+    "results/paper2_review_checks/cells/snr_+10/adaptive10_s9101.npz": "1f95ff4f9d4f21d0662c1cce5c8b388c413b7f98d1dd1a9fb520d8bdc5163d2e",
+    "results/paper2_review_checks/cells/snr_+10/adaptive10_s9102.npz": "22db0d80e788583a8e16f7eb749c190ca5981ff0f8a1b2a58521bda14dd46d04",
+    "results/paper2_review_checks/cells/snr_+10/adaptive10_s9103.npz": "739063d0e0dff7c4af4320d75e4e2052e44761a7d49039f55629bcefcd639d9a",
+    "results/paper2_review_checks/cells/snr_+10/em100.npz": "b49909becce098ad392404a342989178d8055594d0f216900c9abff1b2b308f8",
+    "results/paper2_review_checks/cells/snr_+15/adaptive10_s9101.npz": "b50834bf914d81c4d32916068bb674f025a38b52227399b6754daf1bc86be512",
+    "results/paper2_review_checks/cells/snr_+15/adaptive10_s9102.npz": "139c8f57d794573006259e72c75357f7fb16e697d444546e735a3b8a59806db9",
+    "results/paper2_review_checks/cells/snr_+15/adaptive10_s9103.npz": "6cdaf43c783640cdb472dc692288f3c503738f5a99982231647f88e900d1cc3f",
+    "results/paper2_review_checks/cells/snr_+15/em100.npz": "1f802786b239c1d2a45e8185c22270a53fe24532d84ed9a837addf4ed078bf55",
+    "results/paper2_review_checks/cells/snr_+20/adaptive10_s9101.npz": "d84361d9343b87f0d969989e6e9873acaef99a544472085f99cf52f874c8a5f0",
+    "results/paper2_review_checks/cells/snr_+20/adaptive10_s9102.npz": "ec742c6381ff6c84470edaaca1023e7c2ccfadaf370dcdb6c437c0a55233d047",
+    "results/paper2_review_checks/cells/snr_+20/adaptive10_s9103.npz": "772b1f82582436eb4d45c23f60844d8e9a3de0626ce400b09c7579a0cc149a95",
+    "results/paper2_review_checks/cells/snr_+20/em100.npz": "58b8a98300fa5f2cb7a698d9a30066af1eeb46a7001f132e9fe0dd7812e6fe8c",
+    "results/paper2_review_checks/cells/weak_reference/adaptive10_s9101.npz": "193b9ad20ef1740cb25448ca4e33301600ffbd1c614600885903bfc885b452bf",
+    "results/paper2_review_checks/cells/weak_reference/adaptive10_s9102.npz": "606d562a542c7bb2e4347d87184f99004e67e80aba2f8e5c811b8e28398df05f",
+    "results/paper2_review_checks/cells/weak_reference/adaptive10_s9103.npz": "1ef294719d4e40b820881f7f6f9ab55c5086a258170038fb6275cd52fb4adad6",
+    "results/paper2_review_checks/cells/weak_reference/em100.npz": "691feec2f414e50e931836bbc3d0ef701e8d1d8dcca5b899998f1c7a5a3eb23e",
+    "results/paper2_review_checks/cells/two_paths/adaptive10_s9101.npz": "63f8e30da7dc879e1da56dc94ac68da7af214f577de52fb374940aa55d365df8",
+    "results/paper2_review_checks/cells/two_paths/adaptive10_s9102.npz": "7c526c1d6b349918598ab831b4a7bcaf423b7756fdcbbc50eba8c9dd94d260af",
+    "results/paper2_review_checks/cells/two_paths/adaptive10_s9103.npz": "af33fc15475f81394a526b5ad46ab434f7491fea4a17ca9df4d0590bfa8018cb",
+    "results/paper2_review_checks/cells/two_paths/em100.npz": "273d857df8e67f074af708839dbc6e87f6515acafda497fc5a11cc3462b53e4d"
+  },
+  "analysis_hash": "ed287263c360446b9a6e6e7a005168d7c18bb6123318af9dd80329e1586a1a6c",
+  "common_em100_max_error_delta": 0.0,
+  "main_snr_macro": {
+    "adaptive_mean_seed_nmse_db": -14.243050348721486,
+    "optshrink_nmse_db": -13.690663971186256,
+    "adaptive_gain_vs_optshrink_db": 0.5523863775352293,
+    "paired_case_interval_95": [
+      0.43155768897542124,
+      0.6727857840048959
+    ]
+  },
+  "cells": {
+    "snr_-10": {
+      "cases": 32,
+      "adaptive_seed_nmse_db": [
+        -1.1798085812310828,
+        -1.1880093581438647,
+        -1.2245480604006334
+      ],
+      "adaptive_mean_seed_nmse_db": -1.197455333258527,
+      "optshrink_nmse_db": 1.8379016068411058,
+      "adaptive_gain_vs_optshrink_db": 3.035356940099633,
+      "paired_case_interval_95": [
+        2.7019281260522696,
+        3.363713862341546
+      ],
+      "adaptive_severe_fraction": 0.0,
+      "optshrink_severe_fraction": 0.90625
+    },
+    "snr_-5": {
+      "cases": 32,
+      "adaptive_seed_nmse_db": [
+        -3.634671927999819,
+        -3.6290443561951986,
+        -4.215464357660642
+      ],
+      "adaptive_mean_seed_nmse_db": -3.8263935472852197,
+      "optshrink_nmse_db": -2.9406934100949393,
+      "adaptive_gain_vs_optshrink_db": 0.8857001371902804,
+      "paired_case_interval_95": [
+        0.5719548008834522,
+        1.2406755503690414
+      ],
+      "adaptive_severe_fraction": 0.0,
+      "optshrink_severe_fraction": 0.03125
+    },
+    "snr_+0": {
+      "cases": 32,
+      "adaptive_seed_nmse_db": [
+        -9.050599315763648,
+        -9.008127455405525,
+        -9.046916571627046
+      ],
+      "adaptive_mean_seed_nmse_db": -9.03521444759874,
+      "optshrink_nmse_db": -8.603713547791163,
+      "adaptive_gain_vs_optshrink_db": 0.43150089980757755,
+      "paired_case_interval_95": [
+        0.15007837814601743,
+        0.7377344596801558
+      ],
+      "adaptive_severe_fraction": 0.0,
+      "optshrink_severe_fraction": 0.0
+    },
+    "snr_+5": {
+      "cases": 32,
+      "adaptive_seed_nmse_db": [
+        -14.311799744961577,
+        -14.394126669267703,
+        -13.423287790826093
+      ],
+      "adaptive_mean_seed_nmse_db": -14.043071401685125,
+      "optshrink_nmse_db": -13.888505079418053,
+      "adaptive_gain_vs_optshrink_db": 0.15456632226707256,
+      "paired_case_interval_95": [
+        -0.019410903699582555,
+        0.3138133107071586
+      ],
+      "adaptive_severe_fraction": 0.0,
+      "optshrink_severe_fraction": 0.0
+    },
+    "snr_+10": {
+      "cases": 32,
+      "adaptive_seed_nmse_db": [
+        -19.456248516005616,
+        -19.52277576059384,
+        -18.607474971652117
+      ],
+      "adaptive_mean_seed_nmse_db": -19.19549974941719,
+      "optshrink_nmse_db": -19.140069095427023,
+      "adaptive_gain_vs_optshrink_db": 0.05543065399016811,
+      "paired_case_interval_95": [
+        -0.15577645199733847,
+        0.30864178884360816
+      ],
+      "adaptive_severe_fraction": 0.0,
+      "optshrink_severe_fraction": 0.0
+    },
+    "snr_+15": {
+      "cases": 32,
+      "adaptive_seed_nmse_db": [
+        -24.350120909511595,
+        -24.011957340082265,
+        -23.896938543597077
+      ],
+      "adaptive_mean_seed_nmse_db": -24.086338931063647,
+      "optshrink_nmse_db": -23.742583269467442,
+      "adaptive_gain_vs_optshrink_db": 0.3437556615962052,
+      "paired_case_interval_95": [
+        0.14971073960622877,
+        0.512719819022374
+      ],
+      "adaptive_severe_fraction": 0.0,
+      "optshrink_severe_fraction": 0.0
+    },
+    "snr_+20": {
+      "cases": 32,
+      "adaptive_seed_nmse_db": [
+        -28.421117601667184,
+        -26.936933061388494,
+        -29.594086429170147
+      ],
+      "adaptive_mean_seed_nmse_db": -28.317379030741943,
+      "optshrink_nmse_db": -29.356985002946274,
+      "adaptive_gain_vs_optshrink_db": -1.0396059722043312,
+      "paired_case_interval_95": [
+        -1.6208262393473805,
+        -0.5222100436605912
+      ],
+      "adaptive_severe_fraction": 0.0,
+      "optshrink_severe_fraction": 0.0
+    },
+    "weak_reference": {
+      "cases": 32,
+      "adaptive_seed_nmse_db": [
+        -6.224428066653234,
+        -6.14919309674086,
+        -6.000708469294364
+      ],
+      "adaptive_mean_seed_nmse_db": -6.124776544229486,
+      "optshrink_nmse_db": -8.532640830666649,
+      "adaptive_gain_vs_optshrink_db": -2.407864286437163,
+      "paired_case_interval_95": [
+        -4.347493003582332,
+        -0.300669249029647
+      ],
+      "adaptive_severe_fraction": 0.010416666666666666,
+      "optshrink_severe_fraction": 0.0
+    },
+    "two_paths": {
+      "cases": 32,
+      "adaptive_seed_nmse_db": [
+        -16.951573190893562,
+        -17.212743931020025,
+        -15.265470793354478
+      ],
+      "adaptive_mean_seed_nmse_db": -16.476595971756023,
+      "optshrink_nmse_db": -14.646668464455917,
+      "adaptive_gain_vs_optshrink_db": 1.8299275073001056,
+      "paired_case_interval_95": [
+        1.5263528072949033,
+        2.168902548576815
+      ],
+      "adaptive_severe_fraction": 0.0,
+      "optshrink_severe_fraction": 0.0
+    }
+  }
+}

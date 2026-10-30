@@ -1,0 +1,83 @@
+{
+  "spec": {
+    "id": "cell_101",
+    "snr": 15.0,
+    "rsr": 12.0,
+    "L": 16
+  },
+  "selection_sha256": "0a17e0a23b75b129579acae2b4c3c131c26b9daee6f349bb6264780b2c4fd77a",
+  "noise_offsets_db": [
+    0.0,
+    -3.0,
+    3.0
+  ],
+  "offsets": [
+    {
+      "noise_offset_db": 0.0,
+      "seconds": {
+        "holdout_best": [
+          0.0048610829981043935,
+          0.00480195798445493,
+          0.0047984590055420995
+        ],
+        "allpilot_best": [
+          0.004961916944012046,
+          0.004862458910793066,
+          0.004811165970750153
+        ],
+        "selector": [
+          0.005077167064882815,
+          0.004907457972876728,
+          0.004835708066821098
+        ]
+      },
+      "allpilot": false,
+      "forward_calls": 1
+    },
+    {
+      "noise_offset_db": -3.0,
+      "seconds": {
+        "holdout_best": [
+          0.00473241601139307,
+          0.004850541008636355,
+          0.0047507500275969505
+        ],
+        "allpilot_best": [
+          0.004830499994568527,
+          0.004723374964669347,
+          0.0047296249540522695
+        ],
+        "selector": [
+          0.00482029200065881,
+          0.004778624977916479,
+          0.0048017920926213264
+        ]
+      },
+      "allpilot": false,
+      "forward_calls": 1
+    },
+    {
+      "noise_offset_db": 3.0,
+      "seconds": {
+        "holdout_best": [
+          0.004700625082477927,
+          0.004865041933953762,
+          0.0047249579802155495
+        ],
+        "allpilot_best": [
+          0.004798125009983778,
+          0.004763958044350147,
+          0.004761917050927877
+        ],
+        "selector": [
+          0.004791416111402214,
+          0.004771791980601847,
+          0.004795833956450224
+        ]
+      },
+      "allpilot": false,
+      "forward_calls": 1
+    }
+  ],
+  "backend": "PyTorch CPU float64 one thread batch1; initialization and routing included; checkpoint loading excluded"
+}

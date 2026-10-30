@@ -1,0 +1,114 @@
+{
+  "count": 14000,
+  "keys": [
+    "G_true",
+    "G0",
+    "Z",
+    "S",
+    "B",
+    "sigma2",
+    "snr_db",
+    "trial"
+  ],
+  "config": {
+    "system": {
+      "K": 4,
+      "N": 32,
+      "P": 20,
+      "L_min": 3,
+      "L_max": 7,
+      "beta": 32.0,
+      "c": 1.0,
+      "vartheta": 0.0,
+      "rsr_db": 16.020599913279625,
+      "master_seed": 2026091940
+    },
+    "data": {
+      "n_train": 20000,
+      "n_val": 2000,
+      "n_test": 14000,
+      "train_seed_range": [
+        7000000,
+        8000000
+      ],
+      "val_seed_range": [
+        8000000,
+        9000000
+      ],
+      "test_seed_range": [
+        9000000,
+        10000000
+      ],
+      "pilot_mode": "fixed_S",
+      "fixed_S_seed": 777000001,
+      "snr_mode": "snr_range",
+      "snr_range_db": [
+        -10.0,
+        20.0
+      ],
+      "snr_fixed_db": 5.0,
+      "rsr_train_mode": "fixed",
+      "p_train_choices": null
+    },
+    "model": {
+      "T_UR": 10,
+      "d_model": 64,
+      "L_enc": 3,
+      "n_heads": 4,
+      "ffn_mult": 4,
+      "dropout": 0.0,
+      "filter_hidden": 32,
+      "filter_input": "kappa",
+      "filter_init": "random",
+      "filter_warmstart_cache": "reports/trackD_filternet_warmstart.pt",
+      "gate_init": "neutral",
+      "use_transformer": true,
+      "use_hankel": false,
+      "hankel_rank": 7,
+      "hankel_mode": "fixed",
+      "hankel_pencil": null,
+      "hankel_iters": 1,
+      "hankel_gate": "none",
+      "hankel_gate_init": -2.0,
+      "hankel_gate_hidden": 16,
+      "log_sigma2_mean": -0.0727,
+      "log_sigma2_std": 1.998,
+      "tie_layers": false,
+      "deep_supervision": false
+    },
+    "train": {
+      "batch_size": 32,
+      "lr": 0.001,
+      "epochs": 13,
+      "optimizer": "adam",
+      "scheduler": "cosine",
+      "weight_decay": 0.0,
+      "grad_clip": null,
+      "num_threads": 1,
+      "seed": 2026092101,
+      "init": "random"
+    },
+    "numeric": {
+      "dtype": "float32"
+    },
+    "baseline": {
+      "T_GS": 100,
+      "ridge": 0.0
+    },
+    "base_sha": "54c88d5d5888923d973b6ff6a429e51da75b61df",
+    "audit_commit": "74984c7",
+    "rsr_paper_equiv_db": 10.0,
+    "gate_init_value": 0.0,
+    "eps": 1e-08
+  },
+  "sha256": {
+    "G_true": "2e6f8d4a2d71e63bec7391cb8e1551e10c6dbd8fac23049a87db8f3a36726e62",
+    "G0": "807f060039f21cb63b2c6e08c91621993ba26cc7e3c11ec62392819ddc0008f8",
+    "Z": "a608b5926f04e487db98ada4bfc6f17921a0023fb62b4c0a00596ad6623aea84",
+    "S": "44e469b8d9fd0962ad6b4a4b3b020ffdebad972a2be073cccb996b99d2f01f21",
+    "B": "855209c002c3d52b97a31ab1c5445144111ae3f0951ad19d6856bf784f463ebe",
+    "sigma2": "08098cfbf7d8c5fca4eda5b93041fea464ee5ecd20bb77020302877e0225e1da",
+    "snr_db": "bd6c40866d59a9470e534c6f7b82722b3a2a03491f0f51d7416d8355dfc56936",
+    "trial": "aebffcd6dd71dd12c302973fc37600677c420c85594a57c7eb598ade3e5ca0cc"
+  }
+}

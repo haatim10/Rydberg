@@ -1,0 +1,20 @@
+From the Rydberg repository root, using the existing .venv-paper2 interpreter:
+
+../../.venv-paper2/bin/python -m unittest merged_followup.test_checks -v
+../../.venv-paper2/bin/python -m merged_followup.run --phase all
+../../.venv-paper2/bin/python -m merged_followup.analyze
+
+The runner refuses changed source/input/config hashes, holds a single-writer
+lock, and skips completed records. Epoch checkpoints contain optimizer state;
+an interruption resumes the preceding complete epoch. It enforces a cumulative
+two-hour run cap. The analysis is separately versioned in audit.json.
+
+Outputs: results/merged_followup/RESULTS.txt, summary.json, audit.json,
+manifest.json, release_selection.json, learned/frozen_selection.json, and
+the per-world observations/estimates plus selected/final checkpoints.
+
+The old simulator and frozen OptShrink/model dependencies must remain present.
+This is an in-repository reproducible pilot, not a standalone public release.
+The current manuscript/source/ZIP are deliberately unchanged. A newly selected
+candidate method must pass a separate frozen independent confirmation before
+replacing the paper's central method or strengthening its claims.

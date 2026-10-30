@@ -1,0 +1,63 @@
+{
+  "seed": 9101,
+  "sources": {
+    "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/train.py": "b4dc588e3cf9c21de5400468b2d26588770c98cb650d3632891f2a85d0d39d25",
+    "sahure/model.py": "c6a3d53d8adae23cc2c0b1309bedd21ebd7760194359256192897bdd19aaface",
+    "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+    "sahure/train.py": "bedef81896e71b57162367debb25fdd29625afc6ab44929bb1ebc9464884b04e",
+    "sahure/data.py": "efb3c019ed5209a243023f9ca83c48e216e2c3d6494f3c96b42312242abefeea"
+  },
+  "config": {
+    "version": 1,
+    "N": 32,
+    "K": 3,
+    "P": 30,
+    "stages": 10,
+    "train_cases": 16384,
+    "val_cases": 2048,
+    "test_cases": 400,
+    "epochs": 20,
+    "batch_size": 32,
+    "lr": 0.001,
+    "seeds": [
+      9101,
+      9102,
+      9103
+    ],
+    "snrs": [
+      -10,
+      -5,
+      0,
+      5,
+      10,
+      15,
+      20
+    ],
+    "rsrs": [
+      5,
+      12,
+      20
+    ],
+    "fixed_paths": [
+      2,
+      4,
+      8,
+      12,
+      16
+    ],
+    "train_data_seed": 2026092201,
+    "val_data_seed": 2026092202,
+    "test_data_seed": 2026092300,
+    "validation_mask_seed": 2026092203,
+    "bootstrap_seed": 2026092401,
+    "bootstrap_resamples": 4000,
+    "validation_weighting": "equal means across 126 SNR/RSR/path-regime strata",
+    "training_mixture": "half random per-user 3..7; half evenly allocated fixed 2,4,8,12,16",
+    "training_seeds_share_data": true,
+    "timing_trials": 100,
+    "timing_repetitions": 3,
+    "precision_train": "float32/complex64",
+    "precision_evaluate": "float64/complex128"
+  },
+  "torch": "2.13.0"
+}

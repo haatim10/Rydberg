@@ -1,0 +1,21 @@
+Scope decisions for the second review
+
+Implemented: sweep sensitivity, random-mask stability, stored-rank/harm
+analysis, cost/memory accounting, shrinkage rationale, pilot-design scope,
+verified IEEE related-work addition, and shorter repeated explanations.
+
+The new sweep study retunes each method's parameter using held-out data.
+It must not be described as changing only the final projection at fixed
+rank. Random partitions are alternative fits, not a newly proposed
+multi-fold estimator. Three random masks do not establish universal split
+robustness; 100 worlds per setting are focused sensitivity evidence.
+
+Not claimed: global convergence, optimal four-sweep choice, adaptive
+stopping, optimal shrinkage, efficient new rank selection, hardware
+validation, universal complexity threshold, guaranteed fallback safety,
+or attainable improvement equal to the CCRB gap.
+
+Not added: new joint-user/2D Hankel model, unverified IEEE citations,
+SURE/AIC implementations without a suitable statistical derivation,
+new neural networks, or broader hardware mismatch campaigns. These
+would change the research scope rather than finish this revision.

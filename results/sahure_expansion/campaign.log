@@ -1,0 +1,230 @@
+Started train_seed_9101
+Started train_seed_9102
+Started train_seed_9103
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/campaign.py", line 62, in <module>
+    args=p.parse_args();main(args.workers,args.phase)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/campaign.py", line 42, in main
+    parallel([(f'train_seed_{s}',[sys.executable,'-u','-m','sahure_expansion.train','--seed',str(s)])
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/campaign.py", line 27, in parallel
+    raise RuntimeError(f'{name} failed with exit code {code}; see its log')
+RuntimeError: train_seed_9101 failed with exit code 1; see its log
+Started train_seed_9101
+Started train_seed_9102
+Started train_seed_9103
+Completed train_seed_9101
+Completed train_seed_9103
+Completed train_seed_9102
+{"em": 3.373345869978784, "gd": 3.402319643704359}
+Generated cell_00
+Generated cell_01
+Generated cell_02
+Generated cell_03
+Generated cell_04
+Generated cell_05
+Generated cell_06
+Generated cell_07
+Generated cell_08
+Generated cell_09
+Generated cell_10
+Generated cell_11
+Generated cell_12
+Generated cell_13
+Generated cell_14
+Generated cell_15
+Generated cell_16
+Generated cell_17
+Generated cell_18
+Generated cell_19
+Generated cell_20
+Generated cell_21
+Generated cell_22
+Generated cell_23
+Generated cell_24
+Generated cell_25
+Generated cell_26
+Generated cell_27
+Generated cell_28
+Generated cell_29
+Started evaluate_cell_00
+Started evaluate_cell_01
+Started evaluate_cell_02
+Completed evaluate_cell_02
+Started evaluate_cell_03
+Completed evaluate_cell_01
+Started evaluate_cell_04
+Completed evaluate_cell_00
+Started evaluate_cell_05
+Completed evaluate_cell_03
+Started evaluate_cell_06
+Completed evaluate_cell_04
+Started evaluate_cell_07
+Completed evaluate_cell_05
+Started evaluate_cell_08
+Completed evaluate_cell_06
+Started evaluate_cell_09
+Completed evaluate_cell_08
+Started evaluate_cell_10
+Completed evaluate_cell_07
+Started evaluate_cell_11
+Completed evaluate_cell_09
+Started evaluate_cell_12
+Completed evaluate_cell_10
+Started evaluate_cell_13
+Completed evaluate_cell_11
+Started evaluate_cell_14
+Completed evaluate_cell_12
+Started evaluate_cell_15
+Completed evaluate_cell_13
+Started evaluate_cell_16
+Completed evaluate_cell_14
+Started evaluate_cell_17
+Completed evaluate_cell_15
+Started evaluate_cell_18
+Completed evaluate_cell_16
+Started evaluate_cell_19
+Completed evaluate_cell_17
+Started evaluate_cell_20
+Completed evaluate_cell_18
+Started evaluate_cell_21
+Completed evaluate_cell_19
+Started evaluate_cell_22
+Completed evaluate_cell_20
+Started evaluate_cell_23
+Completed evaluate_cell_22
+Started evaluate_cell_24
+Completed evaluate_cell_23
+Started evaluate_cell_25
+Completed evaluate_cell_21
+Started evaluate_cell_26
+Completed evaluate_cell_25
+Started evaluate_cell_27
+Completed evaluate_cell_26
+Started evaluate_cell_28
+Completed evaluate_cell_27
+Started evaluate_cell_29
+Completed evaluate_cell_28
+Started evaluate_cell_30
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/campaign.py", line 62, in <module>
+    args=p.parse_args();main(args.workers,args.phase)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/campaign.py", line 47, in main
+    parallel([(f'evaluate_{c["id"]}',[sys.executable,'-u','-m','sahure_expansion.evaluate','cell','--cell',c['id']])
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/campaign.py", line 27, in parallel
+    raise RuntimeError(f'{name} failed with exit code {code}; see its log')
+RuntimeError: evaluate_cell_24 failed with exit code 1; see its log
+{"em": 3.373345869978784, "gd": 3.402319643704359}
+Generated cell_00
+Generated cell_01
+Generated cell_02
+Generated cell_03
+Generated cell_04
+Generated cell_05
+Generated cell_06
+Generated cell_07
+Generated cell_08
+Generated cell_09
+Generated cell_10
+Generated cell_11
+Generated cell_12
+Generated cell_13
+Generated cell_14
+Generated cell_15
+Generated cell_16
+Generated cell_17
+Generated cell_18
+Generated cell_19
+Generated cell_20
+Generated cell_21
+Generated cell_22
+Generated cell_23
+Generated cell_24
+Generated cell_25
+Generated cell_26
+Generated cell_27
+Generated cell_28
+Generated cell_29
+Started evaluate_cell_00
+Started evaluate_cell_01
+Started evaluate_cell_02
+Completed evaluate_cell_00
+Completed evaluate_cell_01
+Completed evaluate_cell_02
+Started evaluate_cell_03
+Started evaluate_cell_04
+Started evaluate_cell_05
+Completed evaluate_cell_03
+Completed evaluate_cell_04
+Completed evaluate_cell_05
+Started evaluate_cell_06
+Started evaluate_cell_07
+Started evaluate_cell_08
+Completed evaluate_cell_06
+Completed evaluate_cell_07
+Completed evaluate_cell_08
+Started evaluate_cell_09
+Started evaluate_cell_10
+Started evaluate_cell_11
+Completed evaluate_cell_09
+Completed evaluate_cell_10
+Completed evaluate_cell_11
+Started evaluate_cell_12
+Started evaluate_cell_13
+Started evaluate_cell_14
+Completed evaluate_cell_12
+Completed evaluate_cell_13
+Completed evaluate_cell_14
+Started evaluate_cell_15
+Started evaluate_cell_16
+Started evaluate_cell_17
+Completed evaluate_cell_15
+Completed evaluate_cell_16
+Completed evaluate_cell_17
+Started evaluate_cell_18
+Started evaluate_cell_19
+Started evaluate_cell_20
+Completed evaluate_cell_18
+Completed evaluate_cell_19
+Completed evaluate_cell_20
+Started evaluate_cell_21
+Started evaluate_cell_22
+Started evaluate_cell_23
+Completed evaluate_cell_21
+Completed evaluate_cell_22
+Completed evaluate_cell_23
+Started evaluate_cell_24
+Started evaluate_cell_25
+Started evaluate_cell_26
+Completed evaluate_cell_25
+Completed evaluate_cell_26
+Started evaluate_cell_27
+Started evaluate_cell_28
+Completed evaluate_cell_27
+Completed evaluate_cell_28
+Started evaluate_cell_29
+Started evaluate_cell_30
+Completed evaluate_cell_29
+Started evaluate_cell_31
+Completed evaluate_cell_30
+Completed evaluate_cell_31
+Completed evaluate_cell_24
+Serial timing: 10/100
+Serial timing: 20/100
+Serial timing: 30/100
+Serial timing: 40/100
+Serial timing: 50/100
+Serial timing: 60/100
+Serial timing: 70/100
+Serial timing: 80/100
+Serial timing: 90/100
+Serial timing: 100/100
+Matplotlib is building the font cache; this may take a moment.
+{"report": "results/sahure_expansion/REPORT.md", "primary": "em", "criteria": {"combined": true, "efficiency": true, "timing_scope": "N32 K3 P30 SNR5 RSR12 random 3-7 paths; 100 paired worlds, three serial repeats", "self_supervision_vs_supervised": "not tested in this stage", "independently_trained_final_only": "not tested in this stage"}}
+{"cell": "cell_24", "trial": 211, "method": "hs_gs", "error": 6.498722291555244, "energy": 94.40305151775452, "original_failures": [{"shape": [31, 3, 33, 32], "error": "SVD did not converge"}], "alternative_decompositions": [{"batch_index": 38, "shape": [33, 32], "relative_reconstruction_error": 2.7869431066041898e-15, "orthogonality_error": 6.793977513377138e-15, "driver": "scipy.linalg.svd/gesvd"}], "source_sha256": "566ce6152b1e806e7771e416f2b94c5eed5cef2443d88b41a621f721b80785f9", "observations_sha256": "c82147e3c7c53526c8fbc42e9b86d9ca2f19929fe4beefe4680ed6232c36ade2", "explanation": "Same inputs, initialization, ranks, iteration counts and equations; alternative SVD driver only after finite-input nonconvergence."}
+{"audit": "passed", "result_files": 1120, "cells": 32}

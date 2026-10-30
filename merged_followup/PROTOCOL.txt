@@ -1,0 +1,84 @@
+MERGED PAPER: BOUNDED DEVELOPMENT FOLLOW-UP, 8 OCTOBER 2026
+
+Purpose
+Close comparison gaps and screen a candidate mechanism, not manufacture a
+positive novelty claim. All historical code, checkpoints, results and papers
+remain unchanged. This is development, not the final confirmation study.
+Do not revive the cancelled receiver-recalibration project.
+
+A. Observation-based stopping and release of structural filtering
+Keep N=32, K=3, P=30, exact Rician observations and known reference/noise.
+Reuse the frozen OptShrink rank/strength lookup, including its limitations;
+do not select rank/strength using the new screening channel errors.
+For each observation, use the first 21 pilots to construct candidates and
+the remaining 9 to score their Rician likelihood. Restart on all 30 pilots
+with the selected schedule. The reduced-pilot versus refit mismatch is not
+ignored: retain both the context estimate and full-pilot estimate.
+
+Candidate schedules: total updates 10,20,50,100; filter for the first
+0,5,10,20,50,100 updates, with release <= total. Include filtering throughout
+and no filtering. Candidate construction never consumes validation pilots.
+Rank/strength are the old noise-only lookup. Exact bypass is release=0.
+
+Controls:
+1. Frozen noise-lookup OptShrink, unchanged.
+2. Same OptShrink, per-observation held-out selection of total updates only.
+3. No filtering, held-out selection of total updates.
+4. Fixed release/total schedule, chosen separately per noise level from the
+   average held-out NLL on 16 new tuning cases per SNR (no truth selection).
+5. Per-observation held-out selection of release AND total (candidate).
+6. EM100, one-sweep HS-Rician, and three previously frozen compact models.
+The new candidate is not called safe: predictive likelihood is not channel
+error, an argmin over candidates is not a confidence bound, and replay on all
+pilots has no protection guarantee. Selection requires running trajectories
+to their maximum, even if a selected output has fewer updates. Count all work.
+
+Fresh tuning seed 202610085101; screen seed 202610086101, +100 per cell.
+Primary cells: SNR -10,-5,0,5,10,15,20, RSR12, random per-user paths 3..7.
+Separate stress cells: SNR5/RSR0; SNR5/L2; SNR60; SNR5/L16.
+Screen 32 new worlds per cell (352), paired across all methods.
+All screening data remain development evidence. No enlarged rerun selected
+because a small-sample confidence interval was favorable.
+
+Metrics: per-cell ratio-of-sums NMSE in dB, equal-SNR macro-average, per-case
+NMSE >1 frequency, threshold sensitivity >0.5 and >2, end-to-end selection
+and refit time. Three old model seeds are fixed models, not independent data.
+Report worst cells, context-versus-refit changes and selected schedules.
+Screening gate (not publication success): release must improve the primary
+macro-average by >=0.3 dB over BOTH observation-based OptShrink stopping and
+the new noise-specific fixed-release schedule; no primary cell deterioration
+>0.25 dB against either; improve the nearly-noiseless case versus frozen Opt.
+Failure stops expansion of this simple release mechanism. Do not tune to pass.
+
+B. Matched learned comparator pilot
+Compare the compact 188-parameter model against an independently implemented
+exact-Rician-EM + user-token Transformer. The Transformer has ten untied
+stages, width64, three encoder blocks/stage, four heads, FFN multiplier4,
+zero initial output. It retains the exact Bessel ratio, unlike published
+URformer; this is a matched related baseline, NOT a reproduction of URformer.
+Reuse the existing, inspected 16,384-world mixed training population, first
+4,096 stored examples only; both methods see exactly those examples. Validate
+on the same existing 2,048 worlds, using equal weighting over 126 condition
+cells and held-out Rician NLL, not true-channel error. Twelve Adam epochs,
+batch32, learning rate .001, one seed 202610087101; identical epoch-specific
+21/9 masks and example order. Include epoch0 as a possible checkpoint.
+No supervised channel labels, no learning-rate search and no hyperparameter
+tuning on screening outcomes. Inspect each training curve and label this a
+small one-seed pilot, NOT evidence that a larger model cannot improve.
+Fresh B-evaluation seed 202610088101 +100/cell, 32 worlds in each A-screen cell;
+generated only after both selected checkpoints are frozen. Train, validation,
+tuning and screening IDs/hashes remain separate. Report inference on context
+and on all30 pilots, parameters, training time and float64 CPU inference time.
+Retain selected and final checkpoint results; do not choose between them on
+the basis of the screening channel errors.
+
+Resources and verification
+Benchmark actual local CPU first. One thread, no GPU assumption. Total compute
+cap 7,200 seconds across both phases, preserving completed worlds and epochs.
+Do not launch a multi-day matrix. Finite outputs/gradients; no-filter agreement
+with EM; always-filter agreement with existing OptShrink; selected-score argmin;
+held-out isolation; source/input hashes; exact checkpoint/observation replay;
+same training orders/masks. Repeated execution resumes completed work.
+
+Independent confirmation and the final method are NOT launched by this screen.
+Choose the next fixed protocol only after scientific review of these results.

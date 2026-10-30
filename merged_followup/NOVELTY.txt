@@ -1,0 +1,101 @@
+NOVELTY CHECK: WHAT THIS FOLLOW-UP CAN AND CANNOT ESTABLISH
+8 October 2026. Initial focused primary-source search, not an exhaustive review.
+
+1. A small controller, self-supervision, denoising between measurement updates,
+   and a generic fallback are not individually new ideas.
+   URformer: https://arxiv.org/abs/2509.12586
+   Zero-shot self-supervised learning and held-out stopping:
+   https://arxiv.org/abs/2102.07737
+   Safeguarded learned convex optimization:
+   https://arxiv.org/abs/2003.01880
+   Denoising inside phase retrieval:
+   https://proceedings.mlr.press/v119/wang20r.html
+   https://arxiv.org/abs/2411.18967
+   https://arxiv.org/abs/2407.09687
+
+2. A statistically justified Rician risk estimate is also not an untouched
+   idea. CURE estimates squared-magnitude/noncentrality risk, not channel risk:
+   https://arxiv.org/abs/1106.2848
+   Do not apply ordinary Gaussian SURE directly to Rician magnitudes or Hankel
+   estimates and call it unbiased. The induced channel noise is correlated and
+   depends on the current nonlinear estimate.
+
+3. The candidate question is narrower: can measurements distinguish the need
+   for structural denoising from the need to stop filtering and recover detail?
+   Rank selection (Paper 1), scalar damping (earlier tests), ordinary early
+   stopping, and fixed filtering-then-refinement must all be controls. A gain
+   caused only by extra EM iterations is not evidence for a new controller.
+   The current release-time argmin is deliberately a simple feasibility tool,
+   not a claimed new general optimizer. Passing its small screen is necessary
+   to investigate further, not enough to claim publication-level novelty.
+
+4. A defensible future contribution would need a specific nontrivial analysis:
+   relate a Rician predictive diagnostic to structural bias under explicit
+   measurement-geometry conditions, and demonstrate where that relation fails.
+   Conditional inverse stability is different from a universal NMSE safeguard.
+   For candidate channels fixed independently of validation observations, the
+   expected validation NLL difference is the difference of KL risks for those
+   observations. This does NOT make it an unbiased channel-error difference.
+   Selecting the smallest noisy empirical loss also introduces selection bias.
+   Refitting using all pilots removes validation independence for the refit.
+
+5. The implemented finite-release path eventually becomes ordinary EM if it
+   is continued. Hence, under assumptions required for ordinary EM (bounded
+   iterates, continuity and suitable stationarity conditions), its asymptotic
+   stationary-point claims would be inherited, not a new global-recovery proof.
+   With fixed positive noise, a smaller likelihood need not give a better
+   channel. In the low-noise limit, correct-model identifiability and basin
+   assumptions still matter. No theorem for the full learned scheme is added.
+
+6. Decision order: examine this development screen; inspect matched learned
+   training curves; stop failed candidate mechanisms; only then freeze a
+   focused independent confirmation protocol. Do not enlarge the study or
+   add the candidate to the manuscript merely because it has a new name.
+
+The earlier measurement-information correction FAILED its predefined screen
+(macro gain -0.288 dB against scalar correction, sparse-family harm 1.056 dB).
+It is not revived here. The cancelled calibration project remains cancelled.
+Hardware, 2D arrays and non-Gaussian noise are untested in this follow-up.
+
+7. A more substantial alternative to investigate, not an implemented result:
+   noise-matched structural estimation. The current smooth filter is chosen
+   for stability, while OptShrink is borrowed from matrix denoising. The
+   actual Rician update and Hankel duplication do not produce independent,
+   equally distributed matrix-entry errors. The specific research question is
+   whether modelling those errors improves filtering beyond scalar weights,
+   hard-rank selection and ordinary OptShrink on the same observations.
+
+   Prior art must be taken seriously:
+   - Whitening and spectral shrinkage under heteroscedastic noise already
+     exist: https://arxiv.org/abs/1811.02201
+   - More general correlated-noise theory shows simple whitening/shrinkage
+     need not be optimal: https://arxiv.org/abs/2405.13912
+   - Phase retrieval with denoising and uncertainty exchange already exists:
+     https://arxiv.org/abs/2407.09687
+   - Weighted Hankel approximation is established, not a new invention:
+     https://imarkovs.github.io/publications.html
+   These findings rule out claiming novelty from simply adding a covariance
+   weight, whitening a matrix, or transferring an existing algorithm.
+
+   First gate: derive which covariance is actually being modelled. Given a
+   fixed field mu and observed magnitude z, let theta=arg(mu), kappa=2z|mu|/v,
+   and Rj=Ij(kappa)/I0(kappa). The latent complex field X on the circle |X|=z
+   has conditional mean z R1 exp(i theta), conditional variance
+   z^2(1-R1^2), and pseudo-variance z^2(R2-R1^2) exp(2i theta).
+   These follow from von Mises phase moments. They are NOT the covariance of
+   the channel-estimation error. Propagating them through the least-squares
+   update and Hankel lift alone ignores error in the current mu and bias.
+   Also, weighting the M-step by these moments does not automatically remain
+   an exact EM step: the conditional variance term in the standard complete-
+   data Gaussian objective is constant with respect to the new channel.
+
+   A small feasibility protocol must compare any estimated error law with
+   repeated-noise errors at fixed channels/pilots, at early and late updates,
+   including wrong initial estimates. Use true-field moments only as labelled
+   diagnostics. Test an identity/isotropic control and the best scalar filter.
+   If the estimated covariance does not describe the relevant error, stop.
+   Do not build a large network before that check. This differs from the
+   failed Fisher-direction correction in what is modelled, but must still
+   beat that earlier mechanism and cannot borrow its claimed motivation as
+   proof of a new contribution. No new training campaign is authorized by
+   this note. No optimality, convergence, novelty or improvement is claimed.

@@ -1,0 +1,27 @@
+{
+  "worlds": 12,
+  "seed_base": 82000000,
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "L": 7,
+  "snr": 5,
+  "rsr": 12,
+  "iterations": 100,
+  "selection_iterations": 25,
+  "sweeps": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "kinds": [
+    "hard",
+    "smooth"
+  ],
+  "thread_count": 1,
+  "precision": "complex128",
+  "order": "Deterministically shuffled methods within each world; one call per method; no discarded warmup.",
+  "includes": "Initialization, candidate selection, and all-pilot final fit; excludes data generation.",
+  "platform": "macOS-26.6.2-arm64-arm-64bit"
+}

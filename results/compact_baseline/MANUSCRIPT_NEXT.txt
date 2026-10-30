@@ -1,0 +1,73 @@
+COMPLETION WORK AUTHORIZED BY USER, 12 OCTOBER 2026
+
+User asked to run the matched compact baseline comparison including a
+NA-ALISTA-inspired controller, add missing references, update the combined
+TCOM manuscript, and avoid overengineering. Paper1/Paper2 are unpublished
+and will be submitted together. Preserve all historical experiments.
+
+Campaign command (repo cwd):
+../../.venv-paper2/bin/python -m compact_baseline.run --launch
+Already launched PID3960 on12October2026 at10:53UTC. Never launch duplicates.
+Campaign saves complete epochs and complete test cells. Check pid/status/
+logs before action. No silent changes to frozen compact_baseline/*.py,
+PROTOCOL.txt, development data or selected historical checkpoints.
+
+After results/compact_baseline/status.json says complete:
+1. Read summary.json, RESULTS.txt, audit.json, all3training histories and
+   manifest/frozen_selection. Independently review headline numbers,
+   uncertainty and training selection. There are60newcompleted epochs,
+   256predictioncellfiles,128timingfiles,4096freshworlds,12neuralmodels,
+   2classicalmethods,3072representativeneuralreplays,64independentclassical
+   replays. Mainprimary is126cell macro,3adjustedcontrasts against none,
+   global,recurrent; classical descriptive. Do not pool historical studies.
+2. Use PDF skill and operation marker before further PDF authoring in a
+   new turn. Run figure/table generator with experiment Python:
+   ../../.venv-paper2/bin/python paper/merged_compact_submission/make_compact_material.py
+   It refuses incomplete/unaudited results and independently recalculates
+   every primary score. It produces compact_table.tex,
+   compact_supplement_results.tex,figures/compact_comparison.pdf and
+   evidence/compact_baseline. Source script outside frozen package can be
+   repaired if layout requires, without changing experiment.
+3. Edit only newcopy paper/merged_compact_submission. Missing4references
+   and concise relatedwork already added:takabe2020ctista,liu2019alista,
+   he2020oamp,behrens2021naalista. Agent-authored compact_protocol.tex
+   provides exactmethod/training/test descriptions and inputs generated
+   compact_supplement_results.tex; add its input to supplement.tex.
+4. Replace oldmain 'Learning Versus Simple Learned Controls' section/table
+   with new compact comparison/table/narrative. Preserve its older7SNR
+   table/text in a supplementary legacy_controls.tex input, clearly
+   separated by protocol. Report actualnewresultsigns, adjustedintervals,
+   worstcellharm and samebackendruntime. Include mechanism inmainbriefly:
+   sharedLSTM2inputs4hidden outputsfilterstrength/mixing,148params,
+   resetsblock/user;10sameEMstages. Matched16384train/2048val/20epochs,
+   Adam.001,batch32,3same seeds/masks/order/NLLselection, fresh4096worlds.
+5. Interpret honestly: gain supports ourdesign over THIS fixed recurrent
+   adaptation, not superiority over publishedNA-ALISTA or allcompact
+   estimators. Inputfeatures/architecture/parametercount differ; no causal
+   feature-only conclusion. Compactness/selfsup/smoothHankel alreadyexist.
+   KeepoptShrinkonlineaccuracyadvantage and stresslimits ifnewdataconsistent;
+   updateabstract/discussion/conclusion onlyasneededbasedonactualresults.
+6. Update README.txt pendinglanguage and REVISION_NOTES.txt. User wants
+   verysimpleEnglish, noforwardreferences, no artificialnoveltyclaim.
+   Maincurrently13pages; trimduplicatedhistory/movetables tosupplement
+   ifnecessary. Do not shrink10ptfont or1inmargins tofit.
+7. BuildwithartifactPython(pypdfinstalled):
+   /Users/haatim/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 paper/merged_compact_submission/build_and_package.py --package
+   Outputs output/pdf/rydberg_tcom_compact.pdf,
+   rydberg_tcom_compact_supplement.pdf,rydberg_tcom_compact_overleaf.zip,
+   compact_package_verification.json. Compile both andextractedarchive.
+8. Render/textcheck:
+   artifactPython paper/merged_compact_submission/check_pdf_layout.py
+   usesbundledpoppler;inspectallcontactsandfullsizechangedpages with
+   view_image. Fixoverflows/unresolvedreferences/plotlabels, regenerate,
+   rebuilduntilclean. Checkmain<=13pages, abstract75..200words,5keywords.
+9. Provide user conciseactualresults andupdatedPDFs,OverleafZIP andmain.tex
+   links. PDFskillrequiresstandalonepurpose=outputfilecitations. Do not
+   callitaccepted/submissionreadywhilepubliccodeURL/authorreviewunresolved.
+10.Pause follow-up automation after reporting completion. Notifyonly
+   completion, substantivefailure or requiredaction, notnormalepochs.
+
+Dependencies: experimentPython hasTorch2.13,matplotlib3.11;artifactPython
+haspypdf/PIL/pdfplumber. TeXat/Library/TeX/texbin. SetMPLCONFIGDIRto
+task-specificwritabletmp ifneeded; warningnotexperimenterror.
+NoactualfinalnewPDFexistsyet; copiedmain.pdf remainsoldversion untilbuilt.

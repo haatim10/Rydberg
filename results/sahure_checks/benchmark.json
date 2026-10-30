@@ -1,0 +1,49 @@
+{
+  "measurements": {
+    "supervised": {
+      "batch_seconds": 0.11596354201901704,
+      "validation_batch_seconds": 0.04385995850316249,
+      "epoch_seconds": 64.98740820214152,
+      "parameters": 188
+    },
+    "final_only": {
+      "batch_seconds": 0.03315695800120011,
+      "validation_batch_seconds": 0.01496691674401518,
+      "epoch_seconds": 17.934245168231428,
+      "parameters": 188
+    },
+    "gate_one": {
+      "batch_seconds": 0.11144370801048353,
+      "validation_batch_seconds": 0.05118177074473351,
+      "epoch_seconds": 60.334811829030514,
+      "parameters": 188
+    },
+    "adaptive": {
+      "batch_seconds": 0.10587079095421359,
+      "validation_batch_seconds": 0.04021015625039581,
+      "epoch_seconds": 56.77929496858269,
+      "parameters": 188
+    },
+    "global": {
+      "batch_seconds": 0.0657406669924967,
+      "validation_batch_seconds": 0.026180489498074166,
+      "epoch_seconds": 35.33477282803506,
+      "parameters": 30
+    },
+    "none": {
+      "batch_seconds": 0.025035458034835756,
+      "validation_batch_seconds": 0.012205781240481883,
+      "epoch_seconds": 13.599324513226748,
+      "parameters": 10
+    }
+  },
+  "estimated_serial_training_hours": 3.562201001210552,
+  "estimated_two_worker_training_hours": 1.781100500605276,
+  "caveat": "Small-batch estimate before thermal effects/contention; add generation, testing and audit time.",
+  "hardware": {
+    "platform": "darwin",
+    "python": "3.12.5 (v3.12.5:ff3bc82f7c9, Aug  7 2024, 05:32:06) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "torch": "2.13.0"
+  },
+  "timestamp": 1790017453.503135
+}

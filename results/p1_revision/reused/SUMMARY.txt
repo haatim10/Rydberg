@@ -1,0 +1,83 @@
+Paper 1 reviewer revision: reuse and practical-rank diagnostic
+
+This analysis preserves every original experiment file. The two evidence
+sources below remain separate; no extra fresh Monte Carlo worlds were generated.
+
+1. Classical RSR results recovered from the audited Paper 2 campaign
+
+Only classical EM-GS and HS-GS errors are used. These are not ML gains.
+Settings match the Paper 1 principal experiment: N=32, K=3, P=30, aggregate
+SNR=5 dB, independent per-user 3--7 paths, 100 final updates, 25 rank-candidate
+updates, four Cadzow sweeps, held-out fraction 0.3, and final refit on all pilots.
+Each RSR condition has 400 paired worlds. These worlds are distinct from the
+original 27,300-trial Paper 1 verification campaign.
+
+At single-user RSR=0,5,10,12,15,20,25 dB, HS-GS ratio-of-sums gains over
+EM-GS are 1.827,2.512,2.261,2.198,2.339,2.445,2.335 dB. All pointwise 95%
+paired-bootstrap intervals are positive. Both estimators lose accuracy at
+the weakest reference. Structural benefit persists at this array size and
+SNR, but it is not monotonic with RSR. The current study does not establish
+RSR sensitivity at every SNR or array size.
+
+Assumed noise variance was also offset by -3,0,+3 dB on the same 400 reference
+worlds. EM-GS NMSE is -10.688,-10.728,-10.723 dB; HS-GS NMSE is
+-12.895,-12.926,-12.939 dB. This is noise-variance specification sensitivity,
+not correlated-noise, array-calibration or near-field robustness.
+
+The reproducible JSON and CSV contain absolute NMSE, ratio-of-sums gain,
+paired-median gain, pointwise intervals from 4,000 paired bootstrap resamples,
+rank-fallback fraction, exact settings and input/source SHA-256 hashes.
+Bootstrap seed: 20261007. Figure pairs: rsr_classical and
+noise_variance_classical, each PDF and PNG.
+
+2. Receiver-available effective-rank diagnostic from unstructured EM-GS
+
+We deterministically replayed only EM-GS on 10,400 existing Paper 1 worlds:
+18 array/SNR cells (N=8,16,32; P=30; six SNRs; 400 each) plus the eight
+matched N32/P20/random-SNR complexity cells (400 each). No HS-GS rank search
+was repeated. All 10,400 reconstructed EM errors exactly equal their saved
+original values in this environment. Replay took 84.4 seconds after the
+preflight. True effective ranks and channel energies also agree with the
+original saved values. Seven automated reuse tests pass.
+
+Per-user EM estimates, receiver-available effective-rank proxies, true ranks,
+path counts, selected ranks, old EM/HS errors, trial indices and replay errors
+are saved in proxy/*.npz; adjacent JSON records give input/output hashes and
+source/seed provenance. Truth is used only for evaluation, not estimation.
+
+The proxy becomes more informative as SNR increases, but is biased upward
+by estimation noise. For N32/P30, correlation with the true trial-mean rho
+increases from 0.202 at -5 dB to 0.914 at 20 dB. At 5 dB the mean proxy is
+0.577 while the true mean is 0.244, and the actual HS-GS median improvement
+is 2.544 dB. Thus the true-channel rho~0.5 heuristic cannot simply be used
+as a threshold on this noisy receiver proxy.
+
+Within fixed, predeclared 5-dB SNR bands of the matched complexity study,
+proxy-versus-gain Spearman correlation ranges from -0.098 in [-10,-5) dB
+to -0.797 in [15,20] dB. True-rho and normalized true-path-count correlations
+are also reported as privileged diagnostics. No predictor or threshold was
+fitted to these data. Pointwise 95% percentile intervals now use 4,000
+paired whole-trial bootstrap resamples, seed 20261007. The resampling plan
+was specified after the initial descriptive point estimates were inspected;
+it does not retrospectively make this analysis prespecified in the original
+simulation campaign. All users are retained through the trial-level means.
+The N32/P30 proxy-to-truth intervals are [0.100,0.297] at -5 dB and
+[0.890,0.931] at 20 dB. The matched-complexity proxy-to-gain intervals are
+[-0.183,-0.012] in the lowest band and [-0.836,-0.752] in the highest.
+SNR bands only partially control SNR. Final HS-GS
+effective rank was intentionally excluded to avoid a correlation imposed
+by the structural processing itself.
+
+Full strata: proxy_summary.json and proxy_summary.csv.
+Figure pair: rho_proxy_diagnostics.pdf/png.
+Replay completion: proxy_status.json; provenance: proxy_manifest.json.
+
+Reproduction from repository root:
+  python -m unittest p1_revision.test_reuse -v
+  python -m p1_revision.reuse rsr
+  python -m p1_revision.reuse preflight
+  python -m p1_revision.reuse proxy --scope auto
+
+These additions answer the existing-data part of the reviewer response.
+They do not substitute for the planned fresh structured-baseline, held-out
+fraction and spatial-model mismatch experiments.

@@ -1,0 +1,149 @@
+{
+  "original_audit_status": "derivative_step_requires_review",
+  "original_predictions_unchanged": true,
+  "note": "Post-screen diagnostic, not a replacement estimator or a retrospective gate pass.",
+  "targets": [
+    {
+      "target": {
+        "cell": "snr_-10",
+        "world": 2,
+        "start": "oracle",
+        "anchor": 5,
+        "relative_changes": {
+          "1": 1.4035286801940271e-09,
+          "5": 2.3049448194865997e-09,
+          "20": 6.504895738004962e-08,
+          "100": 0.0034777287772854715
+        },
+        "reason": "flagged_extra_start"
+      },
+      "forward_max_absolute_error": 1.677363109520158e-12,
+      "steps": [
+        {
+          "step": 0.0001,
+          "relative_error_to_autograd": 0.004623775960527012,
+          "squared_jacobian_norm_ratio": 0.9927458815744351
+        },
+        {
+          "step": 5e-05,
+          "relative_error_to_autograd": 0.0011493324551941314,
+          "squared_jacobian_norm_ratio": 0.9981998252485542
+        },
+        {
+          "step": 2.5e-05,
+          "relative_error_to_autograd": 0.00028688154773429673,
+          "squared_jacobian_norm_ratio": 0.9995508760326922
+        },
+        {
+          "step": 1e-05,
+          "relative_error_to_autograd": 4.588036854143681e-05,
+          "squared_jacobian_norm_ratio": 0.9999281823733652
+        }
+      ]
+    },
+    {
+      "target": {
+        "cell": "weak_reference",
+        "world": 1,
+        "start": "zero",
+        "anchor": 7,
+        "relative_changes": {
+          "1": 1.0025638974764789e-09,
+          "5": 2.0159467357062337e-08,
+          "20": 6.233799602710807e-07,
+          "100": 0.0012803551963653746
+        },
+        "reason": "flagged_extra_start"
+      },
+      "forward_max_absolute_error": 1.765254609153999e-14,
+      "steps": [
+        {
+          "step": 0.0001,
+          "relative_error_to_autograd": 0.0017053503620946071,
+          "squared_jacobian_norm_ratio": 1.0025607301156079
+        },
+        {
+          "step": 5e-05,
+          "relative_error_to_autograd": 0.00042458783767423237,
+          "squared_jacobian_norm_ratio": 1.0006375637803688
+        },
+        {
+          "step": 2.5e-05,
+          "relative_error_to_autograd": 0.00010603849351180415,
+          "squared_jacobian_norm_ratio": 1.0001592284910226
+        },
+        {
+          "step": 1e-05,
+          "relative_error_to_autograd": 1.6961307004993865e-05,
+          "squared_jacobian_norm_ratio": 1.000025469302824
+        }
+      ]
+    },
+    {
+      "target": {
+        "cell": "snr_-10",
+        "world": 2,
+        "anchor": 0,
+        "start": "spectral",
+        "reason": "largest_primary_prediction"
+      },
+      "forward_max_absolute_error": 1.199040866595169e-13,
+      "steps": [
+        {
+          "step": 0.0001,
+          "relative_error_to_autograd": 0.00011273998517885101,
+          "squared_jacobian_norm_ratio": 0.9999843432240568
+        },
+        {
+          "step": 5e-05,
+          "relative_error_to_autograd": 2.819242726233727e-05,
+          "squared_jacobian_norm_ratio": 0.9999960883140144
+        },
+        {
+          "step": 2.5e-05,
+          "relative_error_to_autograd": 7.048571166671896e-06,
+          "squared_jacobian_norm_ratio": 0.9999990222368492
+        },
+        {
+          "step": 1e-05,
+          "relative_error_to_autograd": 1.1277922258947807e-06,
+          "squared_jacobian_norm_ratio": 0.9999998435633255
+        }
+      ]
+    },
+    {
+      "target": {
+        "cell": "weak_reference",
+        "world": 0,
+        "anchor": 4,
+        "start": "spectral",
+        "reason": "largest_primary_prediction"
+      },
+      "forward_max_absolute_error": 3.802513859341161e-14,
+      "steps": [
+        {
+          "step": 0.0001,
+          "relative_error_to_autograd": 2.2596945149116752e-05,
+          "squared_jacobian_norm_ratio": 1.0000097252528568
+        },
+        {
+          "step": 5e-05,
+          "relative_error_to_autograd": 5.650236518796073e-06,
+          "squared_jacobian_norm_ratio": 1.0000024321365726
+        },
+        {
+          "step": 2.5e-05,
+          "relative_error_to_autograd": 1.4126205520026502e-06,
+          "squared_jacobian_norm_ratio": 1.0000006080780621
+        },
+        {
+          "step": 1e-05,
+          "relative_error_to_autograd": 2.2602424773699078e-07,
+          "squared_jacobian_norm_ratio": 1.000000097302276
+        }
+      ]
+    }
+  ],
+  "seconds": 7.471596084011253,
+  "source_sha256": "c3ce252c8fe4205005be8d51e33dbd4032c14224809246a7593e1505aa930607"
+}

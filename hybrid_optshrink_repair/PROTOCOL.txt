@@ -1,0 +1,109 @@
+CORRECTED OPTSHRINK CONTROLLER: MATCHED STRONG-BASELINE PILOT
+11 October 2026. Separate, preregistered development study; the failed pilot
+and its decision remain unchanged. No manuscript changes or novelty claim.
+
+Reason for this new study
+The old adaptive gate clipped at full strength, giving zero direct gradient
+on many high-SNR cases. With base strength1 its allowed range was only(.5,1].
+The old hybrid also used ten updates and a fixed-10 rank lookup, while the
+strong comparator used20 updates at15/20 dB and a different rank at20 dB.
+This test repairs learnability and matches rank AND iteration schedule.
+It does not retrospectively turn the original failed screen into a pass.
+
+Unchanged physical model
+Z=|GS+B+W|; N32, K3, P30; known reference and total complex noise variance.
+Main cells: SNR -10,-5,0,5,10,15,20 dB; reference ratio12 dB; random3--7 paths.
+Stress: weak reference(5dB SNR/0dB reference), two paths(5/12),16 paths(5/12),
+nearly noiseless(60/12). Stress cases are not training or tuning cases.
+Fresh training1792 worlds(256/cell), validation224(32/cell), test704(64x11).
+Seeds: train202610117001, validation202610118001, test202610119001,
+timing202610120001; per-cell offset100. No overlap with the previous pilot.
+True channels are saved separately ONLY for final evaluation, not training
+or selection. Previously inspected banks are development evidence, not reused
+as untouched test data here. Source/selection freeze precedes test generation.
+
+Matched rank and update settings, from the frozen strong classical comparator
+Noise-level lookup uses 10log10(3/variance), not realized true channel power.
+SNR       -10  -5   0   5   10  15  20
+rank        1   2   4   5    7   7   7
+updates    10  10  10  10   10  20  20
+base beta  .5  .5  .5   1    1   1   1
+Nearest lookup handles stress/noiseless cases. Every OptShrink variant uses
+this exact same rank and update schedule. No hidden extra updates in mixed
+batches; finished cases are excluded from subsequent EM/SVD operations.
+Ordinary EM100 is a separately labelled diagnostic, not a matched-budget arm.
+
+Arms
+1. Strong original OptShrink, unchanged full-strength/half-strength lookup.
+2. Validation-tuned constant strengths in{0,.25,.5,.75,1} per noise level.
+3. Simple residual rule beta=base*min(1,residual/c); residual is normalized
+   squared magnitude error. c in{0,.5,1,2}, with0 meaning fixed strength.
+   Tune base jointly on the same strength grid; includes arm2 candidates.
+4. Stage-only global learned smooth gate (20 stage parameters).
+5. Repaired adaptive gate (8--16--1 MLP,161 parameters).
+6. Old clipped adaptive gate, retrained with the SAME strong rank/update
+   schedule. This isolates the gate change from the rank/iteration changes.
+7. Fixed near-initial gate(.95 where strong base=1, otherwise .5) to isolate
+   the slight initialization change. Exact no-filter option exists in arm2.
+All arms use the same exact Rician EM and same checked OptShrink operation.
+
+Gate and scope of the repair
+New beta=sigmoid(logit(anchor)+u), anchor=clip(base,.05,.95) is a FIXED anchor,
+not clipping of learned outputs. At initialization u=0: beta=.5 or .95.
+Thus new arms do NOT start exactly at the full-strength classical estimator.
+Keep both the unchanged strong baseline and arm7; report epoch-zero outputs.
+The new gate can approach zero and one; neither endpoint is reached at finite
+mathematical logits. It does not prove safe filtering. Floating-point sigmoid
+may still saturate at extreme logits; record beta distribution and gate slope.
+Clipped control uses old beta=clip(base+.5*tanh(u),0,1), exact old definition.
+Eight inputs unchanged except stage fraction uses each case's actual budget:
+effective spectral-rank fraction, leading/tail mass, residual/noise, LS noise
+proxy/channel power, reference power/channel power, P/(2K), iteration fraction.
+No true rank/channel/error, generator label, or extra pilot observation enters.
+
+Training and selection
+Arms global/adaptive/clipped: seeds4201/4202,1792 identical examples,12epochs,
+batch32, Adam .001, float64 CPU single thread. No LR search or extra epochs.
+Identical example order and21-context/9-heldout pilot masks across arms per
+seed. Same fixed independent validation split. Minimize equal-weight main-cell
+mean held-out Rician NLL, never channel-error labels. Save initial, selected,
+and final checkpoints. Twelve epochs do not imply convergence. All-pilot test
+inference uses30; also report21-context diagnostic, not a causal mismatch test.
+Classical tuning uses the same validation observations and held-out NLL.
+No test-driven repair, retuning, or promotion of the best test seed.
+
+Numerical checks
+Independent NumPy parity with the strong baseline at all tested noise levels;
+exact per-case update counts in mixed batches; zero-filter equality with EM;
+near-initial and clipped-initial equality to their respective fixed controls;
+smooth gate range/gradient including strongly positive/negative logits;
+nonzero initial end-to-end parameter gradients at every primary noise level;
+OptShrink scale/forward checks and separated-spectrum numerical gradients;
+full unrolled directional derivatives; deterministic masks and optimizer resume.
+Native SVD backward remains unchanged. No detach/identity approximation, hidden
+jitter or silently replaced gradient. Exact singular-value ties/guard boundaries
+are not claimed smooth. Nonfinite estimates/derivatives stop the run.
+
+Screen and reporting (same thresholds as the failed pilot)
+Primary metric: equal mean of seven per-SNR ratio-of-sums dB NMSEs. Retain both
+model predictions for paired resampling, not independent-channel pseudoreplicates.
+2000 pointwise conditional whole-world bootstrap draws,seed202610122001.
+Advance only if adaptive gains>=.3dB versus BOTH strong OptShrink and the
+residual control, both lower95% bounds>0, positive mean gain over global,
+no primary-cell deterioration>.2dB versus either classical control, and no
+mean stress-cell deterioration>.5dB versus either. All failures remain reported.
+These are screening thresholds, not publication standards or multiplicity-
+adjusted confirmation. Report initial/selected/final, each seed, all cells,
+NMSE>1 frequency, runtime, correction size, gate slope/saturation and curves.
+No requirement that the new gate beat clipped is hidden: report that contrast
+explicitly to assess the repair, but it cannot replace the primary criteria.
+
+Cost and reproducibility
+Benchmark this device before giving a firm ETA. Same-backend serial timings:
+12 fresh worlds x3 repeats, batch1, includes initialization/all updates; no
+loading/I/O. Training/tuning cost separate. SingleCPU/float64; noGPU claim.
+Cumulative two-hour execution cap, exclusive lock, source/data/checkpoint
+hashes, last-complete-epoch resume, independent regeneration and replay audit.
+Only this isolated package/result folder is written. Preserve failed pilot,
+historical drivers/results, manuscripts and cancelled projects. No automatic
+expansion, further training, external upload, dashboard or manuscript edits.

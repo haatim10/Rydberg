@@ -1,0 +1,94 @@
+CORRECTED GATE + STRONG OPTSHRINK: FEASIBILITY RESULTS
+
+Decision: stop_expansion_of_repaired_hybrid
+Two initializations, one shared training bank; this is not publication confirmation.
+All settings/checkpoints frozen before 704 new paired test worlds were generated.
+Main metric averages seven per-SNR ratio-of-sums dB NMSEs. Lower is better.
+
+PRIMARY AVERAGE
+  opt_strong: -14.596 dB
+  opt_tuned: -14.637 dB
+  opt_residual: -14.633 dB
+  opt_near_initial: -14.600 dB
+  em100: -10.341 dB
+  global_initial: -14.600 dB
+  global_best: -14.656 dB
+  global_final: -14.656 dB
+  adaptive_initial: -14.600 dB
+  adaptive_best: -14.616 dB
+  adaptive_final: -14.616 dB
+  clipped_initial: -14.596 dB
+  clipped_best: -14.622 dB
+  clipped_final: -14.622 dB
+
+ADAPTIVE SELECTED-CHECKPOINT GAINS (positive helps)
+  versus opt_residual: -0.018 dB; conditional pointwise95% CI [-0.03062227105235152, -0.004097054635431247]; worst primary deterioration 0.119; worst stress deterioration 0.890 dB
+  versus opt_strong: 0.019 dB; conditional pointwise95% CI [0.004354983355541782, 0.03253820970930482]; worst primary deterioration 0.088; worst stress deterioration 0.095 dB
+  versus opt_near_initial: 0.016 dB; conditional pointwise95% CI [0.0013582791935413956, 0.03070452411034349]; worst primary deterioration 0.088; worst stress deterioration 0.093 dB
+  versus opt_tuned: -0.022 dB; conditional pointwise95% CI [-0.03611520002987319, -0.007272172442238154]; worst primary deterioration 0.119; worst stress deterioration 0.890 dB
+  versus global_best: -0.040 dB; conditional pointwise95% CI [-0.050107610144152555, -0.0299825857773386]; worst primary deterioration 0.163; worst stress deterioration 0.027 dB
+  versus clipped_best: -0.007 dB; conditional pointwise95% CI [-0.009546640068851394, -0.004177387693331883]; worst primary deterioration 0.051; worst stress deterioration 0.005 dB
+
+PER-CELL RESULTS
+cell | opt_strong | opt_tuned | opt_residual | opt_near_initial | global_best | clipped_best | adaptive_best | em100
+snr_-10 | -0.448 | -0.448 | -0.448 | -0.448 | -0.653 | -0.541 | -0.490 | 5.461
+snr_-5 | -4.577 | -4.577 | -4.548 | -4.577 | -4.583 | -4.502 | -4.489 | 0.494
+snr_+0 | -9.866 | -10.009 | -10.009 | -9.866 | -10.008 | -10.030 | -10.029 | -5.576
+snr_+5 | -14.476 | -14.618 | -14.618 | -14.523 | -14.512 | -14.476 | -14.498 | -10.692
+snr_+10 | -19.484 | -19.484 | -19.484 | -19.468 | -19.477 | -19.484 | -19.478 | -15.753
+snr_+15 | -24.143 | -24.143 | -24.143 | -24.138 | -24.159 | -24.143 | -24.142 | -20.548
+snr_+20 | -29.182 | -29.182 | -29.182 | -29.179 | -29.199 | -29.182 | -29.182 | -25.771
+weak_reference | -4.209 | -4.352 | -4.352 | -4.228 | -4.218 | -4.209 | -4.216 | -6.127
+two_paths | -16.037 | -15.806 | -15.806 | -16.021 | -16.042 | -16.037 | -16.033 | -10.508
+rich_16 | -6.993 | -7.960 | -7.960 | -7.162 | -7.097 | -6.993 | -7.070 | -10.556
+nearly_noiseless | -53.605 | -53.605 | -53.605 | -53.514 | -53.480 | -53.309 | -53.510 | -65.891
+
+TIMING: same PyTorch backend, one CPU thread, float64, batch one, 12 worlds x3; milliseconds
+  global_s4201_best: mean 6.317; median 5.525
+  adaptive_s4201_best: mean 7.219; median 6.283
+  clipped_s4201_best: mean 7.347; median 6.393
+  global_s4202_best: mean 6.284; median 5.493
+  adaptive_s4202_best: mean 7.198; median 6.261
+  clipped_s4202_best: mean 7.336; median 6.367
+  opt_strong: mean 6.223; median 5.436
+  opt_tuned: mean 6.193; median 5.398
+  opt_residual: mean 6.203; median 5.397
+  opt_near_initial: mean 6.183; median 5.399
+  em100: mean 16.615; median 16.548
+
+SELECTED GATE DIAGNOSTICS: beta mean / exact-zero local-slope fraction
+  snr_-10 adaptive: 0.586189 / 0.000000
+  snr_-10 clipped: 0.529485 / 0.000000
+  snr_-5 adaptive: 0.620038 / 0.000000
+  snr_-5 clipped: 0.578731 / 0.000000
+  snr_+0 adaptive: 0.642642 / 0.000000
+  snr_+0 clipped: 0.614488 / 0.000000
+  snr_+5 adaptive: 0.972536 / 0.000000
+  snr_+5 clipped: 0.999356 / 0.961719
+  snr_+10 adaptive: 0.972945 / 0.000000
+  snr_+10 clipped: 0.999429 / 0.959375
+  snr_+15 adaptive: 0.973221 / 0.000000
+  snr_+15 clipped: 0.998305 / 0.953125
+  snr_+20 adaptive: 0.972825 / 0.000000
+  snr_+20 clipped: 0.995180 / 0.923958
+  weak_reference adaptive: 0.973147 / 0.000000
+  weak_reference clipped: 0.999851 / 0.983333
+  two_paths adaptive: 0.972993 / 0.000000
+  two_paths clipped: 0.999050 / 0.963802
+  rich_16 adaptive: 0.971593 / 0.000000
+  rich_16 clipped: 0.999212 / 0.939063
+  nearly_noiseless adaptive: 0.956641 / 0.000000
+  nearly_noiseless clipped: 0.897065 / 0.524740
+
+Interpretation and limits
+All OptShrink variants share the strong baseline rank and per-noise iteration schedule.
+Repaired adaptive/global gates start at strength .95 where the baseline uses1, otherwise .5. They are NOT exactly the full-strength baseline at initialization.
+Opt_near_initial controls the changed initialization; clipped is the old gate retrained with the same strong rank and iteration schedule.
+Both initializations use identical observations but different matched training orders/masks.
+Validation-selected/final predictions, per-seed results, severe-error rates, correction magnitudes and21-pilot diagnostics are in summary.json.
+Twenty-one-pilot versus30-pilot evaluation does not isolate distribution shift from extra measurements.
+Exact singular-value ties/rank boundaries are not covered by native-SVD gradient smoothness.
+No finite-gradient failure was silently bypassed. A passed gate justifies a separately frozen confirmation, not a publication claim.
+A failed gate remains failed; no automatic new tuning/training is authorized.
+Audit passed: 2720 regenerated worlds, 198 checkpoint replays, 11 independent classical replays.
+Historical results and manuscript were not modified.

@@ -1,0 +1,90 @@
+SMALL MATCHED LRHD SCREEN
+
+384 fresh primary worlds and 64 stress worlds. Lower NMSE is better.
+Primary: equal average of 12 cell-level dB ratios of summed error to summed channel power.
+Original estimator unchanged; no retraining. Three individual model scores are averaged, not ensembled.
+
+original: -14.3700 dB; severe NMSE > 1 0.000%; CPU mean 4.959 ms, median 4.945 ms, 10th-90th percentile 4.798-5.077 ms
+rank_old_opt: -15.0044 dB; severe NMSE > 1 4.948%; CPU mean 69.341 ms, median 49.573 ms, 10th-90th percentile 18.928-158.513 ms
+offline_old_opt: -13.5969 dB; severe NMSE > 1 0.781%; CPU mean 9.756 ms, median 7.244 ms, 10th-90th percentile 1.338-23.087 ms
+matched_onepass: -14.9837 dB; severe NMSE > 1 7.031%; CPU mean 54.462 ms, median 64.746 ms, 10th-90th percentile 18.907-68.945 ms
+lrhd_loop: -14.6219 dB; severe NMSE > 1 7.552%; CPU mean 1022.090 ms, median 1091.977 ms, 10th-90th percentile 397.462-1420.296 ms
+lrhd_final: -14.5130 dB; severe NMSE > 1 10.938%; CPU mean 105.041 ms, median 92.520 ms, 10th-90th percentile 75.058-148.288 ms
+lrhd_offline: -13.4114 dB; severe NMSE > 1 3.906%; CPU mean 142.849 ms, median 139.637 ms, 10th-90th percentile 21.592-231.189 ms
+em100: -10.3770 dB; severe NMSE > 1 25.000%; CPU mean 13.004 ms, median 12.947 ms, 10th-90th percentile 12.708-13.252 ms
+
+Primary in-loop LRHD comparisons (positive gain favors LRHD):
+Against original: 0.2519 dB; descriptive 95% interval [0.14626045641722737, 0.36609384948110174]; improved 7/12 cells; worst cell degradation 0.9720 dB
+Against matched_onepass: -0.3618 dB; descriptive 95% interval [-0.4117439149274541, -0.31199901041216993]; improved 1/12 cells; worst cell degradation 1.3641 dB
+Against rank_old_opt: -0.3824 dB; descriptive 95% interval [-0.4485691552572261, -0.31859239089311264]; improved 1/12 cells; worst cell degradation 1.1858 dB
+
+Original model-seed scores: {"original_9101": -14.454482056536028, "original_9102": -14.026311954732476, "original_9103": -14.629160840150922}
+Offline development processing time, both methods together: 34.57 minutes.
+
+Per-cell results:
+snr-10_paths2 [PRIMARY]: {"original": {"nmse_db": -2.3018644107441677, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -1.706059961315996, "severe_rate": 0.09375}, "offline_old_opt": {"nmse_db": -1.8356839619033336, "severe_rate": 0.03125}, "matched_onepass": {"nmse_db": -1.7223847820511655, "severe_rate": 0.15625}, "lrhd_loop": {"nmse_db": -1.4211406015830952, "severe_rate": 0.15625}, "lrhd_final": {"nmse_db": -0.7366902992225322, "severe_rate": 0.3125}, "lrhd_offline": {"nmse_db": -2.128410560417268, "severe_rate": 0.0625}, "em100": {"nmse_db": 5.264793815801077, "severe_rate": 1.0}}
+snr-10_pathsrandom [PRIMARY]: {"original": {"nmse_db": -1.1064300483979153, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -0.5637405969963475, "severe_rate": 0.25}, "offline_old_opt": {"nmse_db": -0.899229995430588, "severe_rate": 0.0625}, "matched_onepass": {"nmse_db": -0.5517120712046091, "severe_rate": 0.3125}, "lrhd_loop": {"nmse_db": -0.2294800662910124, "severe_rate": 0.34375}, "lrhd_final": {"nmse_db": 0.03593973155092334, "severe_rate": 0.375}, "lrhd_offline": {"nmse_db": -0.6513050964570261, "severe_rate": 0.15625}, "em100": {"nmse_db": 5.713988418824506, "severe_rate": 1.0}}
+snr-10_paths16 [PRIMARY]: {"original": {"nmse_db": -0.9332376994024668, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -0.42420404378240956, "severe_rate": 0.25}, "offline_old_opt": {"nmse_db": -0.9376543644834646, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -0.17362490095838667, "severe_rate": 0.375}, "lrhd_loop": {"nmse_db": 0.03873096116118303, "severe_rate": 0.40625}, "lrhd_final": {"nmse_db": 0.23621298851831798, "severe_rate": 0.625}, "lrhd_offline": {"nmse_db": -0.4595021552955958, "severe_rate": 0.25}, "em100": {"nmse_db": 5.400594179838077, "severe_rate": 1.0}}
+snr0_paths2 [PRIMARY]: {"original": {"nmse_db": -12.013723669896848, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -12.143612397722606, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -10.993900109851673, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -12.100625888554879, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -12.21296632828774, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -11.795920655838108, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -11.00987166817891, "severe_rate": 0.0}, "em100": {"nmse_db": -5.534339719883229, "severe_rate": 0.0}}
+snr0_pathsrandom [PRIMARY]: {"original": {"nmse_db": -9.173724510617127, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -9.342436017684646, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -9.441509177859137, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -9.277815837427017, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -9.213860345651646, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -9.080233487846964, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -9.336725337197887, "severe_rate": 0.0}, "em100": {"nmse_db": -5.126572319253061, "severe_rate": 0.0}}
+snr0_paths16 [PRIMARY]: {"original": {"nmse_db": -6.519266673462603, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -6.806026693232172, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -6.400463250714202, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -6.688734386604556, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -6.334406588666631, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -6.7785575478007996, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -6.0256563669856655, "severe_rate": 0.0}, "em100": {"nmse_db": -5.203433278015025, "severe_rate": 0.0}}
+snr10_paths2 [PRIMARY]: {"original": {"nmse_db": -21.542047485541204, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -23.12462050775514, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -17.846983910380306, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -23.12462050775514, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -22.13972698195137, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -22.339993941683154, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -18.068111684241103, "severe_rate": 0.0}, "em100": {"nmse_db": -15.64689595151452, "severe_rate": 0.0}}
+snr10_pathsrandom [PRIMARY]: {"original": {"nmse_db": -18.742508996497772, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -18.915844910721408, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -17.530470479155838, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -18.915844910721408, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -18.74207747293494, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -18.43558051937688, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -17.74743653449658, "severe_rate": 0.0}, "em100": {"nmse_db": -15.539706761690905, "severe_rate": 0.0}}
+snr10_paths16 [PRIMARY]: {"original": {"nmse_db": -16.23385740982364, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -16.68151178469015, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -16.211664413086403, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -16.68151178469015, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -16.482135459498796, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -16.38137973841041, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -14.883195351884929, "severe_rate": 0.0}, "em100": {"nmse_db": -15.77214354851846, "severe_rate": 0.0}}
+snr20_paths2 [PRIMARY]: {"original": {"nmse_db": -32.001720812844844, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -33.765706012676034, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -27.433558285543675, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -33.94398221187056, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -32.579887896906634, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -33.1088308658019, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -27.197587113470803, "severe_rate": 0.0}, "em100": {"nmse_db": -25.878976284763446, "severe_rate": 0.0}}
+snr20_pathsrandom [PRIMARY]: {"original": {"nmse_db": -28.575757341827323, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -29.654554042980518, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -27.377652036698223, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -29.68494209499285, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -29.33903010906166, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -29.181729683665004, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -27.238222286535418, "severe_rate": 0.0}, "em100": {"nmse_db": -26.062953805729336, "severe_rate": 0.0}}
+snr20_paths16 [PRIMARY]: {"original": {"nmse_db": -23.295680346621783, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -26.923973650298635, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -26.25417865535482, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -26.93881482983846, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -26.807139922355177, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -26.589149642262882, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -26.19086785048433, "severe_rate": 0.0}, "em100": {"nmse_db": -26.13802028158936, "severe_rate": 0.0}}
+weak_reference [STRESS, excluded from primary]: {"original": {"nmse_db": -7.404654236392321, "severe_rate": 0.020833333333333332}, "rank_old_opt": {"nmse_db": -12.849065209162232, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -12.539938269071232, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -7.407449413183114, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -7.451153425097914, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -2.6108256388665514, "severe_rate": 0.03125}, "lrhd_offline": {"nmse_db": -7.119866476652254, "severe_rate": 0.03125}, "em100": {"nmse_db": -6.426761767724743, "severe_rate": 0.0}}
+nearly_noiseless [STRESS, excluded from primary]: {"original": {"nmse_db": -6.787050923137154, "severe_rate": 0.0}, "rank_old_opt": {"nmse_db": -69.96746746763732, "severe_rate": 0.0}, "offline_old_opt": {"nmse_db": -67.39152973635278, "severe_rate": 0.0}, "matched_onepass": {"nmse_db": -59.55300050573853, "severe_rate": 0.0}, "lrhd_loop": {"nmse_db": -58.70305149960781, "severe_rate": 0.0}, "lrhd_final": {"nmse_db": -69.65794910763697, "severe_rate": 0.0}, "lrhd_offline": {"nmse_db": -51.699268625513426, "severe_rate": 0.0}, "em100": {"nmse_db": -66.03623540878979, "severe_rate": 0.0}}
+
+LRHD numerical diagnostics (including candidate fitting):
+{
+  "lrhd_loop": {
+    "calls": 15020,
+    "user_denoisings": 360900,
+    "sweeps": 8518587,
+    "capped": 0,
+    "max_sweeps": 159,
+    "max_residual": 9.999986470868405e-06
+  },
+  "lrhd_final": {
+    "calls": 882,
+    "user_denoisings": 21462,
+    "sweeps": 548676,
+    "capped": 0,
+    "max_sweeps": 148,
+    "max_residual": 9.999218443397111e-06
+  },
+  "lrhd_offline": {
+    "calls": 7520,
+    "user_denoisings": 22560,
+    "sweeps": 487389,
+    "capped": 0,
+    "max_sweeps": 101,
+    "max_residual": 9.99998827486104e-06
+  }
+}
+
+LRHD development numerical diagnostics (all tuning candidates):
+{
+  "calls": 9984,
+  "user_denoisings": 1797120,
+  "sweeps": 43483641,
+  "capped": 0,
+  "max_sweeps": 159,
+  "max_residual": 9.99999933401149e-06
+}
+
+Limits:
+Small development screen: 384 primary and 64 stress worlds, 32 worlds per cell; not a confirmation study.
+Original scores average three separately fitted models, not an ensemble; their training dataset is shared.
+Bootstrap resamples paired worlds within each bank/cell and preserves all three model predictions. Intervals are descriptive, unadjusted and conditional on fixed banks, selected settings and fitted models.
+Iterative LRHD is a complex adaptation inside Rician EM; the original real additive-noise guarantees do not transfer.
+The matched one-pass control has the same new tuning grid; the historical OptShrink control had a larger tuning budget.
+Primary LRHD is the frozen in-loop method. Final-only and offline-rank LRHD are diagnostics, not test-selected winners.
+Every online rank search, initializer and refit is timed on CPU float64 batch1. Offline tuning is not inference cost.
+Capped inner iterations are not converged outputs; inspect numerical diagnostics and per-cell results.
+These 12-cell scores must not be pooled with the earlier 126-cell primary studies. No hardware or novelty claim follows.
+
+Source/checkpoint/data hashes, matched IDs, representative replay and independent metric recalculation passed.
+No manuscript change or automatic larger run. Review the accuracy, failures and cost together.

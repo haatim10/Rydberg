@@ -1,0 +1,151 @@
+{
+  "script_sha256": "55e4dcfe63dd1d46ab951f458950fa1916cd8e7119e5f08fea8b8e88e24f6fe6",
+  "plan_sha256": "c0aa0a6b95b42f378f0e86673105a62dadd5140e2f09b744bde58c87aa98ace3",
+  "torch": "2.13.0",
+  "models": {
+    "1": {
+      "U": {
+        "path": "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/results/paper2_long_training/seed1_U_52ep/epoch_007.pt",
+        "sha256": "c6864653008930a5b55b0cfca2ab03425cddff4415876d7e28df2248223b0bbb",
+        "epoch": 7,
+        "parameters": 1586900,
+        "parameter_bytes": 6347600
+      },
+      "H": {
+        "path": "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/results/paper2_long_training/seed1_H_52ep/epoch_008.pt",
+        "sha256": "1cb553b8b0ec6a696a15c142a6289eb72d018ae37e0419aa075b94fd1d6466df",
+        "epoch": 8,
+        "parameters": 1586900,
+        "parameter_bytes": 6347600
+      }
+    },
+    "2": {
+      "U": {
+        "path": "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/results/paper2_long_training/seed2_U_52ep/epoch_008.pt",
+        "sha256": "01ced9528f34e2e2871ec71763306175b4c27ca09a828f610bf57320e22525d4",
+        "epoch": 8,
+        "parameters": 1586900,
+        "parameter_bytes": 6347600
+      },
+      "H": {
+        "path": "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/results/paper2_long_training/seed2_H_52ep/epoch_009.pt",
+        "sha256": "239ab60cd044726a0e64fd2ced13897952f2be6dd8fcc7370e8f220d4c05e49a",
+        "epoch": 9,
+        "parameters": 1586900,
+        "parameter_bytes": 6347600
+      }
+    },
+    "3": {
+      "U": {
+        "path": "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/results/paper2_long_training/seed3_U_52ep/epoch_008.pt",
+        "sha256": "fed433893e10b49488718044b25c0eaf49860f60b6bc0e7d183d973e5bcff6b4",
+        "epoch": 8,
+        "parameters": 1586900,
+        "parameter_bytes": 6347600
+      },
+      "H": {
+        "path": "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/results/paper2_long_training/seed3_H_52ep/epoch_008.pt",
+        "sha256": "771a567a5d7f618c5ae3b10e7e6605450e3ec0bf91c788aaf413a986311a3a0e",
+        "epoch": 8,
+        "parameters": 1586900,
+        "parameter_bytes": 6347600
+      }
+    }
+  },
+  "source_driver_sha256": "46adaccd3a44677ef1131a47bc58fc61c6599fe532c65b61aa01bafd8e4dcf55",
+  "model_code_sha256": "3791b60fb934189b4ed2cdd237731e081f53949cd9a939b1ad5641761bfef274",
+  "fresh_test": {
+    "config": {
+      "system": {
+        "K": 3,
+        "N": 32,
+        "P": 20,
+        "L_min": 3,
+        "L_max": 7,
+        "beta": 1.0,
+        "c": 1.0,
+        "vartheta": 0.0,
+        "rsr_db": 10.0,
+        "master_seed": 20260919
+      },
+      "data": {
+        "n_train": 80000,
+        "n_val": 2000,
+        "n_test": 2000,
+        "train_seed_range": [
+          0,
+          1000000
+        ],
+        "val_seed_range": [
+          1000000,
+          2000000
+        ],
+        "test_seed_range": [
+          3000000,
+          4000000
+        ],
+        "pilot_mode": "fixed_S",
+        "fixed_S_seed": 777000001,
+        "snr_mode": "snr_range",
+        "snr_range_db": [
+          -10.0,
+          20.0
+        ],
+        "snr_fixed_db": 5.0,
+        "rsr_train_mode": "fixed",
+        "p_train_choices": null
+      },
+      "model": {
+        "T_UR": 10,
+        "d_model": 64,
+        "L_enc": 3,
+        "n_heads": 4,
+        "ffn_mult": 4,
+        "dropout": 0.0,
+        "filter_hidden": 32,
+        "filter_input": "log1p_kappa",
+        "filter_init": "random",
+        "filter_warmstart_cache": "reports/trackD_filternet_warmstart.pt",
+        "gate_init": "near_gs",
+        "use_transformer": true,
+        "use_hankel": false,
+        "hankel_rank": 7,
+        "hankel_mode": "fixed",
+        "hankel_pencil": null,
+        "hankel_iters": 1,
+        "hankel_gate": "none",
+        "hankel_gate_init": -2.0,
+        "hankel_gate_hidden": 16,
+        "log_sigma2_mean": -0.0727,
+        "log_sigma2_std": 1.998,
+        "tie_layers": false,
+        "deep_supervision": false
+      },
+      "train": {
+        "batch_size": 32,
+        "lr": 0.001,
+        "epochs": 52,
+        "optimizer": "adam",
+        "scheduler": "cosine",
+        "weight_decay": 0.0,
+        "grad_clip": 1.0,
+        "num_threads": 1,
+        "seed": 20260827,
+        "init": "spectral"
+      },
+      "numeric": {
+        "dtype": "float32"
+      },
+      "baseline": {
+        "T_GS": 100,
+        "ridge": 0.0
+      },
+      "base_sha": "54c88d5d5888923d973b6ff6a429e51da75b61df",
+      "audit_commit": "74984c7",
+      "rsr_paper_equiv_db": 5.228787452803376,
+      "gate_init_value": -2.0,
+      "eps": 1e-08
+    },
+    "sha256": "575607639b40eef4c9b2004ffaf3544cffb41a9399cd4898da6c16bb8c85bd88"
+  }
+}

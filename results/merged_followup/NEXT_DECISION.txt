@@ -1,0 +1,37 @@
+WHAT TO DO NEXT -- AFTER THE COMPLETED DEVELOPMENT PILOT
+
+1. Do not claim the simple release rule as a new successful method. It failed
+   its declared test. Keep its rich-channel benefit and low-SNR harm together.
+   Do not promote the observed 3.96 dB rich-channel gain while hiding the
+   primary-average failure or the extra online computation.
+
+2. Keep the new observation-based OptShrink stopping control. It improves the
+   weak-reference cell by about 3.49 dB in this small bank, though not the
+   primary average. Include its substantial selection time, rather than
+   reporting only its selected iteration count. The nearly-noiseless gain
+   also occurs without the new release mechanism.
+
+3. Treat the 4.60 dB compact-versus-Transformer advantage as a matched SMALL-
+   BUDGET result. The comparison uses 4,096 identical examples, twelve epochs,
+   one seed and the same held-out training objective. It does not reproduce
+   URformer. The Transformer is still weaker than EM100 on average. Before a
+   strong-baseline claim, declare a small training-adequacy test (learning-
+   rate controls and learning curves) without looking at new test outcomes.
+   If matching published supervision, include supervised NMSE training as a
+   separately labelled label-access advantage, not as the same self-supervised
+   comparison. Do not fix the old reproduction claim through relabelling.
+
+4. For additional methodological novelty, investigate the noise actually
+   entering the Hankel operation. Start with a derivation and a small repeated-
+   noise validation, not a network. The initial question is whether an
+   implementable uncertainty model describes the error it is meant to fix.
+   Use NOVELTY.txt section 7 for the assumptions, prior-art overlap and the
+   distinction between latent-field uncertainty and channel-estimation error.
+   This is a candidate direction, not an established novel contribution.
+   The previously failed Fisher-direction correction must remain a negative
+   control, not be quietly revived with a new name.
+
+5. Only after that gate: freeze the method and comparators, then generate an
+   untouched confirmation bank with independent dataset/pilot replicates.
+   No final confirmation, hardware study, covariance-based estimator or larger
+   training matrix has been launched by this pilot. The manuscript is unchanged.

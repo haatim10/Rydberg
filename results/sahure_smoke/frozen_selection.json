@@ -1,0 +1,171 @@
+{
+  "checkpoints": {
+    "em_none": {
+      "sha256": "309a4ac1edeb570a9791814cd39f1d2e48eaeeb0d107de86b8260dde72eb0b1c",
+      "path": "results/sahure_smoke/checkpoints/em_none_best.pt",
+      "best_validation_nll": 3.395841121673584,
+      "epochs": 1,
+      "training_seconds": 0.1353005829732865
+    },
+    "em_global": {
+      "sha256": "cbbe81dfb39850ea1ba44c7f7772c4649e186c65228f29ec0d2d0b609ec74845",
+      "path": "results/sahure_smoke/checkpoints/em_global_best.pt",
+      "best_validation_nll": 3.390773057937622,
+      "epochs": 1,
+      "training_seconds": 0.16498770902398974
+    },
+    "em_adaptive": {
+      "sha256": "e80bf6d05475f8f61aaaab90b6f9f1e18d7cd1511016bcf0a4ce55138a5f4943",
+      "path": "results/sahure_smoke/checkpoints/em_adaptive_best.pt",
+      "best_validation_nll": 3.3907361030578613,
+      "epochs": 1,
+      "training_seconds": 0.1815112920012325
+    },
+    "gd_none": {
+      "sha256": "826105947542ce7a614ced108449099d2bb48b5374ada4dde60cf006dfd0c98d",
+      "path": "results/sahure_smoke/checkpoints/gd_none_best.pt",
+      "best_validation_nll": 3.385434865951538,
+      "epochs": 1,
+      "training_seconds": 0.05002358299680054
+    },
+    "gd_global": {
+      "sha256": "5e0192c3a7fc55057014ab7b0b1a9c5c7b26792ceef81002fb6375d2ef94379c",
+      "path": "results/sahure_smoke/checkpoints/gd_global_best.pt",
+      "best_validation_nll": 3.3801827430725098,
+      "epochs": 1,
+      "training_seconds": 0.17328779195668176
+    },
+    "gd_adaptive": {
+      "sha256": "56e1e623ea7c85c93eb7b17763db6c521f5e7f4dd9fff40039623fe26f791025",
+      "path": "results/sahure_smoke/checkpoints/gd_adaptive_best.pt",
+      "best_validation_nll": 3.3801445960998535,
+      "epochs": 1,
+      "training_seconds": 0.16446629201527685
+    }
+  },
+  "hard_rank": 4,
+  "hard_rank_scores": [
+    3.8498931567373798,
+    3.4154615477160073,
+    3.3196445958301526,
+    3.284255140379539,
+    3.288175626878204,
+    3.299611146959513,
+    3.3201944923195668,
+    3.339353431469357,
+    3.356274363229897,
+    3.3659442040151903,
+    3.3822822893911377,
+    3.3946618777546993,
+    3.4013523199419815,
+    3.4071572823815344,
+    3.4087942498081443,
+    3.4130318708339504
+  ],
+  "hard_rank_selection_updates": 25,
+  "hard_rank_final_updates": 100,
+  "hard_rank_sweeps": 1,
+  "hs_selection_updates": 25,
+  "hs_final_updates": 100,
+  "hs_sweeps": 4,
+  "classical": [
+    "em_10",
+    "em_100",
+    "hs_gs",
+    "rician_100",
+    "rician_converged",
+    "amplitude_100",
+    "amplitude_converged",
+    "rician_hard",
+    "linearized_ls"
+  ],
+  "dtype": "float64/complex128",
+  "timing_repetitions": 3,
+  "fixed_condition_only": true,
+  "selection_metric": "mean held-out Rician NLL",
+  "primary_core": "gd",
+  "em_constant_control_means": [
+    [
+      0.10035310167515171,
+      0.10033707497010246
+    ],
+    [
+      0.10035911997890716,
+      0.10034281928814424
+    ],
+    [
+      0.10036301700707591,
+      0.10034653885663103
+    ],
+    [
+      0.1003661209410514,
+      0.10034950143336542
+    ],
+    [
+      0.10036888180023214,
+      0.1003521365477023
+    ],
+    [
+      0.10037147489965041,
+      0.10035461153278823
+    ],
+    [
+      0.10037397573593652,
+      0.10035699844859974
+    ],
+    [
+      0.10037642121184688,
+      0.10035933251766833
+    ],
+    [
+      0.1003788305332376,
+      0.10036163207184758
+    ],
+    [
+      0.10038121475355066,
+      0.10036390766133309
+    ]
+  ],
+  "gd_constant_control_means": [
+    [
+      0.10035097578331764,
+      0.10033504616741162
+    ],
+    [
+      0.10035681598988584,
+      0.1003406205309351
+    ],
+    [
+      0.10036124126731051,
+      0.10034484427357615
+    ],
+    [
+      0.10036481069090442,
+      0.10034825111326369
+    ],
+    [
+      0.1003679160883499,
+      0.10035121504766803
+    ],
+    [
+      0.10037075306584714,
+      0.10035392277800037
+    ],
+    [
+      0.1003734269893428,
+      0.10035647487196592
+    ],
+    [
+      0.100375996332977,
+      0.10035892714158974
+    ],
+    [
+      0.10037849565892681,
+      0.10036131257539083
+    ],
+    [
+      0.10038094624686694,
+      0.10036365148408373
+    ]
+  ]
+}

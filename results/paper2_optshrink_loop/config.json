@@ -1,0 +1,226 @@
+{
+  "version": 1,
+  "development_cases": 32,
+  "test_cases": 128,
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "snrs": [
+    -10,
+    -5,
+    0,
+    5,
+    10,
+    15,
+    20
+  ],
+  "development_seed": 202610081101,
+  "test_seed": 202610081901,
+  "timing_seed": 202610083901,
+  "timing_cases": 24,
+  "timing_repeats": 3,
+  "bootstrap_seed": 202610082901,
+  "bootstrap_samples": 4000,
+  "training_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "budgets": [
+    10,
+    20,
+    50,
+    100
+  ],
+  "candidates": [
+    {
+      "rank": 0,
+      "strength": 0.0
+    },
+    {
+      "rank": 1,
+      "strength": 0.25
+    },
+    {
+      "rank": 1,
+      "strength": 0.5
+    },
+    {
+      "rank": 1,
+      "strength": 1.0
+    },
+    {
+      "rank": 2,
+      "strength": 0.25
+    },
+    {
+      "rank": 2,
+      "strength": 0.5
+    },
+    {
+      "rank": 2,
+      "strength": 1.0
+    },
+    {
+      "rank": 3,
+      "strength": 0.25
+    },
+    {
+      "rank": 3,
+      "strength": 0.5
+    },
+    {
+      "rank": 3,
+      "strength": 1.0
+    },
+    {
+      "rank": 4,
+      "strength": 0.25
+    },
+    {
+      "rank": 4,
+      "strength": 0.5
+    },
+    {
+      "rank": 4,
+      "strength": 1.0
+    },
+    {
+      "rank": 5,
+      "strength": 0.25
+    },
+    {
+      "rank": 5,
+      "strength": 0.5
+    },
+    {
+      "rank": 5,
+      "strength": 1.0
+    },
+    {
+      "rank": 6,
+      "strength": 0.25
+    },
+    {
+      "rank": 6,
+      "strength": 0.5
+    },
+    {
+      "rank": 6,
+      "strength": 1.0
+    },
+    {
+      "rank": 7,
+      "strength": 0.25
+    },
+    {
+      "rank": 7,
+      "strength": 0.5
+    },
+    {
+      "rank": 7,
+      "strength": 1.0
+    },
+    {
+      "rank": 8,
+      "strength": 0.25
+    },
+    {
+      "rank": 8,
+      "strength": 0.5
+    },
+    {
+      "rank": 8,
+      "strength": 1.0
+    },
+    {
+      "rank": 9,
+      "strength": 0.25
+    },
+    {
+      "rank": 9,
+      "strength": 0.5
+    },
+    {
+      "rank": 9,
+      "strength": 1.0
+    },
+    {
+      "rank": 10,
+      "strength": 0.25
+    },
+    {
+      "rank": 10,
+      "strength": 0.5
+    },
+    {
+      "rank": 10,
+      "strength": 1.0
+    },
+    {
+      "rank": 11,
+      "strength": 0.25
+    },
+    {
+      "rank": 11,
+      "strength": 0.5
+    },
+    {
+      "rank": 11,
+      "strength": 1.0
+    },
+    {
+      "rank": 12,
+      "strength": 0.25
+    },
+    {
+      "rank": 12,
+      "strength": 0.5
+    },
+    {
+      "rank": 12,
+      "strength": 1.0
+    },
+    {
+      "rank": 13,
+      "strength": 0.25
+    },
+    {
+      "rank": 13,
+      "strength": 0.5
+    },
+    {
+      "rank": 13,
+      "strength": 1.0
+    },
+    {
+      "rank": 14,
+      "strength": 0.25
+    },
+    {
+      "rank": 14,
+      "strength": 0.5
+    },
+    {
+      "rank": 14,
+      "strength": 1.0
+    },
+    {
+      "rank": 15,
+      "strength": 0.25
+    },
+    {
+      "rank": 15,
+      "strength": 0.5
+    },
+    {
+      "rank": 15,
+      "strength": 1.0
+    }
+  ],
+  "primary_comparator": "loop_selected",
+  "primary_learned": "adaptive10",
+  "max_seconds_per_invocation": 7200,
+  "selection": "observation-only withheld Rician NLL",
+  "source_protocol": "paper2_optshrink_loop/PROTOCOL.md"
+}

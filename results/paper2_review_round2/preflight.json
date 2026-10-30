@@ -1,0 +1,134 @@
+{
+  "arms": {
+    "baseline": {
+      "config": {
+        "stages": 10,
+        "width": 16,
+        "controller": "plain"
+      },
+      "parameters": 188,
+      "median_batch_seconds": 0.10582256253110245,
+      "raw_seconds": [
+        0.10424316697753966,
+        0.10773558402433991,
+        0.10517833405174315,
+        0.10646679101046175
+      ],
+      "estimated_train_only_seconds_2048x8": 54.181152015924454,
+      "estimated_train_only_seconds_4096x12": 162.54345604777336,
+      "estimated_train_only_seconds_16384x20": 1083.623040318489
+    },
+    "depth5": {
+      "config": {
+        "stages": 5,
+        "width": 16,
+        "controller": "plain"
+      },
+      "parameters": 183,
+      "median_batch_seconds": 0.05318022848223336,
+      "raw_seconds": [
+        0.05361674999585375,
+        0.0533200409845449,
+        0.05214633297873661,
+        0.05304041597992182
+      ],
+      "estimated_train_only_seconds_2048x8": 27.22827698290348,
+      "estimated_train_only_seconds_4096x12": 81.68483094871044,
+      "estimated_train_only_seconds_16384x20": 544.5655396580696
+    },
+    "depth20": {
+      "config": {
+        "stages": 20,
+        "width": 16,
+        "controller": "plain"
+      },
+      "parameters": 198,
+      "median_batch_seconds": 0.21556891649379395,
+      "raw_seconds": [
+        0.21226133301388472,
+        0.21645704202819616,
+        0.21715541696175933,
+        0.21468079095939174
+      ],
+      "estimated_train_only_seconds_2048x8": 110.3712852448225,
+      "estimated_train_only_seconds_4096x12": 331.1138557344675,
+      "estimated_train_only_seconds_16384x20": 2207.42570489645
+    },
+    "width8": {
+      "config": {
+        "stages": 10,
+        "width": 8,
+        "controller": "plain"
+      },
+      "parameters": 100,
+      "median_batch_seconds": 0.10843472954002209,
+      "raw_seconds": [
+        0.10929162503452972,
+        0.10400975000811741,
+        0.10757783404551446,
+        0.11332554102409631
+      ],
+      "estimated_train_only_seconds_2048x8": 55.51858152449131,
+      "estimated_train_only_seconds_4096x12": 166.55574457347393,
+      "estimated_train_only_seconds_16384x20": 1110.3716304898262
+    },
+    "width32": {
+      "config": {
+        "stages": 10,
+        "width": 32,
+        "controller": "plain"
+      },
+      "parameters": 364,
+      "median_batch_seconds": 0.11254122899845243,
+      "raw_seconds": [
+        0.11445833300240338,
+        0.11062412499450147,
+        0.1080672909738496,
+        0.11534037499222904
+      ],
+      "estimated_train_only_seconds_2048x8": 57.62110924720764,
+      "estimated_train_only_seconds_4096x12": 172.86332774162292,
+      "estimated_train_only_seconds_16384x20": 1152.4221849441528
+    },
+    "experts": {
+      "config": {
+        "stages": 10,
+        "width": 16,
+        "controller": "experts"
+      },
+      "parameters": 374,
+      "median_batch_seconds": 0.11342433348181657,
+      "raw_seconds": [
+        0.11192829196806997,
+        0.1113990829908289,
+        0.11497750005219132,
+        0.11492037499556318
+      ],
+      "estimated_train_only_seconds_2048x8": 58.073258742690086,
+      "estimated_train_only_seconds_4096x12": 174.21977622807026,
+      "estimated_train_only_seconds_16384x20": 1161.4651748538017
+    },
+    "curriculum": {
+      "config": {
+        "stages": 10,
+        "width": 16,
+        "controller": "plain"
+      },
+      "parameters": 188,
+      "median_batch_seconds": 0.11085804196773097,
+      "raw_seconds": [
+        0.10871095804031938,
+        0.11083291698014364,
+        0.11463083303533494,
+        0.1108831669553183
+      ],
+      "estimated_train_only_seconds_2048x8": 56.759317487478256,
+      "estimated_train_only_seconds_4096x12": 170.27795246243477,
+      "estimated_train_only_seconds_16384x20": 1135.1863497495651
+    }
+  },
+  "device": "CPU, one thread",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "torch": "2.13.0",
+  "note": "Training-only projection. Validation, generation, testing, packaging and contention add time."
+}

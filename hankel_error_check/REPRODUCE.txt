@@ -1,0 +1,28 @@
+From the Rydberg repository root, using the existing Python environment:
+
+../../.venv-paper2/bin/python -m unittest hankel_error_check.test_checks -v
+../../.venv-paper2/bin/python -m hankel_error_check.run
+../../.venv-paper2/bin/python -m hankel_error_check.analyze
+
+The initial audit flagged two supplementary derivative checks. To reproduce
+the explicitly post-screen diagnosis, then include it in the results report:
+../../.venv-paper2/bin/python -m hankel_error_check.derivative_review
+../../.venv-paper2/bin/python -m hankel_error_check.analyze
+This does not replace any frozen prediction or retroactively pass the gate.
+
+The runner saves completed fixed-world records and resumes them only after
+checking their hashes. It refuses a changed protocol, estimator or generator.
+The numerical unit tests run before the campaign. The analysis is separately
+hashed in audit.json and includes exact input/covariance replays, independent
+scalar-solver comparison and a derivative step-halving check. Audit targets
+include the anchor with the largest predicted uncertainty in every world/start.
+
+Inputs and outputs are under results/hankel_error_check/worlds/. Each record
+contains fixed G,S,B,v, repeated magnitudes, independent anchor magnitudes,
+estimated channels, predicted real-coordinate covariances, seeds/IDs and timing.
+Channel truth is used by the evaluator and the explicitly labelled oracle
+initialization only. Spectral/zero-start prediction functions do not access it.
+
+Results are development evidence, not independent publication confirmation.
+No earlier experiment, network, manuscript or submission ZIP is changed.
+No new filter, large training run or external upload is launched.

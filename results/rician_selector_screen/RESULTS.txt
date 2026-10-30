@@ -1,0 +1,49 @@
+FIXED SELECTOR DEVELOPMENT SCREEN
+
+Frozen nominal-SNR threshold: 100.0 dB.
+4224 physical worlds, reused for all variance-input offsets. Primary cells: 126.
+
+Supplied variance offset: 0.0 dB
+holdout_best: macro -13.8168 dB; meanNMSE 0.222758; NMSE>1 2.803%; CPU 4.875 ms
+allpilot_best: macro -14.0332 dB; meanNMSE 0.220652; NMSE>1 4.861%; CPU 4.864 ms
+selector: macro -13.8168 dB; meanNMSE 0.222758; NMSE>1 2.803%; CPU 4.945 ms
+Selector vs holdout_best: gain 0.0000 dB, conditional95%CI [0.0, 0.0]; failure-rate change +0.0000%, CI [0.0, 0.0]
+Selector vs allpilot_best: gain -0.2164 dB, conditional95%CI [-0.2295760642607747, -0.20260330339466082]; failure-rate change -2.0585%, CI [-0.02455357142857143, -0.016617063492063495]
+Low SNR: {"-10": {"selector": 0.8184958913318984, "original": 0.8184958913318984}, "-5": {"selector": 0.49458145833257233, "original": 0.49458145833257233}}
+Routing: {"allpilot_fraction": 0.0, "switches": {"count": 0, "fraction": 0.0, "beneficial": 0, "harmful": 0, "tied": 0, "mean_nmse_change_due_to_routing_only": 0.0, "definition": "At this same supplied variance, compare changed route with the route selected under correct variance; truth used only for this evaluation diagnostic."}}
+
+Supplied variance offset: -3.0 dB
+holdout_best: macro -13.1947 dB; meanNMSE 0.406362; NMSE>1 11.111%; CPU 4.855 ms
+allpilot_best: macro -13.0072 dB; meanNMSE 0.496243; NMSE>1 14.509%; CPU 4.847 ms
+selector: macro -13.1947 dB; meanNMSE 0.406362; NMSE>1 11.111%; CPU 4.938 ms
+Selector vs holdout_best: gain 0.0000 dB, conditional95%CI [0.0, 0.0]; failure-rate change +0.0000%, CI [0.0, 0.0]
+Selector vs allpilot_best: gain 0.1875 dB, conditional95%CI [0.17015333970910151, 0.2047839217340412]; failure-rate change -3.3978%, CI [-0.03869047619047618, -0.02926587301587301]
+Low SNR: {"-10": {"selector": 1.9746602707821599, "original": 1.9746602707821599}, "-5": {"selector": 0.6240396551481319, "original": 0.6240396551481319}}
+Routing: {"allpilot_fraction": 0.0, "switches": {"count": 0, "fraction": 0.0, "beneficial": 0, "harmful": 0, "tied": 0, "mean_nmse_change_due_to_routing_only": 0.0, "definition": "At this same supplied variance, compare changed route with the route selected under correct variance; truth used only for this evaluation diagnostic."}}
+
+Supplied variance offset: 3.0 dB
+holdout_best: macro -13.2284 dB; meanNMSE 0.265240; NMSE>1 3.398%; CPU 4.858 ms
+allpilot_best: macro -13.7809 dB; meanNMSE 0.244799; NMSE>1 5.432%; CPU 4.876 ms
+selector: macro -13.2284 dB; meanNMSE 0.265240; NMSE>1 3.398%; CPU 4.944 ms
+Selector vs holdout_best: gain 0.0000 dB, conditional95%CI [0.0, 0.0]; failure-rate change +0.0000%, CI [0.0, 0.0]
+Selector vs allpilot_best: gain -0.5525 dB, conditional95%CI [-0.5657563721826869, -0.5389688710617289]; failure-rate change -2.0337%, CI [-0.02455357142857143, -0.016121031746031744]
+Low SNR: {"-10": {"selector": 0.8668380344904457, "original": 0.8668380344904457}, "-5": {"selector": 0.5959102650694709, "original": 0.5959102650694709}}
+Routing: {"allpilot_fraction": 0.0, "switches": {"count": 0, "fraction": 0.0, "beneficial": 0, "harmful": 0, "tied": 0, "mean_nmse_change_due_to_routing_only": 0.0, "definition": "At this same supplied variance, compare changed route with the route selected under correct variance; truth used only for this evaluation diagnostic."}}
+
+Correct-variance screening criteria:
+gain_at_least_0p1_db: False
+severe_increase_at_most_0p002: True
+low_snr_mean_nmse_not_worse: True
+runtime_within_1p05: True
+Passed: False
+
+Variance-error robustness is reported separately and does not change the frozen selection.
+Per-SNR, all stress/boundary cells and routing fractions are in summary.json.
+
+One-seed exploratory development screen, not confirmation or a new estimator architecture.
+Confidence intervals are descriptive paired intervals conditional on the two fitted models, fixed grid and data bank; no multiplicity adjustment.
+The three variance-input settings reuse identical physical worlds and are not independent test replicates.
+Both baseline models and routing receive the same biased variance; actual measurement noise is unchanged.
+The 0.002 error-rate tolerance is a practical screening rule, not statistical noninferiority.
+Two 188-parameter models must be stored; only one model is evaluated per world.
+Noise routing assumes known calibrated expected signal power3 in this benchmark.

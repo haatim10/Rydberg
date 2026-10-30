@@ -1,0 +1,15 @@
+Run from the repository root using the existing .venv-paper2 Python:
+
+../../.venv-paper2/bin/python -m unittest hybrid_optshrink_repair.test_checks -v
+../../.venv-paper2/bin/python -u -m hybrid_optshrink_repair.run --phase benchmark
+../../.venv-paper2/bin/python -u -m hybrid_optshrink_repair.run
+
+Only results/hybrid_optshrink_repair is written. Original experiment sources,
+results and manuscript are checked/preserved. The same launch command resumes
+complete epochs/cells only if source/config/data hashes match and execution
+budget remains. An exclusive lock prevents duplicates. Numerical failure must
+be diagnosed, not silently followed by altered source or replacement gradients.
+
+Outputs: status.json, pid.json, benchmark.json, training/*_history.json,
+frozen_selection.json, test_outputs/, timing.json, audit.json, summary.json,
+RESULTS.txt. The protocol defines all seeds, arms, thresholds and limitations.

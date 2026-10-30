@@ -1,0 +1,52 @@
+MIXED-OBJECTIVE DEVELOPMENT SCREEN
+
+4096 paired fresh worlds; 4032 primary worlds. One training seed.
+Lower NMSE is better. Gains are comparator minus mixed; positive gain favors mixed.
+
+Primary: validation-selected checkpoints.
+rank_loop: -14.1468 dB; mean per-case NMSE 0.24545; severe NMSE>1 6.696%; CPU 115.197 ms
+opt_selected: -13.1194 dB; mean per-case NMSE 0.22568; severe NMSE>1 4.688%; CPU 16.059 ms
+holdout_best: -13.7994 dB; mean per-case NMSE 0.22216; severe NMSE>1 2.902%; CPU 4.980 ms
+holdout_final: -13.6717 dB; mean per-case NMSE 0.22240; severe NMSE>1 3.001%; CPU 4.978 ms
+allpilot_best: -13.9842 dB; mean per-case NMSE 0.22004; severe NMSE>1 4.762%; CPU 4.957 ms
+allpilot_final: -14.0037 dB; mean per-case NMSE 0.22093; severe NMSE>1 4.960%; CPU 4.959 ms
+mixed_best: -13.9514 dB; mean per-case NMSE 0.21628; severe NMSE>1 3.745%; CPU 5.008 ms
+mixed_final: -13.9663 dB; mean per-case NMSE 0.21603; severe NMSE>1 3.844%; CPU 5.008 ms
+
+Mixed selected checkpoint comparisons:
+holdout_best: gain 0.1520 dB, adjusted conditional95% CI [0.1384653250936339, 0.1646928432069669]; severe-rate change +0.8433%; wins 85/126 cells; worst deterioration 0.7700 dB
+allpilot_best: gain -0.0327 dB, adjusted conditional95% CI [-0.06680653802833107, 0.0007833494217608004]; severe-rate change -1.0169%; wins 48/126 cells; worst deterioration 0.6872 dB
+rank_loop: gain -0.1954 dB, adjusted conditional95% CI [-0.2700991031303555, -0.136938014708609]; severe-rate change -2.9514%; wins 62/126 cells; worst deterioration 3.8864 dB
+opt_selected: gain 0.8320 dB, adjusted conditional95% CI [0.7259591167626149, 0.9105364918327113]; severe-rate change -0.9425%; wins 94/126 cells; worst deterioration 2.2433 dB
+
+Low-SNR mixed changes versus selected all-pilot:
+-10 dB: mean per-case NMSE change -0.042570, conditional95% CI [-0.04602327269053526, -0.0390378777223578]; severe-rate change -6.5972%, conditional95% CI [-0.08506944444444445, -0.046875]
+-5 dB: mean per-case NMSE change +0.010028, conditional95% CI [0.007545010588503593, 0.01251469385231773]; severe-rate change -0.5208%, conditional95% CI [-0.013888888888888888, 0.001736111111111111]
+
+Fixed screening criteria:
+macro_gain_at_least_0p2_db: False
+lower_low_snr_mean_nmse: False
+lower_low_snr_severe_rate: True
+overall_severe_within_0p002_of_old: False
+runtime_within_1p05_of_old: True
+Overall screening passed: False
+Mixed/old runtime ratio: 1.0056
+
+Paired severe transitions: {"holdout_best": {"primary": {"worlds": 4032, "both_good": 3881, "corrected_by_mixed": 0, "new_failure_from_mixed": 34, "both_severe": 117, "severe_rate_delta": 0.00843253968253968}, "low_snr": {"-10": {"worlds": 576, "both_good": 430, "corrected_by_mixed": 0, "new_failure_from_mixed": 30, "both_severe": 116, "severe_rate_delta": 0.052083333333333315}, "-5": {"worlds": 576, "both_good": 571, "corrected_by_mixed": 0, "new_failure_from_mixed": 4, "both_severe": 1, "severe_rate_delta": 0.006944444444444445}}}, "allpilot_best": {"primary": {"worlds": 4032, "both_good": 3839, "corrected_by_mixed": 42, "new_failure_from_mixed": 1, "both_severe": 150, "severe_rate_delta": -0.010168650793650792}, "low_snr": {"-10": {"worlds": 576, "both_good": 392, "corrected_by_mixed": 38, "new_failure_from_mixed": 0, "both_severe": 146, "severe_rate_delta": -0.06597222222222221}, "-5": {"worlds": 576, "both_good": 567, "corrected_by_mixed": 4, "new_failure_from_mixed": 1, "both_severe": 4, "severe_rate_delta": -0.005208333333333332}}}, "rank_loop": {"primary": {"worlds": 4032, "both_good": 3760, "corrected_by_mixed": 121, "new_failure_from_mixed": 2, "both_severe": 149, "severe_rate_delta": -0.029513888888888888}, "low_snr": {"-10": {"worlds": 576, "both_good": 339, "corrected_by_mixed": 91, "new_failure_from_mixed": 2, "both_severe": 144, "severe_rate_delta": -0.1545138888888889}, "-5": {"worlds": 576, "both_good": 541, "corrected_by_mixed": 30, "new_failure_from_mixed": 0, "both_severe": 5, "severe_rate_delta": -0.05208333333333333}}}}
+
+Final-epoch sensitivity: {"holdout_final": {"macro_gain_db": 0.29459475167474736, "severe_delta": 0.008432539682539684}, "allpilot_final": {"macro_gain_db": -0.03732450931245879, "severe_delta": -0.01116071428571428}, "rank_loop": {"macro_gain_db": -0.18045548646106369, "severe_delta": -0.028521825396825393}, "opt_selected": {"macro_gain_db": 0.8469041302920157, "severe_delta": -0.00843253968253968}}
+
+Stress cells (excluded from primary):
+weak_reference: {"rank_loop": {"macro_nmse_db": -11.630545528425502, "pooled_nmse_db": -11.630545528425502, "mean_case_nmse": 0.07890918139886975, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.03125, "1.0": 0.0, "2.0": 0.0}}, "opt_selected": {"macro_nmse_db": -12.144581817325852, "pooled_nmse_db": -12.144581817325852, "mean_case_nmse": 0.06935519920505538, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0, "1.0": 0.0, "2.0": 0.0}}, "holdout_best": {"macro_nmse_db": -6.7882511196959445, "pooled_nmse_db": -6.7882511196959445, "mean_case_nmse": 0.19526609609711032, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.09375, "1.0": 0.0, "2.0": 0.0}}, "holdout_final": {"macro_nmse_db": -6.9305969802955145, "pooled_nmse_db": -6.9305969802955145, "mean_case_nmse": 0.1889812498085009, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.09375, "1.0": 0.0, "2.0": 0.0}}, "allpilot_best": {"macro_nmse_db": -5.961964671532423, "pooled_nmse_db": -5.961964671532423, "mean_case_nmse": 0.23577874201716725, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0625, "1.0": 0.0, "2.0": 0.0}}, "allpilot_final": {"macro_nmse_db": -5.951127247754541, "pooled_nmse_db": -5.951127247754541, "mean_case_nmse": 0.2356891479679316, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.09375, "1.0": 0.0, "2.0": 0.0}}, "mixed_best": {"macro_nmse_db": -6.513154797702503, "pooled_nmse_db": -6.513154797702503, "mean_case_nmse": 0.207680229757689, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0625, "1.0": 0.0, "2.0": 0.0}}, "mixed_final": {"macro_nmse_db": -6.296917432270607, "pooled_nmse_db": -6.296917432270607, "mean_case_nmse": 0.2178210491174512, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0625, "1.0": 0.0, "2.0": 0.0}}}
+nearly_noiseless: {"rank_loop": {"macro_nmse_db": -69.30298962055136, "pooled_nmse_db": -69.30298962055136, "mean_case_nmse": 1.2632400702375664e-07, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0, "1.0": 0.0, "2.0": 0.0}}, "opt_selected": {"macro_nmse_db": -67.01514614955283, "pooled_nmse_db": -67.01514614955283, "mean_case_nmse": 2.1169639467152462e-07, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0, "1.0": 0.0, "2.0": 0.0}}, "holdout_best": {"macro_nmse_db": -4.368227725396797, "pooled_nmse_db": -4.368227725396797, "mean_case_nmse": 0.3590282921820095, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0, "1.0": 0.0, "2.0": 0.0}}, "holdout_final": {"macro_nmse_db": -5.5144207760461175, "pooled_nmse_db": -5.5144207760461175, "mean_case_nmse": 0.2747171074723464, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0, "1.0": 0.0, "2.0": 0.0}}, "allpilot_best": {"macro_nmse_db": -11.756558014053615, "pooled_nmse_db": -11.756558014053615, "mean_case_nmse": 0.06425483497796308, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0, "1.0": 0.0, "2.0": 0.0}}, "allpilot_final": {"macro_nmse_db": -24.020510614106144, "pooled_nmse_db": -24.020510614106144, "mean_case_nmse": 0.003899641637929097, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0, "1.0": 0.0, "2.0": 0.0}}, "mixed_best": {"macro_nmse_db": -3.690572760469516, "pooled_nmse_db": -3.690572760469516, "mean_case_nmse": 0.4191798988617713, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0625, "1.0": 0.0, "2.0": 0.0}}, "mixed_final": {"macro_nmse_db": -4.9017185958567495, "pooled_nmse_db": -4.9017185958567495, "mean_case_nmse": 0.31507688532590195, "severe_rate": 0.0, "threshold_rates": {"0.5": 0.0, "1.0": 0.0, "2.0": 0.0}}}
+
+Full per-SNR, per-reference and per-path results, threshold0.5/1/2 rates and all cells are in summary.json.
+
+Limitations:
+Exploratory development screen with one training seed and one fresh data bank; not independent confirmation.
+Paired bootstrap intervals condition on the fitted models and the fixed condition grid; they do not measure training-population uncertainty.
+Only the four macro-gain intervals receive Bonferroni adjustment; tail and low-SNR intervals are descriptive pointwise intervals.
+The 0.002 severe-rate tolerance is a practical screening rule, not statistical noninferiority.
+Selected-checkpoint results are primary; fixed-final-epoch comparisons are sensitivity checks.
+Runtime uses the same CPU backend and includes initialization, rank search and refit; small differences can reflect timing variation.
+Fresh development data cannot become untouched final confirmation data for a subsequently revised method.

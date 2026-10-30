@@ -1,0 +1,109 @@
+SMALL OPTSHRINK + CONTROLLER FEASIBILITY TEST
+11 October 2026. Recorded before training, parameter selection or test generation.
+
+Question
+Does observation-dependent blending improve a strong OptShrink-in-Rician-EM
+estimator, beyond a fixed/noise-dependent blend and a simple residual rule?
+This is an exploratory two-initialization pilot, not publication confirmation,
+proof of novelty, a URformer reproduction, or OptShrink optimality for this model.
+No historical package, manuscript, dashboard or cancelled project is changed.
+
+Model and observation budget
+Keep Z=|GS+B+W|, N=32, K=3, P=30, known reference and total complex noise variance.
+Reuse the unchanged simulator. Main cells: SNR -10,-5,0,5,10,15,20 dB, nominal
+reference-to-one-user ratio 12 dB and random 3--7 paths. Four stress cells:
+weak reference (5 dB SNR, 0 dB reference), two paths (5/12 dB), 16 paths (5/12),
+and nearly noiseless (60/12). Stress cells are not tuning or training cells.
+Fresh seeds: training 202610111001, validation 202610112001, test 202610113001,
+timing 202610114001, independent audit 202610115001. Per-cell offset is 100.
+Trial identity includes split, master seed, and within-cell index. Each world
+has independent pilots/channel/noise. Training: 256 worlds per main cell=1792.
+Validation: 32 per main cell=224. Test: 64 per 11 cells=704. Training/validation
+save only observations, never channel labels. Test truth is a separate file
+and is read only by analysis after all choices/checkpoints are frozen.
+
+Estimators
+All matched OptShrink methods use ten ordinary (unrelaxed) exact EM updates
+and the old independent fixed-10, noise-specific rank lookup. The old rank
+lookup is supplied, not the true rank. It is not retuned on the screen.
+1. Frozen OptShrink at ten updates (old fixed-10 rank/strength settings).
+2. Fixed strengths selected separately by supplied noise level from
+   {0,.25,.5,.75,1}, keeping that same rank and ten updates.
+3. Simple nonlearned residual controller: beta=base*min(1,residual/c), where
+   residual=mean((Z-|G_EM S+B|)^2)/variance. c in {0,.5,1,2}; c=0 is the
+   fixed-strength rule. Jointly select base from the grid in item 2 and c
+   separately by noise level. Includes every candidate in item 2.
+4. Global learned controller: ten stage offsets of the old strength.
+5. Adaptive controller: shared 8--16--1 MLP, 161 learned parameters, producing
+   beta=clip(old_strength+.5*tanh(output),0,1). Zero last layer reproduces
+   the classical fixed-10 estimator exactly, not approximately. The adjustment
+   range is deliberately bounded; this is not arbitrary spectral reweighting.
+   Inputs: effective spectral-rank fraction, leading mass, tail mass, magnitude
+   residual/noise, LS noise proxy/channel power, reference power/channel power,
+   P/(2K), stage fraction. No true channel/rank/error/generator label is used.
+   Ranks are fixed within a forward pass. The filter uses the native complex
+   SVD backward; no identity or detached-filter gradient is permitted.
+6. Retrained original 188-parameter smooth controller, on exactly the same
+   observations, order, pilot masks, seeds, optimizer, epochs and criterion.
+   Its learned EM steps and filter differ: this is a practical method control,
+   not a one-factor ablation. Item 4 isolates observation-dependent control.
+7. Strong old noise-tuned OptShrink (selected 10/20/etc updates) and EM100.
+   Report these separately from matched-ten comparisons; do not weaken the
+   practical comparator by silently forcing it to ten updates.
+
+Training and selection
+Three trainable arms (global, adaptive, smooth), two initializations 4101/4102,
+12 fixed epochs, batch32, Adam lr .001, float64 CPU single thread, no LR search.
+No early stopping of training; save epoch-zero, validation-selected and final
+weights. Checkpoints minimize the equal-weight main-cell mean held-out Rician
+NLL. 21 randomly chosen context pilots, nine disjoint held-out pilots per
+training epoch. Validation uses one fixed independent split. No channel-truth
+NMSE selects anything. Exact same order and masks across arms within each seed.
+All-pilot inference uses30, without online held-out selection. Also evaluate
+the same selected models with21 context pilots as a labelled split/refit
+diagnostic; it is not free additional information or a causal mismatch study.
+Classical grid uses that same validation split and NLL. The historical rank
+lookup is development evidence. New test cases are generated only after all
+neural and classical selections are frozen and hashed. No test-driven updates.
+The new screen, once inspected, becomes development evidence for future work.
+
+Checks before training
+Match OptShrink weights and trajectories to the independent NumPy primitive;
+verify zero correction equals EM, initial global/adaptive equals frozen base,
+scaling, finite forward outputs at zero/repeated singular values, separated-
+spectrum gradient checks, unrolled parameter finite differences, finite
+training gradients, deterministic splits/order, and resume equivalence.
+Native SVD differentiability is NOT claimed at exact singular-value ties or
+guard/rank boundaries. Nonfinite derivatives stop the run; do not silently
+detach, jitter the filter, change precision or replace the gradient.
+CPU only: no GPU agreement claim. Reference/noise input errors are not studied.
+
+Reporting and screening rule
+Primary: equally average the seven per-cell dB ratio-of-sums NMSEs. Average
+the two trained-seed metrics, do not treat repeated predictions as extra
+independent channels. Report each seed, selected/final, all per-cell metrics,
+per-case NMSE>1 frequency, context21 diagnostics, correction/beta magnitudes,
+finite failures and measured time. Paired within-cell whole-world bootstrap
+2000 draws (seed202610116001), retaining both model outputs for each world.
+Intervals are pointwise, conditional on this one training set and tuning,
+not multiplicity-adjusted or a dataset-replicate confirmation.
+Advance only if the adaptive primary gain is at least .3 dB versus BOTH the
+new residual-rule control and the strong old selected OptShrink, positive
+paired lower95% bounds for both, positive mean gain over global learned
+control, and no primary-cell deterioration over either classical control
+greater than .2 dB. Report all stress cells regardless; a mean stress-cell
+deterioration >.5 dB also prevents expansion. These are exploratory screening
+criteria, not publication standards or guarantees. Do not change them after
+seeing outcomes. A failed screen stays failed; no automatic further training.
+
+Timing, audit and limits
+Measured timing after warmup: first12 independently generated timing worlds,
+three repetitions, interleaved method order, batch one, same PyTorch backend
+and float64, includes initialization and all iterations. Old selected OptShrink
+uses its real selected count. Offline training/tuning costs are separate.
+No speed claim from parameter count. Benchmark before an ETA. Hard cumulative
+two-hour execution budget with partial records and epoch-boundary resume;
+exclusive lock and source/data/checkpoint hashes prevent accidental duplicates
+or changed-protocol resume. Audit exact observation regeneration, independent
+NumPy trajectory agreement and representative selected checkpoint replay.
+No publication, external upload, automation or manuscript change is authorized.

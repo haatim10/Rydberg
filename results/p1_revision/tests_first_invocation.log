@@ -1,0 +1,68 @@
+test_broken_split_pairing_is_detected (test_audit.CampaignAuditTests.test_broken_split_pairing_is_detected) ... ok
+test_changed_selected_rank_is_detected (test_audit.CampaignAuditTests.test_changed_selected_rank_is_detected) ... ok
+test_complete_smoke_is_labelled_and_counted (test_audit.CampaignAuditTests.test_complete_smoke_is_labelled_and_counted) ... ERROR
+test_exact_fallback_required_not_approximate (test_audit.CampaignAuditTests.test_exact_fallback_required_not_approximate) ... ok
+test_false_completion_never_passes (test_audit.CampaignAuditTests.test_false_completion_never_passes) ... ok
+test_missing_chunk_is_detected (test_audit.CampaignAuditTests.test_missing_chunk_is_detected) ... ok
+test_missing_completion_never_passes (test_audit.CampaignAuditTests.test_missing_completion_never_passes) ... ok
+test_source_tampering_is_detected (test_audit.CampaignAuditTests.test_source_tampering_is_detected) ... ok
+test_wrong_trial_boundary_is_detected (test_audit.CampaignAuditTests.test_wrong_trial_boundary_is_detected) ... ok
+test_baselines (unittest.loader._FailedTest.test_baselines) ... ERROR
+test_reuse (unittest.loader._FailedTest.test_reuse) ... ERROR
+test_fraction_matches_verified_selector (test_scenarios.ScenariosTest.test_fraction_matches_verified_selector) ... ok
+test_full_refit_uses_all_pilots (test_scenarios.ScenariosTest.test_full_refit_uses_all_pilots) ... ok
+test_heldout_does_not_enter_candidate_fit (test_scenarios.ScenariosTest.test_heldout_does_not_enter_candidate_fit) ... ok
+test_position_formula_and_pairing (test_scenarios.ScenariosTest.test_position_formula_and_pairing) ... ok
+test_scientific_design (test_scenarios.ScenariosTest.test_scientific_design) ... ok
+test_zero_mismatch_preserves_exact_world (test_scenarios.ScenariosTest.test_zero_mismatch_preserves_exact_world) ... ok
+
+======================================================================
+ERROR: test_complete_smoke_is_labelled_and_counted (test_audit.CampaignAuditTests.test_complete_smoke_is_labelled_and_counted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/p1_revision/test_audit.py", line 28, in test_complete_smoke_is_labelled_and_counted
+    result = run_audit(self.root, replay=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/p1_revision/audit.py", line 337, in run_audit
+    analysis=summary_checks(root,cells,raw,hashes)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/p1_revision/audit.py", line 286, in summary_checks
+    require(summary['analysis_source_sha256'] == sha(REPO/'p1_revision/analyze.py'), 'summary analysis source hash')
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/p1_revision/audit.py", line 28, in require
+    raise ValueError(message)
+ValueError: summary analysis source hash
+
+======================================================================
+ERROR: test_baselines (unittest.loader._FailedTest.test_baselines)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_baselines
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/p1_revision/test_baselines.py", line 9, in <module>
+    from .baselines import (fit_candidates, posterior_field, rician_gradient, rician_nll,
+ImportError: attempted relative import with no known parent package
+
+
+======================================================================
+ERROR: test_reuse (unittest.loader._FailedTest.test_reuse)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_reuse
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.12/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/p1_revision/test_reuse.py", line 3, in <module>
+    from . import reuse
+ImportError: attempted relative import with no known parent package
+
+
+----------------------------------------------------------------------
+Ran 17 tests in 0.574s
+
+FAILED (errors=3)

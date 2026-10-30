@@ -1,0 +1,15 @@
+Exploratory final Hankel-filter diagnostic
+
+Frozen settings: {'none': None, 'hard': 6, 'cubic': 0.3, 'optshrink': 7}
+Selection used 72 independent development worlds and withheld Rician likelihood only; no channel truth.
+All test estimates use ordinary EM100 on all 30 pilots, followed by one structural operation.
+
+Seven-SNR equal-cell macro-average (dB NMSE; improvement over no final filter):
+none: -10.162 dB; gain 0.000 dB; paired 95% interval [0.0, 0.0]
+hard: -11.811 dB; gain 1.649 dB; paired 95% interval [1.4780594087261203, 1.8233617563950817]
+cubic: -11.648 dB; gain 1.486 dB; paired 95% interval [1.3764259037713749, 1.598152960662456]
+optshrink: -13.691 dB; gain 3.529 dB; paired 95% interval [3.446700893480968, 3.612538588262715]
+
+These results isolate one post-processing component. They do not rank full LRHD, the trained network, or all structured estimators.
+The default no-correction option can win selection; all controls have that option. OptShrink needs rank selection and a nonempty singular-value tail.
+Source: Nadakuditi, IEEE TIT 60(5):3002-3018,2014, doi:10.1109/TIT.2014.2311661, Algorithm1/equations16.

@@ -1,0 +1,129 @@
+test_gradients_every_snr_and_mask_isolation (hybrid_optshrink_repair.test_checks.Checks.test_gradients_every_snr_and_mask_isolation) ... ok
+test_initialization_controls (hybrid_optshrink_repair.test_checks.Checks.test_initialization_controls) ... ok
+test_mixed_batch_equals_single_cases (hybrid_optshrink_repair.test_checks.Checks.test_mixed_batch_equals_single_cases) ... ok
+test_native_filter_forward_gradient_scale (hybrid_optshrink_repair.test_checks.Checks.test_native_filter_forward_gradient_scale) ... ok
+test_optimizer_resume (hybrid_optshrink_repair.test_checks.Checks.test_optimizer_resume) ... ok
+test_smooth_full_range_and_nonzero_slope (hybrid_optshrink_repair.test_checks.Checks.test_smooth_full_range_and_nonzero_slope) ... ok
+test_strong_rank_and_iterations_numpy_parity (hybrid_optshrink_repair.test_checks.Checks.test_strong_rank_and_iterations_numpy_parity) ... ok
+test_unrolled_directional_derivative (hybrid_optshrink_repair.test_checks.Checks.test_unrolled_directional_derivative) ... ok
+test_zero_correction_is_em (hybrid_optshrink_repair.test_checks.Checks.test_zero_correction_is_em) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 1.342s
+
+OK
+{"model": "global_s4201", "epoch": 1, "val_nll": 3.236099747762862, "best_epoch": 1, "seconds": 10.412820458994247}
+{"model": "adaptive_s4201", "epoch": 1, "val_nll": 3.2356722488972887, "best_epoch": 1, "seconds": 9.98647154099308}
+{"model": "clipped_s4201", "epoch": 1, "val_nll": 3.235743251600502, "best_epoch": 1, "seconds": 10.03088520799065}
+{"model": "global_s4202", "epoch": 1, "val_nll": 3.2361079255949576, "best_epoch": 1, "seconds": 9.355790958041325}
+{"model": "adaptive_s4202", "epoch": 1, "val_nll": 3.2356699952904355, "best_epoch": 1, "seconds": 10.052117416984402}
+{"model": "clipped_s4202", "epoch": 1, "val_nll": 3.2357708858289302, "best_epoch": 1, "seconds": 10.043778833001852}
+{"model": "global_s4201", "epoch": 2, "val_nll": 3.23594412982927, "best_epoch": 2, "seconds": 9.314103582990356}
+{"model": "adaptive_s4201", "epoch": 2, "val_nll": 3.235649852622835, "best_epoch": 2, "seconds": 9.965723417000845}
+{"model": "clipped_s4201", "epoch": 2, "val_nll": 3.235737604088038, "best_epoch": 2, "seconds": 10.00880341703305}
+{"model": "global_s4202", "epoch": 2, "val_nll": 3.2359577034973896, "best_epoch": 2, "seconds": 9.367282124992926}
+{"model": "adaptive_s4202", "epoch": 2, "val_nll": 3.2356604861936837, "best_epoch": 2, "seconds": 9.977570917049889}
+{"model": "clipped_s4202", "epoch": 2, "val_nll": 3.2357589852324535, "best_epoch": 2, "seconds": 10.108751207997557}
+{"model": "global_s4201", "epoch": 3, "val_nll": 3.2358137824864213, "best_epoch": 3, "seconds": 9.38681324996287}
+{"model": "adaptive_s4201", "epoch": 3, "val_nll": 3.2356459605882, "best_epoch": 3, "seconds": 10.029038875014521}
+{"model": "clipped_s4201", "epoch": 3, "val_nll": 3.2357339234031244, "best_epoch": 3, "seconds": 10.070913499977905}
+{"model": "global_s4202", "epoch": 3, "val_nll": 3.2358192238978463, "best_epoch": 3, "seconds": 9.353950707998592}
+{"model": "adaptive_s4202", "epoch": 3, "val_nll": 3.2356557308549356, "best_epoch": 3, "seconds": 10.03130658401642}
+{"model": "clipped_s4202", "epoch": 3, "val_nll": 3.2357463936201323, "best_epoch": 3, "seconds": 10.012896833010018}
+{"model": "global_s4201", "epoch": 4, "val_nll": 3.2356958459741447, "best_epoch": 4, "seconds": 9.36871083296137}
+{"model": "adaptive_s4201", "epoch": 4, "val_nll": 3.2356241632141587, "best_epoch": 4, "seconds": 10.108721791009884}
+{"model": "clipped_s4201", "epoch": 4, "val_nll": 3.2357118545195966, "best_epoch": 4, "seconds": 10.082475624978542}
+{"model": "global_s4202", "epoch": 4, "val_nll": 3.235700225085431, "best_epoch": 4, "seconds": 9.357213750015944}
+{"model": "adaptive_s4202", "epoch": 4, "val_nll": 3.235648927948346, "best_epoch": 4, "seconds": 10.076880207983777}
+{"model": "clipped_s4202", "epoch": 4, "val_nll": 3.235735433513405, "best_epoch": 4, "seconds": 10.090956458996516}
+{"model": "global_s4201", "epoch": 5, "val_nll": 3.235584336406756, "best_epoch": 5, "seconds": 9.330837709014304}
+{"model": "adaptive_s4201", "epoch": 5, "val_nll": 3.2356163646563254, "best_epoch": 5, "seconds": 9.991341833025217}
+{"model": "clipped_s4201", "epoch": 5, "val_nll": 3.235696074299527, "best_epoch": 5, "seconds": 9.886804500012659}
+{"model": "global_s4202", "epoch": 5, "val_nll": 3.2355921240423435, "best_epoch": 5, "seconds": 9.524914207984693}
+{"model": "adaptive_s4202", "epoch": 5, "val_nll": 3.2356292532521174, "best_epoch": 5, "seconds": 10.106007374997716}
+{"model": "clipped_s4202", "epoch": 5, "val_nll": 3.2357108347036627, "best_epoch": 5, "seconds": 10.053084250015672}
+{"model": "global_s4201", "epoch": 6, "val_nll": 3.235490603415871, "best_epoch": 6, "seconds": 9.37175395799568}
+{"model": "adaptive_s4201", "epoch": 6, "val_nll": 3.235607641167924, "best_epoch": 6, "seconds": 9.994060666998848}
+{"model": "clipped_s4201", "epoch": 6, "val_nll": 3.2356790681645746, "best_epoch": 6, "seconds": 9.946520832949318}
+{"model": "global_s4202", "epoch": 6, "val_nll": 3.2354928097754163, "best_epoch": 6, "seconds": 9.38841712498106}
+{"model": "adaptive_s4202", "epoch": 6, "val_nll": 3.235617310576359, "best_epoch": 6, "seconds": 9.93704066699138}
+{"model": "clipped_s4202", "epoch": 6, "val_nll": 3.235687733831579, "best_epoch": 6, "seconds": 10.104886457964312}
+{"model": "global_s4201", "epoch": 7, "val_nll": 3.235397232758234, "best_epoch": 7, "seconds": 9.429889915976673}
+{"model": "adaptive_s4201", "epoch": 7, "val_nll": 3.235611283268298, "best_epoch": 6, "seconds": 10.015382334007882}
+{"model": "clipped_s4201", "epoch": 7, "val_nll": 3.235662382907023, "best_epoch": 7, "seconds": 10.017660125042312}
+{"model": "global_s4202", "epoch": 7, "val_nll": 3.2354058018843097, "best_epoch": 7, "seconds": 9.370777832984459}
+{"model": "adaptive_s4202", "epoch": 7, "val_nll": 3.2356078504396075, "best_epoch": 7, "seconds": 10.072502208000515}
+{"model": "clipped_s4202", "epoch": 7, "val_nll": 3.2356780210752416, "best_epoch": 7, "seconds": 10.099782083008904}
+{"model": "global_s4201", "epoch": 8, "val_nll": 3.2353198360444915, "best_epoch": 8, "seconds": 9.466686166997533}
+{"model": "adaptive_s4201", "epoch": 8, "val_nll": 3.2355773107026624, "best_epoch": 8, "seconds": 9.881767166021746}
+{"model": "clipped_s4201", "epoch": 8, "val_nll": 3.2356308929079782, "best_epoch": 8, "seconds": 9.903756374958903}
+{"model": "global_s4202", "epoch": 8, "val_nll": 3.2353265789623338, "best_epoch": 8, "seconds": 9.303249040967785}
+{"model": "adaptive_s4202", "epoch": 8, "val_nll": 3.23556814178147, "best_epoch": 8, "seconds": 9.966569207957946}
+{"model": "clipped_s4202", "epoch": 8, "val_nll": 3.2356119189830355, "best_epoch": 8, "seconds": 9.994932624977082}
+{"model": "global_s4201", "epoch": 9, "val_nll": 3.2352504565980333, "best_epoch": 9, "seconds": 9.34133279195521}
+{"model": "adaptive_s4201", "epoch": 9, "val_nll": 3.2355723741894837, "best_epoch": 9, "seconds": 10.088615917018615}
+{"model": "clipped_s4201", "epoch": 9, "val_nll": 3.235611252281296, "best_epoch": 9, "seconds": 10.086800582997967}
+{"model": "global_s4202", "epoch": 9, "val_nll": 3.2352526801999533, "best_epoch": 9, "seconds": 9.407635583018418}
+{"model": "adaptive_s4202", "epoch": 9, "val_nll": 3.235543318546533, "best_epoch": 9, "seconds": 10.13605358399218}
+{"model": "clipped_s4202", "epoch": 9, "val_nll": 3.23556551533179, "best_epoch": 9, "seconds": 10.078337666986044}
+{"model": "global_s4201", "epoch": 10, "val_nll": 3.235181131032119, "best_epoch": 10, "seconds": 9.374508791021071}
+{"model": "adaptive_s4201", "epoch": 10, "val_nll": 3.2355557796749577, "best_epoch": 10, "seconds": 9.971506249974482}
+{"model": "clipped_s4201", "epoch": 10, "val_nll": 3.235582334407186, "best_epoch": 10, "seconds": 9.972142000042368}
+{"model": "global_s4202", "epoch": 10, "val_nll": 3.2351806907826304, "best_epoch": 10, "seconds": 9.474111249961425}
+{"model": "adaptive_s4202", "epoch": 10, "val_nll": 3.235518679655755, "best_epoch": 10, "seconds": 10.080298832966946}
+{"model": "clipped_s4202", "epoch": 10, "val_nll": 3.2355083289431614, "best_epoch": 10, "seconds": 9.917068791983183}
+{"model": "global_s4201", "epoch": 11, "val_nll": 3.2351213036064936, "best_epoch": 11, "seconds": 9.262384709028993}
+{"model": "adaptive_s4201", "epoch": 11, "val_nll": 3.235504065176614, "best_epoch": 11, "seconds": 9.921586625045165}
+{"model": "clipped_s4201", "epoch": 11, "val_nll": 3.235529161953774, "best_epoch": 11, "seconds": 10.09388395800488}
+{"model": "global_s4202", "epoch": 11, "val_nll": 3.235115792435574, "best_epoch": 11, "seconds": 10.805836583022028}
+{"model": "adaptive_s4202", "epoch": 11, "val_nll": 3.2354361723585874, "best_epoch": 11, "seconds": 10.296269916987512}
+{"model": "clipped_s4202", "epoch": 11, "val_nll": 3.2354545630762277, "best_epoch": 11, "seconds": 10.125050582981203}
+{"model": "global_s4201", "epoch": 12, "val_nll": 3.235067491112985, "best_epoch": 12, "seconds": 9.352401582989842}
+{"model": "adaptive_s4201", "epoch": 12, "val_nll": 3.235484661459846, "best_epoch": 12, "seconds": 9.94676033401629}
+{"model": "clipped_s4201", "epoch": 12, "val_nll": 3.2354965911353033, "best_epoch": 12, "seconds": 10.0517469579936}
+{"model": "global_s4202", "epoch": 12, "val_nll": 3.2350651757034252, "best_epoch": 12, "seconds": 9.447684333019424}
+{"model": "adaptive_s4202", "epoch": 12, "val_nll": 3.235388159617377, "best_epoch": 12, "seconds": 10.079985709046014}
+{"model": "clipped_s4202", "epoch": 12, "val_nll": 3.23539657701881, "best_epoch": 12, "seconds": 10.14548674999969}
+Test cell complete: snr_-10
+Test cell complete: snr_-5
+Test cell complete: snr_+0
+Test cell complete: snr_+5
+Test cell complete: snr_+10
+Test cell complete: snr_+15
+Test cell complete: snr_+20
+Test cell complete: weak_reference
+Test cell complete: two_paths
+Test cell complete: rich_16
+Test cell complete: nearly_noiseless
+CORRECTED GATE + STRONG OPTSHRINK: FEASIBILITY RESULTS
+
+Decision: stop_expansion_of_repaired_hybrid
+Two initializations, one shared training bank; this is not publication confirmation.
+All settings/checkpoints frozen before 704 new paired test worlds were generated.
+Main metric averages seven per-SNR ratio-of-sums dB NMSEs. Lower is better.
+
+PRIMARY AVERAGE
+  opt_strong: -14.596 dB
+  opt_tuned: -14.637 dB
+  opt_residual: -14.633 dB
+  opt_near_initial: -14.600 dB
+  em100: -10.341 dB
+  global_initial: -14.600 dB
+  global_best: -14.656 dB
+  global_final: -14.656 dB
+  adaptive_initial: -14.600 dB
+  adaptive_best: -14.616 dB
+  adaptive_final: -14.616 dB
+  clipped_initial: -14.596 dB
+  clipped_best: -14.622 dB
+  clipped_final: -14.622 dB
+
+ADAPTIVE SELECTED-CHECKPOINT GAINS (positive helps)
+  versus opt_residual: -0.018 dB; conditional pointwise95% CI [-0.03062227105235152, -0.004097054635431247]; worst primary deterioration 0.119; worst stress deterioration 0.890 dB
+  versus opt_strong: 0.019 dB; conditional pointwise95% CI [0.004354983355541782, 0.03253820970930482]; worst primary deterioration 0.088; worst stress deterioration 0.095 dB
+  versus opt_near_initial: 0.016 dB; conditional pointwise95% CI [0.0013582791935413956, 0.03070452411034349]; worst primary deterioration 0.088; worst stress deterioration 0.093 dB
+  versus opt_tuned: -0.022 dB; conditional pointwise95% CI [-0.03611520002987319, -0.007272172442238154]; worst primary deterioration 0.119; worst stress deterioration 0.890 dB
+  versus global_best: -0.040 dB; conditional pointwise95% CI [-0.050107610144152555, -0.0299825857773386]; worst primary deterioration 0.163; worst stress deterioration 0.027 dB
+  versus clipped_best: -0.007 dB; conditional pointwise95% CI [-0.009546640068851394, -0.004177387693331883]; worst primary deterioration 0.051; worst stress deterioration 0.005 dB
+
+PER-CELL RESULTS

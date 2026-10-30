@@ -1,0 +1,87 @@
+Paper 2 second review checks
+
+The new study is separate from all earlier frozen experiments. No old
+estimator source or trained checkpoint is changed. This release is not a
+hardware study or a reproduction of published URformer results.
+
+Completed diagnostic phases
+  calibration: 192 independent worlds, reused across 7 input conditions.
+  geometry: 576 tight-pilot worlds; 96 weak-reference worlds reused across
+    five reference levels (480 condition-cases).
+  low_noise_replay: post-hoc interventions on 32 already inspected worlds.
+  OptShrink in-loop: separate completed study, 224 development worlds and
+    1152 fresh paired test worlds, with no new neural training.
+
+Matched training protocol
+  4096 training cases and 448 independent validation cases per dataset.
+  12 epochs, batch size 32, Adam 0.001, CPU single precision for training.
+  Seven variants on dataset zero, each with three initialization seeds:
+    baseline 10 stages / width 16 / 188 parameters;
+    depth 5 and 20; width 8 and 32; two-expert controller; curriculum.
+  Two additional independently generated datasets, two baseline seeds each.
+  Total 25 jobs and 300 complete epoch histories.
+  This is a reduced-budget comparison, not proof of optimal depth or
+    convergence, and not a substitute for the original 16384-case study.
+  RSR 0, 5, 12, 20 dB; seven SNRs -10 through 20 dB; random 3-7 and
+    fixed two-path channels. All models are selected by withheld likelihood.
+  The curriculum changes order and the distribution of distinct pilot masks
+    across a case's repetitions. It matches total per-case exposure, not
+    every distinct mask. It is not a pure order-only intervention.
+  The two-expert model mixes controller outputs, not recovered physical
+    channel components. Its initial thresholds also differ. Width 32 is
+    a similar-size control; this is not a proof that gating alone helps.
+  Fresh test: 64 cases per each of 56 cells, generated only after all
+    selected/final checkpoints are fixed. Do not tune using these results.
+  The pre-generation test-seed amendment uses base 20261008000001, not
+    the draft value in the unchanged training protocol. See the amendment.
+  Repeated predictions across seeds and datasets are not independent worlds.
+
+The pilot and weak-reference diagnostic phases share some generation
+seeds; one sampled channel overlap is confirmed. They are not independent
+replications of each other and must not be pooled as independent samples.
+
+Commands from the repository or extracted archive root
+  python -m unittest paper2_review_round2.test_numerics paper2_review_round2.test_training paper2_review_round2.test_evaluation paper2_optshrink_loop.test_estimator
+  python -m paper2_review_round2.reproduce
+  python paper/paper2_selfsupervised/ieee/make_figures.py
+  python paper/paper2_selfsupervised/reviewer_revision/make_review_material.py
+  python paper/paper2_selfsupervised/review_round2/make_material.py
+
+The replay checks hashes when a release manifest is present, replays the
+original and new selected models on saved inputs, and regenerates a world.
+The completed FINAL_NUMERICAL_AUDIT.json separately records all 2,912
+prediction-file recalculations and selected/final replay at SNR 5/RSR 12.
+Some frozen provenance keys retain absolute paths from the original host;
+the archive-wide SHA256SUMS.json and portable replay use archive-relative
+paths. The original audit is not claimed to be a fresh external replication.
+All final output figures should be visually inspected after regeneration.
+Existing numerical arrays and generating scripts are retained. Full saved
+inputs/predictions are included in the expanded scientific release; the
+smaller Overleaf ZIP contains only manuscript compilation materials.
+
+To rerun the new studies without overwriting evidence
+  python -m paper2_review_round2.reproduce --prepare-regeneration /new/empty/path
+  cd /new/empty/path
+  python -m unittest paper2_review_round2.test_numerics paper2_review_round2.test_training
+  python -m paper2_review_round2.calibration_check
+  python -m paper2_review_round2.geometry_checks
+  python -m paper2_review_round2.training_study
+  python -m paper2_review_round2.evaluate_training
+
+The destination must not exist. Preparation copies source and the required
+frozen reference models, not the new study's completed evidence. Training
+saves complete epochs atomically and refuses duplicate writers. A time cap
+returns partial status; rerun the same command to resume. Never change
+frozen settings in place. Test evaluation refuses to start before all jobs
+finish. The local computer must remain powered and awake while computing.
+
+Dependencies: Python, numpy, scipy, torch; matplotlib for figures. Recorded
+original versions: Python 3.12.5, numpy 2.4.6, scipy 1.17.1, torch 2.13.0.
+Exact low-level floating point results may differ across platforms. Only
+load PyTorch checkpoint files from a source you trust.
+
+Publication limits
+No venue is selected. The evidence does not establish general superiority
+over the stronger classical baseline, robustness to arbitrary calibration
+errors, or a low-noise guarantee. An AI disclosure must follow the eventual
+venue's policy; omitting an acknowledgment here is not a compliance claim.

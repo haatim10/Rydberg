@@ -1,0 +1,45 @@
+{"cell": "cell_24", "trials": 50, "total": 400}
+{"cell": "cell_24", "trials": 100, "total": 400}
+{"cell": "cell_24", "trials": 150, "total": 400}
+{"cell": "cell_24", "trials": 200, "total": 400}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/evaluate.py", line 232, in <module>
+    else: evaluate_cell(next(c for c in cells()[0] if c['id']==args.cell))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/.venv-paper2/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/evaluate.py", line 183, in evaluate_cell
+    est,info=classical_estimate(method,z,s,b,float(v),min(frozen['hard_rank'],(spec['N']+1)//2))
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure_expansion/evaluate.py", line 27, in classical_estimate
+    return pilot_classical_estimate(name,z,s,b,sigma2,hard_rank)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/sahure/classical.py", line 67, in classical_estimate
+    rank,scores=select(s,z,b,sigma2,iterations=25,sweeps=4)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/codex_verification/solver.py", line 88, in select
+    g = fit(s[:, :-nv], z[:, :-nv], b[:, :-nv], sigma2,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/codex_verification/solver.py", line 80, in fit
+    g = project(g, ranks, sweeps)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/codex_verification/solver.py", line 43, in project
+    u, s, vh = np.linalg.svd(h, full_matrices=False)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/.venv-paper2/lib/python3.12/site-packages/numpy/linalg/_linalg.py", line 1841, in svd
+    u, s, vh = gufunc(a, signature=signature)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/.venv-paper2/lib/python3.12/site-packages/numpy/linalg/_linalg.py", line 153, in _raise_linalgerror_svd_nonconvergence
+    raise LinAlgError("SVD did not converge")
+numpy.linalg.LinAlgError: SVD did not converge
+{"cell": "cell_24", "trials": 50, "total": 400}
+{"cell": "cell_24", "trials": 100, "total": 400}
+{"cell": "cell_24", "trials": 150, "total": 400}
+{"cell": "cell_24", "trials": 200, "total": 400}
+{"cell": "cell_24", "trials": 250, "total": 400}
+{"cell": "cell_24", "trials": 300, "total": 400}
+{"cell": "cell_24", "trials": 350, "total": 400}
+{"cell": "cell_24", "trials": 400, "total": 400}

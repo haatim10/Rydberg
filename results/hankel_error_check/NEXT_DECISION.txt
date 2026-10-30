@@ -1,0 +1,49 @@
+DECISION AFTER THE SMALL ERROR-MODEL CHECK -- 9 OCTOBER 2026
+
+Stop expansion of this particular approximation. Do not train a new network
+or build an uncertainty-weighted Hankel filter from it on the present evidence.
+The predefined covariance gate required 8/10 primary groups; only 6 passed.
+The direct total-error/bias requirement passed 7/10, also below its threshold.
+
+What worked
+At 5 dB, 20 dB, and the 16-path condition, the full-estimator local sensitivity
+predicted random-error power closely, and also represented error directions
+better than its equal-power isotropic control. This is useful development
+evidence for those sampled conditions, not a general reliability guarantee.
+
+What did not work
+At -10 dB and with a weak reference, the same approximation substantially
+overpredicted random-error power. At 100 updates the ratios were 16.48 and
+5.72, respectively. The weak-reference condition also had substantial estimated
+bias: about 57% of total error at 20 updates and 22% at 100. Covariance alone
+does not represent that bias. These are four fixed worlds per condition.
+
+Numerical qualification
+All saved inputs and selected solver/covariance outputs replayed correctly.
+Two supplementary finite-difference checks missed the declared tolerance:
+oracle start at -10 dB and zero start with a weak reference. A separately
+recorded automatic-differentiation diagnosis showed convergence with smaller
+steps. At the original step, Jacobian discrepancies were about 0.46% and 0.17%.
+For the largest ordinary-start predictions in the two failing conditions,
+discrepancies were about 0.0113% and 0.0023%. These numerical discrepancies
+do not explain the large primary prediction failures. The original flags,
+predictions, and screen outcome are preserved; no retrospective gate pass.
+
+Meaning for the paper
+This check neither invalidates the earlier estimator results nor demonstrates
+a new estimator improvement. It is not an added novelty claim. The existing
+manuscript and all historical experiments remain unchanged. Conditional
+missing-phase uncertainty is not the same quantity as channel-estimation
+error; using the former directly as the latter would be unjustified.
+
+If further work is authorized
+Before proposing a different error model, isolate whether the main failure
+comes from evaluating a local approximation at one noisy estimate, from
+incorrect fitted magnitude variances, or from behavior outside the local
+neighborhood. True-channel-centered predictions would be diagnostic only.
+Declare this as a separate small failure-analysis protocol; do not retune the
+current screen or claim a practical receiver can access the true channel.
+Any replacement must pass fresh checks before testing a new filter. General
+covariance propagation, whitening, and shrinkage already have prior art.
+
+No additional experiment has been launched beyond the numerical diagnosis.

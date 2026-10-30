@@ -67,3 +67,39 @@ results/p16/tier05/*/checkpoint.pt
 # epoch a checkpoint came from.
 results/p17/tier1/*/ep[0-9][0-9][0-9].pt
 results/p17/tier1/*/checkpoint.pt
+
+# 2026-10-30 research archive: keep raw banks, intermediate states and build
+# products local. Already tracked evidence is unaffected. Exact included files
+# are recorded in docs/archive_20261030/included_files.csv; selected epoch files
+# and compact audit arrays are explicitly staged from that inventory.
+.DS_Store
+/tmp/
+**/matplotlib_cache/
+*.lock
+/paper/**/*.aux
+/paper/**/*.out
+/paper/**/*.blg
+/paper/**/*.log
+/texput.log
+/results/**/*.npy
+/results/**/*.npz
+/results/**/*.pt
+!/results/**/*best.pt
+!/results/**/*final.pt
+!/results/**/selected.pt
+!/results/**/*constant_control.pt
+/results/**/*.zip
+/results/**/*.tar
+/experiments/*/data/
+/experiments/*/reference/*.pdf
+/experiments/*/reference/*.html
+/experiments/*/reference/*.txt
+/experiments/*/reference/*.png
+/results/*/reference/*.pdf
+/results/*/reference/*.html
+/results/*/reference/*.txt
+/results/*/reference/*.png
+/results/paper2_reproduction/source/
+/output/**/*.zip
+!/output/**/*overleaf.zip
+/output/**/*.tar

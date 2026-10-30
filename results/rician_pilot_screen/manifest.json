@@ -1,0 +1,126 @@
+{
+  "config": {
+    "version": 1,
+    "seeds": [
+      10401,
+      10402
+    ],
+    "epochs": 10,
+    "train_count": 2304,
+    "val_count": 384,
+    "batch_size": 32,
+    "lr": 0.001,
+    "stages": 10,
+    "train_seed": 20261014101001,
+    "val_seed": 20261014102001,
+    "test_seed": 20261014103001,
+    "test_per_cell": 64,
+    "validation_mask_seed": 202610140901,
+    "max_seconds": 7200,
+    "cells": [
+      {
+        "snr": -5.0,
+        "rsr": 5.0
+      },
+      {
+        "snr": -5.0,
+        "rsr": 12.0
+      },
+      {
+        "snr": 5.0,
+        "rsr": 5.0
+      },
+      {
+        "snr": 5.0,
+        "rsr": 12.0
+      },
+      {
+        "snr": 15.0,
+        "rsr": 5.0
+      },
+      {
+        "snr": 15.0,
+        "rsr": 12.0
+      }
+    ],
+    "test_cells": [
+      {
+        "snr": -5.0,
+        "rsr": 5.0
+      },
+      {
+        "snr": -5.0,
+        "rsr": 12.0
+      },
+      {
+        "snr": 5.0,
+        "rsr": 5.0
+      },
+      {
+        "snr": 5.0,
+        "rsr": 12.0
+      },
+      {
+        "snr": 15.0,
+        "rsr": 5.0
+      },
+      {
+        "snr": 15.0,
+        "rsr": 12.0
+      },
+      {
+        "snr": 5.0,
+        "rsr": 0.0
+      },
+      {
+        "snr": 40.0,
+        "rsr": 12.0
+      }
+    ],
+    "arms": {
+      "holdout": null,
+      "r2r_05": 0.5,
+      "r2r_10": 1.0
+    },
+    "primary": "final epoch10, original-noise all30 input, equal6cell dB ratio-of-sums"
+  },
+  "sources": {
+    "rician_pilot_screen/run.py": "0750d7675fe4cf7716a00e06582e136352b4c58d7a2e7a9cd5918e6318f146aa",
+    "rician_pilot_screen/noise.py": "1d9a68a753b3c81c03192d0236409e3c9199fc08331ff2b94d4caf0e2c8bf836",
+    "rician_pilot_screen/test_noise.py": "13b7648b24e4f2d51ffbb8b113661b1b581de6855346ae9b60fdb890d735a145",
+    "rician_pilot_screen/PROTOCOL.txt": "c66edfe6a2b6de463f447aed5a5c33e25c7f1728991402df49d076217d5c4e90",
+    "sahure/model.py": "c6a3d53d8adae23cc2c0b1309bedd21ebd7760194359256192897bdd19aaface",
+    "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+    "sahure/train.py": "bedef81896e71b57162367debb25fdd29625afc6ab44929bb1ebc9464884b04e",
+    "sahure/data.py": "efb3c019ed5209a243023f9ca83c48e216e2c3d6494f3c96b42312242abefeea",
+    "sahure_expansion/data.py": "c1c806b53f0318cb0f86b61eba898b37204675e1ed8921bff1a35c6f798366e2",
+    "sahure_expansion/train.py": "b4dc588e3cf9c21de5400468b2d26588770c98cb650d3632891f2a85d0d39d25",
+    "rydberg_sim/__init__.py": "5abc42b050b7bfdc70ec8560d3050fd741b194927821c37d50372130b95c4833",
+    "rydberg_sim/baselines.py": "ebbe67076b63ffa42b8dc94defa5d40aa1ee64124e215490f8ea746cb5c387e1",
+    "rydberg_sim/calibration.py": "8a1d186192fe8dfa57c72222f62c77c613afd87ef9910b35d608fc99f192937e",
+    "rydberg_sim/channel.py": "507a74e76761414ef1e55ea50b721af0210e55cc06b8e9a1ec91a18feace59eb",
+    "rydberg_sim/channel_cui.py": "04cddd10e8d8ab0a37d724e3057d62489bfd29981092037b72a09fe7ca911488",
+    "rydberg_sim/confidence.py": "dfbba1dcde7c0806da4842b66806439ca74738e36aee7e1e305541e9c6622eef",
+    "rydberg_sim/config.py": "f883a1ff3d0d0803b1de093b0efe6575bf8896089d1547e47edb2ce50408a825",
+    "rydberg_sim/crlb.py": "19de1688072814d0695b634dbf5788ae9bee8a101521bb23280ee7fe9eb78807",
+    "rydberg_sim/forward.py": "117293e905b8284800090698f61c63e0d505965cbbf83ed0470cf0bbaf6c1953",
+    "rydberg_sim/gs.py": "16c5a050b9803f5f11961d6e5cd490e92bc92f02a58caeab8ce83f7896e75aa4",
+    "rydberg_sim/linearised_crlb.py": "f53c88a46224ebff4fbb6dbeec039d8dea8263a2b2447468398449aafe6e8370",
+    "rydberg_sim/metrics.py": "38b33fbfa9692031480b2a2fed533690fac36b343eb7e8f1ee448b4c701e3ff6",
+    "rydberg_sim/monte_carlo.py": "222ea7bf124672a73343ec0b9b8dd0b8fda624329a69eb8b1d92f55a17743b82",
+    "rydberg_sim/pilots.py": "7f0b94d1bfd817405d0f31757f0dc0f5f35a8bc2d81567c69e2a9e5334b2fe94",
+    "rydberg_sim/qam.py": "9e79c5ad31d7df9037862eece126adf69edeb9487d8f0c20f5040d597ed96db8",
+    "rydberg_sim/reference.py": "8846f317684f1a484fc0191474e41a7c25caee7adda493be8dc40b3bab955a06",
+    "rydberg_sim/rng.py": "ca3f1787e87c61db0650677d476d9a9542ed6e9397d431aed0b76ef651ffb6ed",
+    "rydberg_sim/spectral.py": "fa1492a7319a3bf90b358deab27ac032d058bd49173d0f3eff04ced1ec43e8dc",
+    "rydberg_sim/track_a.py": "1abb0ec9a89a8503b0e31c5540e0e6621ea6dd0909007067d3ae769292819320",
+    "rydberg_sim/track_a_fig5.py": "a9389a63f04e77d0d52e789e0f41ea9b5eafacf7bb32bcb4882f0b48608774b7",
+    "rydberg_sim/track_a_fig6.py": "d2b2fb696ad07f1b0db83269e8498606644d3c97e2793cdcda64db1de232d866",
+    "rydberg_sim/track_a_fig78.py": "dc9763bd5dca5f69d60c267ffb539a6b95b37cab1bf81167253264e1cbfbabaa",
+    "rydberg_sim/track_b_drivers.py": "0ceea99d9fe2cb4868332ea3580bbf4941ee3bb337190025fffa0d8bf7945427",
+    "rydberg_sim/track_b_proposed.py": "00ac54acf9f577a4f4ce43c0d20b5c7f1b2a0e982859a9f41a510b8e2df06355",
+    "rydberg_sim/track_b_prototype.py": "5e118b135b69ee7e11b5662dd01cf7393b1f846fb588ee3220d444ccadd54879",
+    "rydberg_sim/track_b_structure.py": "6c05e0d8108e90c0a8eec5336e215dd5775767c9813925f14478ec8233e74ecc"
+  },
+  "torch": "2.13.0"
+}

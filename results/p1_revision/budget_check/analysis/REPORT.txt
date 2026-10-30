@@ -1,0 +1,44 @@
+Update-budget sensitivity check
+
+All 300 fresh worlds were evaluated at 100 and 300 updates on one continuous trajectory.
+Each structured method selected its rank or threshold once using 25 context updates.
+Positive gain means that continuing to 300 updates reduced the total squared channel error.
+Intervals use 4,000 paired bootstrap resamples within each 50-world cell.
+Numerical steadiness is a change diagnostic, not proof of convergence.
+
+L | SNR dB | Method | Gain dB [95% interval] | Steady at 100 / 300 | Median relative estimate change
+ 3 |    0.0 | em             | -0.041 [-0.120, -0.001] | 20% / 84% | 1.415e-05
+ 3 |    0.0 | rician_gd      | -0.051 [-0.125, -0.006] | 0% / 76% | 0.0002766
+ 3 |    0.0 | hs             | -0.010 [-0.033, +0.002] | 88% / 100% | 6.88e-13
+ 3 |    0.0 | rician_hankel  | -0.004 [-0.012, +0.001] | 54% / 98% | 9.58e-08
+ 3 |    0.0 | em_smooth      | +0.000 [-0.000, +0.000] | 92% / 100% | 4.198e-14
+ 3 |   10.0 | em             | -0.000 [-0.000, -0.000] | 94% / 100% | 1.416e-09
+ 3 |   10.0 | rician_gd      | -0.000 [-0.000, -0.000] | 26% / 100% | 2.46e-06
+ 3 |   10.0 | hs             | +0.000 [-0.000, +0.000] | 98% / 100% | 1.998e-15
+ 3 |   10.0 | rician_hankel  | -0.000 [-0.000, +0.000] | 76% / 100% | 2.897e-09
+ 3 |   10.0 | em_smooth      | -0.000 [-0.000, +0.000] | 100% / 100% | 1.709e-15
+ 7 |    0.0 | em             | -0.008 [-0.024, -0.000] | 30% / 94% | 4.209e-06
+ 7 |    0.0 | rician_gd      | -0.017 [-0.047, -0.001] | 2% / 86% | 0.0001983
+ 7 |    0.0 | hs             | +0.002 [-0.000, +0.007] | 68% / 100% | 3.251e-08
+ 7 |    0.0 | rician_hankel  | +0.011 [-0.022, +0.058] | 30% / 94% | 1.051e-05
+ 7 |    0.0 | em_smooth      | +0.000 [-0.000, +0.000] | 88% / 100% | 6.796e-10
+ 7 |   10.0 | em             | +0.000 [-0.000, +0.000] | 90% / 100% | 3.42e-09
+ 7 |   10.0 | rician_gd      | -0.000 [-0.000, -0.000] | 34% / 100% | 2.071e-06
+ 7 |   10.0 | hs             | +0.000 [+0.000, +0.000] | 94% / 100% | 7.908e-12
+ 7 |   10.0 | rician_hankel  | -0.001 [-0.008, +0.003] | 40% / 92% | 5.855e-06
+ 7 |   10.0 | em_smooth      | +0.000 [-0.000, +0.000] | 98% / 100% | 1.606e-12
+14 |    0.0 | em             | -0.009 [-0.026, -0.000] | 20% / 96% | 1.215e-05
+14 |    0.0 | rician_gd      | -0.017 [-0.031, -0.007] | 2% / 86% | 0.0005521
+14 |    0.0 | hs             | -0.000 [-0.001, +0.000] | 42% / 100% | 5.744e-07
+14 |    0.0 | rician_hankel  | +0.004 [-0.005, +0.018] | 12% / 94% | 0.0002754
+14 |    0.0 | em_smooth      | +0.000 [-0.000, +0.000] | 58% / 98% | 2.49e-07
+14 |   10.0 | em             | +0.000 [-0.000, +0.000] | 92% / 100% | 7.421e-09
+14 |   10.0 | rician_gd      | +0.001 [-0.001, +0.002] | 22% / 100% | 4.721e-06
+14 |   10.0 | hs             | +0.000 [-0.002, +0.002] | 56% / 100% | 1.89e-07
+14 |   10.0 | rician_hankel  | -0.001 [-0.005, +0.001] | 4% / 90% | 6.06e-05
+14 |   10.0 | em_smooth      | -0.000 [-0.000, +0.000] | 94% / 100% | 5.537e-10
+
+Cells with a nonzero fraction of estimates still changing at 300 updates cannot be described as fully numerically steady.
+The JSON and CSV files also report likelihood changes. Lower likelihood loss does not guarantee lower channel error.
+These checks do not justify a global-convergence claim or a new choice of rank based on test errors.
+Workload timings are omitted from this accuracy summary because experiments may have run concurrently.

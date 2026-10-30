@@ -1,0 +1,32 @@
+FULL-BUDGET ALL-PILOT TRAINING COMPARISON
+
+8192fresh paired worlds;8064primary and128stress. Lower NMSE is better.
+Same188parameter architecture,16384trainingexamples,20epochs,3matched seeds.
+Primary uses common validation-selected checkpoints; finalepoch sensitivity separately.
+
+holdout_best: -13.6843dB; severeNMSE>1 2.819%; measuredCPU 4.808ms
+allpilot_best: -13.9616dB; severeNMSE>1 4.473%; measuredCPU 4.811ms
+holdout_final: -13.7624dB; severeNMSE>1 3.042%; measuredCPU 4.807ms
+allpilot_final: -14.0047dB; severeNMSE>1 4.609%; measuredCPU 4.811ms
+rank_loop: -14.1321dB; severeNMSE>1 6.758%; measuredCPU 108.078ms
+opt_selected: -13.1684dB; severeNMSE>1 4.043%; measuredCPU 15.658ms
+
+Allpilot gain versus holdout_best: 0.2773dB; conditional adjusted95%CI [0.2631144719097328, 0.2942043423047744]; wins 106/126cells; worstcell deterioration 0.5273dB
+Allpilot gain versus rank_loop: -0.1705dB; conditional adjusted95%CI [-0.22109139268492176, -0.11688478843437244]; wins 72/126cells; worstcell deterioration 3.7435dB
+Fixed final20epoch allpilot improvement: 0.2423dB
+
+Per-seed primary values: {"holdout_best": {"9101": -13.785673007770706, "9102": -13.445599375537505, "9103": -13.821515340511736}, "allpilot_best": {"9101": -13.977526323649675, "9102": -13.937846204148816, "9103": -13.969334844216888}, "holdout_final": {"9101": -13.665062824936637, "9102": -13.800684221351208, "9103": -13.821515340511736}, "allpilot_final": {"9101": -14.022532852242746, "9102": -13.973421513005938, "9103": -14.018240110253224}}
+
+Stress cases (excluded from primary):
+weak_reference: {"holdout_best": {"nmse_db": -7.244458286707918, "severe_rate": 0.0}, "allpilot_best": {"nmse_db": -6.903422979842488, "severe_rate": 0.0}, "holdout_final": {"nmse_db": -7.279763494635784, "severe_rate": 0.0}, "allpilot_final": {"nmse_db": -6.865042428378961, "severe_rate": 0.0}, "rank_loop": {"nmse_db": -11.25749087720161, "severe_rate": 0.0}, "opt_selected": {"nmse_db": -11.866211059773885, "severe_rate": 0.0}}
+nearly_noiseless: {"holdout_best": {"nmse_db": -6.948676291448624, "severe_rate": 0.0}, "allpilot_best": {"nmse_db": -15.239857840180521, "severe_rate": 0.0}, "holdout_final": {"nmse_db": -6.920830357879315, "severe_rate": 0.0}, "allpilot_final": {"nmse_db": -23.1155921681174, "severe_rate": 0.0}, "rank_loop": {"nmse_db": -69.51692586181107, "severe_rate": 0.0}, "opt_selected": {"nmse_db": -66.68449533573026, "severe_rate": 0.0}}
+
+Interpretation limits:
+Three model seeds share one training dataset; intervals condition on fitted models.
+Alpha1 chosen from earlier development; fresh test never tunes settings.
+Common21/9validation selection is primary; final20epoch sensitivity is separate.
+Allpilot changes training noise, geometry and objective together, not architecture.
+Equal example/update budgets are not equal training FLOPs; full20epochs is not convergence.
+No hardware, universal superiority or first-ever novelty claim.
+
+No manuscript changes. Review all cell/seed results before any publication claim.

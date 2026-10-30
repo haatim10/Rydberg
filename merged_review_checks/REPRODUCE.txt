@@ -1,0 +1,35 @@
+MERGED REVIEW FOLLOW-UP: LOCAL REPRODUCTION
+
+This archive is self-contained for the added one-sweep comparison, its paired
+tail analysis, representative checkpoint replay and the stronger-comparison
+bank. It is NOT the complete archive of every historical P1/P2 experiment.
+For those, retain the earlier full P1 and P2 evidence releases.
+
+Use Python with NumPy, SciPy, PyTorch and Matplotlib. Original software versions
+are in results/paper2_optshrink_loop/manifest.json. All paths below are relative
+to the extracted archive root. Do not edit the frozen source files if checking
+hashes or reproducing the cached study.
+
+1. Verify hashes, all added prediction scores, representative classical and
+   neural replays, and independent scalar-SVD/least-squares agreement:
+       python -m merged_review_checks.audit
+
+2. Resume/recheck the comparison without changing old experiment files:
+       python -m merged_review_checks.run
+   It skips already saved one-sweep cases, recalculates aggregates and retains
+   existing timing records. To run afresh, use a SEPARATE extracted copy and
+   move results/merged_review_checks/predictions elsewhere first. Do not erase
+   the only copy of saved outputs. No training or new test-bank generation is
+   needed. The protocol is in merged_review_checks/PROTOCOL.txt.
+
+3. Regenerate the added manuscript material:
+       python -m merged_review_checks.make_material
+   Then compile the two TeX documents in paper/merged_tcom using pdfLaTeX,
+   BibTeX and two further pdfLaTeX passes. The separate Overleaf ZIP contains
+   the same manuscript dependencies without the experiment archive.
+
+True channels appear only in evaluation and audits, not rank selection.
+The additional comparison is post-review on an inspected bank. Bootstrap
+intervals condition on fixed models and are not independent training-data
+uncertainty. Threshold sensitivity is exploratory, not a new success criterion.
+Code/data have not been uploaded to a public repository by this task.

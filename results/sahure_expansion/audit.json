@@ -1,0 +1,280 @@
+{
+  "state": "passed",
+  "checks": [
+    "Training sources match every seed manifest",
+    "Training and validation observation hashes unchanged",
+    "All 18 checkpoint validation scores reproduced from observations and fixed masks",
+    "All test datasets created after frozen selection",
+    "Distinct train/validation/test master seeds",
+    "Every stored error and energy is finite and complete",
+    "All learned errors recomputed from saved predictions",
+    "All reported NMSE values recomputed from per-world errors",
+    "No duplicate classical result rows",
+    "Variance-independent methods unchanged on shared noise-mismatch worlds",
+    "All 11 classical estimators independently rerun on three reference worlds",
+    "All 24 learned/control models reproduce saved predictions on three reference worlds",
+    "All 1 explicitly logged SVD recovery trials independently reproduced"
+  ],
+  "validated_result_files": 1120,
+  "validation": [
+    {
+      "model": "em_none_s9101",
+      "recomputed": 3.545903932619283,
+      "stored": 3.545903932619283
+    },
+    {
+      "model": "em_global_s9101",
+      "recomputed": 3.4298399493872203,
+      "stored": 3.4298399493872203
+    },
+    {
+      "model": "em_adaptive_s9101",
+      "recomputed": 3.372665272881745,
+      "stored": 3.372665272881745
+    },
+    {
+      "model": "gd_none_s9101",
+      "recomputed": 3.5867759852267036,
+      "stored": 3.5867759852267036
+    },
+    {
+      "model": "gd_global_s9101",
+      "recomputed": 3.4489889232199826,
+      "stored": 3.4489889232199826
+    },
+    {
+      "model": "gd_adaptive_s9101",
+      "recomputed": 3.400835641746181,
+      "stored": 3.400835641746181
+    },
+    {
+      "model": "em_none_s9102",
+      "recomputed": 3.5453918369748196,
+      "stored": 3.5453918369748196
+    },
+    {
+      "model": "em_global_s9102",
+      "recomputed": 3.4295519278504116,
+      "stored": 3.4295519278504116
+    },
+    {
+      "model": "em_adaptive_s9102",
+      "recomputed": 3.3735861695067433,
+      "stored": 3.3735861695067433
+    },
+    {
+      "model": "gd_none_s9102",
+      "recomputed": 3.587852121411979,
+      "stored": 3.587852121411979
+    },
+    {
+      "model": "gd_global_s9102",
+      "recomputed": 3.448896973810186,
+      "stored": 3.448896973810186
+    },
+    {
+      "model": "gd_adaptive_s9102",
+      "recomputed": 3.40424422219364,
+      "stored": 3.40424422219364
+    },
+    {
+      "model": "em_none_s9103",
+      "recomputed": 3.545432618464193,
+      "stored": 3.545432618464193
+    },
+    {
+      "model": "em_global_s9103",
+      "recomputed": 3.427717740191705,
+      "stored": 3.427717740191705
+    },
+    {
+      "model": "em_adaptive_s9103",
+      "recomputed": 3.373786167547864,
+      "stored": 3.373786167547864
+    },
+    {
+      "model": "gd_none_s9103",
+      "recomputed": 3.5874858680987156,
+      "stored": 3.5874858680987156
+    },
+    {
+      "model": "gd_global_s9103",
+      "recomputed": 3.4491614441596092,
+      "stored": 3.4491614441596092
+    },
+    {
+      "model": "gd_adaptive_s9103",
+      "recomputed": 3.401879067173256,
+      "stored": 3.401879067173256
+    }
+  ],
+  "classical_reproductions": [
+    {
+      "method": "em_10",
+      "trial": 0,
+      "error": 7.848994991686089
+    },
+    {
+      "method": "em_100",
+      "trial": 0,
+      "error": 8.38760780721842
+    },
+    {
+      "method": "hs_gs",
+      "trial": 0,
+      "error": 4.977255995225224
+    },
+    {
+      "method": "rician_100",
+      "trial": 0,
+      "error": 8.38758389634823
+    },
+    {
+      "method": "rician_converged",
+      "trial": 0,
+      "error": 8.387601772312369
+    },
+    {
+      "method": "amplitude_100",
+      "trial": 0,
+      "error": 8.301221678117676
+    },
+    {
+      "method": "amplitude_converged",
+      "trial": 0,
+      "error": 8.301249038400673
+    },
+    {
+      "method": "rician_hard",
+      "trial": 0,
+      "error": 7.3898990247020055
+    },
+    {
+      "method": "linearized_ls",
+      "trial": 0,
+      "error": 10.048987168645569
+    },
+    {
+      "method": "rician_10",
+      "trial": 0,
+      "error": 7.007770068928126
+    },
+    {
+      "method": "amplitude_10",
+      "trial": 0,
+      "error": 7.048091878895789
+    },
+    {
+      "method": "em_10",
+      "trial": 137,
+      "error": 5.778509512722819
+    },
+    {
+      "method": "em_100",
+      "trial": 137,
+      "error": 6.608849285045419
+    },
+    {
+      "method": "hs_gs",
+      "trial": 137,
+      "error": 1.9918925486774197
+    },
+    {
+      "method": "rician_100",
+      "trial": 137,
+      "error": 6.608846642859589
+    },
+    {
+      "method": "rician_converged",
+      "trial": 137,
+      "error": 6.60884585396806
+    },
+    {
+      "method": "amplitude_100",
+      "trial": 137,
+      "error": 6.768817574353893
+    },
+    {
+      "method": "amplitude_converged",
+      "trial": 137,
+      "error": 6.768820214586812
+    },
+    {
+      "method": "rician_hard",
+      "trial": 137,
+      "error": 5.314134816269545
+    },
+    {
+      "method": "linearized_ls",
+      "trial": 137,
+      "error": 5.8071212110370265
+    },
+    {
+      "method": "rician_10",
+      "trial": 137,
+      "error": 5.335805365654393
+    },
+    {
+      "method": "amplitude_10",
+      "trial": 137,
+      "error": 5.330184026524912
+    },
+    {
+      "method": "em_10",
+      "trial": 399,
+      "error": 7.630101562114456
+    },
+    {
+      "method": "em_100",
+      "trial": 399,
+      "error": 7.767033985203666
+    },
+    {
+      "method": "hs_gs",
+      "trial": 399,
+      "error": 4.042868359394766
+    },
+    {
+      "method": "rician_100",
+      "trial": 399,
+      "error": 7.767015252987278
+    },
+    {
+      "method": "rician_converged",
+      "trial": 399,
+      "error": 7.767021083472747
+    },
+    {
+      "method": "amplitude_100",
+      "trial": 399,
+      "error": 8.05426713179345
+    },
+    {
+      "method": "amplitude_converged",
+      "trial": 399,
+      "error": 8.054296751956345
+    },
+    {
+      "method": "rician_hard",
+      "trial": 399,
+      "error": 6.48345569667528
+    },
+    {
+      "method": "linearized_ls",
+      "trial": 399,
+      "error": 9.715807212717184
+    },
+    {
+      "method": "rician_10",
+      "trial": 399,
+      "error": 7.347973410747471
+    },
+    {
+      "method": "amplitude_10",
+      "trial": 399,
+      "error": 7.639807796138965
+    }
+  ],
+  "models": 24,
+  "cells": 32
+}

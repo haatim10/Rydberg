@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paper 2 · All experiments</title>
+<style>
+:root{color-scheme:light dark;--bg:light-dark(#f4f6f8,#10151c);--card:light-dark(#fff,#19212c);--ink:light-dark(#1b2939,#e7edf6);--muted:light-dark(#53647a,#a4b3c6);--line:light-dark(#dbe2eb,#344052);--accent:light-dark(#087361,#76d5bd);--warn:light-dark(#976009,#f4c773)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}main{max-width:1150px;margin:auto;padding:30px 24px}h1{font-size:29px;line-height:1.2;margin:0}h2{font-size:22px;line-height:1.3;margin:0 0 10px}h3{font-size:17px;margin:0 0 8px}p{margin:8px 0}.muted{color:var(--muted)}.small{font-size:13px}.row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}.status{color:var(--accent);font-weight:600}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:22px;margin:16px 0}.numbers,.grid,.overview{display:grid;grid-template-columns:1fr 1fr;gap:20px}.overview{margin:22px 0}.overview a{color:var(--ink);text-decoration:none;margin:0;border-top:4px solid var(--accent)}.overview a:hover{border-color:var(--accent)}.overview strong{display:block;font-size:19px}.value{font-size:30px;line-height:1.3;font-weight:600;font-variant-numeric:tabular-nums}progress{width:100%;height:13px;margin:12px 0 7px;accent-color:var(--accent)}.note{border-left:3px solid var(--warn);padding:3px 0 3px 14px;color:var(--muted)}table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}th,td{padding:9px 8px;text-align:left;border-bottom:1px solid var(--line)}th{font-weight:500;color:var(--muted)}tr.current{background:color-mix(in srgb,var(--accent) 10%,transparent)}.table-wrap{overflow:auto}.error{white-space:pre-wrap;overflow-wrap:anywhere;color:var(--warn)}.plot{width:100%;height:200px;display:block}.plot text{font:12px system-ui;fill:var(--muted)}.plot line{stroke:var(--line)}.plot polyline{stroke:var(--accent);fill:none;stroke-width:2}.grid .card{margin:0}.experiment{scroll-margin-top:20px;border-top:2px solid var(--line);padding-top:24px;margin-top:35px}footer{color:var(--muted);font-size:13px;margin:24px 0}.tag{padding:3px 10px;border-radius:20px;background:color-mix(in srgb,var(--accent) 12%,transparent);font-size:12px;white-space:nowrap}
+.overview{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:700px){main{padding:22px 12px}.card{padding:16px}.grid,.overview{grid-template-columns:1fr}.numbers{gap:12px}.value{font-size:25px}h1{font-size:25px}h2{font-size:20px}}
+</style></head><body><main>
+<header><div class="row"><h1>Paper 2 · Live research dashboard</h1><span class="tag">Local · read-only monitor</span></div><p class="muted">The current 40-run Hankel study is shown first. Earlier experiments remain below for reference.</p><p id="connection" class="small status" role="status">Connecting…</p></header>
+<div class="overview" id="overview"></div>
+<p class="note small">Current study: 18 epochs per run, 16,000 training examples per channel type, and a 15-hour worker-time limit. Classical comparisons and final evaluation take additional time after training. Estimates can change. Keep your Mac awake and powered; closing this screen does not stop the run.</p>
+<div id="experiments"></div>
+<footer>Refreshes every 5 seconds. This page reads saved progress only and cannot start, stop or change training. A completed run is not proof of convergence or successful reproduction.</footer>
+</main>
+<template id="panel-template"><section class="experiment">
+<h2 data-field="title"></h2><p class="muted" data-field="description"></p><p class="note small" data-field="note"></p>
+<section class="card" data-field="budget-card" hidden><div class="row"><h3>15-hour allowance</h3><span data-field="budget-label"></span></div><progress data-field="budget-progress" max="15" value="0" aria-label="Worker-time allowance used"></progress><p class="small" data-field="phase"></p><p class="small note" data-field="budget-warning" hidden>The current estimate may exceed the remaining allowance. The worker will stop at its limit and preserve partial results.</p></section>
+<section class="card"><div class="row"><h3 data-field="active-label"></h3><span class="status" data-field="status"></span></div><p class="small muted" data-field="active-channel"></p>
+<div class="numbers"><div><div class="small muted">Current epoch</div><div class="value" data-field="epoch">—</div></div><div><div class="small muted">Time left · this experiment</div><div class="value" data-field="eta">—</div></div></div>
+<progress data-field="epoch-progress" max="100" value="0" aria-label="Current epoch progress"></progress><div class="row small"><span data-field="batch"></span><span class="muted" data-field="recent-loss"></span></div><p class="small muted" data-field="updated"></p><p class="error" data-field="error" role="alert" hidden></p>
+<hr style="border:0;border-top:1px solid var(--line);margin:18px 0"><div class="row"><h3>Whole experiment</h3><span data-field="total-percent"></span></div><progress data-field="total-progress" max="100" value="0" aria-label="Whole experiment progress"></progress><div class="row small"><span data-field="runs-done"></span><span class="muted" data-field="epochs-done"></span></div></section>
+<div class="grid"><section class="card"><h3>Validation error · current or latest run</h3><p class="muted small">Mean normalized error in dB · lower is better</p><svg data-field="plot" class="plot" role="img" aria-label="Validation error by completed epoch"></svg><p data-field="empty" class="small muted">Appears after the first saved epoch.</p></section><section class="card"><h3>Recent saved epochs</h3><div class="table-wrap"><table><thead><tr><th>Epoch</th><th>Training loss</th><th>Validation</th><th>Time</th></tr></thead><tbody data-field="recent"></tbody></table></div><p class="muted small">Training loss is linear; validation is in dB. Different scales, different examples.</p></section></div>
+<section class="card"><h3>All runs in this queue</h3><div class="table-wrap"><table><thead><tr><th>Channel</th><th>Seed</th><th>Model</th><th>Progress</th><th>Last validation</th></tr></thead><tbody data-field="queue"></tbody></table></div></section>
+<section class="card" data-field="comparison-card" hidden><h3>Comparison with the published curve</h3><p class="small muted">Published values were extracted from Figure 3. Our fixed-SNR test scores appear after each full run. Positive gap = our error is higher (worse). Final epoch is primary; validation-selected checkpoints are separate diagnostics.</p><p class="small status" data-field="comparison-status"></p><div class="table-wrap"><table><thead><tr><th>Model / checkpoint</th><th>SNR</th><th>Paper NMSE</th><th>Our NMSE</th><th>Gap</th></tr></thead><tbody data-field="comparison"></tbody></table></div></section>
+<section class="card" data-field="diagnostic-card" hidden><h3>Fixed-SNR versus mixed-SNR training</h3><p class="small muted">Same 5 dB validation data for both models. Positive gain favors fixed-SNR training. These are single-seed validation results, not a reproduction or final-test result.</p><p class="small muted" data-field="diagnostic-status"></p><div class="table-wrap"><table><thead><tr><th>Checkpoint</th><th>Mixed SNR</th><th>Fixed 5 dB</th><th>Fixed-SNR gain</th></tr></thead><tbody data-field="diagnostic-results"></tbody></table></div></section>
+</section></template>
+<script>
+const fixed=(v,n=3)=>Number.isFinite(v)?v.toFixed(n):'—';
+const etaText=eta=>!eta?'ETA unavailable':eta[1]<1?`${Math.ceil(eta[0]*60)}–${Math.ceil(eta[1]*60)} min`:`${eta[0].toFixed(1)}–${eta[1].toFixed(1)} h`;
+let lastSnapshot=null;
+const panels=new Map();
+function cell(row,text){const e=document.createElement('td');e.textContent=text;row.appendChild(e);}
+function rowInto(body,values,current=false){const r=document.createElement('tr');if(current)r.className='current';values.forEach(v=>cell(r,v));body.appendChild(r);}
+function draw(svg,empty,history){
+ const width=Math.max(svg.clientWidth,280),height=200;svg.setAttribute('viewBox',`0 0 ${width} ${height}`);svg.replaceChildren();empty.hidden=history.length>0;if(!history.length)return;
+ const ns='http://www.w3.org/2000/svg';function el(tag,attrs,text){const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;svg.appendChild(e);return e;}
+ const left=57,right=width-15,top=12,bottom=165;let lo=Math.min(...history.map(x=>x.validation_db)),hi=Math.max(...history.map(x=>x.validation_db));const pad=Math.max((hi-lo)*.14,.08);lo-=pad;hi+=pad;
+ const xmax=Math.max(2,history.at(-1).epoch),x=v=>left+(v-1)/(xmax-1)*(right-left),y=v=>bottom-(v-lo)/(hi-lo)*(bottom-top);
+ for(let i=0;i<4;i++){const v=lo+(hi-lo)*i/3,yp=y(v);el('line',{x1:left,x2:right,y1:yp,y2:yp});el('text',{x:left-7,y:yp+4,'text-anchor':'end'},v.toFixed(1));}
+ for(const v of [...new Set([1,Math.round((xmax+1)/2),xmax])])el('text',{x:x(v),y:bottom+17,'text-anchor':v===1?'start':v===xmax?'end':'middle'},v);
+ el('text',{x:(left+right)/2,y:197,'text-anchor':'middle'},'Epoch');el('polyline',{points:history.map(h=>`${x(h.epoch)},${y(h.validation_db)}`).join(' ')});
+ if(history.length===1)el('circle',{cx:x(history[0].epoch),cy:y(history[0].validation_db),r:3,fill:'var(--accent)'});
+}
+function historyFor(s){return(s.active||s.runs.filter(r=>r.history.length).at(-1))?.history||[];}
+function renderExperiment(s){
+ let panel=panels.get(s.id);if(!panel){panel=document.getElementById('panel-template').content.firstElementChild.cloneNode(true);panel.id=s.id;document.getElementById('experiments').appendChild(panel);panels.set(s.id,panel);}
+ const $=field=>panel.querySelector(`[data-field="${field}"]`),a=s.active;
+ for(const field of ['title','description','note'])$(field).textContent=s[field];
+ $('budget-card').hidden=s.id!=='confirmation';
+ if(s.id==='confirmation'){$('budget-label').textContent=`${fixed(s.worker_hours_used,2)} h used · ${fixed(s.worker_hours_left,2)} h available`;$('budget-progress').value=s.worker_hours_used;$('phase').textContent=s.phase;$('budget-warning').hidden=!s.budget_warning;}
+ $('status').textContent=s.label;$('status').style.color=(s.alive===false&&s.state!=='complete')||s.state==='failed'||s.state==='budget_exhausted'||(s.id==='reproduction'&&s.state==='complete')?'var(--warn)':'var(--accent)';
+ $('updated').textContent=s.updated_at?`Progress saved ${new Date(s.updated_at).toLocaleTimeString()} · ${Math.round(s.age_seconds)}s ago · process ${s.pid}`:'No saved progress yet';
+ $('active-label').textContent=a?`Seed ${a.seed} · ${a.model}`:s.label;$('active-channel').textContent=a?.channel||s.preparation||'';
+ $('epoch').textContent=a?`${a.epoch} / ${a.epoch_budget||50}`:s.state==='complete'?'Finished':'—';
+ const pending=a&&a.saved_epochs<a.epoch;$('epoch-progress').value=pending?100*a.batch/a.batches:(a?100:0);
+ $('batch').textContent=a?(pending?`Batch ${a.batch} / ${a.batches} · ${a.saved_epochs} epochs saved`:'Epoch saved; preparing next step'):'No active training batch';
+ $('recent-loss').textContent=a?.last_train_loss!=null?`Last saved loss: ${fixed(a.last_train_loss,5)}`:'';
+ $('eta').textContent=s.eta_hours?etaText(s.eta_hours):s.state==='complete'?'Finished':'—';
+ $('total-percent').textContent=`${s.percent.toFixed(1)}% of epochs`;$('total-progress').value=s.percent;$('runs-done').textContent=`${s.runs_done} / ${s.runs_total} runs finished`;$('epochs-done').textContent=`${s.epochs_done} / ${s.epochs_total} epochs saved`;
+ $('error').hidden=!s.error;$('error').textContent=s.error||'';
+ const hist=historyFor(s);$('recent').replaceChildren();for(const h of hist.slice(-5).reverse())rowInto($('recent'),[h.epoch,fixed(h.train_loss,5),`${fixed(h.validation_db)} dB`,`${h.seconds.toFixed(0)} s`]);
+ $('queue').replaceChildren();for(const r of s.runs){const budget=r.epoch_budget||50;const status=r.finished?'Finished':r.active?`Epoch ${r.epoch} / ${budget}`:r.saved_epochs?`${r.saved_epochs} / ${budget} saved`:'Queued';rowInto($('queue'),[r.channel,r.seed,r.model,status,r.last_validation_db==null?'—':`${fixed(r.last_validation_db)} dB`],r.active);}
+ draw($('plot'),$('empty'),hist);
+ $('comparison-card').hidden=s.id!=='reproduction';
+ if(s.id==='reproduction'){
+  const body=$('comparison');body.replaceChildren();const records=s.comparison||[];
+  $('comparison-status').textContent=records.length?'Completed-run test results · agreement still requires review':'Waiting for the first completed baseline run. No reproduction claim yet.';
+  if(!records.length)for(let i=0;i<(s.snrs||[]).length;i++)rowInto(body,['Ordinary URformer',`${s.snrs[i]} dB`,`${fixed(s.targets?.URformer?.[i],2)} dB`,'Pending','—']);
+  for(const r of records)for(const p of r.points)rowInto(body,[`Seed ${r.seed} · ${r.checkpoint}`,`${p.snr_db} dB`,`${fixed(p.paper_plot_nmse_db,2)} dB`,`${fixed(p.nmse_db,2)} dB`,`${p.ours_minus_paper_db>0?'+':''}${fixed(p.ours_minus_paper_db,2)} dB`]);
+  for(const [name,points] of Object.entries(s.classical||{}))for(const p of points)rowInto(body,[`${name} · 100 iterations`,`${p.snr_db} dB`,`${fixed(p.paper_plot_nmse_db,2)} dB`,`${fixed(p.nmse_db,2)} dB`,`${p.ours_minus_paper_db>0?'+':''}${fixed(p.ours_minus_paper_db,2)} dB`]);
+ }
+ $('diagnostic-card').hidden=s.id!=='diagnostic';
+ if(s.id==='diagnostic'){
+  const results=s.diagnostic_results||{};$('diagnostic-results').replaceChildren();
+  $('diagnostic-status').textContent=Object.keys(results).length?'Both training arms finished. Interpret alongside the validation curves and limited training budget.':'Comparison appears after both training arms finish. Live progress is shown above.';
+  for(const [name,result] of Object.entries(results))rowInto($('diagnostic-results'),[name,`${fixed(result.mixed_db)} dB`,`${fixed(result.fixed5_db)} dB`,`${result.fixed5_gain_db>0?'+':''}${fixed(result.fixed5_gain_db)} dB`]);
+ }
+}
+function render(s){
+ if(!Array.isArray(s.experiments))throw new Error('Screen server is updating');lastSnapshot=s;
+ const overview=document.getElementById('overview');overview.replaceChildren();
+ for(const e of s.experiments){const a=document.createElement('a');a.className='card';a.href=`#${e.id}`;const title=document.createElement('strong');title.textContent=({'hankel':'Hankel comparison','reproduction':'Published-baseline reproduction','diagnostic':'Fixed-SNR training diagnostic'})[e.id]||e.title;const status=document.createElement('p');status.className='small status';status.textContent=e.label;const progress=document.createElement('p');progress.className='small muted';progress.textContent=`${e.runs_done}/${e.runs_total} runs finished · ${e.percent.toFixed(1)}% of epochs · ${e.eta_hours?etaText(e.eta_hours)+' left':e.state==='complete'?'Finished':'ETA unavailable'}`;a.append(title,status,progress);overview.appendChild(a);renderExperiment(e);}
+ document.getElementById('connection').textContent=`Connected · ${s.experiments.length} experiments refreshed ${new Date(s.served_at).toLocaleTimeString()}`;
+}
+async function refresh(){try{const response=await fetch('/api/status',{cache:'no-store',signal:AbortSignal.timeout(4000)});if(!response.ok)throw new Error();render(await response.json());}catch(e){document.getElementById('connection').textContent='Screen disconnected or updating · displayed data may be stale';}finally{setTimeout(refresh,5000);}}
+window.addEventListener('resize',()=>{if(lastSnapshot)for(const s of lastSnapshot.experiments){const p=panels.get(s.id);draw(p.querySelector('[data-field="plot"]'),p.querySelector('[data-field="empty"]'),historyFor(s));}});
+refresh();
+</script></body></html>

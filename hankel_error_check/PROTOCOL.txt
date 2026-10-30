@@ -1,0 +1,82 @@
+HANKEL INPUT ERROR: SMALL DEVELOPMENT CHECK -- 9 OCTOBER 2026
+
+Question: does an implementable uncertainty approximation describe the error
+that would enter a Hankel filter? Do not train a network, modify the papers,
+or revive the failed Fisher-direction correction or calibration project.
+All existing studies are read-only dependencies.
+
+Use the exact observation Z=|GS+B+W|, W~CN(0,v). N32,K3,P30.
+Six separately labelled cells: SNR -10,5,20 at RSR12, random paths3..7;
+weak reference (SNR5,RSR0); rich paths (SNR5,RSR12,L16); SNR60 stress.
+Four independent channel/pilot/reference worlds per cell. For each world,
+hold G,S,B,v fixed, generate 256 independent noise repeats to measure errors,
+and 8 separate anchor observations to evaluate uncertainty predictions.
+Thus 24 fixed worlds, 6,144 error realizations and 192 prediction anchors;
+these are NOT 6,144 independent channels. Seeds 202610091101 (+100/cell),
+noise streams [202610092101,cell,world,0] and [...,1] for repeats and anchors.
+Preflight uses a different seed. Preserve all simulated inputs and estimates.
+
+Run unfiltered exact Rician EM at updates1,5,20,100 with three starts:
+the observation-based spectral initializer, zero, and the true channel.
+True-channel start is ORACLE-ONLY. The first two are implementable.
+Errors are inspected BEFORE a structural operation; this check does not model
+the full learned or Hankel-interleaved pipeline. A pass cannot be transferred
+to that pipeline without checking its cross-antenna dependence separately.
+
+Prediction models (no truth input, except the explicitly labelled oracle start):
+1. Missing-phase conditional covariance, propagated through the linear solve.
+   This is a diagnostic of the tempting shortcut, NOT a theoretically valid
+   formula for channel error covariance.
+2. Frozen-update covariance: integrate the variance of the Rician posterior
+   mean under the current fitted field, hold that field fixed, propagate it
+   through the solve. Correct for a fixed, true starting field; ignores the
+   dependence of a fitted field on the same observations.
+3. Full-estimator sensitivity (primary candidate): central finite differences
+   of the COMPLETE unfiltered estimator, including the spectral initializer,
+   times the exact Rician magnitude variances at the fitted pre-update field.
+   This is a first-order plug-in approximation, not a posterior guarantee.
+4. Trace-matched isotropic full-sensitivity control, without channel truth.
+5. Proper-complex linear-LS noise covariance (diagnostic, not a phaseless bound).
+
+Finite differences perturb one pilot column at all antenna rows simultaneously;
+row independence makes the resulting per-row Jacobians exact derivatives in
+the finite-difference limit. This shortcut MUST NOT be used for Hankel/learned
+interleaving that couples antenna rows. Step=1e-4*max(z,sqrt(v)), limited to
+0.1*z to preserve positivity. Compare halved steps in preflight and audit.
+Real coordinates per row are [Re(g1..gK),Im(g1..gK)]. Keep real/imaginary and
+cross-user correlations. No covariance rescaling fitted to screening truth.
+
+Report for each fixed world, start and update:
+- empirical mean error, centered covariance, total MSE and bias fraction;
+- predicted/empirical covariance trace, relative Frobenius covariance error;
+- predicted trace / TOTAL channel MSE (bias is not hidden);
+- geometry advantage over equal-trace isotropic covariance;
+- Hankel-weighted trace and error, accounting for duplicated anti-diagonals;
+- numerical problems and processing time.
+Do not equate covariance calibration, Gaussianity and coverage. No confidence
+region or severe-error guarantee is claimed. No fit-quality argmin over truth.
+
+Numerical gates before science: conditional phase moments against numerical
+angle integration, PSD/symmetry, total-variance identity, quadrature resolution,
+Rician variance against independent quadrature, batched EM replay, finite-
+difference Jacobian against independent autograd and step-size checks, exact
+Hankel covariance duplication. High-SNR approximations must be documented.
+
+Screen gates declared before results:
+Primary: spectral start, stages20 and100, first five cells (ten cell/stage
+groups, each with four independent worlds). Aggregate errors and covariances
+within a group, retaining all per-world outcomes. At least 8/10 groups must
+have full-sensitivity trace ratio [0.8,1.25] AND relative covariance Frobenius
+error <=0.35. The median relative-error reduction against equal-trace isotropic
+control must be >=10%. This is the covariance-shape feasibility gate.
+For DIRECT use as a total-error model, additionally require >=8/10 groups with
+predicted trace / total MSE in [0.5,2] and bias fraction <=0.25.
+SNR60, zero start and truth start are separate diagnostics, not gate selectors.
+Failure means stop expansion of this approximation, not proof that all
+noise-aware methods are impossible. A covariance-only pass permits further
+diagnosis, not a claim of lower NMSE. Filtering comparisons against tuned
+scalar/Hankel/OptShrink controls occur only after an error-model gate passes.
+
+Cap 7,200 cumulative local CPU seconds, save completed worlds, refuse changed
+protocol/source hashes, hold a single-writer lock. No GPU or new dependencies.
+Do not tune the thresholds, approximation or cell list after seeing results.

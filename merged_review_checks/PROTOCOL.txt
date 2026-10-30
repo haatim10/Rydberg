@@ -1,0 +1,36 @@
+MERGED-MANUSCRIPT REVIEW FOLLOW-UP
+
+Declared before running the new comparator. This is a post-review comparison
+on an already inspected test bank, not a newly blinded confirmation study.
+Earlier experiment files and estimator implementations remain unchanged.
+
+Evaluate one-sweep HS-Rician on all 1,152 existing OptShrink test worlds:
+seven SNR cells and the two existing stress cells, 128 worlds each.
+Use the same spectral initializer, 21/9 context/selection split, ranks 1--16,
+25 candidate updates, 100 all-pilot refit updates, and Rician selection score
+as the existing four-sweep HS-Rician. Each candidate and final refit now uses
+one sweep. Rank is selected only from observations, not true-channel error.
+Do not select a winner's configuration from this test bank or retune models.
+
+Verify saved source/input hashes, observation/truth/trial identities, cached
+error agreement, four-sweep replay, and exact full-rank bypass equivalence.
+Use a nonblocking run lock; retain per-world outputs and resume deterministically.
+
+Primary summaries retain the earlier equal-SNR average of ratio-of-sums dB
+NMSE. Learned scores average the three frozen models, not their predictions.
+Report both stress cells separately. New accuracy intervals: 4,000 paired
+whole-world resamples within each SNR, averaging fixed-model dB scores.
+
+Tail analysis is explicitly post-hoc sensitivity analysis. Retain NMSE > 1
+as the original severe-error threshold; also report > 0.5 and > 2. Use the
+same paired whole-world resamples with seed outputs kept together. Give
+pointwise 95% intervals, not simultaneous or population-level guarantees.
+Report per-seed variability separately; repeated model predictions are not
+independent channel cases. Zero observed events are not zero population risk.
+
+If feasible, retime all main comparators together on the original independent
+24-world SNR 5 dB timing bank, three repetitions, one thread, double precision,
+batch one. Include initialization and selection/lookup, exclude loading and
+file I/O. Do not pool old and new timing measurements. Backend differences
+remain a limitation. No URformer training, new safety algorithm, hardware,
+non-Gaussian noise, or 2D-array claims are added by this follow-up.

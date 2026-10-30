@@ -1,0 +1,15 @@
+Serial CPU timing
+
+Twenty fresh worlds at N=32, K=3, P=30, L=7, SNR=5 dB and RSR=12 dB.
+Every method includes initialization and all required parameter-selection work.
+Methods run in a fixed, disclosed order for each world. Training and dataset generation are excluded.
+
+Method | Median total ms | Middle 50% ms | Median selection share
+hs             | 348.536 | 347.674–349.282 | 76.0%
+rician_hankel  | 346.500 | 345.647–347.504 | 75.9%
+em_smooth      | 200.799 | 199.420–201.584 | 56.4%
+em             | 9.943 | 9.901–9.966 | 0.0%
+rician_gd      | 10.015 | 9.995–10.042 | 0.0%
+xu_linearized  | 0.647 | 0.634–0.653 | 0.0%
+
+These are measured timings for this machine, implementation and operating point.

@@ -1,0 +1,182 @@
+{
+  "checkpoints": {
+    "em_none": {
+      "sha256": "6e3235a87b3512d44dc65223d96aac787ff32626c7ef6aaf325c749c8c64f7da",
+      "path": "results/sahure_pilot/checkpoints/em_none_best.pt",
+      "best_validation_nll": 3.3660787492990494,
+      "epochs": 20,
+      "training_seconds": 88.8448667920893
+    },
+    "em_global": {
+      "sha256": "87da1539845bc970ddb552a37161fd248adac6c51258bf34419030284529675c",
+      "path": "results/sahure_pilot/checkpoints/em_global_best.pt",
+      "best_validation_nll": 3.2529526203870773,
+      "epochs": 20,
+      "training_seconds": 348.84333587408764
+    },
+    "em_adaptive": {
+      "sha256": "fb0f519bb93238606540aaf8dfe35d481feb9ebe5592f92d13b369332d64f506",
+      "path": "results/sahure_pilot/checkpoints/em_adaptive_best.pt",
+      "best_validation_nll": 3.2424871921539307,
+      "epochs": 20,
+      "training_seconds": 380.5493440852151
+    },
+    "gd_none": {
+      "sha256": "4970d9454be5e0365dad1f1bc3b59ea14c3a109ffaa7b74cddb02a554cb4ead7",
+      "path": "results/sahure_pilot/checkpoints/gd_none_best.pt",
+      "best_validation_nll": 3.360682114958763,
+      "epochs": 20,
+      "training_seconds": 90.77682520699454
+    },
+    "gd_global": {
+      "sha256": "1456974ccaff79f3c36938147eb529a5538ba8c2d99c99944e967044c47cb79b",
+      "path": "results/sahure_pilot/checkpoints/gd_global_best.pt",
+      "best_validation_nll": 3.2529564648866653,
+      "epochs": 20,
+      "training_seconds": 334.63704295788193
+    },
+    "gd_adaptive": {
+      "sha256": "997728402f7020b57995c729af71584e19c537eddc0b4a74ca4afaa4dce63cad",
+      "path": "results/sahure_pilot/checkpoints/gd_adaptive_best.pt",
+      "best_validation_nll": 3.2423340380191803,
+      "epochs": 20,
+      "training_seconds": 392.2168774998863
+    }
+  },
+  "estimator_source_hashes": {
+    "sahure/__init__.py": "06e801b0a116cce7b25a584244c8d046905bdefc72561504fffb20353648d30d",
+    "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+    "sahure/model.py": "c6a3d53d8adae23cc2c0b1309bedd21ebd7760194359256192897bdd19aaface",
+    "sahure/data.py": "efb3c019ed5209a243023f9ca83c48e216e2c3d6494f3c96b42312242abefeea",
+    "sahure/classical.py": "381a429c0704c8c2da48daebb85b076ce26049155123655b3a51c19faa3b8ffd",
+    "sahure/evaluate.py": "67ac90c98aea47f91592977a777a469a356ece0c4433744d8b65619120ae558f",
+    "sahure/run.py": "20e6dcb2e86fac69e7525c874875602cfaeda3fa35633184c3498ec7ff317078",
+    "codex_verification/solver.py": "62027f790bba9e2886546f8460dfaa72e749488364301334f235ff5d1f186e77"
+  },
+  "hard_rank": 5,
+  "hard_rank_scores": [
+    3.9363126600749894,
+    3.558516567814719,
+    3.3763511038172163,
+    3.294671015849983,
+    3.2755463112856034,
+    3.280896898107624,
+    3.2930667105749523,
+    3.306826333567208,
+    3.3200139388511505,
+    3.332157240034745,
+    3.343280770898773,
+    3.3526214623084742,
+    3.3604125096815456,
+    3.3660061925113216,
+    3.3701699682656625,
+    3.3722138125965624
+  ],
+  "hard_rank_selection_updates": 25,
+  "hard_rank_final_updates": 100,
+  "hard_rank_sweeps": 1,
+  "hs_selection_updates": 25,
+  "hs_final_updates": 100,
+  "hs_sweeps": 4,
+  "classical": [
+    "em_10",
+    "em_100",
+    "hs_gs",
+    "rician_100",
+    "rician_converged",
+    "amplitude_100",
+    "amplitude_converged",
+    "rician_hard",
+    "linearized_ls"
+  ],
+  "dtype": "float64/complex128",
+  "timing_repetitions": 3,
+  "fixed_condition_only": true,
+  "selection_metric": "mean held-out Rician NLL",
+  "primary_core": "gd",
+  "em_constant_control_means": [
+    [
+      0.5856826941817749,
+      0.9981766042405239
+    ],
+    [
+      0.509728508733499,
+      0.9978996563290288
+    ],
+    [
+      0.4643343295024316,
+      0.9978170299275809
+    ],
+    [
+      0.437701628466367,
+      0.9978530644239346
+    ],
+    [
+      0.41640378664410665,
+      0.9979214841352054
+    ],
+    [
+      0.39290082147152255,
+      0.9979705459707408
+    ],
+    [
+      0.36123575292246674,
+      0.9979584909197005
+    ],
+    [
+      0.32588728705322684,
+      0.9979083921650512
+    ],
+    [
+      0.2973916523853002,
+      0.9978947298620536
+    ],
+    [
+      0.27932277009635625,
+      0.9979525062069424
+    ]
+  ],
+  "gd_constant_control_means": [
+    [
+      0.6117534362736303,
+      0.9990703671678896
+    ],
+    [
+      0.5131466571294919,
+      0.9988579192778393
+    ],
+    [
+      0.46071685506372195,
+      0.9987824840341978
+    ],
+    [
+      0.42992802660885504,
+      0.9987892360214145
+    ],
+    [
+      0.40987385497592754,
+      0.9988380818068291
+    ],
+    [
+      0.39515615343909644,
+      0.9989048138506135
+    ],
+    [
+      0.38277367198202567,
+      0.99897566910349
+    ],
+    [
+      0.3706583215566133,
+      0.9990424028066109
+    ],
+    [
+      0.35475727613020475,
+      0.9990919399616695
+    ],
+    [
+      0.32211235888106204,
+      0.9990819988611656
+    ]
+  ],
+  "constant_control_validation_pilots": 30
+}

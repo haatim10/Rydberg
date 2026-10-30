@@ -1,0 +1,71 @@
+ONE-SEED 50/50 MIXED-TRAINING DEVELOPMENT SCREEN — 15 OCTOBER 2026
+
+Question: can mixing the original withheld-pilot recipe with all-pilot
+re-corruption reduce low-SNR poor estimates while retaining average accuracy
+and the original inference cost? This is one predeclared candidate, not a
+mixture-weight search and not a new architecture.
+
+Train only seed 9101 from its original initialization. Keep the unchanged
+188-parameter, 10-stage Rician EM + smooth Hankel model, 16384 original training
+blocks, 2048 original validation blocks, 20 epochs, Adam .001, batch size 32.
+Use identical epoch data orders: seed+20000+epoch. There are 512 batches per
+epoch. Branch=(zero-based batch number + zero-based epoch) modulo 2:
+0 uses the original 21-context/9-withheld pilot loss and noise variance v;
+1 uses alpha=1 all-pilot re-corruption, with input and target variance 2v.
+Both masks and re-corruptions use seed+10000+epoch in separate private RNGs.
+Exactly 256 batches of each branch are used per epoch. One model evaluation
+and one optimizer update per batch: no doubled training-update budget.
+Average each loss per measurement; log the two losses separately. Their raw
+scales differ, so do not interpret a combined or cross-branch loss as accuracy.
+No true channel, true path count or true error enters model inputs or loss.
+
+Reuse frozen seed9101 original and all-pilot selected/final models. Verify their
+hashes, parent source/data hashes, and the original successful one-epoch replay.
+Common checkpoint selection: smallest equal-126-stratum fixed21/9 validation
+Rician NLL, epoch0 eligible. Selected-versus-selected is primary, fixed final
+20-epoch-versus-final is sensitivity. Equal examples/updates are not equal FLOPs.
+
+After all models are frozen, generate one fresh DEVELOPMENT bank20261015111001:
+32 paired cases per each of126 primary cells, plus32 per stress cell,4096total.
+Primary N32,K3,P30; SNR -10 to20 in5dB steps, RSR5/12/20, random3..7 paths per
+user or fixed2/4/8/12/16. Stress: SNR5/RSR0 and SNR60/RSR12, random3..7paths.
+Same observations, channel, pilots, reference and noise for every comparator.
+These new cases are explicitly development evidence, not final confirmation.
+Never tune a switch, mixture weight or checkpoint using their true errors.
+
+Also evaluate the frozen offline-tuned and per-block rank-selected OptShrink
+controls. No new classical tuning. Rank selection uses21/9 and refits all30;
+include the search/refit in runtime. Inference for all learned models uses all30
+pilots, original test noise, one pass only, no ensemble or additional iterations.
+
+Primary metric: equal-cell average of126 dB ratio-of-summed squared channel
+errors to summed channel power. Report pooled NMSE, each cell/SNR/RSR/path,
+NMSE>1 frequency, sensitivity thresholds .5 and2, and paired failure transitions.
+Show low-SNR average per-case NMSE and severe frequency separately at -10 and-5.
+Use2000 paired within-cell resamples for descriptive conditional95% intervals.
+One seed and one shared training set cannot establish training-data robustness.
+
+Practical screening checks, fixed before fresh data generation:
+1. Mixed selected macro improves over original selected by at least0.2dB.
+2. At BOTH -10 and-5dB, per-case mean NMSE and severe frequency are lower than
+   all-pilot selected. Also report remaining gaps to original; do not hide them.
+3. Overall severe frequency is at most0.2percentage points above original.
+   This is a screening tolerance, NOT proof of noninferiority or no degradation.
+4. Measured mean inference time is <=1.05 times original. Timing noise and the
+   complete timings are reported, not only a binary result.
+Report every check even if another fails. No automatic three-seed expansion.
+Final-checkpoint results, stress cases and uncertainty must qualify conclusions.
+
+Timing: same PyTorch CPU float64, one thread, batch1, three randomized repeats
+per condition using independent timing seed20261015121001. Include initialization,
+controller/features and all iterations; classical rank selection/refit included.
+Exclude loading/I/O and offline training/tuning, whose costs are separate.
+
+Preflight: unchanged initialization, data order, exact half-batch counts,
+correct branch variances/masks, finite gradients, deterministic optimizer resume,
+Rician-view algebra tests, and actual CPU benchmark. Completion:20 epoch histories,
+validation-only selection, all data/model/source hashes and paired IDs, finite
+predictions, representative independent replay and headline recalculation.
+One locked resumable process. Save complete epochs and per-cell evaluation.
+Two-hour safety cap per invocation. Numerical failure stops, never changes protocol.
+No historical driver, checkpoint, manuscript, dashboard or synced-source edits.

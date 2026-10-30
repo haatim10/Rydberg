@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "cases_per_condition": 32,
+  "seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "base_seed": 2026100807,
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "rsr": 12,
+  "main_snrs": [
+    -10,
+    -5,
+    0,
+    5,
+    10,
+    15,
+    20
+  ],
+  "precision": "float64/complex128",
+  "threads": 1,
+  "bootstrap_samples": 2000,
+  "bootstrap_seed": 2026100819,
+  "scope": "exploratory frozen-model diagnostics; no retraining, tuning, or independent confirmation",
+  "rank_selection": "identical first 21 pilots, 25 EM iterations, ranks 1..16, four Cadzow sweeps; last nine pilots scored with squared magnitude residual or Rician NLL; refit 100 iterations on all 30",
+  "prefix": "stage five of the frozen ten-stage forward pass; stage features remain t/10",
+  "mismatch": "change estimator inputs only; saved true reference, observations, channel and true noise variance stay fixed",
+  "reference_amplitudes": [
+    0.9,
+    1.1
+  ],
+  "reference_phases_degrees": [
+    -10,
+    10
+  ],
+  "reference_phase_ramp_end_degrees": [
+    -10,
+    10
+  ],
+  "noise_variance_offsets_db": [
+    -6,
+    6
+  ],
+  "phase_ramp": "assumed B[n,p] = true B[n,p] * exp(i delta * p/(P-1)), p=0..P-1",
+  "rsr_convention": "reference power relative to one user; expected aggregate RSR is nominal RSR minus 10 log10 K",
+  "metrics": "primary cell NMSE is 10log10(sum squared errors / sum channel energies), computed per model seed then averaged in dB; seed predictions are not independent worlds; also save mean per-case NMSE and severe error frequency",
+  "runtime": "computation accounting only, not a controlled latency benchmark",
+  "max_run_seconds": 850
+}
