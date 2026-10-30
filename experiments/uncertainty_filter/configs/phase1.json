@@ -1,0 +1,37 @@
+{
+  "phase": 1,
+  "purpose": "Calibration check of the phase-posterior uncertainty u_k against the nominal noise scale; no training, no selection.",
+  "frozen_receiver": "tcom_reliability_20261021 incumbent: tcom_hybrid_20261020.inference.hybrid routing with results/tcom_hybrid_sensitivity_20261020/protocol.json proposal_policy; adaptive and global starts from tcom_start_ablation_20261020.starts.load_starts",
+  "model_seeds": [9101, 9102, 9103],
+  "data_seed": 2026103010,
+  "bias_noise_seed": 2026103011,
+  "random_start_seed": 2026103012,
+  "channels_per_cell": 128,
+  "snrs_db": [0, 5, 10, 15, 20, 25, 30, 35, 40, 50],
+  "rsrs_db": [5, 12, 20],
+  "weak_reference_rsr_db": [0],
+  "regimes": {"L2": 2, "L4": 4, "random3to7": null},
+  "starts": {
+    "receiver": "the frozen receiver's own spectral initialization",
+    "random": "poor start: g0_k = sqrt(p_k) * CN(0, I_N), with p_k the per-user power of the spectral start (observable), independent of the true channel"
+  },
+  "stages": "1..10 are the learned stages of the start family the receiver routes to (adaptive at or below 30 dB, global above). Stage 11 is the final-filter input after the policy's extra EM tail; for SNR <= 20 dB the receiver applies no tail or final filter, and stage 11 is then the receiver output.",
+  "recorded_per_stage_and_user": {
+    "a_predicted": "u_k = mean_n Re[Cov(g_n)]_kk from Var = Z^2 (1 - R(kappa)^2), at the mean M = G S + B used by that stage's EM step (stage 11: at the final-filter input)",
+    "b_nominal": "v tr[(S S^H)^-1] / K",
+    "c_actual": "||g_dc,k - g_true,k||^2 / N, g_dc the relaxed EM output entering the stage's Hankel filter (stage 11: the final-filter input)"
+  },
+  "bias_subset": "16 channels per main cell (receiver start), 16 independent noise draws per channel with G, S, B fixed. bias_k = ||mean_r g_dc,k - g_k||^2 / N; fraction = sum(bias) / sum(mean_r actual). Small-sample bias correction: subtract (1/R) * within-channel variance.",
+  "truth_use": "True channels are used only to compute c_actual and the bias fraction (scoring and this calibration diagnostic). Never as model input or for any selection.",
+  "statistics": {
+    "spearman": "computed on (a, c) and (b, c) pairs over records (stage x user x channel x seed)",
+    "groups": ["overall", "per cell", "per stage", "per RSR", "per path regime", "per SNR", "receiver start", "poor start", "weak reference (RSR 0)"],
+    "uncertainty": "95% percentile interval from a cluster bootstrap over channels (1000 resamples, seed 2026103013)",
+    "ratio": "median and geometric mean of a/c and b/c"
+  },
+  "gate_1": {
+    "clearly_better_overall": "rho_a - rho_b >= 0.05 on the pooled receiver-start records AND the bootstrap 95% interval of rho_a - rho_b excludes 0",
+    "no_worse_in_any_major_group": "rho_a >= rho_b - 0.02 in every major group: each stage, each RSR (incl. weak reference), each path regime, each SNR, receiver start, poor start",
+    "per_cell_note": "Within a single cell the nominal scale is nearly constant (only S varies), so per-cell rho_b is near zero by construction. Per-cell values are reported but are not part of the gate."
+  }
+}
