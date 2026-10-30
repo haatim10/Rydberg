@@ -1,9 +1,13 @@
 # Rydberg array channel estimation
 
+> **Branch `paper/tcom-merged`** (formerly `paper/merged-tcom-20261030`, base commit `e04353b02846`).  
+> Topic checkpoint 5 of 5. Adds the merged 10-page TCOM draft (21 October 2026), supplement and Overleaf ZIP in `output/pdf/`. Guide: [paper/README.md](paper/README.md).  
+> All branches: [branch index on `main`](https://github.com/haatim10/Rydberg#branches).
+
 Research code, experiment records, trained weights and manuscripts for estimating
 a wireless channel from magnitude measurements and a known reference signal.
 
-**Start with the [complete `codex` branch](https://github.com/haatim10/Rydberg/tree/codex).**
+**Start with the [`archive/complete` branch](https://github.com/haatim10/Rydberg/tree/archive/complete).**
 The research archive was organized on **30 October 2026**. The newest merged
 manuscript is the **21 October 2026, 10-page TCOM draft**. Later URformer studies
 are separate evidence; they have not been silently added to that manuscript.
@@ -70,16 +74,16 @@ a draft; this archive does not mean it was submitted or accepted.
 ## Branches
 
 Five cumulative topic branches preserve the work in stages; later branches
-include earlier dependencies. `codex` contains the complete organized archive.
-Existing `main` and older research branches are not rewritten.
+include earlier dependencies. `archive/complete` contains the complete organized archive.
+Older snapshots are kept as `history/*` branches; the full branch index is on [`main`](https://github.com/haatim10/Rydberg#branches).
 
 | Branch | Added topic |
 | --- | --- |
-| [`research/self-supervised-20261030`](https://github.com/haatim10/Rydberg/tree/research/self-supervised-20261030) | Foundations, earlier studies and selected weights |
-| [`research/tcom-receiver-20261030`](https://github.com/haatim10/Rydberg/tree/research/tcom-receiver-20261030) | Complete receiver and baseline campaigns |
-| [`research/urformer-comparison-20261030`](https://github.com/haatim10/Rydberg/tree/research/urformer-comparison-20261030) | Reproduction, matched training and comparisons |
-| [`research/urformer-audits-20261030`](https://github.com/haatim10/Rydberg/tree/research/urformer-audits-20261030) | SNR and clustered-channel audits |
-| [`paper/merged-tcom-20261030`](https://github.com/haatim10/Rydberg/tree/paper/merged-tcom-20261030) | Manuscripts, PDFs and Overleaf packages |
+| [`research/01-foundations`](https://github.com/haatim10/Rydberg/tree/research/01-foundations) | Foundations, earlier studies and selected weights |
+| [`research/02-receiver`](https://github.com/haatim10/Rydberg/tree/research/02-receiver) | Complete receiver and baseline campaigns |
+| [`research/03-urformer-comparison`](https://github.com/haatim10/Rydberg/tree/research/03-urformer-comparison) | Reproduction, matched training and comparisons |
+| [`research/04-urformer-audits`](https://github.com/haatim10/Rydberg/tree/research/04-urformer-audits) | SNR and clustered-channel audits |
+| [`paper/tcom-merged`](https://github.com/haatim10/Rydberg/tree/paper/tcom-merged) | Manuscripts, PDFs and Overleaf packages |
 
 ## Using the archive
 
