@@ -1,0 +1,50 @@
+{
+  "split": "validation",
+  "convention": "reproduction_ensemble",
+  "P": 25,
+  "snr_db": 5,
+  "metrics": {
+    "GS100": {
+      "nmse_linear": 0.15596181623505298,
+      "nmse_db": -8.069817159291116,
+      "mean_per_case_db": -8.135434879626672
+    },
+    "EM100": {
+      "nmse_linear": 0.15563933760615434,
+      "nmse_db": -8.078806262016553,
+      "mean_per_case_db": -8.14559053503512
+    }
+  },
+  "calibration": {
+    "nominal_snr_db": 5,
+    "per_entry_channel_power": {
+      "mean": 32.191888390496345,
+      "p05": 25.437583630555494,
+      "p95": 40.161329863298036
+    },
+    "per_antenna_snr_expected_noise_db": {
+      "mean": 4.981257005209111,
+      "p05": 3.9789921243878505,
+      "p95": 5.983804678267782
+    },
+    "per_antenna_snr_realized_noise_db": {
+      "mean": 4.986719737968473,
+      "p05": 3.9425309119948166,
+      "p95": 6.025364805521185
+    },
+    "aggregate_realized_snr_db": 5.026879814082916,
+    "realized_RSR_db": {
+      "mean": 10.01874299479089,
+      "p05": 9.016195321732217,
+      "p95": 11.021007875612149
+    },
+    "aggregate_RSR_db": 9.975763285340935,
+    "noise_variance": {
+      "mean": 41.22605289313334,
+      "p05": 41.226052893133335,
+      "p95": 41.226052893133335
+    },
+    "ensemble_signal_power": 130.36822608087553
+  },
+  "seconds": 17.464579833089374
+}

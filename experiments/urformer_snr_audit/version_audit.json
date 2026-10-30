@@ -1,0 +1,93 @@
+{
+  "sources": {
+    "v1_html": "https://arxiv.org/html/2509.12586v1",
+    "v3_pdf": "https://arxiv.org/pdf/2509.12586v3"
+  },
+  "scope": "Implementation-relevant differences in the two retrieved versions; publication prose and reference changes excluded. PDF pages 3-4 visually inspected.",
+  "differences": [
+    {
+      "item": "FFN input layer normalization",
+      "v1": "Z(l)=FFN(LN(A(l)))+A(l)",
+      "v3": "V(l)=FFN(A(l))+A(l)",
+      "our_code": "v3: one LayerNorm before attention, none before FFN",
+      "effect": "Substantive architecture difference; changes scale handling and gradient dynamics. Cause of reproduction gap remains untested."
+    },
+    {
+      "item": "Initial channel",
+      "v1": "No explicit distribution specified for URformer initial channel in architecture section",
+      "v3": "Explicit random complex Gaussian matrix, zero mean, normalized variance",
+      "our_code": "Paper-setting reproduction uses CN(0,1), redrawn during training; matched-supervision study instead intentionally shares spectral initialization with our model",
+      "effect": "v3 adds a reproducible direction, but exact meaning of normalized variance and redraw policy remain unspecified."
+    },
+    {
+      "item": "FilterNet specification",
+      "v1": "Small MLP on K (kappa); depth and output range not stated in that paragraph",
+      "v3": "Elementwise compact two-layer MLP mapping a scalar kappa into (0,1)",
+      "our_code": "v3: Linear(1,32), ReLU, Linear(32,1), sigmoid",
+      "effect": "Two-layer form and bounded output follow v3; hidden width32 and ReLU remain implementation assumptions."
+    },
+    {
+      "item": "Per-stage weights and indexing",
+      "v1": "Gate alpha(t)=sigmoid(g(t)); FilterNet_psi and Former_phi without stage superscripts",
+      "v3": "FilterNet_psi(t-1), Former_phi(t-1), alpha(t-1)=sigmoid(g(t-1)); following prose still says g(t)",
+      "our_code": "Ten separate layers, each with its own filter, gate and Transformer",
+      "effect": "Index renaming does not change calculation when stages are consistent. v3 makes stage dependence clearer; weight sharing policy in authors code should be confirmed."
+    },
+    {
+      "item": "Training schedule",
+      "v1": "Table gives20,000 examples but not batch size or initial learning rate; inspected HTML does not specify Adam/cosine/50epochs",
+      "v3": "Adam, cosine annealing Tmax50, batch32, initial learning rate0.001",
+      "our_code": "Follows v3; Adam defaults and clipping1 remain assumptions",
+      "effect": "v3 supplies training settings missing in v1."
+    },
+    {
+      "item": "Physical transduction gain",
+      "v1": "All proportionality constants normalized to unity; Z=|HS+B+W|",
+      "v3": "Explicit known atomic gain G multiplying magnitudes and used in the objective; specifies Cs transition and37.406GHz",
+      "our_code": "Known G is divided out; estimation uses G=1",
+      "effect": "Equivalent normalized measurements if G is known and noise is treated in the pre-magnitude field domain. No M-dependent SNR shift follows."
+    },
+    {
+      "item": "Channel notation",
+      "v1": "Eq1 defines tilde(h); adjacent prose mentions large-scale beta_k but no mapping from tilde(h) to h or beta value appears",
+      "v3": "Retains tilde(h) in Eq1 but drops the beta_k sentence",
+      "our_code": "Uses the displayed sum directly as h, unit-variance complex path gains",
+      "effect": "Neither version completely specifies channel gain/normalization law; no undocumented normalization is inferred."
+    },
+    {
+      "item": "Pilot count in table",
+      "v1": "P20 appears in TableI",
+      "v3": "P omitted from TableI but Fig3 discussion explicitly setsP20",
+      "our_code": "P20training and Fig3; Fig4 uses same model for pilot-transfer diagnostics",
+      "effect": "No Fig3 change. Separate training by pilot count remains unspecified."
+    },
+    {
+      "item": "Fig4 pilot-efficiency target in prose",
+      "v1": "Claims -25 dB at P=15",
+      "v3": "Corrected to -20 dB at P=15; agrees with approximate plotted -20.2 dB",
+      "our_code": "Audit uses plotted values, not the obsolete v1 prose claim",
+      "effect": "Changes the reproduction target; this is a reporting correction, not an architecture change."
+    }
+  ],
+  "unchanged": [
+    "Unnormalized positive-exponent ULA steering and sqrt(M/Nray) scaling",
+    "M32,K4,L4,10rays/cluster; marginal uniformDoA distribution",
+    "Magnitude field model with complex Gaussian noise before magnitude",
+    "Stated SNR and RSR ratios; no explicit extra factorM",
+    "Direct phase reconstruction, kappa=2Z|Y|/sigma2, convex gated filtering and pilot pseudoinverse",
+    "User tokens:Ktokens of2Mreal coordinates",
+    "Three encoders, width64; attention uses LayerNorm then residual",
+    "Final complex residual added to linear channel estimate",
+    "Mean per-example linear NMSE training loss",
+    "100iterations for GS and EM-GS"
+  ],
+  "unresolved_in_both": [
+    "Joint subray angular distribution and angular spread",
+    "Path gain variance, possible normalization between tilde(h) and h",
+    "Pilot alphabet, power and refresh policy",
+    "Training SNR distribution or separate models per SNR/P",
+    "Attention head count, FFN widths/activations, output FFN details, dropout",
+    "Gate initialization, parameter sharing, validation selection, optimizer defaults and clipping",
+    "Reference spatial phase and array spacing"
+  ]
+}

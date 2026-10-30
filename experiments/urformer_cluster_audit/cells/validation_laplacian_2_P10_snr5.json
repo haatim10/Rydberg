@@ -1,0 +1,63 @@
+{
+  "generator": {
+    "name": "laplacian_2",
+    "distribution": "laplacian",
+    "cluster_spread_deg": 2
+  },
+  "split": "validation",
+  "P": 10,
+  "snr_db": 5,
+  "n": 2000,
+  "metrics": {
+    "GS100": {
+      "nmse_linear": 0.927183334109801,
+      "nmse_db": -0.3283438330977405,
+      "mean_per_channel_db": -0.49948067045863026,
+      "mean_linear_standard_error": 0.006016185417175534,
+      "approximate_mean_NMSE_95_db": [
+        -0.3839307207783374,
+        -0.27345943966113395
+      ]
+    },
+    "EM100": {
+      "nmse_linear": 0.9352338683407717,
+      "nmse_db": -0.2907977412254861,
+      "mean_per_channel_db": -0.4633384672430359,
+      "mean_linear_standard_error": 0.006097620012289091,
+      "approximate_mean_NMSE_95_db": [
+        -0.34665380450202093,
+        -0.23565094890924748
+      ]
+    },
+    "genie_LS": {
+      "nmse_linear": 0.1799170638817682,
+      "nmse_db": -7.449276448909598,
+      "mean_per_channel_db": -7.587346680377498,
+      "mean_linear_standard_error": 0.0010388844283468416,
+      "approximate_mean_NMSE_95_db": [
+        -7.49870802968866,
+        -7.400401174499843
+      ]
+    },
+    "genie_LMMSE": {
+      "nmse_linear": 0.1429334720066341,
+      "nmse_db": -8.448660566845284,
+      "mean_per_channel_db": -8.553820677685453,
+      "mean_linear_standard_error": 0.000714067105657214,
+      "approximate_mean_NMSE_95_db": [
+        -8.491395246072255,
+        -8.406342303651307
+      ]
+    }
+  },
+  "calibration": {
+    "mean_per_entry_channel_power": 32.04107117231804,
+    "aggregate_realized_snr_db": 4.989894463902239,
+    "mean_realized_snr_db": 4.868539473029055,
+    "aggregate_RSR_db": 10.004666603614965,
+    "mean_RSR_db": 10.13268724033287,
+    "noise_variance": 42.95951451705074
+  },
+  "seconds": 5.9982925419462845,
+  "covariance_sha256": "71ce8fa5d34a81d3e8c641e07190783e1d390af0f87efc872ccec79e167ac884"
+}

@@ -1,0 +1,6 @@
+1. Could you share the data generator or one seeded batch at nominal 5 dB, including H,S,B,sigma^2 and W, and the measured powers used to calculate SNR/RSR? Is exactly the same generator used for neural and classical results?
+2. How are path gains scaled, and is the displayed tilde(h) normalized before becoming h? Are channel estimates normalized before entering the neural blocks and rescaled afterward? Are subrays independent or drawn around a shared cluster center; what angular spread and array spacing are used?
+3. What pilot distribution, energy and reuse/refresh policy are used? Is the reference a constant positive field or a complex spatial vector?
+4. Do you train one mixed-SNR model or separate models for each SNR and pilot count? What training/validation distributions and checkpoint selection rule are used?
+5. Which encoder generated the figures: v1's FFN(LN(A))+A or v3's FFN(A)+A? Please specify head count, FFN/output-layer dimensions, activations, dropout, stage weight sharing and gate initialization.
+6. What do normalized initial-channel variance and its redraw policy mean in code? Are additional optimizer settings, clipping, warm starts or intermediate losses used?

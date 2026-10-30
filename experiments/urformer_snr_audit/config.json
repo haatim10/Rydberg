@@ -1,0 +1,21 @@
+{
+  "created_date": "2026-10-27",
+  "master_seed": 2026102701,
+  "pilot_master": 2026102240,
+  "M": 32, "K": 4, "clusters": 4, "rays_per_cluster": 10,
+  "snr_db": [0, 5, 10, 15, 20],
+  "pilots": [10, 15, 20, 25, 30, 35],
+  "cases_per_split": 2000,
+  "splits": {"oracle": 3, "validation": 1, "confirmation": 2},
+  "conventions": ["reproduction_ensemble", "ours", "paper_vector", "paper_shifted", "unit_channel_assumed", "array_signal_scalar_noise"],
+  "reference": "Same positive reference in every convention, B=sqrt(10*ensemble signal power); ensemble RSR=10 dB, individual realized RSR logged.",
+  "noise_and_reference": "Signal power excludes B. Complex noise has independent real/imaginary variance sigma2/2.",
+  "iterations": 100,
+  "precision": "float64/complex128",
+  "threads": 1,
+  "matching_rule": {"validation_RMSE_db_at_most": 1.5, "validation_max_abs_error_db_at_most": 3.0, "scope": "Both GS100 and EM100 on all five Fig3 points and six Fig4 points; duplicated P20/SNR5 counts as two distinct published figure readings. Criteria fixed before generating audit data."},
+  "selection": "Rank conventions using validation draws only. Confirmation draws never choose or modify a convention.",
+  "stop_rule": "Stop before neural training if classical curves clearly reject a common +15.05 dB shift and an equivalent-to-existing convention remains closest; existing full supervised training already tested that normalization. Also do not retrain if no convention matches. Unresolved network-specific normalization and training causes remain inconclusive.",
+  "oracle_caveat": "LS and true-steering-subspace projection are estimator references, not universal Bayesian lower bounds or ceilings on all learned spatial priors.",
+  "immutable_files": "All earlier study files, checkpoints and results are read-only. New outputs only in this audit directory."
+}
