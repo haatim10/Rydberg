@@ -1,0 +1,124 @@
+{
+  "passed": true,
+  "audit_seed": 2026101770,
+  "synthetic_policy": {
+    "5": 20.0,
+    "12": 25.0,
+    "20": 40.0
+  },
+  "branch_execution": {
+    "ordinary/same_steps": [
+      {
+        "branch": "original",
+        "local_ids": [
+          0,
+          1,
+          2
+        ]
+      }
+    ],
+    "ordinary/em100": [
+      {
+        "branch": "original",
+        "local_ids": [
+          0,
+          1,
+          2
+        ]
+      }
+    ],
+    "high/same_steps": [
+      {
+        "branch": "unfiltered",
+        "local_ids": [
+          0,
+          1,
+          2
+        ]
+      }
+    ],
+    "high/em100": [
+      {
+        "branch": "em100",
+        "local_ids": [
+          0,
+          1,
+          2
+        ]
+      }
+    ],
+    "mixed/same_steps": [
+      {
+        "branch": "original",
+        "local_ids": [
+          0,
+          1,
+          2,
+          4,
+          5
+        ]
+      },
+      {
+        "branch": "unfiltered",
+        "local_ids": [
+          3,
+          6
+        ]
+      }
+    ],
+    "mixed/em100": [
+      {
+        "branch": "original",
+        "local_ids": [
+          0,
+          1,
+          2,
+          4,
+          5
+        ]
+      },
+      {
+        "branch": "em100",
+        "local_ids": [
+          3,
+          6
+        ]
+      }
+    ]
+  },
+  "strict_boundary_pattern": [
+    false,
+    true,
+    false,
+    true,
+    false,
+    true
+  ],
+  "dispatch_invariant_to_measurement_and_pilot_values": true,
+  "numerical": {
+    "learned_9101": {
+      "same_steps_ordinary_bitwise_equal": true,
+      "same_steps_grouped_vs_scalar_max_abs_error": 1.3506446028928519e-15,
+      "em100_ordinary_bitwise_equal": true,
+      "em100_grouped_vs_scalar_max_abs_error": 1.3506446028928519e-15,
+      "complete_checkpoint_state_unchanged": true
+    },
+    "learned_9102": {
+      "same_steps_ordinary_bitwise_equal": true,
+      "same_steps_grouped_vs_scalar_max_abs_error": 1.0235750533041806e-15,
+      "em100_ordinary_bitwise_equal": true,
+      "em100_grouped_vs_scalar_max_abs_error": 1.0235750533041806e-15,
+      "complete_checkpoint_state_unchanged": true
+    },
+    "learned_9103": {
+      "same_steps_ordinary_bitwise_equal": true,
+      "same_steps_grouped_vs_scalar_max_abs_error": 2.504777312823609e-15,
+      "em100_ordinary_bitwise_equal": true,
+      "em100_grouped_vs_scalar_max_abs_error": 2.504777312823609e-15,
+      "complete_checkpoint_state_unchanged": true
+    }
+  },
+  "source_sha256": "09530cc84522f48b026022a9818b312938911d7225f9ca7f3e84bf8c0ceeec71",
+  "audit_source_sha256": "6acc6e3d166f4774db167c48cfd7703dfa2b2057d3dfd9bc79506e77df0980a6",
+  "interpretation": "Checks implementation using synthetic cutoffs and a separate smoke seed. They neither select cutoffs nor establish robustness to noise calibration errors."
+}

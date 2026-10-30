@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "name": "Incumbent-guard repair: fresh fixed-alphabet BER",
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    "L2",
+    "L4",
+    "random3to7"
+  ],
+  "cases_per_cell": 128,
+  "test_seed": 2026101942,
+  "data_seed": 2026101943,
+  "source_methods": [
+    "original_9101",
+    "original_9102",
+    "original_9103",
+    "old_bypass_9101",
+    "old_bypass_9102",
+    "old_bypass_9103",
+    "prior_repair_9101",
+    "prior_repair_9102",
+    "prior_repair_9103",
+    "current_repair_9101",
+    "current_repair_9102",
+    "current_repair_9103",
+    "repair_9101",
+    "repair_9102",
+    "repair_9103",
+    "em100",
+    "optshrink",
+    "prior_compact",
+    "compact_sparse",
+    "prior_sparse_full"
+  ],
+  "additional_reference": "perfect_csi",
+  "checkpoint_record": {
+    "context30_9101": {
+      "path": "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt",
+      "sha256": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e"
+    },
+    "context30_9102": {
+      "path": "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt",
+      "sha256": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76"
+    },
+    "context30_9103": {
+      "path": "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt",
+      "sha256": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c"
+    }
+  },
+  "neural_groups": {
+    "original_mean": [
+      "original_9101",
+      "original_9102",
+      "original_9103"
+    ],
+    "old_bypass_mean": [
+      "old_bypass_9101",
+      "old_bypass_9102",
+      "old_bypass_9103"
+    ],
+    "prior_repair_mean": [
+      "prior_repair_9101",
+      "prior_repair_9102",
+      "prior_repair_9103"
+    ],
+    "current_repair_mean": [
+      "current_repair_9101",
+      "current_repair_9102",
+      "current_repair_9103"
+    ],
+    "repair_mean": [
+      "repair_9101",
+      "repair_9102",
+      "repair_9103"
+    ]
+  },
+  "modulation": "All 64 equally likely joint Gray QPSK vectors once per channel, unit power per user and six bits per vector. This stratifies the uniform alphabet; it is not 64 independent random symbol selections.",
+  "data_noise": "Fresh proper complex Gaussian noise independent of pilot noise. SeedSequence([data_seed, regime_index, reference_index, local_index]) generates independent antenna/vector noise. Reuse the standardized noise across SNR and rescale by sqrt(sigma2).",
+  "identical_inputs": "Every method sees identical new data magnitudes, known reference/variance, and the same exact 64-hypothesis Rician ML detector. The detector receives no coherent observation.",
+  "inference": "Channel truth only generates data and the explicitly labeled perfect-CSI reference. No BER-dependent model, policy, sparse choice, cell selection or additional bit allocation.",
+  "sampling": "Fixed 128 anchors per reference/path setting, 64 vectors per channel, 384 bits per channel and 49152 bits per cell/fit. No adaptive extra bits.",
+  "bounds": "Zero observed errors and a collapsed empirical bootstrap interval do not establish zero BER, a rare-event bound, equivalence or population noninferiority. No independent-bit binomial intervals.",
+  "duplicates": "Bitwise-identical full channel arrays may reuse detector counts. Every reuse is recorded and audited; detector reuse is not estimator timing.",
+  "primary_scope": "RSR in {12,20} dB and SNR in {32.5,35,37.5} dB, all three path regimes: 18 equally weighted cells.",
+  "preservation_scope": "All 135 cells outside the 18-cell target: require exact equality to the frozen current correction. All 51 RSR=5 dB cells remain exactly the prior repair. All 45 ordinary SNR<=20 cells remain exactly original.",
+  "historical_flagged_cells": [
+    "L2_rsr12_snr37.5",
+    "L2_rsr20_snr32.5",
+    "L2_rsr20_snr35",
+    "L2_rsr20_snr37.5",
+    "L4_rsr12_snr37.5",
+    "L4_rsr20_snr35",
+    "L4_rsr20_snr37.5",
+    "random3to7_rsr12_snr37.5"
+  ],
+  "primary_contrasts": {
+    "repair_vs_old": [
+      "old_bypass_mean",
+      "repair_mean"
+    ],
+    "repair_vs_prior": [
+      "prior_repair_mean",
+      "repair_mean"
+    ],
+    "repair_vs_current": [
+      "current_repair_mean",
+      "repair_mean"
+    ]
+  },
+  "descriptive_contrasts": {
+    "repair_vs_original": [
+      "original_mean",
+      "repair_mean"
+    ],
+    "repair_vs_em100": [
+      "em100",
+      "repair_mean"
+    ],
+    "repair_vs_compact": [
+      "compact_sparse",
+      "repair_mean"
+    ]
+  },
+  "improvement_sign": "reference BER minus candidate BER",
+  "descriptive_scopes": {
+    "ordinary": "SNR<=20",
+    "transition": "20<SNR<=45",
+    "stress": "SNR in {50,60}",
+    "high_snr": "SNR>20",
+    "overall": "All 153 cells"
+  },
+  "bootstrap": {
+    "resamples": 20000,
+    "seed": 2026101949,
+    "rule": "Multinomial 128-case weights in regime order L2,L4,random3to7, shared across every reference/SNR/method/fit within regime; regimes independent.",
+    "pointwise_quantiles": [
+      0.025,
+      0.975
+    ],
+    "primary_bonferroni6_quantiles": [
+      0.004166666666666667,
+      0.9958333333333333
+    ],
+    "interpretation": "Conditional on fixed weights/policies. Three primary contrasts times NMSE/BER form six outcomes. Three fits average individual metrics, never predictions, and do not triple the number of channels."
+  },
+  "source_hashes": {
+    "tcom_incumbent_guard_20261019/ber.py": "233de8565b9e9d82081c475fb9da15a7921c008f3c4ee03fd0d31cd2df53a589",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c"
+  },
+  "frozen_unix": 1792432676.230813
+}

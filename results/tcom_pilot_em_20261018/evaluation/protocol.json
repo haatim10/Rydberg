@@ -1,0 +1,303 @@
+{
+  "version": 1,
+  "name": "Paired context-count retraining and exact EM continuation with fresh runtime-matched controls",
+  "development_seed": 2026101803,
+  "test_seed": 2026101804,
+  "data_seed": 2026101805,
+  "timing_seed": 2026101806,
+  "N": 32,
+  "K": 3,
+  "deployment_P": 30,
+  "generated_bank_P": 39,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0
+  ],
+  "rsr": 12.0,
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "development_cases_per_cell": 24,
+  "test_cases_per_cell": 128,
+  "guards": [
+    {
+      "name": "weak_reference",
+      "snr": 45.0,
+      "rsr": 5.0,
+      "regime": "L2",
+      "L": 2
+    },
+    {
+      "name": "high_snr",
+      "snr": 60.0,
+      "rsr": 12.0,
+      "regime": "random3to7",
+      "L": null
+    }
+  ],
+  "guard_count": 64,
+  "guard_local_indices": [
+    1000,
+    1001,
+    1002,
+    1003,
+    1004,
+    1005,
+    1006,
+    1007,
+    1008,
+    1009,
+    1010,
+    1011,
+    1012,
+    1013,
+    1014,
+    1015,
+    1016,
+    1017,
+    1018,
+    1019,
+    1020,
+    1021,
+    1022,
+    1023,
+    1024,
+    1025,
+    1026,
+    1027,
+    1028,
+    1029,
+    1030,
+    1031,
+    1032,
+    1033,
+    1034,
+    1035,
+    1036,
+    1037,
+    1038,
+    1039,
+    1040,
+    1041,
+    1042,
+    1043,
+    1044,
+    1045,
+    1046,
+    1047,
+    1048,
+    1049,
+    1050,
+    1051,
+    1052,
+    1053,
+    1054,
+    1055,
+    1056,
+    1057,
+    1058,
+    1059,
+    1060,
+    1061,
+    1062,
+    1063
+  ],
+  "families": [
+    "old",
+    "context21",
+    "context30"
+  ],
+  "model_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "tail_lengths": [
+    0,
+    1,
+    2,
+    5
+  ],
+  "models": "Original checkpoints plus fresh paired context21/context30 retraining; imported training protocol determines both arms. No old source/checkpoint/result changes.",
+  "continuation": "Exact gamma1 unregularized Rician EM starting at model output, never spectral reinitialization. Length0 included. NLL nonincrease and canonical/scalar parity checked before experiment.",
+  "data": "Fresh39-column banks from same physical generator. Development gives each method30 fitting observations and9 withheld columns. Test/timing use only first30 columns from independent39-column banks; unused9 are discarded. Only test scoring returns G.",
+  "masks": "2026101830+int(SNR), same30/9 split across all learned tails and sparse candidates at each SNR; balanced24cases for eachpathregime.",
+  "tail_selection": "For each model family and observed nominal SNR, choose one length shared across three fitted seeds minimizing equal-path heldout RicianNLL; average losses not predictions. Ties choose shorter tail.",
+  "runtime_matching": "After tail selection and training idle, isolated batch1 end-to-end selected pipeline p90 across three fits defines a separate cap for eachfamily. Fresh timing of all152 sparse structural families at factors.03 and3; maximum factorp90 determines eligibility. Zero penalty exact EM timed separately. Fresh30fit9heldout sparse selection perSNR under eachfamilycap. No test outcomes used.",
+  "optional_cache": "Before freshcalibration, may cache observation-only development losses for structuralfamilies whose oldcalibrationp90<=10ms. This is only computation scheduling: final eligibility uses exclusivelyfresh timing, and all newlyeligiblefamilies are completed beforeselection.",
+  "sparse_grid": {
+    "dictionary_sizes": [
+      64,
+      128,
+      256
+    ],
+    "inner_steps": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      25
+    ],
+    "outer_steps": [
+      2,
+      4,
+      8,
+      12,
+      20,
+      40,
+      80,
+      100
+    ],
+    "factors": [
+      0.03,
+      0.1,
+      0.3,
+      1.0,
+      3.0
+    ],
+    "zero_penalty": true
+  },
+  "calibration": {
+    "snrs": [
+      0.0,
+      10.0,
+      20.0
+    ],
+    "local_index": 0,
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "repeats": 3,
+    "order_seed": 20261018060,
+    "init_and_setup_included": true
+  },
+  "final_timing": {
+    "snrs": [
+      0.0,
+      5.0,
+      10.0,
+      15.0,
+      20.0
+    ],
+    "local_indices": [
+      100,
+      101
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "repeats": 3,
+    "order_seed": 20261018061,
+    "policy": "Freshbatch1 verification of everyfixedtail and selectedpipeline pluscontrols; report overshoots without reselection."
+  },
+  "baselines": "Frozen old sparse matched/10/20/50/full controls, fresh selected sparse under each ofthree actual selectedpipelinecaps, optimized exact EM100, frozen offlineOptShrink. Outside0\u201320 lookup clamps to nearest20; guards descriptive, no new guard-specific choices.",
+  "freeze": "Freeze protocol/source before development. All six training workers arms must complete before checkpoint freeze. Freeze checkpoints, tail choices, timings and sparse choices before generating any fresh test/guard world.",
+  "primary_contrasts": {
+    "pilot_count": [
+      "context21_tail0_mean",
+      "context30_tail0_mean"
+    ],
+    "old_continuation": [
+      "old_tail0_mean",
+      "old_selected_mean"
+    ],
+    "matched_continuation": [
+      "context30_tail0_mean",
+      "context30_selected_mean"
+    ],
+    "matched_vs_sparse": [
+      "sparse_fresh_context30",
+      "context30_selected_mean"
+    ]
+  },
+  "quality_cooutcomes": [
+    "equal15-cell mean dB ratio-of-sums NMSE",
+    "aggregate BER"
+  ],
+  "uncertainty": "20000 pairedcase multinomial bootstrap replicates, seed2026101894, shared localindices acrossSNR within regime and shared acrossall methods/fits. Pointwise95 plus Bonferroni8-outcome99.375% individual intervals for4contrasts\u00d72metrics. Conditional on checkpoints and selectedcontrols. Guards and individualcurves descriptive.",
+  "diagnostics": "Fulltailgrid, seed-specific scores, pooledlinearNMSE, tailp95/p99, severeNMSE>1 and worstcells; learnedgroup averagesfitmetrics, neverensembles estimates.",
+  "threads": {
+    "environment": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "torch": 1,
+    "interop": 1,
+    "scipy_fft_workers": 1,
+    "blas": "environmentlimitsrequested,threadpoolctlunavailable"
+  },
+  "source_hashes": {
+    "tcom_pilot_em_20261018/study.py": "c51ddfe233345eb201f267a0f540fc8cf11186ae1fc8f77e731dcfe31aed9993",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_pilot_em_20261018/training_data.py": "c9550fcd7bb83ee566b16de6b259865f103d3560349e2b52fed86a7b11ec491c",
+    "tcom_pilot_em_20261018/training_protocol.py": "b1ae455519075500ef4670bd182d1b57793c02c327df59a328ca43902ee27816",
+    "tcom_runtime_bypass_20261017/sparse_fast.py": "ddc40216f4f23c1d4a2eaae7813b12f87dbd2c9645ef5e2cddaf82480e83ae37",
+    "tcom_runtime_bypass_20261017/runtime_study.py": "bc6a3e4c0b3b42b2c25f54cd13c7bdddf8fe25f0e21116782dd90a3ecc46f9bc",
+    "tcom_followups_20261017/common.py": "da38bc9c2617ad12ab5287ec463e3252872008a3d71062331188f6e38c7bf619",
+    "sahure/train.py": "bedef81896e71b57162367debb25fdd29625afc6ab44929bb1ebc9464884b04e",
+    "sahure/data.py": "efb3c019ed5209a243023f9ca83c48e216e2c3d6494f3c96b42312242abefeea",
+    "results/tcom_runtime_bypass_20261017/runtime/validation_selection.json": "7fad8b63b794e17f2e3db4f1ffce5804a33c581d57e04a7b7e45f6a458773c10",
+    "results/tcom_runtime_bypass_20261017/runtime/calibration.json": "6307de17a422438c8d8f0c36ab79b6d2e509f1fc2fbfe1f041927b2a5345adbb"
+  },
+  "original_inputs": {
+    "hashes": {
+      "results/sahure_expansion/checkpoints/seed_9101/em_adaptive_best.pt": "b664708d4b04dd68be7d503199163f42d027aa7a2afc5b110a70e2474dee9b12",
+      "results/sahure_expansion/checkpoints/seed_9102/em_adaptive_best.pt": "afe564f3714b536574f53fb1de56446f16a753dc57b0caf99547f0ad78305648",
+      "results/sahure_expansion/checkpoints/seed_9103/em_adaptive_best.pt": "2f78fd5c2f7c7eca82a9a6e7d017b6722e4ebb55074bedeac670ff670c3f8525",
+      "results/fair_optshrink/frozen_selection.json": "6b27549161697b226927244ea1e203a212e7a86bf4ac4489018f314f7f31b9a1",
+      "sahure/model.py": "c6a3d53d8adae23cc2c0b1309bedd21ebd7760194359256192897bdd19aaface",
+      "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+      "sahure_expansion/data.py": "c1c806b53f0318cb0f86b61eba898b37204675e1ed8921bff1a35c6f798366e2",
+      "fair_optshrink/estimator.py": "387c41e72979dc636de955f0f1724e161fc4ef030ad5d50b11a5ab715e1038a1",
+      "hybrid_optshrink/model.py": "2314dcba9fb46d68ac3bc513e3736dfdbe64c5ee93bdf235524d6e6984ba8b39",
+      "rydberg_sim/monte_carlo.py": "222ea7bf124672a73343ec0b9b8dd0b8fda624329a69eb8b1d92f55a17743b82",
+      "rydberg_sim/rng.py": "ca3f1787e87c61db0650677d476d9a9542ed6e9397d431aed0b76ef651ffb6ed"
+    },
+    "python": "3.12.5",
+    "numpy": "2.4.6",
+    "torch": "2.13.0",
+    "threads": 1,
+    "generator_policy": "Independent operating point RNG keys include SNR and RSR; path-regime trial offsets prevent overlap; high-SNR study may explicitly couple worlds by rescaling a fixed anchor noise realization."
+  },
+  "training_protocol_sha256": "5d4619780a491d8dd8cf65a00e88a4f1a5a1074a720078c9c6ff4a4b603e8b6e",
+  "frozen_unix": 1792339779.972416
+}

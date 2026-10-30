@@ -1,0 +1,155 @@
+{
+  "frame_D64": {
+    "adjoint_identity_relative_error": 2.0191693999940384e-16,
+    "FFT_vs_matrix_forward": 4.3174351273578756e-15,
+    "FFT_vs_matrix_adjoint": 3.873865894430417e-15,
+    "tight_frame_relative_error": 2.239975115409866e-16
+  },
+  "frame_D128": {
+    "adjoint_identity_relative_error": 3.8983266223513263e-16,
+    "FFT_vs_matrix_forward": 3.738817116179453e-15,
+    "FFT_vs_matrix_adjoint": 4.050207582272857e-15,
+    "tight_frame_relative_error": 2.0557013495369222e-16
+  },
+  "frame_D256": {
+    "adjoint_identity_relative_error": 2.759587492225316e-16,
+    "FFT_vs_matrix_forward": 3.773914000156534e-15,
+    "FFT_vs_matrix_adjoint": 4.066286913667546e-15,
+    "tight_frame_relative_error": 2.1262854752225786e-16
+  },
+  "statistics": {
+    "initializer_relative_error": 3.645525427699088e-15,
+    "posterior_field_relative_error": 1.2947147428930818e-16
+  },
+  "M_step": {
+    "gradient_finite_difference_relative_error": 6.318469106226795e-11,
+    "quadratic_identity_relative_error": 0.0
+  },
+  "zero_penalty": {
+    "relative_error_vs_torch_EM100": 8.461337308452707e-16,
+    "max_observed_objective_increase": 1.1368683772161603e-13
+  },
+  "original_full_budget": {
+    "dictionary_size": 128,
+    "inner_steps": 25,
+    "outer_steps": 100,
+    "relative_channel_error_vs_old": 1.5129464171501567e-15,
+    "max_observed_objective_increase": 0.0,
+    "new_inner_restarts": 0,
+    "old_inner_restarts": 0,
+    "max_final_relative_proximal_residual": 3.457106732397974e-05
+  },
+  "finite_budget_equivalence": [
+    {
+      "dictionary_size": 64,
+      "inner_steps": 1,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 1.2676528663469789e-15,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 64,
+      "inner_steps": 2,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 1.175710789393392e-15,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 64,
+      "inner_steps": 4,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 1.1877501583828562e-15,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 64,
+      "inner_steps": 8,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 1.3802409748798152e-15,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 128,
+      "inner_steps": 1,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 1.026295591160349e-15,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 128,
+      "inner_steps": 2,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 9.573641106263959e-16,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 128,
+      "inner_steps": 4,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 9.713723084213387e-16,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 128,
+      "inner_steps": 8,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 9.731933907050104e-16,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 256,
+      "inner_steps": 1,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 9.30612782936044e-16,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 256,
+      "inner_steps": 2,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 8.404070469525975e-16,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 256,
+      "inner_steps": 4,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 8.694540960049448e-16,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    },
+    {
+      "dictionary_size": 256,
+      "inner_steps": 8,
+      "outer_steps": 12,
+      "relative_channel_error_vs_old": 9.200756843665492e-16,
+      "max_observed_objective_increase": 0.0,
+      "new_inner_restarts": 0,
+      "old_inner_restarts": 0
+    }
+  ],
+  "solver_source_sha256": "ddc40216f4f23c1d4a2eaae7813b12f87dbd2c9645ef5e2cddaf82480e83ae37",
+  "smoke_master_seed": 2026101740,
+  "notes": "No development/test outcomes used. Production omits audit diagnostics but keeps all monotone-FISTA restart logic. Timings require a separate idle process."
+}

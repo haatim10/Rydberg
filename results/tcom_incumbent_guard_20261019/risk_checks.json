@@ -1,0 +1,64 @@
+{
+  "passed": true,
+  "scope": "Artificial fixed-channel Monte Carlo identity validation only; no campaign truth, model selection or policy tuning.",
+  "normalized_quantity": "Raw squared coefficient error difference divided by N*K; not truth-normalized NMSE.",
+  "reference": "Deterministic nonzero LOS-like row phase, repeated across columns.",
+  "cases": [
+    {
+      "configuration": 0,
+      "reference_amplitude": 0.8,
+      "variance": 0.1,
+      "draws": 65536,
+      "expected_raw_mse_difference_per_entry": -0.07107115841613246,
+      "estimated_mean": -0.0707819023130255,
+      "monte_carlo_standard_error": 0.00029987785264800384,
+      "uncertainty_standardized_error": 0.964579746562623
+    },
+    {
+      "configuration": 1,
+      "reference_amplitude": 3.0,
+      "variance": 0.04,
+      "draws": 65536,
+      "expected_raw_mse_difference_per_entry": 0.07107115841613246,
+      "estimated_mean": 0.07116299510876198,
+      "monte_carlo_standard_error": 0.0001227065717933931,
+      "uncertainty_standardized_error": 0.7484252170629533
+    },
+    {
+      "configuration": 2,
+      "reference_amplitude": 10.0,
+      "variance": 0.002,
+      "draws": 65536,
+      "expected_raw_mse_difference_per_entry": -0.011185617029807705,
+      "estimated_mean": -0.011188775674307424,
+      "monte_carlo_standard_error": 1.538974576449843e-05,
+      "uncertainty_standardized_error": -0.20524344898570818
+    },
+    {
+      "configuration": 3,
+      "reference_amplitude": 2.0,
+      "variance": 0.0,
+      "draws": 65536,
+      "expected_raw_mse_difference_per_entry": 0.0,
+      "estimated_mean": 0.0,
+      "monte_carlo_standard_error": 0.0,
+      "uncertainty_standardized_error": 0.0
+    },
+    {
+      "configuration": 4,
+      "reference_amplitude": 1.2,
+      "variance": 0.5,
+      "draws": 65536,
+      "expected_raw_mse_difference_per_entry": -0.06530917260763892,
+      "estimated_mean": -0.06498249145141523,
+      "monte_carlo_standard_error": 0.00038155048555662825,
+      "uncertainty_standardized_error": 0.8561937897867286
+    }
+  ],
+  "identity_zero_checks": 5,
+  "antisymmetry_checks": 5,
+  "invalid_input_checks": 4,
+  "maximum_tensor_wrapper_difference": 0.0,
+  "source_sha256": "77af9bcd4d4bcfd8ad84010813b210642fce91f6c78c2e773b48f40941e7d743",
+  "risk_source_sha256": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1"
+}

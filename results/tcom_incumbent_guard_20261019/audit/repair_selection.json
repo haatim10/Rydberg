@@ -1,0 +1,151 @@
+{
+  "passed": true,
+  "repair_selection_sha256": "6d4e7c75198d2e3933e673ca76c810bbae722976c403661aaf890b701bc1fd61",
+  "protocol_sha256": "72d955cad2f3b3a4a7857be9ac9d09beb971a5f205bc22a235537ac3eee4fdfe",
+  "selected_counts": {
+    "original": 28,
+    "warm1": 0,
+    "warm2": 0,
+    "warm3": 0,
+    "warm4": 0,
+    "warm5": 1,
+    "warm8": 0,
+    "warm10": 0,
+    "warm12": 0,
+    "warm20": 0,
+    "warm40": 0,
+    "warm100": 6,
+    "spectral100": 10,
+    "blend_original_warm3_0.25": 0,
+    "blend_original_warm3_0.5": 0,
+    "blend_original_warm3_0.75": 0,
+    "blend_warm2_warm3_0.25": 0,
+    "blend_warm2_warm3_0.5": 0,
+    "blend_warm2_warm3_0.75": 0,
+    "blend_warm5_warm20_0.25": 0,
+    "blend_warm5_warm20_0.5": 0,
+    "blend_warm5_warm20_0.75": 0,
+    "blend_warm20_spectral100_0.25": 0,
+    "blend_warm20_spectral100_0.5": 0,
+    "blend_warm20_spectral100_0.75": 0,
+    "blend_warm5_spectral100_0.25": 0,
+    "blend_warm5_spectral100_0.5": 0,
+    "blend_warm5_spectral100_0.75": 0,
+    "shrink_c0.5_beta0.5": 0,
+    "shrink_c0.5_beta1": 0,
+    "shrink_c1_beta0.5": 0,
+    "shrink_c1_beta1": 0,
+    "shrink_c2_beta0.5": 0,
+    "shrink_c2_beta1": 3,
+    "shrink_c4_beta0.5": 0,
+    "shrink_c4_beta1": 3
+  },
+  "selection_status_counts": {
+    "fixed_current": 45,
+    "all_incumbent_admissible": 6
+  },
+  "reviews": [
+    {
+      "rsr": 12.0,
+      "snr": 32.5,
+      "choice": "shrink_c2_beta1",
+      "selection_status": "all_incumbent_admissible",
+      "admissible": [
+        "warm2",
+        "blend_original_warm3_0.75",
+        "shrink_c0.5_beta0.5",
+        "shrink_c0.5_beta1",
+        "shrink_c1_beta0.5",
+        "shrink_c1_beta1",
+        "shrink_c2_beta0.5",
+        "shrink_c2_beta1",
+        "shrink_c4_beta0.5",
+        "shrink_c4_beta1"
+      ]
+    },
+    {
+      "rsr": 12.0,
+      "snr": 35.0,
+      "choice": "shrink_c2_beta1",
+      "selection_status": "all_incumbent_admissible",
+      "admissible": [
+        "shrink_c0.5_beta0.5",
+        "shrink_c0.5_beta1",
+        "shrink_c1_beta0.5",
+        "shrink_c1_beta1",
+        "shrink_c2_beta0.5",
+        "shrink_c2_beta1",
+        "shrink_c4_beta0.5",
+        "shrink_c4_beta1"
+      ]
+    },
+    {
+      "rsr": 12.0,
+      "snr": 37.5,
+      "choice": "shrink_c4_beta1",
+      "selection_status": "all_incumbent_admissible",
+      "admissible": [
+        "shrink_c0.5_beta0.5",
+        "shrink_c0.5_beta1",
+        "shrink_c1_beta0.5",
+        "shrink_c1_beta1",
+        "shrink_c2_beta0.5",
+        "shrink_c2_beta1",
+        "shrink_c4_beta0.5",
+        "shrink_c4_beta1"
+      ]
+    },
+    {
+      "rsr": 20.0,
+      "snr": 32.5,
+      "choice": "shrink_c2_beta1",
+      "selection_status": "all_incumbent_admissible",
+      "admissible": [
+        "shrink_c0.5_beta1",
+        "shrink_c1_beta0.5",
+        "shrink_c1_beta1",
+        "shrink_c2_beta0.5",
+        "shrink_c2_beta1",
+        "shrink_c4_beta0.5",
+        "shrink_c4_beta1"
+      ]
+    },
+    {
+      "rsr": 20.0,
+      "snr": 35.0,
+      "choice": "shrink_c4_beta1",
+      "selection_status": "all_incumbent_admissible",
+      "admissible": [
+        "shrink_c0.5_beta1",
+        "shrink_c1_beta0.5",
+        "shrink_c1_beta1",
+        "shrink_c2_beta0.5",
+        "shrink_c2_beta1",
+        "shrink_c4_beta0.5",
+        "shrink_c4_beta1"
+      ]
+    },
+    {
+      "rsr": 20.0,
+      "snr": 37.5,
+      "choice": "shrink_c4_beta1",
+      "selection_status": "all_incumbent_admissible",
+      "admissible": [
+        "shrink_c0.5_beta0.5",
+        "shrink_c0.5_beta1",
+        "shrink_c1_beta0.5",
+        "shrink_c1_beta1",
+        "shrink_c2_beta0.5",
+        "shrink_c2_beta1",
+        "shrink_c4_beta0.5",
+        "shrink_c4_beta1"
+      ]
+    }
+  ],
+  "guard_constraint_checks": 2592,
+  "risk_and_nll_anchor_replays": 15552,
+  "observable_development_banks_verified": 6,
+  "strict_four_incumbent_guards_and_objective_reconstructed": true,
+  "source_sha256": "c4e27e91d42d87a09536702d9d1d49f67627d081519beffa5e4d0b98ee874edb",
+  "caveat": "Empirical development screening; fallback preserves current policy but does not satisfy missing guards."
+}

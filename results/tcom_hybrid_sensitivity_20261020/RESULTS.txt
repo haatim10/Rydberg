@@ -1,0 +1,177 @@
+EXPLORATORY B-PROPOSAL SENSITIVITY — NOT THE CONFIRMED HYBRID
+
+The parent primary remains the C-confirmed hybrid with zero additional EM in every condition. This attached arm executes the 21 nonzero tails proposed by bank B, all of which failed the prespecified independent bank-C confirmation. There was no relaxed threshold, second choice, new search or change to the parent estimator.
+These fresh-test comparisons measure the unconfirmed proposals. They do not retroactively confirm them, establish selection safety, or replace the parent primary results. All intervals below are descriptive pointwise 95% intervals.
+The proposals change whole-grid mean-cell NMSE by +6.1311 dB relative to the confirmed hybrid and -2.0662 dB relative to the previous estimator (positive favors proposals). Their BER reduction versus the confirmed hybrid is -0.000678 percentage points. This channel-error/bit-error tradeoff does not overturn the failed C confirmation.
+Both starts already execute ten EM/structure stages; zero tail means no ADDITIONAL EM updates. The global schedule has 30 globally trained parameters, while the 188-parameter adaptive controller conditions decisions on observations. The fixed schedule retains normalization and dependence on known noise variance.
+The shared A crossover remains 30 dB. The exact parent 128 channel anchors, 30 fitting pilots and saved 64-vector Gray-QPSK data are reused for all 153 conditions. This is a paired extension, not a second independent sample.
+
+WHOLE-GRID DESCRIPTIVE EFFECTS
+Positive values favor the unconfirmed proposal. BER differences are percentage points.
+Contrast                | NMSE gain dB | Pointwise interval dB | BER reduction pp | Pointwise interval pp    
+------------------------+--------------+-----------------------+------------------+--------------------------
+proposal_vs_hybrid      | +6.13114     | [6.00248, 7.81399]    | -0.000678168     | [-0.00196802, 0]         
+proposal_vs_latest      | -2.06623     | [-2.45177, -0.17434]  | -0.000598384     | [-0.0022517, 0.000713628]
+proposal_vs_compact     | +3.42965     | [3.22923, 5.20108]    | -0.0353578       | [-0.0403798, -0.0306506] 
+proposal_vs_adaptive40  | +0.13839     | [-0.480854, 2.19351]  | +0.278067        | [0.268089, 0.287894]     
+proposal_vs_global40    | +2.04368     | [1.43239, 2.28757]    | +0.284396        | [0.274618, 0.294006]     
+proposal_vs_classical40 | +2.98139     | [2.64241, 4.78867]    | +0.278514        | [0.268816, 0.288027]     
+proposal_vs_em100       | +4.319       | [3.73318, 6.13312]    | +0.297955        | [0.287805, 0.30792]      
+proposal_vs_optshrink   | +2.1424      | [1.34145, 3.16164]    | +0.024454        | [0.0201543, 0.0288289]   
+
+ALL (153 conditions)
+Method                     | Mean-cell NMSE dB | Pooled linear NMSE | BER %    
+---------------------------+-------------------+--------------------+----------
+Unconfirmed B proposals    | -35.33047         | 0.009339562        | 0.5168574
+Confirmed hybrid (zero EM) | -29.19933         | 0.009510016        | 0.5161792
+Frozen latest              | -37.39670         | 0.009230989        | 0.516259 
+Compact sparse             | -31.90082         | 0.008624418        | 0.4814996
+Adaptive + EM40            | -35.19208         | 0.02667782         | 0.7949242
+Global schedule + EM40     | -33.28679         | 0.02713347         | 0.8012538
+Classical + EM40           | -32.34908         | 0.02734731         | 0.7953719
+Direct EM100               | -31.01147         | 0.0284088          | 0.8148127
+OptShrink                  | -33.18807         | 0.01081935         | 0.5413114
+
+ORDINARY (45 conditions)
+Method                     | Mean-cell NMSE dB | Pooled linear NMSE | BER %   
+---------------------------+-------------------+--------------------+---------
+Unconfirmed B proposals    | -19.93210         | 0.03072368         | 1.752628
+Confirmed hybrid (zero EM) | -19.93210         | 0.03072368         | 1.752628
+Frozen latest              | -19.93210         | 0.03072368         | 1.752628
+Compact sparse             | -18.87740         | 0.0265737          | 1.634476
+Adaptive + EM40            | -15.40487         | 0.08990505         | 2.701537
+Global schedule + EM40     | -15.34523         | 0.09081842         | 2.71623 
+Classical + EM40           | -15.19609         | 0.09032471         | 2.700602
+Direct EM100               | -15.11665         | 0.09420591         | 2.766611
+OptShrink                  | -18.15489         | 0.03533853         | 1.8344  
+
+TRANSITION_ALL (63 conditions)
+Method                     | Mean-cell NMSE dB | Pooled linear NMSE | BER %       
+---------------------------+-------------------+--------------------+-------------
+Unconfirmed B proposals    | -36.46640         | 0.0005019313       | 0.001001106 
+Confirmed hybrid (zero EM) | -33.26495         | 0.0006253723       | 0.001001106 
+Frozen latest              | -37.54417         | 0.0004172884       | 0.001388631 
+Compact sparse             | -32.41301         | 0.00130627         | 0.001227162 
+Adaptive + EM40            | -36.93764         | 0.0004823994       | 0.0002906436
+Global schedule + EM40     | -34.77855         | 0.0007908916       | 0.003390842 
+Classical + EM40           | -33.72634         | 0.001294645        | 0.00164698  
+Direct EM100               | -32.61844         | 0.001201088        | 0.001711568 
+OptShrink                  | -34.48406         | 0.0007257221       | 0.002551205 
+
+HIGH_ALL (45 conditions)
+Method                     | Mean-cell NMSE dB | Pooled linear NMSE | BER %       
+---------------------------+-------------------+--------------------+-------------
+Unconfirmed B proposals    | -49.13854         | 0.0003281224       | 0.003285349 
+Confirmed hybrid (zero EM) | -32.77469         | 0.0007348486       | 0.0009795766
+Frozen latest              | -54.65485         | 7.747535e-05       | 0.0007083092
+Compact sparse             | -44.20717         | 0.0009205477       | 0.0009042245
+Adaptive + EM40            | -52.53550         | 0.0001241659       | 0.0007987317
+Global schedule + EM40     | -49.13987         | 0.0003281201       | 0.003285349 
+Classical + EM40           | -47.57391         | 0.0008436476       | 0.001356337 
+Direct EM100               | -44.65655         | 0.000702498        | 0.001356337 
+OptShrink                  | -46.40686         | 0.000431267        | 0.002486617 
+
+WEAK_WARM100 (18 conditions)
+Method                     | Mean-cell NMSE dB | Pooled linear NMSE | BER %      
+---------------------------+-------------------+--------------------+------------
+Unconfirmed B proposals    | -30.18882         | 0.001031527        | 0.008703161
+Confirmed hybrid (zero EM) | -28.72065         | 0.001352313        | 0.00293873 
+Frozen latest              | -46.38008         | 0.0001937264       | 0.001770773
+Compact sparse             | -25.97585         | 0.00275306         | 0.002712674
+Adaptive + EM40            | -41.99960         | 0.000312147        | 0.001996829
+Global schedule + EM40     | -30.45465         | 0.0009718144       | 0.009795766
+Classical + EM40           | -26.38877         | 0.002491657        | 0.00406901 
+Direct EM100               | -27.39032         | 0.002066439        | 0.00406901 
+OptShrink                  | -29.67245         | 0.001267665        | 0.007459852
+
+STRONG_HIGH (30 conditions)
+Method                     | Mean-cell NMSE dB | Pooled linear NMSE | BER %
+---------------------------+-------------------+--------------------+------
+Unconfirmed B proposals    | -58.46301         | 3.42947e-06        | 0    
+Confirmed hybrid (zero EM) | -34.79815         | 0.0004212588       | 0    
+Frozen latest              | -58.46742         | 3.426547e-06       | 0    
+Compact sparse             | -53.28102         | 1.050508e-05       | 0    
+Adaptive + EM40            | -57.83752         | 3.492509e-06       | 0    
+Global schedule + EM40     | -58.46501         | 3.426003e-06       | 0    
+Classical + EM40           | -58.16428         | 3.460839e-06       | 0    
+Direct EM100               | -53.28102         | 1.050508e-05       | 0    
+OptShrink                  | -54.76294         | 7.293929e-06       | 0    
+
+THE 21 UNCONFIRMED TAILS
+RSR dB | SNR dB | Start  | Exploratory EM | Confirmed EM
+-------+--------+--------+----------------+-------------
+5      | 40     | global | 40             | 0           
+5      | 42.5   | global | 40             | 0           
+5      | 45     | global | 40             | 0           
+5      | 50     | global | 40             | 0           
+5      | 60     | global | 40             | 0           
+12     | 32.5   | global | 10             | 0           
+12     | 35     | global | 10             | 0           
+12     | 37.5   | global | 20             | 0           
+12     | 40     | global | 20             | 0           
+12     | 42.5   | global | 20             | 0           
+12     | 45     | global | 20             | 0           
+12     | 50     | global | 40             | 0           
+12     | 60     | global | 40             | 0           
+20     | 32.5   | global | 10             | 0           
+20     | 35     | global | 40             | 0           
+20     | 37.5   | global | 40             | 0           
+20     | 40     | global | 40             | 0           
+20     | 42.5   | global | 40             | 0           
+20     | 45     | global | 40             | 0           
+20     | 50     | global | 40             | 0           
+20     | 60     | global | 40             | 0           
+
+ALL CONDITION-SPECIFIC LOSSES
+Complete lists are retained in completion.json.
+Contrast                | NMSE worse | NMSE harm CI | BER worse | BER harm CI | Worst NMSE cell        | Gain dB 
+------------------------+------------+--------------+-----------+-------------+------------------------+---------
+proposal_vs_hybrid      | 0          | 0            | 10        | 0           | L2_rsr5_snr0           | +0      
+proposal_vs_latest      | 41         | 11           | 14        | 0           | L2_rsr5_snr50          | -26.7473
+proposal_vs_compact     | 22         | 20           | 41        | 12          | L4_rsr5_snr0           | -1.29655
+proposal_vs_adaptive40  | 44         | 14           | 18        | 0           | random3to7_rsr5_snr60  | -16.1491
+proposal_vs_global40    | 21         | 7            | 1         | 0           | L4_rsr5_snr37.5        | -3.22434
+proposal_vs_classical40 | 17         | 3            | 7         | 0           | random3to7_rsr20_snr30 | -1.02009
+proposal_vs_em100       | 6          | 2            | 8         | 0           | random3to7_rsr20_snr30 | -1.02313
+proposal_vs_optshrink   | 22         | 14           | 17        | 0           | L4_rsr5_snr37.5        | -3.37186
+
+PROPOSAL FIT SPREAD AND ACTUAL COUNTS
+Scope          | Fit  | NMSE dB   | BER %        | Errors | Bits   
+---------------+------+-----------+--------------+--------+--------
+all            | 9101 | -35.39452 | 0.512815     | 38565  | 7520256
+all            | 9102 | -35.36822 | 0.5210062    | 39181  | 7520256
+all            | 9103 | -35.22867 | 0.516751     | 38861  | 7520256
+ordinary       | 9101 | -20.06105 | 1.739502     | 38475  | 2211840
+ordinary       | 9102 | -19.74463 | 1.767352     | 39091  | 2211840
+ordinary       | 9103 | -19.99063 | 1.751031     | 38730  | 2211840
+transition_all | 9101 | -36.52971 | 0.0005489935 | 17     | 3096576
+transition_all | 9102 | -36.69209 | 0.0005489935 | 17     | 3096576
+transition_all | 9103 | -36.17738 | 0.00190533   | 59     | 3096576
+high_all       | 9101 | -49.13872 | 0.00330042   | 73     | 2211840
+high_all       | 9102 | -49.13840 | 0.00330042   | 73     | 2211840
+high_all       | 9103 | -49.13850 | 0.003255208  | 72     | 2211840
+weak_warm100   | 9101 | -30.18722 | 0.008703161  | 77     | 884736 
+weak_warm100   | 9102 | -30.19409 | 0.008703161  | 77     | 884736 
+weak_warm100   | 9103 | -30.18515 | 0.008703161  | 77     | 884736 
+strong_high    | 9101 | -58.46317 | 0            | 0      | 1474560
+strong_high    | 9102 | -58.46287 | 0            | 0      | 1474560
+strong_high    | 9103 | -58.46300 | 0            | 0      | 1474560
+
+ATTACHED SAME-WINDOW RUNTIME COMPARISON
+Both isolated windows time complete proposal, confirmed hybrid, latest and compact pipelines. Family samples pool individual fits, never an ensemble sum.
+Pipeline                   | W1 p90 ms | W2 p90 ms | W1 weak p90 | W2 weak p90 | 10.74 cap | W1/W2 bin overruns
+---------------------------+-----------+-----------+-------------+-------------+-----------+-------------------
+Unconfirmed B proposals    | 7.2498    | 7.2671    | 6.8921      | 6.9221      | PASS      | 0/0               
+Confirmed hybrid (zero EM) | 4.5808    | 4.6005    | 2.6994      | 2.7106      | PASS      | 0/0               
+Frozen latest              | 14.7523   | 14.8235   | 14.9578     | 14.9927     | FAIL      | 6/6               
+Compact sparse             | 9.5318    | 9.5888    | 8.7831      | 8.8453      | PASS      | 0/0               
+
+INTERPRETATION
+63/63 path-regime mean benefits for the 21 B proposals were positive on bank C, but only 40 of their approximate lower bounds passed; every proposal failed at least one path regime. Rejection does not prove no EM benefit. Conversely, favorable exploratory results do not repair the failed confirmation.
+The paired bootstrap uses 20,000 draws of 128 local indices within each of three regimes, shared across references, SNRs, fits and methods: 384 coupled index clusters, with 1,152 physical channel anchors. Fit averages are metric averages. Pooled linear NMSE averages fit-specific pooled ratios arithmetically.
+The grid has 108/153 conditions above 20 dB; equal-cell averages are not deployment-weighted claims. N=32, K=3, P=30, known reference and variance, and the exact magnitude-only 64-hypothesis detector define this comparison.
+Routing boundaries remain: the start changes above 30 dB; the strong-reference filter and exploratory ten-update tail change across the 31.25 dB nearest-bin boundary; the weak-reference exploratory tail changes from zero to 40 updates across 38.75 dB. The prior strong-reference filter-off jump near 40 dB remains repaired, with c=4, beta=1 filtering retained from 37.5 dB upward. The gridded test is not a continuity proof or a variance-mismatch robustness claim.
+Zero observed BER and collapsed intervals do not prove equivalence, zero population BER or noninferiority. The host-specific pooled p90 cap is not a hard per-call deadline. All adverse conditions and runtime overruns are retained.
+Parent completion and all five attached audits passed. No paper edits, deployment decision, novelty claim or publication conclusion are made here.
+
+Figures: exploratory_nmse.png and exploratory_ber.png.

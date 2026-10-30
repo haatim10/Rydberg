@@ -1,0 +1,250 @@
+{
+  "version": 1,
+  "name": "Numerically equivalent native execution of the frozen learned estimator",
+  "N": 32,
+  "K": 3,
+  "deployment_P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "model_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "test_cases_per_reference_regime": 128,
+  "smoke_seed": 2026102000,
+  "test_seed": 2026102002,
+  "data_seed": 2026102003,
+  "timing_seed": 2026102004,
+  "holdout_seed": 2026102005,
+  "bootstrap_seed": 2026102009,
+  "methods": [
+    "original_9101",
+    "original_9102",
+    "original_9103",
+    "old_bypass_9101",
+    "old_bypass_9102",
+    "old_bypass_9103",
+    "prior_repair_9101",
+    "prior_repair_9102",
+    "prior_repair_9103",
+    "current_repair_9101",
+    "current_repair_9102",
+    "current_repair_9103",
+    "repair_9101",
+    "repair_9102",
+    "repair_9103",
+    "em100",
+    "optshrink",
+    "prior_compact",
+    "compact_sparse",
+    "prior_sparse_full"
+  ],
+  "groups": {
+    "original_mean": [
+      "original_9101",
+      "original_9102",
+      "original_9103"
+    ],
+    "old_bypass_mean": [
+      "old_bypass_9101",
+      "old_bypass_9102",
+      "old_bypass_9103"
+    ],
+    "prior_repair_mean": [
+      "prior_repair_9101",
+      "prior_repair_9102",
+      "prior_repair_9103"
+    ],
+    "current_repair_mean": [
+      "current_repair_9101",
+      "current_repair_9102",
+      "current_repair_9103"
+    ],
+    "repair_mean": [
+      "repair_9101",
+      "repair_9102",
+      "repair_9103"
+    ]
+  },
+  "contrasts": {
+    "repair_vs_current": [
+      "current_repair_mean",
+      "repair_mean"
+    ],
+    "repair_vs_old": [
+      "old_bypass_mean",
+      "repair_mean"
+    ],
+    "repair_vs_prior": [
+      "prior_repair_mean",
+      "repair_mean"
+    ],
+    "repair_vs_original": [
+      "original_mean",
+      "repair_mean"
+    ],
+    "repair_vs_em100": [
+      "em100",
+      "repair_mean"
+    ],
+    "repair_vs_compact": [
+      "compact_sparse",
+      "repair_mean"
+    ]
+  },
+  "implementation": "NumPy/SciPy float64/complex128 executes the same ten stages, frozen weights, features, posterior, solves and shrinkage. All EM budgets, routing and final filters unchanged.",
+  "invariants": "No retraining, policy fitting, sparse reselection, shorter iteration budget, lower precision, approximate posterior or cached observation answers.",
+  "parity": {
+    "atol": 1e-10,
+    "rtol": 1e-10,
+    "criterion": "All channel coefficients satisfy abs(native-canonical)<=atol+rtol*abs(canonical). Numerical equivalence, not bitwise equality or population noninferiority. Independently decode every nonidentical estimate."
+  },
+  "primary": {
+    "scopes": [
+      "all153",
+      "weak_warm10018"
+    ],
+    "contrast": "repair_vs_current",
+    "family": "Two scopes times NMSE and BER: four outcomes, Bonferroni4 intervals. No claim of equivalence from nonsignificance or zero errors."
+  },
+  "bootstrap": {
+    "samples": 20000,
+    "seed": 2026102009,
+    "unit": "128 local-index clusters per regime coupled across references/SNR/method; three fits average metrics and do not triple sample size."
+  },
+  "boundary": {
+    "extra_snrs": [
+      38.0,
+      38.5,
+      38.75,
+      39.0,
+      39.5,
+      40.5,
+      41.0,
+      41.5,
+      42.0
+    ],
+    "extra_cells": 54,
+    "rule": "Same anchors, separately weighted diagnostic; not part of main153."
+  },
+  "timing": {
+    "cap_ms": 10.74,
+    "windows": 2,
+    "window1_indices": [
+      200,
+      201,
+      202
+    ],
+    "window2_indices": [
+      300,
+      301,
+      302
+    ],
+    "repeats_per_index": 1,
+    "grid": "All153 conditions at each of three independent timing indices per window",
+    "order": "Window1 before fresh accuracy generation; window2 after all own accuracy and BER workers have exited.",
+    "window1_methods": [
+      "original_9101",
+      "original_9102",
+      "original_9103",
+      "old_bypass_9101",
+      "old_bypass_9102",
+      "old_bypass_9103",
+      "prior_repair_9101",
+      "prior_repair_9102",
+      "prior_repair_9103",
+      "current_repair_9101",
+      "current_repair_9102",
+      "current_repair_9103",
+      "repair_9101",
+      "repair_9102",
+      "repair_9103",
+      "em100",
+      "optshrink",
+      "prior_compact",
+      "compact_sparse",
+      "prior_sparse_full"
+    ],
+    "window2_methods": [
+      "current_repair_9101",
+      "current_repair_9102",
+      "current_repair_9103",
+      "repair_9101",
+      "repair_9102",
+      "repair_9103",
+      "em100",
+      "compact_sparse"
+    ],
+    "acceptance": "Observed whole-grid pooled repair p90 <=10.74ms in BOTH prespecified windows. Separately report weak warm100 p90, everyfit and all51 reference/SNR p90s. No sentinel normalization or retries until passing.",
+    "scope": "Complete batch-one call includes conversion, setup, dispatch, initialization, ten learned stages where used, unchanged EM and filters. Preloaded fixed weights; oneCPUthread; other own experiment jobs idle."
+  },
+  "baseline_fairness": "Only learned inference changed; original, old bypass and prior repair all use the same native learned implementation. EM100, compact sparse/EM and full sparse kernels unchanged. Canonical latest and canonical compact explicitly retained.",
+  "previous_protocol_sha256": "3d9730c4f23d7519ff55b2639383f7c46df6ac9410170c8113239c61a723fd96",
+  "previous_policy_sha256": "96bda1a6179d6ddc2a903215a4f44cb39c23ff55ee8e778b330af4b6986966cc",
+  "source_hashes": {
+    "tcom_filter_continuation_20261019/analysis.py": "4d3826c0304f441723bd1630b74703199cad4ced507d33d847ebaf97abf9d6fa",
+    "tcom_filter_continuation_20261019/study.py": "1ce4cffa709b881508de362c7cd2aca95ba3ca8a3dba0de63f77b474ef6d0d77",
+    "tcom_incumbent_guard_20261019/inference.py": "0cef3a0dc8a9f1ffa066e08896afc0d69f3a311b9ad729618ec9b760b78ab1eb",
+    "tcom_incumbent_guard_20261019/risk.py": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1",
+    "tcom_incumbent_guard_20261019/risk_data.py": "5a8474b3f87abea086c7999e7ca5ef8fbbab0b0fd57b58188db365ac85e07101",
+    "tcom_incumbent_guard_20261019/shrink.py": "f72debd9763e4a57532f635c0120fa9eaf516f94e0e360853e1155fee483ec6b",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_runtime_repair_20261020/analysis.py": "e117a19d3f8e99924f1926afcff6862c7b7a2e03f97751ab368d6c65dc6234db",
+    "tcom_runtime_repair_20261020/execution.py": "dd9bad075a577f833dae8011b0909b9bf8353f2650f742b0ddeb7b1b074f7b57",
+    "tcom_runtime_repair_20261020/inference.py": "b90d476fcf7ac1f493b1f947e0de0ccec93e18628205a8251c12827491d4ae0a",
+    "tcom_runtime_repair_20261020/native.py": "7a60c4ba92259b27332382e14240b425e155576dc8a8df48b8470745cb976d77",
+    "tcom_runtime_repair_20261020/smoke_parity.py": "9df5870dfa613bfa7c10229102f394fe8db7cf80233a0e84ad0954f6eaf46124",
+    "tcom_runtime_repair_20261020/study.py": "d96e769486450b1cf56dc5fcf543bfd982bc9442a3a8d443a74831b8e0a0c031"
+  },
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c"
+  },
+  "ber_protocol_sha256": "5eb03b708bf23467cab522e7f628466db64321c774c08850d65c7f5e4b94b65c",
+  "smoke_parity_sha256": "6a19b74130983e1222ab12011b95829dc64caab8ed1c1153a7a6cb76f37b0166",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "frozen_unix": 1792493508.8164978
+}

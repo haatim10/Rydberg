@@ -1,0 +1,33 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/tcom_reliability_20261021/audit.py", line 962, in <module>
+    print(json.dumps(globals()[args.phase]()),flush=True)
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/.venv-paper2/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/tcom_reliability_20261021/audit.py", line 648, in selection
+    np.testing.assert_array_equal(anchor['probe_z_by_snr'][si, ids[j]], expected)
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/.venv-paper2/lib/python3.12/site-packages/numpy/testing/_private/utils.py", line 1121, in assert_array_equal
+    assert_array_compare(operator.__eq__, actual, desired, err_msg=err_msg,
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/.venv-paper2/lib/python3.12/site-packages/numpy/testing/_private/utils.py", line 983, in assert_array_compare
+    raise AssertionError(msg)
+AssertionError: 
+Arrays are not equal
+
+Mismatched elements: 14 / 2048 (0.684%)
+First 5 mismatches are at indices:
+ [3, 17]: 0.4207956100851671 (ACTUAL), 0.42079561008516714 (DESIRED)
+ [4, 57]: 1.908607623643681 (ACTUAL), 1.9086076236436809 (DESIRED)
+ [10, 35]: 1.1424650892478638 (ACTUAL), 1.1424650892478636 (DESIRED)
+ [11, 21]: 2.8005163615124915 (ACTUAL), 2.800516361512491 (DESIRED)
+ [13, 32]: 0.926297246924653 (ACTUAL), 0.9262972469246529 (DESIRED)
+Max absolute difference among violations: 4.4408921e-16
+Max relative difference among violations: 2.1613692e-16
+ ACTUAL: array([[2.66758 , 2.629594, 1.265576, ..., 2.421507, 2.072364, 0.905901],
+       [1.795133, 1.4075  , 2.212459, ..., 1.386538, 2.172927, 1.966147],
+       [3.80808 , 2.290504, 4.530191, ..., 1.987644, 1.487004, 0.420759],...
+ DESIRED: array([[2.66758 , 2.629594, 1.265576, ..., 2.421507, 2.072364, 0.905901],
+       [1.795133, 1.4075  , 2.212459, ..., 1.386538, 2.172927, 1.966147],
+       [3.80808 , 2.290504, 4.530191, ..., 1.987644, 1.487004, 0.420759],...

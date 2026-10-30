@@ -1,0 +1,45 @@
+READ-ONLY RUNTIME IMPLEMENTATION REVIEW — 2026-10-20
+
+Scope
+Prior scientific sources, checkpoints, policies and results remain immutable. This review proposes implementation work only; it contains no new experiment or timing result. The acceptance target is the literal 10.74 ms pooled p90. Precision remains float64/complex128, deployment remains 30 pilots, and all 10 learned stages and all 100 continuation updates are retained.
+
+What the deployed path actually does
+1. tcom_transition_repair_20261019/inference.py: receiver_keys computes supplied-noise SNR and reference power, then chooses nearest fixed bins. repair invokes exactly one homogeneous branch; mixed batches partition once per chosen branch.
+2. tcom_incumbent_guard_20261019/inference.py: values shares a single learned initial estimate and continuation trajectory inside a request. warm100 invokes original once and continuation.trajectory once. It does NOT invoke a second spectral initializer in the continuation. A final shrink candidate on the strong branch requests spectral100 and does NOT run the learned model.
+3. tcom_pilot_em_20261018/continuation.py: trajectory converts observations and the supplied estimate, computes one pilot right-inverse operator, performs exactly the requested number of updates, and saves only requested iterates. With audit=False it performs no likelihood evaluations. It still checks finite values after every update and constructs trajectory bookkeeping.
+4. tcom_runtime_bypass_20261017/bypass.py: em100 calls the factor-zero sparse backend once, which performs its spectral initialization and all 100 updates. The unused unfiltered-model deepcopy happens during wrapper construction, outside the established preloaded per-call timing.
+5. tcom_filter_continuation_20261019/study.py: predictions computes several methods together for efficient scientific evaluation. Final timing instead invokes estimate_method individually. Shared prediction caches must not be mistaken for deployed per-call savings.
+
+Consequences
+There is no removable duplicate full initialization that explains the approximately 19.26 ms warm branch. With the learned path around 8.70 ms, a target of 10.74 ms requires substantial improvement to the actual learned and/or 100-step kernels, not only wrapper cleanup. Prior calibration-to-final slowdown was about 1.75x for multiple unchanged methods, so cross-window ratios are not the added filter's causal cost.
+
+Output-preserving opportunities, ranked
+A. Dedicated final-iterate EM kernel: keep the same posterior formula, special functions, update count, and arithmetic precision; hoist invariants z*z, 2*z, 4*z*z, sigma2 broadcasting and sigma2 squared out of the 100-step loop. Preserve operation order rather than replacing divisions with reciprocals silently. Reuse temporary storage where aliasing permits. Remove trajectory dictionaries/history/budget membership checks from a single-budget production path; retain the audit implementation separately. Validation at entry/exit can replace repeated finite scans for the declared valid-input path, with documented error behavior.
+B. Fused execution of the unchanged learned model: frozen gamma values, fixed dimension constants, identity matrices, Hankel anti-diagonal indices/counts and other shape-only quantities can be precomputed. The current model constructs these inside its 10-stage loop. A NumPy or compiled implementation can reduce many small framework calls while retaining all SVD/solve/controller operations. SVD, matrix solve and reduction implementation differences require explicit numerical-equivalence testing; they are not automatically bitwise equivalent.
+C. Reuse invariant factorization where safe: the learned EM stages use the same pilot Gram matrix, but torch.linalg.solve factors it repeatedly. A cached factorization may be faster and mathematically equivalent; solver/layout differences must pass parity. The final filter also recomputes a pilot Gram inverse after spectral EM has already used its Gram matrix. Reusing compatible factorization/inverse information within the SAME call can save setup, but cannot change tau or exclude setup from timing.
+D. Wrapper cleanup: resolve the branch once, precompile immutable choice tables, and avoid generic candidate set/dictionary expansion for the deployed single candidate. Keep the same reference/SNR calculations, tie handling and mixed-batch routing. These are useful minor savings, not a credible sole solution for the required roughly 44% warm-branch reduction.
+
+Numerical contract
+No fast math, lower precision, altered stopping, posterior approximation or hidden cached answers. Reusing SciPy i0e/i1e in a compiled loop preserves the special-function implementation, but complex multiplication, FMA contraction and dot-product reduction order can still change rounding. Consider explicit -ffp-contract=off for a bitwise-preservation attempt. Distinguish arrays that are bitwise equal from arrays that satisfy a frozen numerical tolerance. Check each iteration, intermediate controller tau/beta, final outputs, batch-one versus batch, non-contiguous inputs and heterogeneous dispatch. Include zero magnitudes, nearzero mean fields, small-argument posterior transitions, and difficult pilot conditioning. Keep original error checking available in audit mode. No true channels enter dispatch or optimization decisions.
+
+Fair 20-arm mapping
+original3: optimized learned-only.
+old_bypass3: old policy with shared optimized learned and EM kernels.
+prior_repair3: previous transition policy with shared optimized kernels.
+current_repair3: canonical latest filter-continuation implementation, explicit control.
+repair3: optimized latest filter-continuation implementation.
+em100: optimized standalone spectral EM100.
+optshrink: frozen existing implementation.
+prior_compact: canonical latest compact policy, explicit control.
+compact_sparse: exactly the same frozen compact choices, with factor-zero EM using the shared optimized kernel; penalized sparse may remain canonical if stated.
+prior_sparse_full: frozen full sparse implementation.
+There is no new sparse-policy or estimator-parameter selection. Do not keep an artificially slow factor-zero baseline while accelerating the identical EM path in the proposed method.
+
+Fresh accuracy checks
+Use a fresh 153-condition bank and the same 54 extra boundary conditions. Main-grid weighting remains unchanged by dense points. Verify all 123 unchanged algorithm branches, all 18 earlier transition conditions, the 51 weak-reference conditions and the 30 extended high-SNR conditions. Report maximum absolute and relative output error, paired cell/pooled NMSE and tail changes, and per-fit results. Three fits are not independent channels. Exact output identity permits a documented BER reuse; otherwise independently decode the same fresh data with the fixed detector. Nearzero differences are implementation parity, not scientific NMSE/BER improvements. Observed zero BER does not establish population equivalence.
+
+Runtime acceptance
+Freeze implementation and benchmark before the confirmation run. Predeclare two isolated timing windows, with randomized paired canonical/optimized calls on the same fresh observations, and require the fixed 10.74 ms observed pooled p90 in both. The second window may focus on the paired candidate/control and EM sentinels while preserving the entire grid and branch weights. No normalization to a sentinel, moving budget, or retry-until-pass. Separately report and preferably require the weak-reference warm100 18-cell p90, plus every reference/SNR-bin p90. Warm100 is 18/153 = 11.76% of the grid, so a pooled p90 alone does not characterize its tail. Keep initialization, conversion, dispatch and filter work in every timed call; only frozen model loading and compilation are outside established warm per-packet timing. Report cold startup/compilation separately if relevant. Record host/library/thread configuration. If formal latency uncertainty is claimed, resample whole fresh timing anchors or blocks rather than repeated calls; a single reused timing index is insufficient for strong population coverage.
+
+Status
+Read-only source inspection only. No benchmarks or scientific source edits were performed for this review.

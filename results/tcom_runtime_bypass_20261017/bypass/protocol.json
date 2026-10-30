@@ -1,0 +1,166 @@
+{
+  "version": 1,
+  "name": "Validation-calibrated hard bypass for frozen SAHURE",
+  "development_seed": 2026101761,
+  "test_seed": 2026101762,
+  "timing_seed": 2026101764,
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "snrs": [
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    40.0,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "development_anchors_per_regime_reference": 24,
+  "test_anchors_per_regime_reference": 64,
+  "cutoffs": [
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    40.0,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "dispatch": "Receiver nominal SNR proxy10log10(K/supplied_variance), reference proxy from known B. Three reference bins5/12/20. One cutoff per reference, shared by three fits and all path regimes. Strict greater-than cutoff with1e-10dB tolerance. Always preserve original for proxy<=20.",
+  "model": "All original checkpoints frozen. Same-step fallback deep-copies identical weights and steps, disables only Hankel filtering and unused controller computation. Separate EM100 fallback uses the exact optimized unpenalized EM implementation.",
+  "policy_selection": "Separate same_steps and em100 cutoffs minimize equal-cell mean heldout RicianNLL over all declared SNRs and path strata for each reference. Three original fits averaged as losses, not predictions. Ties prefer larger cutoff. Cutoff60 means no bypass through60dB, but still switches above60 if deployed.",
+  "fit": "Only21 context pilots are available for initialization, features and all updates; remaining9 used only to score predictions. Refit with all30 for final test. No channel truth, true path count, test errors or previous-study crossover enters policy selection.",
+  "masks": "Fixed per-anchor random21/9 split, seed20261017610+100*regime_index+reference_index; same split across SNR and all branches/candidates.",
+  "coupling": "Generate separate10dB anchor at each reference/regime. Retain G,S,B and standardized W/sqrt(v10); rescale the same noise across SNR. Reference draws differ but random path-count vectors recur at same local index, so bootstrap shares local indices across SNR and reference within regime.",
+  "freeze": "Freeze source/checkpoint hashes before development. Freeze policy and full development loss-table hashes before generating any test anchor. No changes after observing test results.",
+  "test_methods": [
+    "learned_9101",
+    "learned_9102",
+    "learned_9103",
+    "off_9101",
+    "off_9102",
+    "off_9103",
+    "fast_bypass_9101",
+    "fast_bypass_9102",
+    "fast_bypass_9103",
+    "em100",
+    "em100_bypass_9101",
+    "em100_bypass_9102",
+    "em100_bypass_9103"
+  ],
+  "score": "Per-cell ratio of summed squared channel errors to summed truth energy, converted to dB. Fit-group averages three scores, never predictions. Primary aggregate averages cells with SNR>20 equally. Also show each cell, ordinary range, pooled NMSE, severeNMSE>1, p95/p99 per-caseNMSE, and negative-gain cells.",
+  "uncertainty": "3000 paired whole-anchor bootstrap replicates, shared case indices across SNR and reference within each regime and across every method/fit. Conditional on frozen fits and selected policies. Two aggregate comparisons vs original use Bonferroni simultaneous95 intervals; per-cell intervals are pointwise95.",
+  "ordinary_range": "Require bitwise identity for every selected prediction at true and nominal SNR10/15/20. Verify an actual engine dispatch against reused branch predictions for one case per cell and all fits/fallbacks.",
+  "sensitivity": {
+    "actual_snrs": [
+      20.0,
+      30.0,
+      60.0
+    ],
+    "rsr": 12.0,
+    "regime": "random3to7",
+    "supplied_variance_offsets_db": [
+      -3.0,
+      0.0,
+      3.0
+    ],
+    "policy": "Reuse fresh64 test anchors and identical measurements; fixed policy, no calibration updates. All original/off/fast-bypass/EM100/EM100-bypass branches. Separate diagnostic only; known-noise primary assumption remains explicit."
+  },
+  "timing": {
+    "seed": 2026101764,
+    "local_index": 100,
+    "snrs": [
+      10.0,
+      20.0,
+      30.0,
+      45.0,
+      60.0
+    ],
+    "rsrs": [
+      5.0,
+      12.0,
+      20.0
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "repeats": 3,
+    "policy": "Isolated batch-one CPU, initialization and receiver-only lookup included, one selected branch only, no parallel forward. Randomized method order. Models preloaded; report median/p90 pooled and by SNR/reference/selected branch."
+  },
+  "requested_thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "source_hashes": {
+    "tcom_runtime_bypass_20261017/bypass_study.py": "891c2189cdd18b926a086b07bae8f76dfaafcf2523d4de780ed308c077201b3f",
+    "tcom_runtime_bypass_20261017/bypass.py": "09530cc84522f48b026022a9818b312938911d7225f9ca7f3e84bf8c0ceeec71",
+    "tcom_runtime_bypass_20261017/sparse_fast.py": "ddc40216f4f23c1d4a2eaae7813b12f87dbd2c9645ef5e2cddaf82480e83ae37",
+    "tcom_followups_20261017/common.py": "da38bc9c2617ad12ab5287ec463e3252872008a3d71062331188f6e38c7bf619",
+    "sahure/data.py": "efb3c019ed5209a243023f9ca83c48e216e2c3d6494f3c96b42312242abefeea",
+    "sahure/train.py": "bedef81896e71b57162367debb25fdd29625afc6ab44929bb1ebc9464884b04e"
+  },
+  "frozen_original_inputs": {
+    "hashes": {
+      "results/sahure_expansion/checkpoints/seed_9101/em_adaptive_best.pt": "b664708d4b04dd68be7d503199163f42d027aa7a2afc5b110a70e2474dee9b12",
+      "results/sahure_expansion/checkpoints/seed_9102/em_adaptive_best.pt": "afe564f3714b536574f53fb1de56446f16a753dc57b0caf99547f0ad78305648",
+      "results/sahure_expansion/checkpoints/seed_9103/em_adaptive_best.pt": "2f78fd5c2f7c7eca82a9a6e7d017b6722e4ebb55074bedeac670ff670c3f8525",
+      "results/fair_optshrink/frozen_selection.json": "6b27549161697b226927244ea1e203a212e7a86bf4ac4489018f314f7f31b9a1",
+      "sahure/model.py": "c6a3d53d8adae23cc2c0b1309bedd21ebd7760194359256192897bdd19aaface",
+      "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+      "sahure_expansion/data.py": "c1c806b53f0318cb0f86b61eba898b37204675e1ed8921bff1a35c6f798366e2",
+      "fair_optshrink/estimator.py": "387c41e72979dc636de955f0f1724e161fc4ef030ad5d50b11a5ab715e1038a1",
+      "hybrid_optshrink/model.py": "2314dcba9fb46d68ac3bc513e3736dfdbe64c5ee93bdf235524d6e6984ba8b39",
+      "rydberg_sim/monte_carlo.py": "222ea7bf124672a73343ec0b9b8dd0b8fda624329a69eb8b1d92f55a17743b82",
+      "rydberg_sim/rng.py": "ca3f1787e87c61db0650677d476d9a9542ed6e9397d431aed0b76ef651ffb6ed"
+    },
+    "python": "3.12.5",
+    "numpy": "2.4.6",
+    "torch": "2.13.0",
+    "threads": 1,
+    "generator_policy": "Independent operating point RNG keys include SNR and RSR; path-regime trial offsets prevent overlap; high-SNR study may explicitly couple worlds by rescaling a fixed anchor noise realization."
+  },
+  "frozen_unix": 1792242728.163742
+}

@@ -1,0 +1,35 @@
+Completed runtime-matched sparse comparison
+
+The optimized sparse solver was validated against the original solver to numerical precision. It retains the exact Rician likelihood, spectral initialization, angle dictionary and monotone FISTA sparse fit; FFTs and cached quadratic calculations reduce implementation overhead.
+
+Controls were selected from 180 fresh development channel realizations using only 21 fitting and 9 held-out pilot magnitudes. Candidate families span 64/128/256 dictionary atoms, 1/2/4/8/16/25 inner updates, and 2/4/8/12/20/40/80/100 outer updates. The receiver selects settings from known noise variance; it does not receive true path count or channel.
+
+The matched cap was 5.460 ms, the learned model's calibrated p90 latency. Separate fresh timing verifies every selected estimator. Timings below include initialization, observation-dependent setup and parameter dispatch, use one CPU thread and float64/complex128, and exclude loading models and generating data. They are implementation measurements, not hard deadlines.
+
+Method | fresh p90 ms | equal-cell mean NMSE dB | pooled linear-error NMSE dB | BER %
+Learned model, mean of three separate fits | 5.292 | -20.190 | -15.387 | 1.36188
+Sparse, matched budget | 4.891 | -19.051 | -15.892 | 1.29510
+Sparse, 10 ms budget | 9.168 | -19.635 | -16.144 | 1.28662
+Sparse, 20 ms budget | 17.946 | -20.145 | -16.317 | 1.28255
+Sparse, 50 ms budget | 49.846 | -20.568 | -16.382 | 1.28140
+Sparse, full 100 x 25 | 107.672 | -20.573 | -16.351 | 1.29150
+
+The learned model's advantage on the prespecified equal-cell dB criterion is 1.139 dB (simultaneous 95% interval [1.049, 1.232]). The observed sparse-20-ms aggregate channel error is similar; its difference interval includes zero, which is not a formal equivalence result.
+
+The conclusion depends on operating conditions and the metric. Sparse wins at 0 dB and mostly at 5 dB; the learned model wins every tested 10, 15 and 20 dB channel-error cell. Averaging each condition in dB gives those conditions equal weight. Pooling squared errors instead makes the noisiest cells dominate and favors matched sparse. Aggregate BER also favors matched sparse. The report therefore does not claim overall or uniform superiority for the learned estimator.
+
+Learned aggregate BER: 1.36188%. Matched sparse BER: 1.29510%. Relative bit-error reduction from matched sparse: 4.90%.
+
+Test scope: 960 new channel realizations, 64 per condition; SNR 0/5/10/15/20 dB; RSR 12 dB; 2, 4 or random 3-7 paths per user; N=32, K=3, P=30. Every estimator uses the same pilot observations and the same exact magnitude-domain QPSK detector on 1,474,560 bits per estimator. Three learned fits are evaluated separately, not ensembled or counted as extra independent data.
+
+Bootstrap intervals preserve repeated path-count vectors by sharing case resamples across SNR within each regime: 192 resampling clusters. They condition on the trained fits and selected controls. Rare-error claims remain limited by the number of channel realizations.
+
+All pooled p90 caps passed. The 50 ms arm slightly exceeded 50 ms in three individual SNR strata (about 50.04-50.24 ms); these measurements were retained and controls were not reselected.
+
+Checks passed: original and optimized solver parity, finite-difference gradient, exact zero-penalty EM equivalence, a deliberately triggered FISTA restart, eligibility and validation winner checks, unchanged checkpoint/source hashes, raw-error recomputation and 150 single-case prediction replays.
+
+Paper implication: the strongest measured advantage is efficient moderate/high-SNR channel estimation. Include the low-SNR and BER results as well as the runtime curve; the primary NMSE score alone would hide an important tradeoff.
+
+Figures: runtime/runtime_accuracy.png; runtime/nmse_by_snr.png; runtime_ber/runtime_ber.png.
+Full values and uncertainty: runtime/nmse_summary.json; runtime/final_timing.json; runtime_ber/summary.json.
+Audit: runtime_audit.json. Protocol, frozen selections, per-world predictions and bit counts are retained.

@@ -1,0 +1,74 @@
+{
+  "passed": true,
+  "smoke_seed": 2026101920,
+  "dispatch": {
+    "one_candidate_per_world": [
+      {
+        "choice": "original",
+        "local_ids": [
+          0,
+          1
+        ]
+      },
+      {
+        "choice": "spectral100",
+        "local_ids": [
+          4
+        ]
+      },
+      {
+        "choice": "warm100",
+        "local_ids": [
+          5
+        ]
+      },
+      {
+        "choice": "warm20",
+        "local_ids": [
+          3
+        ]
+      },
+      {
+        "choice": "warm5",
+        "local_ids": [
+          2
+        ]
+      }
+    ],
+    "gate_invariant_to_magnitudes_and_pilot_values": true,
+    "ordinary_boundary_exact": true
+  },
+  "numerical": {
+    "learned_9101": {
+      "maximum_canonical_warm_error": 4.308555854106998e-15,
+      "maximum_canonical_spectral_error": 4.340620630733749e-15,
+      "maximum_grouped_vs_scalar_error": 2.7012892057857038e-15,
+      "ordinary_bitwise_identity": true,
+      "warm_starts_learned_once_without_spectral": true,
+      "spectral_skips_learned": true
+    },
+    "learned_9102": {
+      "maximum_canonical_warm_error": 4.443666789242129e-15,
+      "maximum_canonical_spectral_error": 4.340620630733749e-15,
+      "maximum_grouped_vs_scalar_error": 2.111066529342944e-15,
+      "ordinary_bitwise_identity": true,
+      "warm_starts_learned_once_without_spectral": true,
+      "spectral_skips_learned": true
+    },
+    "learned_9103": {
+      "maximum_canonical_warm_error": 4.631440094463846e-15,
+      "maximum_canonical_spectral_error": 4.340620630733749e-15,
+      "maximum_grouped_vs_scalar_error": 1.3426356273935429e-15,
+      "ordinary_bitwise_identity": true,
+      "warm_starts_learned_once_without_spectral": true,
+      "spectral_skips_learned": true
+    }
+  },
+  "observable_only_development": true,
+  "disjoint_30fit_9heldout": true,
+  "all17_coupled_SNRs_and_deployment_slice_verified": true,
+  "source_sha256": "6c58548724384da0bef5d136f6d1a63641b73cd4a224766dfa32f43ef87bca62",
+  "runner_sha256": "447864fb74490eb235cdaf6a63fae7fb877dba0c03e40856838f554bb5f7a6bb",
+  "inference_sha256": "8192249bdc18e885669c56af95d131640fe2583e82edd8c051087e380b2031f3",
+  "interpretation": "Implementation checks on synthetic policies and a distinct smoke bank only; no calibration, selection or test tuning."
+}

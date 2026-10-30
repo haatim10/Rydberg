@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "audit_source_sha256": "8b69146bf33c7f55603a75f78f9a10df7e8a2a13a224b236ae616c182aab4870",
+  "selection_sha256": "48b5b44de306e42ab39f73ee07df30b582b49739a501aac784abc43ebe07f3a0",
+  "timing_hashes": {
+    "timing_window1.json": "2d16aad2e107bcf598cfd7ce95ddef71108b12e0ebefc9be39bc4ff41e1c0ef1",
+    "timing_window2.json": "e74cb117b5f6df2bb781a2e767ec9db6742683d8acd7e5d3583c7f3e0176dcc0"
+  },
+  "windows": {
+    "window1": {
+      "p90_ms": 8.6239668,
+      "target_met": true,
+      "weak_warm100_p90_ms": 9.2243084,
+      "raw_calls": 9180
+    },
+    "window2": {
+      "p90_ms": 8.667817,
+      "target_met": true,
+      "weak_warm100_p90_ms": 9.0053125,
+      "raw_calls": 3672
+    }
+  },
+  "literal_cap_ms": 10.74,
+  "target_met_in_both_windows": true,
+  "raw_calls": 12852,
+  "every_sample_route_grid_and_quantile_verified": true,
+  "three_fresh_indices_per_window": true,
+  "scope": "Audit PASS verifies recorded arithmetic and protocol consistency, not target attainment or external host isolation. No timing retries or normalization are performed."
+}

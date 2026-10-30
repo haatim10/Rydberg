@@ -1,0 +1,1860 @@
+{
+  "protocol_sha256": "fc78c5a9924a65d8a466cc82cf99dfb52c742d7509661a8ae020ea45f1b5bca7",
+  "overall": {
+    "perfect_csi": {
+      "ber": 0.009044053819444444,
+      "bootstrap95": [
+        0.008173963758680557,
+        0.009954901801215277
+      ],
+      "evaluated_bits": 1474560,
+      "independent_channel_worlds": 960,
+      "bit_errors": 13336
+    },
+    "learned_9101": {
+      "ber": 0.013205973307291665,
+      "bootstrap95": [
+        0.012023790147569444,
+        0.014408450656467012
+      ],
+      "evaluated_bits": 1474560,
+      "independent_channel_worlds": 960,
+      "bit_errors": 19473
+    },
+    "learned_9102": {
+      "ber": 0.013222249348958333,
+      "bootstrap95": [
+        0.012043202718098956,
+        0.014427371554904518
+      ],
+      "evaluated_bits": 1474560,
+      "independent_channel_worlds": 960,
+      "bit_errors": 19497
+    },
+    "learned_9103": {
+      "ber": 0.013572184244791665,
+      "bootstrap95": [
+        0.012392781575520833,
+        0.014772610134548612
+      ],
+      "evaluated_bits": 1474560,
+      "independent_channel_worlds": 960,
+      "bit_errors": 20013
+    },
+    "em100": {
+      "ber": 0.020999484592013888,
+      "bootstrap95": [
+        0.019468841552734376,
+        0.022514563666449654
+      ],
+      "evaluated_bits": 1474560,
+      "independent_channel_worlds": 960,
+      "bit_errors": 30965
+    },
+    "optshrink": {
+      "ber": 0.013899061414930554,
+      "bootstrap95": [
+        0.012647789849175342,
+        0.015162523057725696
+      ],
+      "evaluated_bits": 1474560,
+      "independent_channel_worlds": 960,
+      "bit_errors": 20495
+    },
+    "learned_mean": {
+      "ber": 0.01333346896701389,
+      "bootstrap95": [
+        0.012146363434968168,
+        0.014532165527343752
+      ],
+      "evaluated_bits": 1474560,
+      "independent_channel_worlds": 960,
+      "errors_per_training_seed": {
+        "learned_9101": 19473,
+        "learned_9102": 19497,
+        "learned_9103": 20013
+      }
+    }
+  },
+  "paired_overall": {
+    "em100": {
+      "learned_minus_comparator_ber": -0.007666015624999999,
+      "bootstrap95": [
+        -0.00817715680157697,
+        -0.007174106174045144
+      ],
+      "learned_better_cells": 10,
+      "total_cells": 15
+    },
+    "optshrink": {
+      "learned_minus_comparator_ber": -0.0005655924479166655,
+      "bootstrap95": [
+        -0.0007771809895833343,
+        -0.0003732130262586829
+      ],
+      "learned_better_cells": 8,
+      "total_cells": 15
+    }
+  },
+  "cells": [
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "perfect_csi",
+      "ber": 0.050628662109375,
+      "bootstrap95": [
+        0.04078114827473956,
+        0.06092478434244791
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 4977,
+      "nmse_db": null,
+      "detector_wall_seconds": 1.012198289623484,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "learned_9101",
+      "ber": 0.06404622395833334,
+      "bootstrap95": [
+        0.05185928344726565,
+        0.07687403361002604
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 6296,
+      "nmse_db": -12.370891220771556,
+      "detector_wall_seconds": 1.004994043847546,
+      "channel_batch_wall_seconds": 0.15357395797036588
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "learned_9102",
+      "ber": 0.063995361328125,
+      "bootstrap95": [
+        0.051727294921875,
+        0.07678248087565105
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 6291,
+      "nmse_db": -12.44340733937782,
+      "detector_wall_seconds": 1.0078862921800464,
+      "channel_batch_wall_seconds": 0.14493754203431308
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "learned_9103",
+      "ber": 0.066680908203125,
+      "bootstrap95": [
+        0.054392496744791685,
+        0.07945760091145834
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 6555,
+      "nmse_db": -11.356037579869936,
+      "detector_wall_seconds": 1.014988130540587,
+      "channel_batch_wall_seconds": 0.1441818749299273
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "em100",
+      "ber": 0.103759765625,
+      "bootstrap95": [
+        0.08835856119791667,
+        0.11945648193359375
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 10200,
+      "nmse_db": -5.575483578018813,
+      "detector_wall_seconds": 1.0333550055511296,
+      "channel_batch_wall_seconds": 0.5158948330208659
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "optshrink",
+      "ber": 0.07065836588541666,
+      "bootstrap95": [
+        0.057351684570312506,
+        0.08420817057291666
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 6946,
+      "nmse_db": -11.082393625773845,
+      "detector_wall_seconds": 1.0180953349918127,
+      "channel_batch_wall_seconds": 0.18557249999139458
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "learned_mean",
+      "ber": 0.06490749782986112,
+      "bootstrap95": [
+        0.052656300862630206,
+        0.07768766615125862
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 6296,
+        "learned_9102": 6291,
+        "learned_9103": 6555
+      },
+      "ber_training_seed_range": [
+        0.063995361328125,
+        0.066680908203125
+      ]
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "perfect_csi",
+      "ber": 0.008168538411458332,
+      "bootstrap95": [
+        0.004638417561848958,
+        0.012461598714192711
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 803,
+      "nmse_db": null,
+      "detector_wall_seconds": 0.9899552556453273,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "learned_9101",
+      "ber": 0.011322021484375,
+      "bootstrap95": [
+        0.006551106770833334,
+        0.017395528157552093
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1113,
+      "nmse_db": -17.00360354303693,
+      "detector_wall_seconds": 0.9755734991049394,
+      "channel_batch_wall_seconds": 0.15003858308773488
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "learned_9102",
+      "ber": 0.011250813802083334,
+      "bootstrap95": [
+        0.006520334879557291,
+        0.017283884684244803
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1106,
+      "nmse_db": -17.291316038178834,
+      "detector_wall_seconds": 0.9748307924019173,
+      "channel_batch_wall_seconds": 0.1525270420825109
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "learned_9103",
+      "ber": 0.0118408203125,
+      "bootstrap95": [
+        0.007100168863932292,
+        0.017720540364583325
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1164,
+      "nmse_db": -15.31934524590515,
+      "detector_wall_seconds": 0.9761358330724761,
+      "channel_batch_wall_seconds": 0.15091654192656279
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "em100",
+      "ber": 0.019358317057291664,
+      "bootstrap95": [
+        0.012532552083333339,
+        0.027428181966145857
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1903,
+      "nmse_db": -10.88715875918718,
+      "detector_wall_seconds": 0.975151703110896,
+      "channel_batch_wall_seconds": 0.5164357910398394
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "optshrink",
+      "ber": 0.013509114583333334,
+      "bootstrap95": [
+        0.008188883463541668,
+        0.019897460937499993
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1328,
+      "nmse_db": -14.160559328474706,
+      "detector_wall_seconds": 1.0145442478824407,
+      "channel_batch_wall_seconds": 0.35261187504511327
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "learned_mean",
+      "ber": 0.011471218532986112,
+      "bootstrap95": [
+        0.0067341274685329845,
+        0.01744291517469618
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 1113,
+        "learned_9102": 1106,
+        "learned_9103": 1164
+      },
+      "ber_training_seed_range": [
+        0.011250813802083334,
+        0.0118408203125
+      ]
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "perfect_csi",
+      "ber": 0.0014750162760416665,
+      "bootstrap95": [
+        0.0003252665201822917,
+        0.0031232198079427093
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 145,
+      "nmse_db": null,
+      "detector_wall_seconds": 0.9900797124719247,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "learned_9101",
+      "ber": 0.0018717447916666665,
+      "bootstrap95": [
+        0.00042699178059895835,
+        0.003987884521484375
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 184,
+      "nmse_db": -22.53349305768173,
+      "detector_wall_seconds": 0.9893612915184349,
+      "channel_batch_wall_seconds": 0.1581687080906704
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "learned_9102",
+      "ber": 0.0019022623697916665,
+      "bootstrap95": [
+        0.000406646728515625,
+        0.004099782307942708
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 187,
+      "nmse_db": -22.8101870279426,
+      "detector_wall_seconds": 1.052149667055346,
+      "channel_batch_wall_seconds": 0.1555219580186531
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "learned_9103",
+      "ber": 0.002054850260416667,
+      "bootstrap95": [
+        0.00045776367187500005,
+        0.004354095458984376
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 202,
+      "nmse_db": -20.826334153915255,
+      "detector_wall_seconds": 0.9841368739726022,
+      "channel_batch_wall_seconds": 0.14810341701377183
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "em100",
+      "ber": 0.0032145182291666665,
+      "bootstrap95": [
+        0.0008036295572916667,
+        0.006601969401041667
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 316,
+      "nmse_db": -15.986172810952803,
+      "detector_wall_seconds": 0.9854203342692927,
+      "channel_batch_wall_seconds": 0.5122281250078231
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "optshrink",
+      "ber": 0.002614339192708333,
+      "bootstrap95": [
+        0.0006306966145833334,
+        0.00538152058919271
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 257,
+      "nmse_db": -18.267481289171446,
+      "detector_wall_seconds": 0.9755860838340595,
+      "channel_batch_wall_seconds": 0.3270771249663085
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "learned_mean",
+      "ber": 0.001942952473958333,
+      "bootstrap95": [
+        0.00042716132269965276,
+        0.004150644938151043
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 184,
+        "learned_9102": 187,
+        "learned_9103": 202
+      },
+      "ber_training_seed_range": [
+        0.0018717447916666665,
+        0.002054850260416667
+      ]
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "perfect_csi",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        6.103515625e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 2,
+      "nmse_db": null,
+      "detector_wall_seconds": 0.9946741650346667,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "learned_9101",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        6.103515625e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 2,
+      "nmse_db": -27.906629627559486,
+      "detector_wall_seconds": 0.9974684159969911,
+      "channel_batch_wall_seconds": 0.15178054198622704
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "learned_9102",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        6.103515625e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 2,
+      "nmse_db": -27.813193496582965,
+      "detector_wall_seconds": 0.9789507052628323,
+      "channel_batch_wall_seconds": 0.14958533295430243
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "learned_9103",
+      "ber": 5.0862630208333336e-05,
+      "bootstrap95": [
+        0.0,
+        0.000152587890625
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 5,
+      "nmse_db": -26.888274346013095,
+      "detector_wall_seconds": 1.0009835831588134,
+      "channel_batch_wall_seconds": 0.13830354192759842
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "em100",
+      "ber": 0.00014241536458333332,
+      "bootstrap95": [
+        1.0172526041666666e-05,
+        0.0003458658854166667
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 14,
+      "nmse_db": -20.96461864610777,
+      "detector_wall_seconds": 0.9748715842142701,
+      "channel_batch_wall_seconds": 0.5183643749915063
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "optshrink",
+      "ber": 7.120768229166667e-05,
+      "bootstrap95": [
+        0.0,
+        0.00020370483398437594
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 7,
+      "nmse_db": -23.139400248601575,
+      "detector_wall_seconds": 0.9703777900431305,
+      "channel_batch_wall_seconds": 0.7852728749858215
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "learned_mean",
+      "ber": 3.0517578125e-05,
+      "bootstrap95": [
+        0.0,
+        9.1552734375e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 2,
+        "learned_9102": 2,
+        "learned_9103": 5
+      },
+      "ber_training_seed_range": [
+        2.0345052083333332e-05,
+        5.0862630208333336e-05
+      ]
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "perfect_csi",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": null,
+      "detector_wall_seconds": 0.9738545016152784,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "learned_9101",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -32.46744045096523,
+      "detector_wall_seconds": 0.9808115784544498,
+      "channel_batch_wall_seconds": 0.19921420805621892
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "learned_9102",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -31.730822257377596,
+      "detector_wall_seconds": 0.9833803782239556,
+      "channel_batch_wall_seconds": 0.16321033297572285
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "learned_9103",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -32.92162956407314,
+      "detector_wall_seconds": 1.032999956747517,
+      "channel_batch_wall_seconds": 0.14526974991895258
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "em100",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -26.181248612019136,
+      "detector_wall_seconds": 0.9733804191928357,
+      "channel_batch_wall_seconds": 0.5353776660049334
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "optshrink",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -27.599965064277082,
+      "detector_wall_seconds": 0.9727928302017972,
+      "channel_batch_wall_seconds": 0.9106321249855682
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "learned_mean",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 0,
+        "learned_9102": 0,
+        "learned_9103": 0
+      },
+      "ber_training_seed_range": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "perfect_csi",
+      "ber": 0.03636678059895833,
+      "bootstrap95": [
+        0.030914306640625007,
+        0.042094421386718754
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 3575,
+      "nmse_db": null,
+      "detector_wall_seconds": 1.0254563759081066,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "learned_9101",
+      "ber": 0.05662027994791667,
+      "bootstrap95": [
+        0.048390706380208336,
+        0.06504338582356771
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 5566,
+      "nmse_db": -9.965346840079729,
+      "detector_wall_seconds": 1.0184533761348575,
+      "channel_batch_wall_seconds": 0.15159179200418293
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "learned_9102",
+      "ber": 0.056640625,
+      "bootstrap95": [
+        0.0483385721842448,
+        0.06518580118815104
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 5568,
+      "nmse_db": -9.923859552943412,
+      "detector_wall_seconds": 1.0169244149001315,
+      "channel_batch_wall_seconds": 0.15126554109156132
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "learned_9103",
+      "ber": 0.05763753255208333,
+      "bootstrap95": [
+        0.049538675944010416,
+        0.06583684285481772
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 5666,
+      "nmse_db": -9.73572376168217,
+      "detector_wall_seconds": 1.026183498208411,
+      "channel_batch_wall_seconds": 0.15076237497851253
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "em100",
+      "ber": 0.08931477864583334,
+      "bootstrap95": [
+        0.07861328125000004,
+        0.10001678466796876
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 8780,
+      "nmse_db": -5.3395504076865405,
+      "detector_wall_seconds": 1.022455837461166,
+      "channel_batch_wall_seconds": 0.5327343749813735
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "optshrink",
+      "ber": 0.056925455729166664,
+      "bootstrap95": [
+        0.04853286743164064,
+        0.0654296875
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 5596,
+      "nmse_db": -10.238746599734105,
+      "detector_wall_seconds": 1.0212725419551134,
+      "channel_batch_wall_seconds": 0.17649862507823855
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "learned_mean",
+      "ber": 0.05696614583333333,
+      "bootstrap95": [
+        0.04874996609157985,
+        0.06533838907877604
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 5566,
+        "learned_9102": 5568,
+        "learned_9103": 5666
+      },
+      "ber_training_seed_range": [
+        0.05662027994791667,
+        0.05763753255208333
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "perfect_csi",
+      "ber": 0.0016581217447916665,
+      "bootstrap95": [
+        0.00103759765625,
+        0.0024312337239583335
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 163,
+      "nmse_db": null,
+      "detector_wall_seconds": 0.9916969556361437,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "learned_9101",
+      "ber": 0.003336588541666667,
+      "bootstrap95": [
+        0.0022478739420572916,
+        0.004577636718750001
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 328,
+      "nmse_db": -15.342738872965313,
+      "detector_wall_seconds": 0.9808514534961432,
+      "channel_batch_wall_seconds": 0.15411816607229412
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "learned_9102",
+      "ber": 0.003316243489583333,
+      "bootstrap95": [
+        0.002237701416015625,
+        0.00455754597981771
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 326,
+      "nmse_db": -15.54112501885612,
+      "detector_wall_seconds": 1.008757539675571,
+      "channel_batch_wall_seconds": 0.14987791702151299
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "learned_9103",
+      "ber": 0.004099527994791666,
+      "bootstrap95": [
+        0.002888743082682292,
+        0.005452473958333334
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 403,
+      "nmse_db": -14.183584107322337,
+      "detector_wall_seconds": 1.0129085042281076,
+      "channel_batch_wall_seconds": 0.1478389579569921
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "em100",
+      "ber": 0.007486979166666666,
+      "bootstrap95": [
+        0.005482991536458336,
+        0.009663899739583334
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 736,
+      "nmse_db": -10.842742635578777,
+      "detector_wall_seconds": 1.0004805870121345,
+      "channel_batch_wall_seconds": 0.504775750101544
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "optshrink",
+      "ber": 0.004170735677083333,
+      "bootstrap95": [
+        0.002888997395833333,
+        0.005615234375000001
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 410,
+      "nmse_db": -14.13514545583839,
+      "detector_wall_seconds": 0.9794748368440196,
+      "channel_batch_wall_seconds": 0.3369987920159474
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "learned_mean",
+      "ber": 0.0035841200086805555,
+      "bootstrap95": [
+        0.0024617513020833343,
+        0.004842207166883679
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 328,
+        "learned_9102": 326,
+        "learned_9103": 403
+      },
+      "ber_training_seed_range": [
+        0.003316243489583333,
+        0.004099527994791666
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "perfect_csi",
+      "ber": 0.00048828125,
+      "bootstrap95": [
+        4.0690104166666664e-05,
+        0.001220703125
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 48,
+      "nmse_db": null,
+      "detector_wall_seconds": 0.9507659183582291,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "learned_9101",
+      "ber": 0.0007832845052083333,
+      "bootstrap95": [
+        4.0690104166666664e-05,
+        0.001983642578125
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 77,
+      "nmse_db": -19.943777598092097,
+      "detector_wall_seconds": 0.9756249192869291,
+      "channel_batch_wall_seconds": 0.14958308299537748
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "learned_9102",
+      "ber": 0.0007832845052083333,
+      "bootstrap95": [
+        4.0690104166666664e-05,
+        0.00201416015625
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 77,
+      "nmse_db": -20.107729516346396,
+      "detector_wall_seconds": 0.9885167080210522,
+      "channel_batch_wall_seconds": 0.14726570795755833
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "learned_9103",
+      "ber": 0.0008443196614583334,
+      "bootstrap95": [
+        7.120768229166666e-05,
+        0.0020345052083333335
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 83,
+      "nmse_db": -18.898599669999793,
+      "detector_wall_seconds": 0.9749707088340074,
+      "channel_batch_wall_seconds": 0.145266417064704
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "em100",
+      "ber": 0.0009867350260416665,
+      "bootstrap95": [
+        0.00011189778645833334,
+        0.002248128255208333
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 97,
+      "nmse_db": -15.697753070329343,
+      "detector_wall_seconds": 0.988728042691946,
+      "channel_batch_wall_seconds": 0.49142587499227375
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "optshrink",
+      "ber": 0.0008443196614583333,
+      "bootstrap95": [
+        8.138020833333334e-05,
+        0.001963297526041667
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 83,
+      "nmse_db": -17.76456794076505,
+      "detector_wall_seconds": 0.9793689619982615,
+      "channel_batch_wall_seconds": 0.3212637919932604
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "learned_mean",
+      "ber": 0.0008036295572916667,
+      "bootstrap95": [
+        5.086263020833333e-05,
+        0.0020073784722222225
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 77,
+        "learned_9102": 77,
+        "learned_9103": 83
+      },
+      "ber_training_seed_range": [
+        0.0007832845052083333,
+        0.0008443196614583334
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "perfect_csi",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1,
+      "nmse_db": null,
+      "detector_wall_seconds": 0.9928437491180375,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "learned_9101",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1,
+      "nmse_db": -25.225791612989564,
+      "detector_wall_seconds": 0.9831251244759187,
+      "channel_batch_wall_seconds": 0.15150929195806384
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "learned_9102",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1,
+      "nmse_db": -24.873325425561706,
+      "detector_wall_seconds": 0.9847378361737356,
+      "channel_batch_wall_seconds": 0.14800966705661267
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "learned_9103",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1,
+      "nmse_db": -24.744719760459727,
+      "detector_wall_seconds": 0.9838684228016064,
+      "channel_batch_wall_seconds": 0.14821537490934134
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "em100",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1,
+      "nmse_db": -20.70559759913884,
+      "detector_wall_seconds": 0.977096127695404,
+      "channel_batch_wall_seconds": 0.49179016693960875
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "optshrink",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1,
+      "nmse_db": -22.856264831861264,
+      "detector_wall_seconds": 1.0193006620975211,
+      "channel_batch_wall_seconds": 0.7768713340628892
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "learned_mean",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 1,
+        "learned_9102": 1,
+        "learned_9103": 1
+      },
+      "ber_training_seed_range": [
+        1.0172526041666666e-05,
+        1.0172526041666666e-05
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "perfect_csi",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": null,
+      "detector_wall_seconds": 1.0450331282336265,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "learned_9101",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -29.655611584505067,
+      "detector_wall_seconds": 1.1349165430292487,
+      "channel_batch_wall_seconds": 0.14690466702450067
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "learned_9102",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -28.34957275321891,
+      "detector_wall_seconds": 1.0187538345344365,
+      "channel_batch_wall_seconds": 0.14924400008749217
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "learned_9103",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -30.509474767740294,
+      "detector_wall_seconds": 0.9769351709401235,
+      "channel_batch_wall_seconds": 0.14816774998325855
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "em100",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -25.80677159649765,
+      "detector_wall_seconds": 0.9861765872919932,
+      "channel_batch_wall_seconds": 0.4929267920088023
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "optshrink",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -27.308763892295463,
+      "detector_wall_seconds": 0.9811356232967228,
+      "channel_batch_wall_seconds": 0.7665468330960721
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "learned_mean",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 0,
+        "learned_9102": 0,
+        "learned_9103": 0
+      },
+      "ber_training_seed_range": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "perfect_csi",
+      "ber": 0.034647623697916664,
+      "bootstrap95": [
+        0.029958089192708346,
+        0.03973388671875
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 3406,
+      "nmse_db": null,
+      "detector_wall_seconds": 1.037737995153293,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "learned_9101",
+      "ber": 0.0562744140625,
+      "bootstrap95": [
+        0.04888839721679687,
+        0.06380233764648438
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 5532,
+      "nmse_db": -9.32079065546718,
+      "detector_wall_seconds": 1.0445042052306235,
+      "channel_batch_wall_seconds": 0.15627945796586573
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "learned_9102",
+      "ber": 0.05659993489583333,
+      "bootstrap95": [
+        0.04916381835937501,
+        0.06415837605794271
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 5564,
+      "nmse_db": -9.258113335935787,
+      "detector_wall_seconds": 1.0214015019591898,
+      "channel_batch_wall_seconds": 0.1517920410260558
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "learned_9103",
+      "ber": 0.056182861328125,
+      "bootstrap95": [
+        0.04912261962890626,
+        0.06368001302083331
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 5523,
+      "nmse_db": -9.375206296210692,
+      "detector_wall_seconds": 1.0209373354446143,
+      "channel_batch_wall_seconds": 0.15163058298639953
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "em100",
+      "ber": 0.08351643880208333,
+      "bootstrap95": [
+        0.07387161254882815,
+        0.09357706705729163
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 8210,
+      "nmse_db": -5.408411944755205,
+      "detector_wall_seconds": 1.036067250650376,
+      "channel_batch_wall_seconds": 0.5197494169697165
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "optshrink",
+      "ber": 0.055379231770833336,
+      "bootstrap95": [
+        0.04813563028971354,
+        0.06298828125
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 5444,
+      "nmse_db": -9.69928207523149,
+      "detector_wall_seconds": 1.0157052100403234,
+      "channel_batch_wall_seconds": 0.18500845797825605
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "learned_mean",
+      "ber": 0.05635240342881945,
+      "bootstrap95": [
+        0.04905183580186631,
+        0.06376817491319443
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 5532,
+        "learned_9102": 5564,
+        "learned_9103": 5523
+      },
+      "ber_training_seed_range": [
+        0.056182861328125,
+        0.05659993489583333
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "perfect_csi",
+      "ber": 0.002176920572916667,
+      "bootstrap95": [
+        0.0015459696451822916,
+        0.0028991699218749996
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 214,
+      "nmse_db": null,
+      "detector_wall_seconds": 1.015530706383288,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "learned_9101",
+      "ber": 0.0037943522135416665,
+      "bootstrap95": [
+        0.002675374348958334,
+        0.005035400390624998
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 373,
+      "nmse_db": -14.36501945638225,
+      "detector_wall_seconds": 0.9661242938600481,
+      "channel_batch_wall_seconds": 0.15026320808101445
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "learned_9102",
+      "ber": 0.003794352213541666,
+      "bootstrap95": [
+        0.0026753743489583335,
+        0.005025227864583334
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 373,
+      "nmse_db": -14.46314563818598,
+      "detector_wall_seconds": 1.0161604199092835,
+      "channel_batch_wall_seconds": 0.15055408305488527
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "learned_9103",
+      "ber": 0.004150390625,
+      "bootstrap95": [
+        0.0029805501302083326,
+        0.005442301432291665
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 408,
+      "nmse_db": -13.46418711636705,
+      "detector_wall_seconds": 0.979636331088841,
+      "channel_batch_wall_seconds": 0.14864508295431733
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "em100",
+      "ber": 0.007039388020833333,
+      "bootstrap95": [
+        0.005177561442057291,
+        0.009053548177083334
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 692,
+      "nmse_db": -10.50536478990952,
+      "detector_wall_seconds": 0.985821585636586,
+      "channel_batch_wall_seconds": 0.49669970804825425
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "optshrink",
+      "ber": 0.004241943359375,
+      "bootstrap95": [
+        0.0030314127604166657,
+        0.005554453531901043
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 417,
+      "nmse_db": -13.470051131215152,
+      "detector_wall_seconds": 0.9822953765979037,
+      "channel_batch_wall_seconds": 0.3317350000143051
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "learned_mean",
+      "ber": 0.003913031684027778,
+      "bootstrap95": [
+        0.0027804904513888894,
+        0.005157555474175348
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 373,
+        "learned_9102": 373,
+        "learned_9103": 408
+      },
+      "ber_training_seed_range": [
+        0.003794352213541666,
+        0.004150390625
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "perfect_csi",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        5.086263020833333e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 2,
+      "nmse_db": null,
+      "detector_wall_seconds": 1.0074399589793757,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "learned_9101",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 1,
+      "nmse_db": -19.87832660101018,
+      "detector_wall_seconds": 0.9970875848084688,
+      "channel_batch_wall_seconds": 0.15642495802603662
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "learned_9102",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        5.086263020833333e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 2,
+      "nmse_db": -19.968310480855045,
+      "detector_wall_seconds": 0.9923150835093111,
+      "channel_batch_wall_seconds": 0.14989141700789332
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "learned_9103",
+      "ber": 3.0517578125e-05,
+      "bootstrap95": [
+        0.0,
+        7.120768229166666e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 3,
+      "nmse_db": -18.966632468110625,
+      "detector_wall_seconds": 0.9907475736690685,
+      "channel_batch_wall_seconds": 0.14715504192281514
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "em100",
+      "ber": 0.00016276041666666666,
+      "bootstrap95": [
+        3.0517578125e-05,
+        0.00035603841145833337
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 16,
+      "nmse_db": -15.960700801126395,
+      "detector_wall_seconds": 0.9906587098957971,
+      "channel_batch_wall_seconds": 0.49880400008987635
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "optshrink",
+      "ber": 6.103515624999999e-05,
+      "bootstrap95": [
+        1.0172526041666666e-05,
+        0.00014241536458333332
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 6,
+      "nmse_db": -18.159897928504996,
+      "detector_wall_seconds": 0.9856425051111728,
+      "channel_batch_wall_seconds": 0.3200340830953792
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "learned_mean",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        4.7471788194444445e-05
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 1,
+        "learned_9102": 2,
+        "learned_9103": 3
+      },
+      "ber_training_seed_range": [
+        1.0172526041666666e-05,
+        3.0517578125e-05
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "perfect_csi",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": null,
+      "detector_wall_seconds": 0.9743539589690045,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "learned_9101",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -24.454302096719296,
+      "detector_wall_seconds": 1.006821877323091,
+      "channel_batch_wall_seconds": 0.14786658308003098
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "learned_9102",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -23.909297761253107,
+      "detector_wall_seconds": 0.9905389617197216,
+      "channel_batch_wall_seconds": 0.149334832909517
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "learned_9103",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -24.180624530287446,
+      "detector_wall_seconds": 0.9964920836500823,
+      "channel_batch_wall_seconds": 0.14918833307456225
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "em100",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -20.563378103597238,
+      "detector_wall_seconds": 0.9798223323887214,
+      "channel_batch_wall_seconds": 0.49366754095535725
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "optshrink",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -22.705975248417623,
+      "detector_wall_seconds": 0.9788964161416516,
+      "channel_batch_wall_seconds": 0.7774399169720709
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "learned_mean",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 0,
+        "learned_9102": 0,
+        "learned_9103": 0
+      },
+      "ber_training_seed_range": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "perfect_csi",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": null,
+      "detector_wall_seconds": 0.9815194167895243,
+      "channel_batch_wall_seconds": 0.0
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "learned_9101",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -29.199238996045516,
+      "detector_wall_seconds": 0.9972839145921171,
+      "channel_batch_wall_seconds": 0.15232474997173995
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "learned_9102",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -27.81216331922606,
+      "detector_wall_seconds": 0.979632294154726,
+      "channel_batch_wall_seconds": 0.14623249997384846
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "learned_9103",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -30.038390511389878,
+      "detector_wall_seconds": 0.991368290502578,
+      "channel_batch_wall_seconds": 0.14731270901393145
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "em100",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -25.984052542346575,
+      "detector_wall_seconds": 0.9865049193613231,
+      "channel_batch_wall_seconds": 0.510134584037587
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "optshrink",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "bit_errors": 0,
+      "nmse_db": -27.456907712387544,
+      "detector_wall_seconds": 1.0063830793369561,
+      "channel_batch_wall_seconds": 0.7670018750941381
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "learned_mean",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "independent_channel_worlds": 64,
+      "evaluated_bits": 98304,
+      "errors_per_training_seed": {
+        "learned_9101": 0,
+        "learned_9102": 0,
+        "learned_9103": 0
+      },
+      "ber_training_seed_range": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "uncertainty": "Channel-block bootstrap, conditional on the fixed trained models. Three neural seeds are not counted as independent test worlds.",
+  "zero_error_policy": "Zero observed errors are not zero BER. One error per cell corresponds to 1/98304 bits; a zero bootstrap interval is uninformative about unseen rare channel failures.",
+  "timing_note": "Observed wall time during potentially concurrent studies; not a hardware speed comparison. Same exhaustive detector for all methods.",
+  "scope": "Uncoded, K=3, unit-power QPSK, fixed RSR12, N32/P30, synthetic ULA channels; no claim of coded throughput or hardware validation."
+}

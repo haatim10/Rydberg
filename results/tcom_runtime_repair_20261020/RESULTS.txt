@@ -1,0 +1,101 @@
+RUNTIME IMPLEMENTATION COMPARISON — FRESH FROZEN EVALUATION
+The paper has not been updated. All earlier sources, weights, policies and results remain unchanged.
+
+IMPLEMENTATION
+The same frozen 188-parameter learned estimator now executes in NumPy/SciPy float64/complex128. It retains all 10 stages, observable features, learned weights, posterior functions, and smooth Hankel solves. Pilot-only linear algebra and shape constants are reused; framework overhead is reduced.
+All continuation budgets (including 100), initializations, lookup choices and final noise-scaled filters are unchanged. No retraining, new sparse selection, precision reduction, posterior approximation, early stopping or cached observation answers.
+Every learned baseline uses the same optimized learned kernel. Canonical latest is an explicit implementation control. EM100 and sparse kernels are unchanged. prior_compact and compact_sparse are identical controls, not independent evidence.
+
+FIXED RUNTIME TARGET
+Both prespecified whole-grid p90 windows <=10.74 ms: True. Audit validity is separate from target acceptance.
+Window1: native whole-grid p90=8.623967ms; canonical=10.813333ms; native weak-warm100 p90=9.224308ms; compact=5.505584ms.
+  Native conditional p90 above the pooled target: {}
+  Native per-fit whole-grid p90: {"9101": 8.6293916, "9102": 8.6181166, "9103": 8.625967000000001}
+Window2: native whole-grid p90=8.667817ms; canonical=10.754034ms; native weak-warm100 p90=9.005313ms; compact=5.527250ms.
+  Native conditional p90 above the pooled target: {}
+  Native per-fit whole-grid p90: {"9101": 8.6688414, "9102": 8.672183200000001, "9103": 8.652183599999999}
+Timing uses batch size one and one CPU thread, with complete calls including conversion, dispatch, initialization, learned inference, EM and filtering; only fixed loading/shape constants are outside the warm call. Three fresh timing indices per full 153-condition window. Window 1 precedes fresh accuracy generation; window 2 follows completion of all owned accuracy workers. No sentinel normalization, moving budget or repeated attempts until passing.
+
+NUMERICAL PRESERVATION
+All 153 main conditions passed the frozen coefficient tolerance atol=rtol=1e-10. Maximum absolute native/canonical channel difference=6.6597188757e-14; bitwise-identical condition/fit arrays=117/459.
+The 54 additional dense boundary conditions are audited separately and excluded from main-grid weighting. Numerical equivalence is not a new accuracy gain or a proof of population BER equivalence.
+
+FRESH ACCURACY AND RUNTIME COMPARISONS
+NMSE is equal-cell mean of dB ratio-of-sums; BER is percent. Runtime is within-region p90 from timing window1. Three fits average individual metrics, not predictions.
+
+ALL 153 CONDITIONS
+Method                                       NMSEdB         BER%        p90ms
+Retrained learned only                   -26.134616     0.604696     2.849208
+Old EM100 bypass                         -33.538394     0.500253     5.183292
+Earlier transition repair                -36.303866     0.498844     8.713192
+Canonical latest                         -37.876099     0.498844    10.813333
+Native latest (same algorithm)           -37.876099     0.498844     8.623967
+Direct spectral EM100                    -30.375127     0.805598     5.316950
+Frozen compact sparse/EM                 -31.652249     0.468215     5.505584
+Full sparse                              -32.538084     0.468987   109.471650
+OptShrink                                -35.511549     0.525394    46.320325
+
+WEAK REFERENCE WARM100: 18 CONDITIONS
+Method                                       NMSEdB         BER%        p90ms
+Retrained learned only                   -19.442314     0.525241     2.838634
+Old EM100 bypass                         -24.265337     0.010738     5.332525
+Earlier transition repair                -47.154570     0.000075     9.086533
+Canonical latest                         -47.154570     0.000075    11.536854
+Native latest (same algorithm)           -47.154570     0.000075     9.224308
+Direct spectral EM100                    -24.265337     0.010738     5.276796
+Frozen compact sparse/EM                 -24.404310     0.010512     5.213708
+Full sparse                              -24.930933     0.010851   108.399167
+OptShrink                                -44.243011     0.002939    47.068895
+
+STRONG REFERENCE 40–60 dB: 30 CONDITIONS
+Method                                       NMSEdB         BER%        p90ms
+Retrained learned only                   -21.245575     0.223954     2.840442
+Old EM100 bypass                         -53.411699     0.000000     5.341046
+Earlier transition repair                -53.411698     0.000000     8.955458
+Canonical latest                         -58.542608     0.000000     5.639179
+Native latest (same algorithm)           -58.542608     0.000000     5.592884
+Direct spectral EM100                    -53.411699     0.000000     5.244325
+Frozen compact sparse/EM                 -53.411699     0.000000     5.298092
+Full sparse                              -51.746553     0.000000   108.671863
+OptShrink                                -54.979727     0.000000    24.150750
+
+EARLIER STRONG TRANSITION: 18 CONDITIONS
+Method                                       NMSEdB         BER%        p90ms
+Retrained learned only                   -36.412819     0.000000     2.848367
+Old EM100 bypass                         -40.911701     0.000000     5.352029
+Earlier transition repair                -40.600883     0.000000     4.082354
+Canonical latest                         -45.413344     0.000000     5.836212
+Native latest (same algorithm)           -45.413344     0.000000     5.715209
+Direct spectral EM100                    -40.911701     0.000000     5.247138
+Frozen compact sparse/EM                 -40.911701     0.000000     5.380142
+Full sparse                              -41.654489     0.000000   109.007888
+OptShrink                                -42.482269     0.000000    24.805725
+
+CANONICAL VERSUS NATIVE
+all: NMSE gain=0dB, Bonferroni4 interval=[-1.4210854715202004e-14, 1.4210854715202004e-14]; BER reduction=0, Bonferroni4 interval=[0.0, 0.0].
+weak_warm100: NMSE gain=0dB, Bonferroni4 interval=[-1.4210854715202004e-14, 1.4210854715202004e-14]; BER reduction=0, Bonferroni4 interval=[0.0, 0.0].
+
+CELLWISE BASELINE COMPARISONS
+repair_vs_current: mean-negative=0/153; descriptive pointwise95 harm=0; worst=L2_rsr20_snr30 (-3.55271368e-14dB).
+repair_vs_old: mean-negative=0/153; descriptive pointwise95 harm=0; worst=L2_rsr5_snr0 (+0dB).
+repair_vs_prior: mean-negative=0/153; descriptive pointwise95 harm=0; worst=L2_rsr5_snr0 (+0dB).
+repair_vs_original: mean-negative=0/153; descriptive pointwise95 harm=0; worst=L2_rsr5_snr0 (+0dB).
+repair_vs_em100: mean-negative=2/153; descriptive pointwise95 harm=2; worst=random3to7_rsr12_snr30 (-0.654707832dB).
+  Mean-negative cells: random3to7_rsr12_snr30, random3to7_rsr20_snr30
+repair_vs_compact: mean-negative=20/153; descriptive pointwise95 harm=20; worst=L4_rsr5_snr0 (-1.27239792dB).
+  Mean-negative cells: L2_rsr5_snr0, L2_rsr5_snr5, L2_rsr12_snr0, L2_rsr12_snr5, L2_rsr20_snr0, L2_rsr20_snr5, L4_rsr5_snr0, L4_rsr5_snr5, L4_rsr12_snr0, L4_rsr12_snr5, L4_rsr20_snr0, L4_rsr20_snr5, random3to7_rsr5_snr0, random3to7_rsr5_snr5, random3to7_rsr12_snr0, random3to7_rsr12_snr5, random3to7_rsr12_snr30, random3to7_rsr20_snr0, random3to7_rsr20_snr5, random3to7_rsr20_snr30
+These are paired implementation checks, not claims of scientific superiority. Bonferroni4 applies only to the canonical/native contrast in two regions times NMSE/BER. All other intervals and baseline comparisons are descriptive.
+BER uses all 64 joint Gray-QPSK vectors per channel, identical fresh data magnitudes/reference/noise and the same exact Rician magnitude-domain detector. Non-bitwise channel arrays are independently decoded. Zero errors and collapsed bootstrap intervals do not establish zero BER or noninferiority; bits within a channel are not independent channel trials.
+
+INTERPRETATION FOR THE PAPER
+This work supports the accuracy-versus-computation evidence for the existing estimator. It is an implementation contribution, not a new estimator principle. High-SNR gains belong to the classical spectral EM100 plus noise-scaled Hankel branch; they are not attributable to the learned controller.
+The separately developed observable paired raw-channel-MSE criterion currently calibrates policies offline. Its moment identity is related to established nonlinear-estimation constructions; a distinct contribution needs careful prior-art positioning and stronger analysis of selection reliability. The bare identity is not claimed as a theoretical breakthrough.
+
+PROVENANCE
+Protocol SHA256: fdecfdbd36f315a01a741911fbf42b9644eeb76ff7095121c6e9f3c815305fbd
+Policy SHA256: 48b5b44de306e42ab39f73ee07df30b582b49739a501aac784abc43ebe07f3a0
+BER protocol SHA256: 5eb03b708bf23467cab522e7f628466db64321c774c08850d65c7f5e4b94b65c
+Fresh seeds: test 2026102002, data 2026102003, timing 2026102004, holdout 2026102005, bootstrap 2026102009.
+All independent audits passed: selection, test, summary, boundary, timing, ber
+Main test: 128 anchors for each of 9 reference/path settings, reused across 17 SNRs; 153 conditions. Bootstrap: 20,000 paired local-index resamples, 384 coupled clusters. Boundary: 54 additional conditions.
+Results remain conditional on the simulated channel distribution, known reference, correctly supplied noise variance, fixed CPU/library environment and tested grids.

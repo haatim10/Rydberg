@@ -1,0 +1,693 @@
+STRONG-REFERENCE TRANSITION CORRECTION: FRESH NMSE, BER AND RUNTIME
+Completed experiment. The manuscript, prior studies and retrained checkpoints remain unchanged.
+
+KEY RESULTS
+Primary target NMSE gains: +0.5077 dB versus old bypass and +0.6868 dB versus previous repair. Positive means improvement.
+Primary observed BER: old bypass 0.000000%, previous repair 0.000000%, correction 0.000000%.
+Primary p90 latency: correction 5.439 ms, previous repair 6.267 ms, old bypass 5.331 ms.
+Overall correction p90 is 10.9099 ms versus the calibrated cap of 10.8544 ms (+0.51%). Matched sparse/EM p90 is 5.6126 ms, below both the calibration cap and fresh correction p90.
+Exposed historical replay: 0/10 flagged conditions remain worse than old bypass. This is a regression diagnostic, not independent evidence.
+Fresh historical-condition subset: 0/10 mean NMSE losses versus old bypass. This reuses the condition names, not the exposed channels.
+Fresh full-grid trade-offs: 0/153 negative mean gains versus old bypass; 18/153 versus previous repair; 1/153 versus original model. All raw gains and descriptive intervals are retained below.
+Previous-repair losses comprise 8 target conditions and 10 conditions outside the target; the latter have losses no larger than 3.65340512e-06 dB. The worst previous-repair loss is 0.7837 dB at L2_rsr20_snr35.
+Remaining target-region comparator gaps (positive means correction has worse NMSE): +0.2195 dB versus full sparse and +1.0587 dB versus OptShrink. The correction does not dominate all baselines.
+The weak-reference correction is preserved exactly across all 51 weak-reference conditions. Ordinary-range outputs also remain exact identities.
+Every adverse condition, fitted-model variation, zero-error limitation and timing-cap comparison is retained below.
+
+WHAT CHANGED AND HOW IT WAS SELECTED
+The existing three 30-pilot trained models are frozen. Reference bin 5 retains the previous repair exactly. Stronger reference bins retain the original estimator through the nearest 30-dB SNR bin and use canonical spectral EM100 from the nearest 40-dB bin upward.
+Only reference bins 12/20 at nominal SNR 32.5, 35 and 37.5 are recalibrated. The candidate menu contains the original estimate, 1/2/3/5/10/20/100 exact EM updates initialized from it, and spectral EM100.
+A development-only screen on the preceding development bank motivated the short tails. New selection uses 384 fresh anchors per path regime/reference, with 30 fitting and 9 held-out pilots. Deployment still uses exactly 30 pilots.
+A candidate must have a one-sided 95% paired-bootstrap upper bound on held-out NLL change at or below zero against BOTH the original model and old bypass, in EACH path regime. Three fit deltas are averaged within anchor before 4,000 coupled resamples. Neither incumbent is automatically admissible.
+These are individual development-screening bounds, without simultaneous coverage across candidate/bin searches. They are not a population noninferiority guarantee; confirmation uses the separately frozen fresh test and its prespecified primary outcomes.
+Among strictly admissible candidates, a fixed preference order selects within 0.001 mean NLL of the minimum. This preference band does not relax either guard and is not an NMSE/BER equivalence margin or measured runtime ordering.
+If the dual intersection is empty, old bypass is the declared priority fallback. Such a fallback is explicitly marked; it does not satisfy a missing dual guard or guarantee preservation of the original/previous repair.
+Routing uses supplied noise variance, known reference power and nearest declared bins. It never uses true channels or path counts. Path regimes are calibration strata and reporting labels only.
+All choices are frozen before fresh test generation. The new sparse/EM family uses the same development observations: 384 anchors per regime in the six calibrated bins, 96 elsewhere. Runtime eligibility is calibrated after correction selection and before sparse selection.
+The full sparse, OptShrink and previous compact policies remain frozen transfer controls, with their original calibration scope. The compact menu is a limited declared family, not a globally optimal sparse method.
+
+FRESH CONFIRMATION DESIGN
+The fresh test contains 1,152 channel/reference anchors, reused across 17 SNRs for 19,584 operating cases in 153 conditions. All estimators share pilot observations, data observations and the magnitude-domain Rician detector.
+The primary region contains all 18 conditions at references 12/20 and SNR 32.5/35/37.5, including all three path regimes. Correction versus old bypass and versus previous repair, times NMSE and BER, form four prespecified outcomes.
+Primary intervals use 20,000 paired whole-anchor resamples and two-sided 98.75% percentile intervals for nominal 95% Bonferroni coverage across four outcomes. Shared indices preserve coupling across references, SNRs, methods and fits within each regime.
+Resampling uses 384 local-index clusters (128 in each path regime). The 1,152 channel/reference combinations and 19,584 operating cases are not treated as independent channel draws.
+Intervals condition on the fixed checkpoints, selected policies and test grid; they exclude training-population and selection uncertainty. Other regions, subgroups and individual-cell intervals are descriptive pointwise 95%.
+NMSE is the equal-condition mean of dB ratio-of-sums scores. Pooled linear NMSE is also reported. Three-fit groups average individual metrics, never channel estimates; they do not triple independent channels.
+BER exhausts all 64 joint Gray-QPSK vectors per channel with common independent data noise, using the same exact 64-hypothesis detector. There are 884,736 target bits per fit and 7,520,256 full-grid bits per fit. Zero observed errors and degenerate [0,0] bootstrap intervals do not establish zero BER or population noninferiority.
+
+PRIMARY EFFECTS
+repair_vs_old:
+  NMSE gain 0.5077 dB; adjusted interval [0.4538, 0.5553] dB.
+  BER reduction 0.000000 percentage points; adjusted interval [0.000000, 0.000000].
+  Fit-specific NMSE gains: {'9101': 0.48836241215397536, '9102': 0.5559223121735997, '9103': 0.47891311096770295}
+repair_vs_prior:
+  NMSE gain 0.6868 dB; adjusted interval [0.5174, 0.8461] dB.
+  BER reduction 0.000000 percentage points; adjusted interval [0.000000, 0.000000].
+  Fit-specific NMSE gains: {'9101': 0.8039268440648257, '9102': 0.43861884345630386, '9103': 0.8178226063092779}
+Target bit-error counts by fitted model, in seed order (9101, 9102, 9103):
+original: [0, 0, 0]
+old_bypass: [0, 0, 0]
+prior_repair: [0, 0, 0]
+repair: [0, 0, 0]
+
+COMPARISON TABLES
+All values lower is better. CPU latency is batch-one, one Apple M2 thread, including lookup, initialization and all inference steps; models and fixed tables are preloaded.
+
+STRONG_TRANSITION (18 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -36.7871      -35.6855        0.000000  5.233    4.861    
+Old spectral-EM100 bypass       -40.8013      -40.3356        0.000000  5.331    5.220    
+Previous transition repair      -40.6222      -39.5955        0.000000  6.267    5.286    
+New transition correction       -41.3090      -41.0193        0.000000  5.439    5.166    
+Direct spectral EM100           -40.8013      -40.3356        0.000000  5.284    5.161    
+Frozen previous compact sparse  -40.7769      -40.3219        0.000000  4.493    4.371    
+New matched sparse/EM family    -40.8031      -40.3385        0.000000  5.321    5.172    
+Frozen full sparse              -41.5285      -41.2281        0.000000  109.063  108.254  
+Frozen OptShrink                -42.3677      -41.8998        0.000000  23.974   23.352   
+
+STRONG_TRANSITION_L2 (6 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -40.1305      -40.1037        0.000000  5.600    4.854    
+Old spectral-EM100 bypass       -40.7622      -40.2974        0.000000  5.362    5.224    
+Previous transition repair      -41.6290      -41.4066        0.000000  6.266    5.362    
+New transition correction       -41.5624      -41.3763        0.000000  5.491    5.186    
+Direct spectral EM100           -40.7622      -40.2974        0.000000  5.299    5.139    
+Frozen previous compact sparse  -40.7454      -40.2938        0.000000  4.712    4.424    
+New matched sparse/EM family    -40.7699      -40.3096        0.000000  5.326    5.194    
+Frozen full sparse              -42.4328      -42.2132        0.000000  109.814  108.390  
+Frozen OptShrink                -42.3369      -41.8704        0.000000  24.147   23.681   
+
+STRONG_TRANSITION_L4 (6 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -35.9358      -35.5119        0.000000  5.166    4.847    
+Old spectral-EM100 bypass       -40.8663      -40.3992        0.000000  5.325    5.222    
+Previous transition repair      -40.4155      -39.4912        0.000000  6.268    5.267    
+New transition correction       -41.3016      -41.0057        0.000000  5.426    5.150    
+Direct spectral EM100           -40.8663      -40.3992        0.000000  5.279    5.143    
+Frozen previous compact sparse  -40.8379      -40.3814        0.000000  4.414    4.363    
+New matched sparse/EM family    -40.8647      -40.3967        0.000000  5.282    5.154    
+Frozen full sparse              -41.2949      -41.0439        0.000000  108.740  108.228  
+Frozen OptShrink                -42.4472      -41.9777        0.000000  23.463   23.161   
+
+STRONG_TRANSITION_RANDOM3TO7 (6 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -34.2948      -33.6881        0.000000  5.090    4.881    
+Old spectral-EM100 bypass       -40.7754      -40.3101        0.000000  5.327    5.213    
+Previous transition repair      -39.8223      -38.4043        0.000000  6.211    5.277    
+New transition correction       -41.0631      -40.7026        0.000000  5.299    5.160    
+Direct spectral EM100           -40.7754      -40.3101        0.000000  5.270    5.182    
+Frozen previous compact sparse  -40.7474      -40.2905        0.000000  4.463    4.383    
+New matched sparse/EM family    -40.7748      -40.3091        0.000000  5.333    5.160    
+Frozen full sparse              -40.8578      -40.5877        0.000000  108.643  108.155  
+Frozen OptShrink                -42.3189      -41.8514        0.000000  23.728   23.305   
+
+STRONG_TRANSITION_SNR32.5 (6 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -37.3243      -36.8455        0.000000  5.222    4.822    
+Old spectral-EM100 bypass       -38.3012      -38.3026        0.000000  5.330    5.230    
+Previous transition repair      -37.3243      -36.8455        0.000000  5.233    4.883    
+New transition correction       -39.5245      -39.4803        0.000000  5.463    5.067    
+Direct spectral EM100           -38.3012      -38.3026        0.000000  5.301    5.185    
+Frozen previous compact sparse  -38.3064      -38.3077        0.000000  4.499    4.376    
+New matched sparse/EM family    -38.3067      -38.3081        0.000000  5.227    4.907    
+Frozen full sparse              -39.7253      -39.6632        0.000000  108.738  108.270  
+Frozen OptShrink                -39.8676      -39.8668        0.000000  23.707   23.283   
+
+STRONG_TRANSITION_SNR35 (6 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -37.2366      -36.5735        0.000000  5.157    4.878    
+Old spectral-EM100 bypass       -40.8013      -40.8027        0.000000  5.344    5.221    
+Previous transition repair      -41.2280      -41.2148        0.000000  5.539    5.264    
+New transition correction       -41.1013      -41.0916        0.000000  5.446    5.193    
+Direct spectral EM100           -40.8013      -40.8027        0.000000  5.282    5.129    
+Frozen previous compact sparse  -40.7779      -40.7792        0.000000  4.459    4.358    
+New matched sparse/EM family    -40.8013      -40.8027        0.000000  5.293    5.203    
+Frozen full sparse              -41.5212      -41.4707        0.000000  109.149  108.362  
+Frozen OptShrink                -42.3675      -42.3667        0.000000  23.959   23.360   
+
+STRONG_TRANSITION_SNR37.5 (6 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -35.8002      -34.5594        0.000000  5.263    4.869    
+Old spectral-EM100 bypass       -43.3013      -43.3027        0.000000  5.322    5.215    
+Previous transition repair      -43.3144      -43.3158        0.000000  6.516    6.184    
+New transition correction       -43.3013      -43.3027        0.000000  5.373    5.189    
+Direct spectral EM100           -43.3013      -43.3027        0.000000  5.254    5.152    
+Frozen previous compact sparse  -43.2464      -43.2477        0.000000  4.626    4.378    
+New matched sparse/EM family    -43.3013      -43.3027        0.000000  5.353    5.184    
+Frozen full sparse              -43.3392      -43.3004        0.000000  108.841  108.119  
+Frozen OptShrink                -44.8680      -44.8672        0.000000  24.032   23.345   
+
+HISTORICAL_FLAGGED (10 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -30.9470      -20.5277        0.127089  5.151    4.831    
+Old spectral-EM100 bypass       -45.4737      -40.8391        0.000000  5.337    5.220    
+Previous transition repair      -44.7080      -39.0873        0.000000  11.125   5.770    
+New transition correction       -45.9711      -41.7164        0.000000  5.348    5.147    
+Direct spectral EM100           -45.4737      -40.8391        0.000000  5.319    5.169    
+Frozen previous compact sparse  -44.8471      -40.8192        0.000000  4.546    4.376    
+New matched sparse/EM family    -45.4724      -40.8367        0.000000  5.284    5.162    
+Frozen full sparse              -45.2871      -41.7826        0.000000  108.648  108.290  
+Frozen OptShrink                -47.1194      -42.4364        0.000000  23.785   23.350   
+
+WEAK_TRANSITION (18 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -29.4769      -23.5276        0.060960  5.110    4.858    
+Old spectral-EM100 bypass       -30.8527      -27.5810        0.001356  5.358    5.211    
+Previous transition repair      -43.3910      -40.5184        0.000000  11.285   10.968   
+New transition correction       -43.3910      -40.5184        0.000000  11.300   10.949   
+Direct spectral EM100           -28.2697      -26.1793        0.002035  5.364    5.151    
+Frozen previous compact sparse  -27.5012      -25.2011        0.000452  4.579    4.430    
+New matched sparse/EM family    -27.1742      -25.4454        0.000000  4.618    4.416    
+Frozen full sparse              -31.8982      -26.6909        0.000678  109.752  108.303  
+Frozen OptShrink                -30.7567      -29.2809        0.000678  47.294   46.005   
+
+ORDINARY (45 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -20.2767      -15.1828        1.756381  5.057    4.787    
+Old spectral-EM100 bypass       -20.2767      -15.1828        1.756381  5.181    4.887    
+Previous transition repair      -20.2767      -15.1828        1.756381  5.142    4.868    
+New transition correction       -20.2767      -15.1828        1.756381  5.155    4.865    
+Direct spectral EM100           -15.1120      -10.2323        2.794235  5.484    5.218    
+Frozen previous compact sparse  -18.7827      -15.6426        1.643066  4.595    4.432    
+New matched sparse/EM family    -18.8872      -15.7094        1.640670  5.783    5.025    
+Frozen full sparse              -20.4160      -16.1180        1.638003  108.851  108.102  
+Frozen OptShrink                -18.1514      -14.4959        1.850902  46.741   23.128   
+
+HIGH_SNR (108 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -29.3507      -17.1329        0.149668  5.145    4.845    
+Old spectral-EM100 bypass       -40.0122      -32.5285        0.000471  5.330    5.169    
+Previous transition repair      -43.4379      -37.8276        0.000144  11.126   5.204    
+New transition correction       -43.5524      -37.9639        0.000144  11.006   5.150    
+Direct spectral EM100           -37.8794      -29.6525        0.000980  5.319    5.156    
+Frozen previous compact sparse  -37.5238      -29.1607        0.000320  4.533    4.387    
+New matched sparse/EM family    -37.7905      -29.3563        0.000245  5.257    4.595    
+Frozen full sparse              -39.2511      -31.1854        0.000339  109.090  108.249  
+Frozen OptShrink                -40.0524      -32.4859        0.000452  46.458   23.558   
+
+ALL (153 conditions)
+Estimator                       Mean NMSE dB  Pooled NMSE dB  BER %     p90 ms   Median ms
+------------------------------  ------------  --------------  --------  -------  ---------
+Retrained model                 -26.6819      -15.8546        0.622231  5.116    4.829    
+Old spectral-EM100 bypass       -34.2076      -20.3093        0.516915  5.312    5.107    
+Previous transition repair      -36.6258      -20.4407        0.516685  11.065   5.074    
+New transition correction       -36.7066      -20.4424        0.516685  10.910   5.091    
+Direct spectral EM100           -31.1831      -15.4296        0.822525  5.378    5.173    
+Frozen previous compact sparse  -32.0117      -20.5168        0.483481  4.558    4.403    
+New matched sparse/EM family    -32.2307      -20.5959        0.482723  5.613    4.685    
+Frozen full sparse              -33.7114      -21.1198        0.482005  109.005  108.197  
+Frozen OptShrink                -33.6110      -19.6482        0.544702  46.489   23.462   
+
+EVERY ADVERSE CONDITION
+Negative gain means correction is worse. A reporting tolerance of 1e-10 dB distinguishes numerical identity; exact scores remain in JSON.
+
+repair_vs_old:
+  Negative means 0/153, including 0/18 primary conditions; pointwise 95% harm intervals in 0 conditions.
+  Worst gain 0.000000 dB at L2_rsr5_snr0.
+  Negative cells: none
+repair_vs_prior:
+  Negative means 18/153, including 8/18 primary conditions; pointwise 95% harm intervals in 5 conditions.
+  Worst gain -0.783701 dB at L2_rsr20_snr35.
+  Negative cells: L2_rsr12_snr37.5, L2_rsr20_snr32.5, L2_rsr20_snr35, L2_rsr20_snr37.5, L2_rsr20_snr40, L2_rsr20_snr42.5, L2_rsr20_snr45, L2_rsr20_snr50, L2_rsr20_snr60, L4_rsr12_snr37.5, L4_rsr20_snr35, L4_rsr20_snr37.5, random3to7_rsr12_snr37.5, random3to7_rsr20_snr40, random3to7_rsr20_snr42.5, random3to7_rsr20_snr45, random3to7_rsr20_snr50, random3to7_rsr20_snr60
+repair_vs_original:
+  Negative means 1/153, including 1/18 primary conditions; pointwise 95% harm intervals in 0 conditions.
+  Worst gain -0.146366 dB at L2_rsr20_snr32.5.
+  Negative cells: L2_rsr20_snr32.5
+repair_vs_em100:
+  Negative means 2/153, including 0/18 primary conditions; pointwise 95% harm intervals in 1 conditions.
+  Worst gain -1.591902 dB at random3to7_rsr20_snr30.
+  Negative cells: random3to7_rsr12_snr30, random3to7_rsr20_snr30
+repair_vs_compact:
+  Negative means 20/153, including 0/18 primary conditions; pointwise 95% harm intervals in 19 conditions.
+  Worst gain -1.609268 dB at random3to7_rsr20_snr30.
+  Negative cells: L2_rsr5_snr0, L2_rsr5_snr5, L2_rsr12_snr0, L2_rsr12_snr5, L2_rsr20_snr0, L2_rsr20_snr5, L4_rsr5_snr0, L4_rsr5_snr5, L4_rsr12_snr0, L4_rsr12_snr5, L4_rsr20_snr0, L4_rsr20_snr5, random3to7_rsr5_snr0, random3to7_rsr5_snr5, random3to7_rsr12_snr0, random3to7_rsr12_snr5, random3to7_rsr12_snr30, random3to7_rsr20_snr0, random3to7_rsr20_snr5, random3to7_rsr20_snr30
+
+EVERY PRIMARY AND HISTORICALLY FLAGGED CONDITION
+
+Condition                 Original   Old bypass  Prior repair  Correction  Gain vs old CI95   Gain vs prior CI95
+------------------------  ---------  ----------  ------------  ----------  -----------------  ------------------
+L2_rsr12_snr32.5          -40.20901  -38.41617   -40.20901     -40.78173   [2.1543, 2.5595]   [-0.4815, 1.4686] 
+L2_rsr12_snr35            -40.56980  -40.91628   -41.74053     -41.74053   [0.7614, 0.8879]   [0.0000, 0.0000]  
+L2_rsr12_snr37.5          -40.50913  -43.41635   -43.43924     -43.41635   [0.0000, 0.0000]   [-0.0280, -0.0182]
+L2_rsr20_snr32.5          -39.86601  -38.10806   -39.86601     -39.71965   [1.5011, 1.7173]   [-1.2188, 0.7809] 
+L2_rsr20_snr35            -40.12072  -40.60807   -41.39177     -40.60807   [0.0000, 0.0000]   [-0.8610, -0.6978]
+L2_rsr20_snr37.5          -39.50824  -43.10808   -43.12722     -43.10808   [0.0000, 0.0000]   [-0.0240, -0.0148]
+L2_rsr20_snr42.5          -33.73597  -48.10808   -48.10808     -48.10808   [0.0000, 0.0000]   [-0.0000, 0.0000] 
+L2_rsr20_snr45            -28.93907  -50.60808   -50.60808     -50.60808   [0.0000, 0.0000]   [-0.0000, 0.0000] 
+L2_rsr20_snr50            -20.52927  -55.60808   -55.60808     -55.60808   [0.0000, 0.0000]   [-0.0000, 0.0000] 
+L2_rsr20_snr60            -11.29606  -65.60808   -65.60808     -65.60808   [0.0000, 0.0000]   [-0.0000, 0.0000] 
+L4_rsr12_snr32.5          -36.69724  -38.29525   -36.69724     -39.53245   [1.0299, 1.4337]   [2.3028, 3.3111]  
+L4_rsr12_snr35            -36.89240  -40.79544   -41.33111     -41.33111   [0.4703, 0.5928]   [0.0000, 0.0000]  
+L4_rsr12_snr37.5          -35.94648  -43.29555   -43.31083     -43.29555   [0.0000, 0.0000]   [-0.0182, -0.0126]
+L4_rsr20_snr32.5          -36.65722  -38.43710   -36.65722     -39.27616   [0.5624, 1.0560]   [2.0462, 3.1589]  
+L4_rsr20_snr35            -35.93347  -40.93711   -41.05194     -40.93711   [0.0000, 0.0000]   [-0.4627, 0.3090] 
+L4_rsr20_snr37.5          -33.48814  -43.43712   -43.44451     -43.43712   [0.0000, 0.0000]   [-0.0194, 0.0082] 
+random3to7_rsr12_snr32.5  -36.07666  -38.13688   -36.07666     -39.11404   [0.7619, 1.1841]   [2.6605, 3.3993]  
+random3to7_rsr12_snr35    -36.11656  -40.63704   -41.07691     -41.07691   [0.3400, 0.5270]   [0.0000, 0.0000]  
+random3to7_rsr12_snr37.5  -34.11669  -43.13712   -43.15360     -43.13712   [0.0000, 0.0000]   [-0.0205, -0.0127]
+random3to7_rsr20_snr32.5  -34.43981  -38.41394   -34.43981     -38.72276   [-0.2380, 0.7085]  [3.3453, 5.2883]  
+random3to7_rsr20_snr35    -33.78667  -40.91387   -40.77581     -40.91387   [0.0000, 0.0000]   [-0.2286, 0.5692] 
+random3to7_rsr20_snr37.5  -31.23265  -43.41382   -43.41078     -43.41382   [0.0000, 0.0000]   [-0.0095, 0.0190] 
+
+PRIMARY TAIL DIAGNOSTICS
+Per-channel linear-NMSE quantiles, averaged across fits; severe means NMSE>1.
+Estimator                       p95 NMSE     p99 NMSE     Severe %
+------------------------------  -----------  -----------  --------
+Retrained model                 0.000672592  0.00219093   0.0000  
+Old spectral-EM100 bypass       0.000233991  0.000327097  0.0000  
+Previous transition repair      0.000360249  0.000677105  0.0000  
+New transition correction       0.000177219  0.000246076  0.0000  
+Direct spectral EM100           0.000233991  0.000327097  0.0000  
+Frozen previous compact sparse  0.000233829  0.000320916  0.0000  
+New matched sparse/EM family    0.000234758  0.000324347  0.0000  
+Frozen full sparse              0.000165921  0.000208799  0.0000  
+Frozen OptShrink                0.000162183  0.000233436  0.0000  
+
+FROZEN POLICY
+SNR dB  Reference 5  Reference 12  Reference 20
+------  -----------  ------------  ------------
+0       original     original      original    
+5       original     original      original    
+10      original     original      original    
+15      original     original      original    
+20      original     original      original    
+22.5    original     original      original    
+25      original     original      original    
+27.5    original     original      original    
+30      original     original      original    
+32.5    original     warm2         warm3       
+35      warm5        warm5         spectral100 
+37.5    warm100      spectral100   spectral100 
+40      warm100      spectral100   spectral100 
+42.5    warm100      spectral100   spectral100 
+45      warm100      spectral100   spectral100 
+50      warm100      spectral100   spectral100 
+60      warm100      spectral100   spectral100 
+Selected calibrated-bin records (including fallback/admissibility metadata):
+{
+  "12": {
+    "32.5": {
+      "choice": "warm2",
+      "mean_nll": 6.4419650620397215,
+      "references": {
+        "original": {
+          "mean_delta": -0.08541051361217493,
+          "by_regime": {
+            "L2": {
+              "mean_delta": -0.04104638509289026,
+              "upper95": -0.02609424593035637
+            },
+            "L4": {
+              "mean_delta": -0.07619611575924706,
+              "upper95": -0.06228593997594104
+            },
+            "random3to7": {
+              "mean_delta": -0.13898903998438747,
+              "upper95": -0.12253323782873345
+            }
+          }
+        },
+        "old_bypass": {
+          "mean_delta": -0.03449705936245822,
+          "by_regime": {
+            "L2": {
+              "mean_delta": -0.05102177971343802,
+              "upper95": -0.0476616606011069
+            },
+            "L4": {
+              "mean_delta": -0.03451458124277951,
+              "upper95": -0.030805182221548908
+            },
+            "random3to7": {
+              "mean_delta": -0.017954817131157125,
+              "upper95": -0.013086728748390515
+            }
+          }
+        }
+      },
+      "dual_admissible": true,
+      "failed_constraints": [],
+      "preference_order": 2,
+      "selection_status": "dual_admissible",
+      "admissible_optimum_mean_nll": 6.4419650620397215,
+      "preference_band": 0.001
+    },
+    "35": {
+      "choice": "warm5",
+      "mean_nll": 6.750259923178499,
+      "references": {
+        "original": {
+          "mean_delta": -0.22759372916869886,
+          "by_regime": {
+            "L2": {
+              "mean_delta": -0.10165133810069553,
+              "upper95": -0.06950249723638448
+            },
+            "L4": {
+              "mean_delta": -0.20956796906430877,
+              "upper95": -0.16434429395701786
+            },
+            "random3to7": {
+              "mean_delta": -0.37156188034109233,
+              "upper95": -0.31752951405693897
+            }
+          }
+        },
+        "old_bypass": {
+          "mean_delta": -0.014025721204772603,
+          "by_regime": {
+            "L2": {
+              "mean_delta": -0.02153009213532625,
+              "upper95": -0.020150829893255572
+            },
+            "L4": {
+              "mean_delta": -0.0140379420128594,
+              "upper95": -0.011769989943392754
+            },
+            "random3to7": {
+              "mean_delta": -0.006509129466132162,
+              "upper95": -0.003544981915250997
+            }
+          }
+        }
+      },
+      "dual_admissible": true,
+      "failed_constraints": [],
+      "preference_order": 4,
+      "selection_status": "dual_admissible",
+      "admissible_optimum_mean_nll": 6.750259923178499,
+      "preference_band": 0.001
+    },
+    "37.5": {
+      "choice": "spectral100",
+      "mean_nll": 7.052108025880415,
+      "references": {
+        "original": {
+          "mean_delta": -1.3786412315088477,
+          "by_regime": {
+            "L2": {
+              "mean_delta": -0.3253766839338635,
+              "upper95": -0.22764674800749268
+            },
+            "L4": {
+              "mean_delta": -1.1955243781630995,
+              "upper95": -0.7137084802281681
+            },
+            "random3to7": {
+              "mean_delta": -2.6150226324295804,
+              "upper95": -1.8028231807304076
+            }
+          }
+        },
+        "old_bypass": {
+          "mean_delta": 0.0,
+          "by_regime": {
+            "L2": {
+              "mean_delta": 0.0,
+              "upper95": 0.0
+            },
+            "L4": {
+              "mean_delta": 0.0,
+              "upper95": 0.0
+            },
+            "random3to7": {
+              "mean_delta": 0.0,
+              "upper95": 0.0
+            }
+          }
+        }
+      },
+      "dual_admissible": true,
+      "failed_constraints": [],
+      "preference_order": 5,
+      "selection_status": "dual_admissible",
+      "admissible_optimum_mean_nll": 7.051623036061252,
+      "preference_band": 0.001
+    }
+  },
+  "20": {
+    "32.5": {
+      "choice": "warm3",
+      "mean_nll": 7.36724580269766,
+      "references": {
+        "original": {
+          "mean_delta": -0.0923506933393834,
+          "by_regime": {
+            "L2": {
+              "mean_delta": -0.02520900757136552,
+              "upper95": -0.007843104477327726
+            },
+            "L4": {
+              "mean_delta": -0.10640191065322789,
+              "upper95": -0.08805668877787104
+            },
+            "random3to7": {
+              "mean_delta": -0.1454411617935568,
+              "upper95": -0.12379344693925935
+            }
+          }
+        },
+        "old_bypass": {
+          "mean_delta": -0.024964811387250003,
+          "by_regime": {
+            "L2": {
+              "mean_delta": -0.038733753253697906,
+              "upper95": -0.03601703741597771
+            },
+            "L4": {
+              "mean_delta": -0.02331448508075557,
+              "upper95": -0.019950219554576855
+            },
+            "random3to7": {
+              "mean_delta": -0.012846195827296542,
+              "upper95": -0.006789700088957831
+            }
+          }
+        }
+      },
+      "dual_admissible": true,
+      "failed_constraints": [],
+      "preference_order": 3,
+      "selection_status": "dual_admissible",
+      "admissible_optimum_mean_nll": 7.36724580269766,
+      "preference_band": 0.001
+    },
+    "35": {
+      "choice": "spectral100",
+      "mean_nll": 7.680028695160315,
+      "references": {
+        "original": {
+          "mean_delta": -0.296106667739321,
+          "by_regime": {
+            "L2": {
+              "mean_delta": -0.07719967652363806,
+              "upper95": -0.03895088237645776
+            },
+            "L4": {
+              "mean_delta": -0.281239868929545,
+              "upper95": -0.22261976410403272
+            },
+            "random3to7": {
+              "mean_delta": -0.5298804577647799,
+              "upper95": -0.330340436900323
+            }
+          }
+        },
+        "old_bypass": {
+          "mean_delta": 0.0,
+          "by_regime": {
+            "L2": {
+              "mean_delta": 0.0,
+              "upper95": 0.0
+            },
+            "L4": {
+              "mean_delta": 0.0,
+              "upper95": 0.0
+            },
+            "random3to7": {
+              "mean_delta": 0.0,
+              "upper95": 0.0
+            }
+          }
+        }
+      },
+      "dual_admissible": true,
+      "failed_constraints": [],
+      "preference_order": 5,
+      "selection_status": "dual_admissible",
+      "admissible_optimum_mean_nll": 7.679526027216919,
+      "preference_band": 0.001
+    },
+    "37.5": {
+      "choice": "spectral100",
+      "mean_nll": 7.9678479102325195,
+      "references": {
+        "original": {
+          "mean_delta": -1.4393889180116592,
+          "by_regime": {
+            "L2": {
+              "mean_delta": -0.32692470647336064,
+              "upper95": -0.2247228148626312
+            },
+            "L4": {
+              "mean_delta": -1.1242521310001845,
+              "upper95": -0.7982043101254982
+            },
+            "random3to7": {
+              "mean_delta": -2.866989916561432,
+              "upper95": -1.7393968132321957
+            }
+          }
+        },
+        "old_bypass": {
+          "mean_delta": 0.0,
+          "by_regime": {
+            "L2": {
+              "mean_delta": 0.0,
+              "upper95": 0.0
+            },
+            "L4": {
+              "mean_delta": 0.0,
+              "upper95": 0.0
+            },
+            "random3to7": {
+              "mean_delta": 0.0,
+              "upper95": 0.0
+            }
+          }
+        }
+      },
+      "dual_admissible": true,
+      "failed_constraints": [],
+      "preference_order": 5,
+      "selection_status": "dual_admissible",
+      "admissible_optimum_mean_nll": 7.9678479102325195,
+      "preference_band": 0.001
+    }
+  }
+}
+
+RUNTIME ELIGIBILITY AND CONDITIONAL OVERRUNS
+The eligibility cap is the selected correction pooled p90 across all 153 conditions and three fixed fits. It is not a per-condition or worst-case deadline. Final isolated timing uses three repetitions and randomized method order; all raw samples are retained without reselection.
+{
+  "calibrated_cap_ms": 10.854417,
+  "repair_p90_ms": 10.909857800000001,
+  "compact_p90_ms": 5.6125994,
+  "repair_exceeds_calibrated_cap": true,
+  "compact_exceeds_calibrated_cap": false,
+  "compact_exceeds_fresh_repair": false
+}
+repair_mean: 6/51 conditional p90 values exceed the pooled cap.
+Reference  SNR   p90 ms   Above cap %
+---------  ----  -------  -----------
+5.0        37.5  11.2588  3.73       
+5.0        40.0  11.5030  5.98       
+5.0        42.5  11.2061  3.24       
+5.0        45.0  11.4436  5.43       
+5.0        50.0  11.7799  8.53       
+5.0        60.0  11.2787  3.91       
+compact_sparse: 0/51 conditional p90 values exceed the pooled cap.
+Reference  SNR  p90 ms  Above cap %
+---------  ---  ------  -----------
+
+EXPOSED-BANK REGRESSION REPLAY
+These are the previously exposed channels, replayed once after final selection. They diagnose the requested historical failures and sibling conditions; they are not independent confirmation and never trigger reselection.
+Flagged cells still worse than old bypass: []
+Condition                 Correction NMSE dB  Gain vs old  Gain vs prior  Gain vs original
+------------------------  ------------------  -----------  -------------  ----------------
+L2_rsr12_snr32.5          -40.807836          2.202492     1.118897       1.118897        
+L2_rsr12_snr35            -41.883332          0.777623     0.000000       1.906744        
+L2_rsr12_snr37.5          -43.605938          0.000000     -0.020039      3.672913        
+L2_rsr20_snr32.5          -39.597912          1.397700     1.736206       1.736206        
+L2_rsr20_snr35            -40.700291          0.000000     -0.674191      2.715665        
+L2_rsr20_snr37.5          -43.200347          0.000000     -0.016203      5.493459        
+L4_rsr12_snr32.5          -39.518890          1.263198     2.394902       2.394902        
+L4_rsr12_snr35            -41.236710          0.480677     0.000000       3.940010        
+L4_rsr12_snr37.5          -43.256269          0.000000     -0.018416      7.334666        
+L4_rsr20_snr32.5          -39.248589          0.873936     2.674938       2.674938        
+L4_rsr20_snr35            -40.874712          0.000000     -0.306983      4.367914        
+L4_rsr20_snr37.5          -43.374753          0.000000     -0.004543      8.435117        
+random3to7_rsr12_snr32.5  -39.054728          0.627068     3.435193       3.435193        
+random3to7_rsr12_snr35    -41.081135          0.153533     0.000000       5.944725        
+random3to7_rsr12_snr37.5  -43.427503          0.000000     -0.008696      10.951103       
+random3to7_rsr20_snr32.5  -38.787218          0.539264     3.285027       3.285027        
+random3to7_rsr20_snr35    -40.747880          0.000000     -0.082423      5.481236        
+random3to7_rsr20_snr37.5  -43.247771          0.000000     0.055866       10.428932       
+L2_rsr20_snr42.5          -48.200417          0.000000     0.000000       15.613420       
+L2_rsr20_snr45            -50.700439          0.000000     0.000000       22.184211       
+L2_rsr20_snr50            -55.700467          0.000000     0.000000       35.156122       
+L2_rsr20_snr60            -65.700490          0.000000     0.000001       54.478842       
+
+SUPPLIED-NOISE SENSITIVITY
+Physical observations are fixed while supplied noise variance changes by -3/0/+3 dB in 45 predeclared conditions. Positive mismatch loss compares the SAME correction under incorrect versus correct variance; it is not a gain versus another estimator. Comparator gains supply both methods the same incorrect variance. No sensitivity BER or tuning is performed.
+Paths       Ref   SNR   Variance error  Branch       Correction NMSE  Mismatch loss  Loss CI95         
+----------  ----  ----  --------------  -----------  ---------------  -------------  ------------------
+L2          5.0   35.0  -3.0            warm100      -40.4304         0.8086         [0.6487, 0.9480]  
+L2          5.0   35.0  0.0             warm5        -41.2390         0.0000         [0.0000, 0.0000]  
+L2          5.0   35.0  3.0             original     -40.6661         0.5729         [-0.9937, 1.9116] 
+L2          5.0   40.0  -3.0            warm100      -45.4320         0.0002         [-0.0001, 0.0006] 
+L2          5.0   40.0  0.0             warm100      -45.4323         0.0000         [0.0000, 0.0000]  
+L2          5.0   40.0  3.0             warm100      -45.4324         -0.0001        [-0.0009, 0.0007] 
+L2          5.0   45.0  -3.0            warm100      -50.4327         0.0001         [-0.0001, 0.0003] 
+L2          5.0   45.0  0.0             warm100      -50.4329         0.0000         [0.0000, 0.0000]  
+L2          5.0   45.0  3.0             warm100      -50.4330         -0.0001        [-0.0006, 0.0003] 
+L2          12.0  32.5  -3.0            warm5        -39.2559         1.5258         [1.3609, 1.6837]  
+L2          12.0  32.5  0.0             warm2        -40.7817         0.0000         [0.0000, 0.0000]  
+L2          12.0  32.5  3.0             original     -40.9773         -0.1956        [-1.2470, 0.6785] 
+L2          20.0  32.5  -3.0            spectral100  -38.1080         1.6116         [1.4990, 1.7200]  
+L2          20.0  32.5  0.0             warm3        -39.7196         0.0000         [0.0000, 0.0000]  
+L2          20.0  32.5  3.0             original     -40.7411         -1.0214        [-2.0317, -0.1407]
+L4          5.0   35.0  -3.0            warm100      -40.6442         -0.5909        [-1.3934, 0.1458] 
+L4          5.0   35.0  0.0             warm5        -40.0534         0.0000         [0.0000, 0.0000]  
+L4          5.0   35.0  3.0             original     -37.1386         2.9147         [2.3730, 3.4636]  
+L4          5.0   40.0  -3.0            warm100      -45.6467         0.0002         [-0.0003, 0.0007] 
+L4          5.0   40.0  0.0             warm100      -45.6469         0.0000         [0.0000, 0.0000]  
+L4          5.0   40.0  3.0             warm100      -45.6471         -0.0002        [-0.0010, 0.0007] 
+L4          5.0   45.0  -3.0            warm100      -46.9685         3.6797         [-0.0001, 5.2059] 
+L4          5.0   45.0  0.0             warm100      -50.6481         0.0000         [0.0000, 0.0000]  
+L4          5.0   45.0  3.0             warm100      -50.6482         -0.0001        [-0.0008, 0.0006] 
+L4          12.0  32.5  -3.0            warm5        -38.8731         0.6593         [0.4990, 0.8190]  
+L4          12.0  32.5  0.0             warm2        -39.5324         0.0000         [0.0000, 0.0000]  
+L4          12.0  32.5  3.0             original     -37.5022         2.0303         [1.5293, 2.4734]  
+L4          20.0  32.5  -3.0            spectral100  -38.4370         0.8391         [0.5666, 1.0599]  
+L4          20.0  32.5  0.0             warm3        -39.2762         0.0000         [0.0000, 0.0000]  
+L4          20.0  32.5  3.0             original     -37.5411         1.7350         [1.1892, 2.2643]  
+random3to7  5.0   35.0  -3.0            warm100      -40.6901         -2.0314        [-2.8792, -1.0682]
+random3to7  5.0   35.0  0.0             warm5        -38.6587         0.0000         [0.0000, 0.0000]  
+random3to7  5.0   35.0  3.0             original     -35.0660         3.5927         [3.2507, 3.9313]  
+random3to7  5.0   40.0  -3.0            warm100      -42.3902         3.3015         [-0.0004, 4.8181] 
+random3to7  5.0   40.0  0.0             warm100      -45.6917         0.0000         [0.0000, 0.0000]  
+random3to7  5.0   40.0  3.0             warm100      -45.6913         0.0004         [-0.0010, 0.0016] 
+random3to7  5.0   45.0  -3.0            warm100      -44.6400         -0.0000        [-0.0003, 0.0003] 
+random3to7  5.0   45.0  0.0             warm100      -44.6400         0.0000         [0.0000, 0.0000]  
+random3to7  5.0   45.0  3.0             warm100      -45.8270         -1.1870        [-6.7904, 0.0006] 
+random3to7  12.0  32.5  -3.0            warm5        -38.6379         0.4761         [0.3352, 0.6216]  
+random3to7  12.0  32.5  0.0             warm2        -39.1140         0.0000         [0.0000, 0.0000]  
+random3to7  12.0  32.5  3.0             original     -36.8909         2.2231         [1.8505, 2.5519]  
+random3to7  20.0  32.5  -3.0            spectral100  -38.4138         0.3089         [-0.2227, 0.7106] 
+random3to7  20.0  32.5  0.0             warm3        -38.7228         0.0000         [0.0000, 0.0000]  
+random3to7  20.0  32.5  3.0             original     -35.5093         3.2135         [2.4748, 3.9434]  
+
+LIMITS
+This study evaluates a combined wrapper around existing learned weights. It does not demonstrate a newly learned controller, global convergence, universal safety or dominance over all baselines.
+The dual guard is an empirical development screen. Empty-set fallback and metric mismatch remain explicit limitations; NMSE, BER and runtime must be interpreted together.
+Reference/SNR interpolation beyond the declared nearest-bin rule is unvalidated. Noise misspecification can change both routing and inference. Preserving the weak branch preserves its previously identified mismatch vulnerability too.
+The exposed historical replay and the fresh test are kept separate. The manuscript is unchanged.
+
+VERIFICATION
+All required checks passed: checks.json, audit/calibration.json, audit/repair_selection.json, audit/selection.json, audit/test.json, audit/summary.json, audit/timing.json, ber/audit.json, sensitivity/audit.json, audit/sensitivity.json, historical_replay/audit.json
+Frozen policy SHA256: f5945f47d0da7d98e1bcf28d774dd5e8c4df8d9963fd1eedd7b4bd515887077d
+
+ARTIFACTS
+nmse_summary.json; repair_nmse.png; repair_target.png; repair_runtime.png; ber/summary.json; ber/ber.png; timing.json; historical_replay/summary.json; sensitivity/summary.json; policy.json; protocol.json

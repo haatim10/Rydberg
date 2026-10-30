@@ -1,0 +1,2850 @@
+{
+  "protocol_sha256": "e2d49870db57c3d41ef1c8c7ea128cf738955045a27020f42177ac8b90ed3cb3",
+  "overall": {
+    "methods": {
+      "perfect_csi": {
+        "ber": 0.009044053819444444,
+        "bootstrap95": [
+          0.008173963758680557,
+          0.009954901801215277
+        ],
+        "evaluated_bits": 1474560,
+        "independent_channel_worlds": 960,
+        "bit_errors": 13336
+      },
+      "learned_9101": {
+        "ber": 0.013205973307291665,
+        "bootstrap95": [
+          0.012023790147569444,
+          0.014408450656467012
+        ],
+        "evaluated_bits": 1474560,
+        "independent_channel_worlds": 960,
+        "bit_errors": 19473
+      },
+      "learned_9102": {
+        "ber": 0.013222249348958333,
+        "bootstrap95": [
+          0.012043202718098956,
+          0.014427371554904518
+        ],
+        "evaluated_bits": 1474560,
+        "independent_channel_worlds": 960,
+        "bit_errors": 19497
+      },
+      "learned_9103": {
+        "ber": 0.013572184244791665,
+        "bootstrap95": [
+          0.012392781575520833,
+          0.014772610134548612
+        ],
+        "evaluated_bits": 1474560,
+        "independent_channel_worlds": 960,
+        "bit_errors": 20013
+      },
+      "em100": {
+        "ber": 0.020999484592013888,
+        "bootstrap95": [
+          0.019468841552734376,
+          0.022514563666449654
+        ],
+        "evaluated_bits": 1474560,
+        "independent_channel_worlds": 960,
+        "bit_errors": 30965
+      },
+      "optshrink": {
+        "ber": 0.013899061414930554,
+        "bootstrap95": [
+          0.012647789849175342,
+          0.015162523057725696
+        ],
+        "evaluated_bits": 1474560,
+        "independent_channel_worlds": 960,
+        "bit_errors": 20495
+      },
+      "sparse_angle": {
+        "ber": 0.01248508029513889,
+        "bootstrap95": [
+          0.011382870144314236,
+          0.013616960313585069
+        ],
+        "evaluated_bits": 1474560,
+        "independent_channel_worlds": 960,
+        "bit_errors": 18410
+      },
+      "learned_mean": {
+        "ber": 0.01333346896701389,
+        "bootstrap95": [
+          0.012146363434968168,
+          0.014532165527343752
+        ],
+        "evaluated_bits": 1474560,
+        "independent_channel_worlds": 960,
+        "errors_per_training_seed": {
+          "learned_9101": 19473,
+          "learned_9102": 19497,
+          "learned_9103": 20013
+        }
+      }
+    },
+    "paired": {
+      "em100": {
+        "learned_minus_comparator_ber": -0.007666015624999999,
+        "bootstrap95": [
+          -0.00817715680157697,
+          -0.007174106174045144
+        ],
+        "learned_better_cells": 10,
+        "total_cells": 15
+      },
+      "optshrink": {
+        "learned_minus_comparator_ber": -0.0005655924479166655,
+        "bootstrap95": [
+          -0.0007771809895833343,
+          -0.0003732130262586829
+        ],
+        "learned_better_cells": 8,
+        "total_cells": 15
+      },
+      "sparse_angle": {
+        "learned_minus_comparator_ber": 0.0008483886718750006,
+        "bootstrap95": [
+          0.0006724887424045086,
+          0.0010418983742042833
+        ],
+        "learned_better_cells": 3,
+        "total_cells": 15
+      }
+    }
+  },
+  "by_snr": {
+    "0": {
+      "methods": {
+        "perfect_csi": {
+          "ber": 0.040547688802083336,
+          "bootstrap95": [
+            0.03651597764756945,
+            0.044874403211805546
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 11958
+        },
+        "learned_9101": {
+          "ber": 0.058980305989583336,
+          "bootstrap95": [
+            0.05348332722981772,
+            0.0646023220486111
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 17394
+        },
+        "learned_9102": {
+          "ber": 0.059078640407986105,
+          "bootstrap95": [
+            0.05360217624240451,
+            0.0647448221842448
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 17423
+        },
+        "learned_9103": {
+          "ber": 0.06016710069444444,
+          "bootstrap95": [
+            0.05476837158203125,
+            0.06575859917534722
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 17744
+        },
+        "em100": {
+          "ber": 0.0921969943576389,
+          "bootstrap95": [
+            0.0851676940917969,
+            0.09934488932291669
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 27190
+        },
+        "optshrink": {
+          "ber": 0.06098768446180555,
+          "bootstrap95": [
+            0.05526707967122396,
+            0.06685723198784722
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 17986
+        },
+        "sparse_angle": {
+          "ber": 0.05565728081597222,
+          "bootstrap95": [
+            0.05056415134006076,
+            0.06100497775607639
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 16414
+        },
+        "learned_mean": {
+          "ber": 0.05940868236400463,
+          "bootstrap95": [
+            0.05395315664785879,
+            0.06505386917679398
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "errors_per_training_seed": {
+            "learned_9101": 17394,
+            "learned_9102": 17423,
+            "learned_9103": 17744
+          }
+        }
+      },
+      "paired": {
+        "em100": {
+          "learned_minus_comparator_ber": -0.03278831199363426,
+          "bootstrap95": [
+            -0.03501615171079282,
+            -0.03058299311885129
+          ],
+          "learned_better_cells": 3,
+          "total_cells": 3
+        },
+        "optshrink": {
+          "learned_minus_comparator_ber": -0.0015790020978009207,
+          "bootstrap95": [
+            -0.002535219545717606,
+            -0.0006837915491174833
+          ],
+          "learned_better_cells": 1,
+          "total_cells": 3
+        },
+        "sparse_angle": {
+          "learned_minus_comparator_ber": 0.0037514015480324104,
+          "bootstrap95": [
+            0.002904793068214693,
+            0.004642119231047456
+          ],
+          "learned_better_cells": 0,
+          "total_cells": 3
+        }
+      }
+    },
+    "5": {
+      "methods": {
+        "perfect_csi": {
+          "ber": 0.004001193576388888,
+          "bootstrap95": [
+            0.0027736239963107633,
+            0.005479685465494792
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 1180
+        },
+        "learned_9101": {
+          "ber": 0.006150987413194445,
+          "bootstrap95": [
+            0.004455566406250001,
+            0.008246527777777778
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 1814
+        },
+        "learned_9102": {
+          "ber": 0.006120469835069445,
+          "bootstrap95": [
+            0.004431830512152778,
+            0.008209398057725695
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 1805
+        },
+        "learned_9103": {
+          "ber": 0.006696912977430555,
+          "bootstrap95": [
+            0.005021752251519098,
+            0.008741590711805556
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 1975
+        },
+        "em100": {
+          "ber": 0.011294894748263888,
+          "bootstrap95": [
+            0.00885348849826389,
+            0.014187452528211809
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 3331
+        },
+        "optshrink": {
+          "ber": 0.007307264539930556,
+          "bootstrap95": [
+            0.005428653293185764,
+            0.009542083740234377
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 2155
+        },
+        "sparse_angle": {
+          "ber": 0.005866156684027779,
+          "bootstrap95": [
+            0.004350365532769096,
+            0.007700602213541664
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 1730
+        },
+        "learned_mean": {
+          "ber": 0.0063227900752314825,
+          "bootstrap95": [
+            0.004654326262297454,
+            0.00840592560944734
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "errors_per_training_seed": {
+            "learned_9101": 1814,
+            "learned_9102": 1805,
+            "learned_9103": 1975
+          }
+        }
+      },
+      "paired": {
+        "em100": {
+          "learned_minus_comparator_ber": -0.004972104673032406,
+          "bootstrap95": [
+            -0.006042480468750003,
+            -0.003990964536313656
+          ],
+          "learned_better_cells": 3,
+          "total_cells": 3
+        },
+        "optshrink": {
+          "learned_minus_comparator_ber": -0.0009844744646990739,
+          "bootstrap95": [
+            -0.0013348897298177096,
+            -0.0006758795844184014
+          ],
+          "learned_better_cells": 3,
+          "total_cells": 3
+        },
+        "sparse_angle": {
+          "learned_minus_comparator_ber": 0.00045663339120370367,
+          "bootstrap95": [
+            0.0001875983344184038,
+            0.0007934570312500008
+          ],
+          "learned_better_cells": 0,
+          "total_cells": 3
+        }
+      }
+    },
+    "10": {
+      "methods": {
+        "perfect_csi": {
+          "ber": 0.0006612141927083334,
+          "bootstrap95": [
+            0.00022040473090277778,
+            0.0012613932291666665
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 195
+        },
+        "learned_9101": {
+          "ber": 0.0008884006076388889,
+          "bootstrap95": [
+            0.00028822157118055556,
+            0.001681857638888889
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 262
+        },
+        "learned_9102": {
+          "ber": 0.0009019639756944445,
+          "bootstrap95": [
+            0.00029161241319444444,
+            0.0017157660590277778
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 266
+        },
+        "learned_9103": {
+          "ber": 0.0009765625000000002,
+          "bootstrap95": [
+            0.0003389994303385416,
+            0.0018245273166232654
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 288
+        },
+        "em100": {
+          "ber": 0.0014546712239583333,
+          "bootstrap95": [
+            0.0005594889322916666,
+            0.0026889377170138886
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 429
+        },
+        "optshrink": {
+          "ber": 0.0011732313368055553,
+          "bootstrap95": [
+            0.00042385525173611107,
+            0.002193874782986111
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 346
+        },
+        "sparse_angle": {
+          "ber": 0.000885009765625,
+          "bootstrap95": [
+            0.00029839409722222225,
+            0.001702202690972222
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 261
+        },
+        "learned_mean": {
+          "ber": 0.0009223090277777779,
+          "bootstrap95": [
+            0.0003040455005787037,
+            0.0017417907714843753
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "errors_per_training_seed": {
+            "learned_9101": 262,
+            "learned_9102": 266,
+            "learned_9103": 288
+          }
+        }
+      },
+      "paired": {
+        "em100": {
+          "learned_minus_comparator_ber": -0.0005323621961805555,
+          "bootstrap95": [
+            -0.0009528548629195604,
+            -0.00020794338650173593
+          ],
+          "learned_better_cells": 3,
+          "total_cells": 3
+        },
+        "optshrink": {
+          "learned_minus_comparator_ber": -0.0002509223090277777,
+          "bootstrap95": [
+            -0.00047697844328703634,
+            -6.894712094907404e-05
+          ],
+          "learned_better_cells": 3,
+          "total_cells": 3
+        },
+        "sparse_angle": {
+          "learned_minus_comparator_ber": 3.7299262152777706e-05,
+          "bootstrap95": [
+            -3.2778139467592596e-05,
+            0.00012209856951678262
+          ],
+          "learned_better_cells": 2,
+          "total_cells": 3
+        }
+      }
+    },
+    "15": {
+      "methods": {
+        "perfect_csi": {
+          "ber": 1.0172526041666666e-05,
+          "bootstrap95": [
+            0.0,
+            2.712673611111111e-05
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 3
+        },
+        "learned_9101": {
+          "ber": 1.0172526041666666e-05,
+          "bootstrap95": [
+            0.0,
+            2.712673611111111e-05
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 3
+        },
+        "learned_9102": {
+          "ber": 1.0172526041666666e-05,
+          "bootstrap95": [
+            0.0,
+            2.712673611111111e-05
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 3
+        },
+        "learned_9103": {
+          "ber": 2.0345052083333332e-05,
+          "bootstrap95": [
+            0.0,
+            6.103515625e-05
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 6
+        },
+        "em100": {
+          "ber": 5.086263020833332e-05,
+          "bootstrap95": [
+            6.781684027777777e-06,
+            0.00011867947048611111
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 15
+        },
+        "optshrink": {
+          "ber": 2.7126736111111113e-05,
+          "bootstrap95": [
+            0.0,
+            7.459852430555556e-05
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 8
+        },
+        "sparse_angle": {
+          "ber": 1.6954210069444442e-05,
+          "bootstrap95": [
+            0.0,
+            4.4080946180555555e-05
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 5
+        },
+        "learned_mean": {
+          "ber": 1.3563368055555555e-05,
+          "bootstrap95": [
+            0.0,
+            4.0690104166666664e-05
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "errors_per_training_seed": {
+            "learned_9101": 3,
+            "learned_9102": 3,
+            "learned_9103": 6
+          }
+        }
+      },
+      "paired": {
+        "em100": {
+          "learned_minus_comparator_ber": -3.7299262152777774e-05,
+          "bootstrap95": [
+            -8.138020833333333e-05,
+            -3.3908420138888887e-06
+          ],
+          "learned_better_cells": 1,
+          "total_cells": 3
+        },
+        "optshrink": {
+          "learned_minus_comparator_ber": -1.3563368055555556e-05,
+          "bootstrap95": [
+            -3.7384033203124976e-05,
+            0.0
+          ],
+          "learned_better_cells": 1,
+          "total_cells": 3
+        },
+        "sparse_angle": {
+          "learned_minus_comparator_ber": -3.3908420138888887e-06,
+          "bootstrap95": [
+            -1.0172526041666666e-05,
+            0.0
+          ],
+          "learned_better_cells": 1,
+          "total_cells": 3
+        }
+      }
+    },
+    "20": {
+      "methods": {
+        "perfect_csi": {
+          "ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 0
+        },
+        "learned_9101": {
+          "ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 0
+        },
+        "learned_9102": {
+          "ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 0
+        },
+        "learned_9103": {
+          "ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 0
+        },
+        "em100": {
+          "ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 0
+        },
+        "optshrink": {
+          "ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 0
+        },
+        "sparse_angle": {
+          "ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "bit_errors": 0
+        },
+        "learned_mean": {
+          "ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "evaluated_bits": 294912,
+          "independent_channel_worlds": 192,
+          "errors_per_training_seed": {
+            "learned_9101": 0,
+            "learned_9102": 0,
+            "learned_9103": 0
+          }
+        }
+      },
+      "paired": {
+        "em100": {
+          "learned_minus_comparator_ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "learned_better_cells": 0,
+          "total_cells": 3
+        },
+        "optshrink": {
+          "learned_minus_comparator_ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "learned_better_cells": 0,
+          "total_cells": 3
+        },
+        "sparse_angle": {
+          "learned_minus_comparator_ber": 0.0,
+          "bootstrap95": [
+            0.0,
+            0.0
+          ],
+          "learned_better_cells": 0,
+          "total_cells": 3
+        }
+      }
+    }
+  },
+  "by_regime": {
+    "L2": {
+      "methods": {
+        "perfect_csi": {
+          "ber": 0.012058512369791666,
+          "bootstrap95": [
+            0.009926350911458335,
+            0.014308827718098962
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 5927
+        },
+        "learned_9101": {
+          "ber": 0.015452067057291668,
+          "bootstrap95": [
+            0.012743682861328126,
+            0.018294321695963543
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 7595
+        },
+        "learned_9102": {
+          "ber": 0.015433756510416665,
+          "bootstrap95": [
+            0.012701314290364581,
+            0.01827804565429688
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 7586
+        },
+        "learned_9103": {
+          "ber": 0.01612548828125,
+          "bootstrap95": [
+            0.013393046061197917,
+            0.019002329508463544
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 7926
+        },
+        "em100": {
+          "ber": 0.02529500325520833,
+          "bootstrap95": [
+            0.021842041015625004,
+            0.02900614420572917
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 12433
+        },
+        "optshrink": {
+          "ber": 0.017370605468749998,
+          "bootstrap95": [
+            0.014408162434895835,
+            0.020461222330729164
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 8538
+        },
+        "sparse_angle": {
+          "ber": 0.015376790364583334,
+          "bootstrap95": [
+            0.012725830078125,
+            0.018127441406249997
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 7558
+        },
+        "learned_mean": {
+          "ber": 0.015670437282986113,
+          "bootstrap95": [
+            0.012946573893229164,
+            0.018525661892361107
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "errors_per_training_seed": {
+            "learned_9101": 7595,
+            "learned_9102": 7586,
+            "learned_9103": 7926
+          }
+        }
+      },
+      "paired": {
+        "em100": {
+          "learned_minus_comparator_ber": -0.009624565972222221,
+          "bootstrap95": [
+            -0.010724605984157996,
+            -0.008582848442925355
+          ],
+          "learned_better_cells": 4,
+          "total_cells": 5
+        },
+        "optshrink": {
+          "learned_minus_comparator_ber": -0.0017001681857638853,
+          "bootstrap95": [
+            -0.0022033860948350715,
+            -0.0012857733832465313
+          ],
+          "learned_better_cells": 4,
+          "total_cells": 5
+        },
+        "sparse_angle": {
+          "learned_minus_comparator_ber": 0.0002936469184027792,
+          "bootstrap95": [
+            1.1511908637142924e-05,
+            0.0006130642361111069
+          ],
+          "learned_better_cells": 1,
+          "total_cells": 5
+        }
+      }
+    },
+    "L4": {
+      "methods": {
+        "perfect_csi": {
+          "ber": 0.007704671223958332,
+          "bootstrap95": [
+            0.006597900390625,
+            0.00887664794921875
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 3787
+        },
+        "learned_9101": {
+          "ber": 0.012150065104166666,
+          "bootstrap95": [
+            0.010436960856119792,
+            0.013918050130208335
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 5972
+        },
+        "learned_9102": {
+          "ber": 0.012150065104166666,
+          "bootstrap95": [
+            0.010434672037760415,
+            0.01390182495117188
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 5972
+        },
+        "learned_9103": {
+          "ber": 0.012518310546875,
+          "bootstrap95": [
+            0.010858103434244792,
+            0.014180603027343754
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 6153
+        },
+        "em100": {
+          "ber": 0.019559733072916672,
+          "bootstrap95": [
+            0.017319539388020836,
+            0.021820220947265618
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 9614
+        },
+        "optshrink": {
+          "ber": 0.01239013671875,
+          "bootstrap95": [
+            0.010674845377604165,
+            0.014105224609375
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 6090
+        },
+        "sparse_angle": {
+          "ber": 0.011246744791666667,
+          "bootstrap95": [
+            0.009710693359375005,
+            0.012807515462239585
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 5528
+        },
+        "learned_mean": {
+          "ber": 0.012272813585069441,
+          "bootstrap95": [
+            0.010594329833984372,
+            0.014000871446397566
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "errors_per_training_seed": {
+            "learned_9101": 5972,
+            "learned_9102": 5972,
+            "learned_9103": 6153
+          }
+        }
+      },
+      "paired": {
+        "em100": {
+          "learned_minus_comparator_ber": -0.0072869194878472255,
+          "bootstrap95": [
+            -0.008106926812065976,
+            -0.00645682440863716
+          ],
+          "learned_better_cells": 3,
+          "total_cells": 5
+        },
+        "optshrink": {
+          "learned_minus_comparator_ber": -0.00011732313368055594,
+          "bootstrap95": [
+            -0.00035671657986111684,
+            0.00011735704210069094
+          ],
+          "learned_better_cells": 2,
+          "total_cells": 5
+        },
+        "sparse_angle": {
+          "learned_minus_comparator_ber": 0.0010260687934027768,
+          "bootstrap95": [
+            0.0007222323947482604,
+            0.0013753424750434055
+          ],
+          "learned_better_cells": 1,
+          "total_cells": 5
+        }
+      }
+    },
+    "random3to7": {
+      "methods": {
+        "perfect_csi": {
+          "ber": 0.0073689778645833325,
+          "bootstrap95": [
+            0.006422831217447916,
+            0.008378143310546876
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 3622
+        },
+        "learned_9101": {
+          "ber": 0.012015787760416665,
+          "bootstrap95": [
+            0.010514272054036457,
+            0.013529713948567714
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 5906
+        },
+        "learned_9102": {
+          "ber": 0.012082926432291665,
+          "bootstrap95": [
+            0.010587565104166667,
+            0.013604736328125002
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 5939
+        },
+        "learned_9103": {
+          "ber": 0.01207275390625,
+          "bootstrap95": [
+            0.010628204345703126,
+            0.013566131591796874
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 5934
+        },
+        "em100": {
+          "ber": 0.018143717447916666,
+          "bootstrap95": [
+            0.01618448893229167,
+            0.020196685791015623
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 8918
+        },
+        "optshrink": {
+          "ber": 0.011936442057291666,
+          "bootstrap95": [
+            0.010465494791666669,
+            0.013476613362630209
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 5867
+        },
+        "sparse_angle": {
+          "ber": 0.010831705729166665,
+          "bootstrap95": [
+            0.00952545166015625,
+            0.012190755208333333
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "bit_errors": 5324
+        },
+        "learned_mean": {
+          "ber": 0.012057156032986112,
+          "bootstrap95": [
+            0.010590922037760417,
+            0.013559315999348958
+          ],
+          "evaluated_bits": 491520,
+          "independent_channel_worlds": 320,
+          "errors_per_training_seed": {
+            "learned_9101": 5906,
+            "learned_9102": 5939,
+            "learned_9103": 5934
+          }
+        }
+      },
+      "paired": {
+        "em100": {
+          "learned_minus_comparator_ber": -0.006086561414930554,
+          "bootstrap95": [
+            -0.006787109374999994,
+            -0.005426669650607636
+          ],
+          "learned_better_cells": 3,
+          "total_cells": 5
+        },
+        "optshrink": {
+          "learned_minus_comparator_ber": 0.00012071397569444464,
+          "bootstrap95": [
+            -0.00016004774305555266,
+            0.0004055447048611066
+          ],
+          "learned_better_cells": 2,
+          "total_cells": 5
+        },
+        "sparse_angle": {
+          "learned_minus_comparator_ber": 0.0012254503038194456,
+          "bootstrap95": [
+            0.0009087456597222216,
+            0.0015503099229600662
+          ],
+          "learned_better_cells": 1,
+          "total_cells": 5
+        }
+      }
+    }
+  },
+  "cells": [
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "perfect_csi",
+      "ber": 0.050628662109375,
+      "bootstrap95": [
+        0.04078114827473956,
+        0.06092478434244791
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 4977,
+      "nmse_db": null
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "learned_9101",
+      "ber": 0.06404622395833334,
+      "bootstrap95": [
+        0.05185928344726565,
+        0.07687403361002604
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 6296,
+      "nmse_db": -12.370891220771556
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "learned_9102",
+      "ber": 0.063995361328125,
+      "bootstrap95": [
+        0.051727294921875,
+        0.07678248087565105
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 6291,
+      "nmse_db": -12.44340733937782
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "learned_9103",
+      "ber": 0.066680908203125,
+      "bootstrap95": [
+        0.054392496744791685,
+        0.07945760091145834
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 6555,
+      "nmse_db": -11.356037579869936
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "em100",
+      "ber": 0.103759765625,
+      "bootstrap95": [
+        0.08835856119791667,
+        0.11945648193359375
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 10200,
+      "nmse_db": -5.575483578018813
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "optshrink",
+      "ber": 0.07065836588541666,
+      "bootstrap95": [
+        0.057351684570312506,
+        0.08420817057291666
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 6946,
+      "nmse_db": -11.082393625773845
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "sparse_angle",
+      "ber": 0.06427001953125,
+      "bootstrap95": [
+        0.05214360555013019,
+        0.0765790303548177
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 6318,
+      "nmse_db": -12.745697551192258
+    },
+    {
+      "regime": "L2",
+      "snr_db": 0,
+      "method": "learned_mean",
+      "ber": 0.06490749782986112,
+      "bootstrap95": [
+        0.052656300862630206,
+        0.07768766615125862
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 6296,
+        "learned_9102": 6291,
+        "learned_9103": 6555
+      },
+      "ber_training_seed_range": [
+        0.063995361328125,
+        0.066680908203125
+      ]
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "perfect_csi",
+      "ber": 0.008168538411458332,
+      "bootstrap95": [
+        0.004638417561848958,
+        0.012461598714192711
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 803,
+      "nmse_db": null
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "learned_9101",
+      "ber": 0.011322021484375,
+      "bootstrap95": [
+        0.006551106770833334,
+        0.017395528157552093
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1113,
+      "nmse_db": -17.00360354303693
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "learned_9102",
+      "ber": 0.011250813802083334,
+      "bootstrap95": [
+        0.006520334879557291,
+        0.017283884684244803
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1106,
+      "nmse_db": -17.291316038178834
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "learned_9103",
+      "ber": 0.0118408203125,
+      "bootstrap95": [
+        0.007100168863932292,
+        0.017720540364583325
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1164,
+      "nmse_db": -15.31934524590515
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "em100",
+      "ber": 0.019358317057291664,
+      "bootstrap95": [
+        0.012532552083333339,
+        0.027428181966145857
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1903,
+      "nmse_db": -10.88715875918718
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "optshrink",
+      "ber": 0.013509114583333334,
+      "bootstrap95": [
+        0.008188883463541668,
+        0.019897460937499993
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1328,
+      "nmse_db": -14.160559328474706
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "sparse_angle",
+      "ber": 0.010630289713541668,
+      "bootstrap95": [
+        0.006377919514973959,
+        0.015869140625
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1045,
+      "nmse_db": -17.37754090961175
+    },
+    {
+      "regime": "L2",
+      "snr_db": 5,
+      "method": "learned_mean",
+      "ber": 0.011471218532986112,
+      "bootstrap95": [
+        0.0067341274685329845,
+        0.01744291517469618
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 1113,
+        "learned_9102": 1106,
+        "learned_9103": 1164
+      },
+      "ber_training_seed_range": [
+        0.011250813802083334,
+        0.0118408203125
+      ]
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "perfect_csi",
+      "ber": 0.0014750162760416665,
+      "bootstrap95": [
+        0.0003252665201822917,
+        0.0031232198079427093
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 145,
+      "nmse_db": null
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "learned_9101",
+      "ber": 0.0018717447916666665,
+      "bootstrap95": [
+        0.00042699178059895835,
+        0.003987884521484375
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 184,
+      "nmse_db": -22.53349305768173
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "learned_9102",
+      "ber": 0.0019022623697916665,
+      "bootstrap95": [
+        0.000406646728515625,
+        0.004099782307942708
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 187,
+      "nmse_db": -22.8101870279426
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "learned_9103",
+      "ber": 0.002054850260416667,
+      "bootstrap95": [
+        0.00045776367187500005,
+        0.004354095458984376
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 202,
+      "nmse_db": -20.826334153915255
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "em100",
+      "ber": 0.0032145182291666665,
+      "bootstrap95": [
+        0.0008036295572916667,
+        0.006601969401041667
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 316,
+      "nmse_db": -15.986172810952803
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "optshrink",
+      "ber": 0.002614339192708333,
+      "bootstrap95": [
+        0.0006306966145833334,
+        0.00538152058919271
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 257,
+      "nmse_db": -18.267481289171446
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "sparse_angle",
+      "ber": 0.001953125,
+      "bootstrap95": [
+        0.0004374186197916667,
+        0.004222106933593752
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 192,
+      "nmse_db": -22.30174663373312
+    },
+    {
+      "regime": "L2",
+      "snr_db": 10,
+      "method": "learned_mean",
+      "ber": 0.001942952473958333,
+      "bootstrap95": [
+        0.00042716132269965276,
+        0.004150644938151043
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 184,
+        "learned_9102": 187,
+        "learned_9103": 202
+      },
+      "ber_training_seed_range": [
+        0.0018717447916666665,
+        0.002054850260416667
+      ]
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "perfect_csi",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        6.103515625e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 2,
+      "nmse_db": null
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "learned_9101",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        6.103515625e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 2,
+      "nmse_db": -27.906629627559486
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "learned_9102",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        6.103515625e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 2,
+      "nmse_db": -27.813193496582965
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "learned_9103",
+      "ber": 5.0862630208333336e-05,
+      "bootstrap95": [
+        0.0,
+        0.000152587890625
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5,
+      "nmse_db": -26.888274346013095
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "em100",
+      "ber": 0.00014241536458333332,
+      "bootstrap95": [
+        1.0172526041666666e-05,
+        0.0003458658854166667
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 14,
+      "nmse_db": -20.96461864610777
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "optshrink",
+      "ber": 7.120768229166667e-05,
+      "bootstrap95": [
+        0.0,
+        0.00020370483398437594
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 7,
+      "nmse_db": -23.139400248601575
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "sparse_angle",
+      "ber": 3.0517578125e-05,
+      "bootstrap95": [
+        0.0,
+        9.1552734375e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 3,
+      "nmse_db": -26.9939414453625
+    },
+    {
+      "regime": "L2",
+      "snr_db": 15,
+      "method": "learned_mean",
+      "ber": 3.0517578125e-05,
+      "bootstrap95": [
+        0.0,
+        9.1552734375e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 2,
+        "learned_9102": 2,
+        "learned_9103": 5
+      },
+      "ber_training_seed_range": [
+        2.0345052083333332e-05,
+        5.0862630208333336e-05
+      ]
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "perfect_csi",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": null
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "learned_9101",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -32.46744045096523
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "learned_9102",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -31.730822257377596
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "learned_9103",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -32.92162956407314
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "em100",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -26.181248612019136
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "optshrink",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -27.599965064277082
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "sparse_angle",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -31.412132678243378
+    },
+    {
+      "regime": "L2",
+      "snr_db": 20,
+      "method": "learned_mean",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 0,
+        "learned_9102": 0,
+        "learned_9103": 0
+      },
+      "ber_training_seed_range": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "perfect_csi",
+      "ber": 0.03636678059895833,
+      "bootstrap95": [
+        0.030914306640625007,
+        0.042094421386718754
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 3575,
+      "nmse_db": null
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "learned_9101",
+      "ber": 0.05662027994791667,
+      "bootstrap95": [
+        0.048390706380208336,
+        0.06504338582356771
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5566,
+      "nmse_db": -9.965346840079729
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "learned_9102",
+      "ber": 0.056640625,
+      "bootstrap95": [
+        0.0483385721842448,
+        0.06518580118815104
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5568,
+      "nmse_db": -9.923859552943412
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "learned_9103",
+      "ber": 0.05763753255208333,
+      "bootstrap95": [
+        0.049538675944010416,
+        0.06583684285481772
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5666,
+      "nmse_db": -9.73572376168217
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "em100",
+      "ber": 0.08931477864583334,
+      "bootstrap95": [
+        0.07861328125000004,
+        0.10001678466796876
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 8780,
+      "nmse_db": -5.3395504076865405
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "optshrink",
+      "ber": 0.056925455729166664,
+      "bootstrap95": [
+        0.04853286743164064,
+        0.0654296875
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5596,
+      "nmse_db": -10.238746599734105
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "sparse_angle",
+      "ber": 0.0523681640625,
+      "bootstrap95": [
+        0.04477920532226562,
+        0.0599980672200521
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5148,
+      "nmse_db": -10.861151070933559
+    },
+    {
+      "regime": "L4",
+      "snr_db": 0,
+      "method": "learned_mean",
+      "ber": 0.05696614583333333,
+      "bootstrap95": [
+        0.04874996609157985,
+        0.06533838907877604
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 5566,
+        "learned_9102": 5568,
+        "learned_9103": 5666
+      },
+      "ber_training_seed_range": [
+        0.05662027994791667,
+        0.05763753255208333
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "perfect_csi",
+      "ber": 0.0016581217447916665,
+      "bootstrap95": [
+        0.00103759765625,
+        0.0024312337239583335
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 163,
+      "nmse_db": null
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "learned_9101",
+      "ber": 0.003336588541666667,
+      "bootstrap95": [
+        0.0022478739420572916,
+        0.004577636718750001
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 328,
+      "nmse_db": -15.342738872965313
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "learned_9102",
+      "ber": 0.003316243489583333,
+      "bootstrap95": [
+        0.002237701416015625,
+        0.00455754597981771
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 326,
+      "nmse_db": -15.54112501885612
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "learned_9103",
+      "ber": 0.004099527994791666,
+      "bootstrap95": [
+        0.002888743082682292,
+        0.005452473958333334
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 403,
+      "nmse_db": -14.183584107322337
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "em100",
+      "ber": 0.007486979166666666,
+      "bootstrap95": [
+        0.005482991536458336,
+        0.009663899739583334
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 736,
+      "nmse_db": -10.842742635578777
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "optshrink",
+      "ber": 0.004170735677083333,
+      "bootstrap95": [
+        0.002888997395833333,
+        0.005615234375000001
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 410,
+      "nmse_db": -14.13514545583839
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "sparse_angle",
+      "ber": 0.003204345703125,
+      "bootstrap95": [
+        0.002197265625,
+        0.004323323567708331
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 315,
+      "nmse_db": -15.941460903269695
+    },
+    {
+      "regime": "L4",
+      "snr_db": 5,
+      "method": "learned_mean",
+      "ber": 0.0035841200086805555,
+      "bootstrap95": [
+        0.0024617513020833343,
+        0.004842207166883679
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 328,
+        "learned_9102": 326,
+        "learned_9103": 403
+      },
+      "ber_training_seed_range": [
+        0.003316243489583333,
+        0.004099527994791666
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "perfect_csi",
+      "ber": 0.00048828125,
+      "bootstrap95": [
+        4.0690104166666664e-05,
+        0.001220703125
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 48,
+      "nmse_db": null
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "learned_9101",
+      "ber": 0.0007832845052083333,
+      "bootstrap95": [
+        4.0690104166666664e-05,
+        0.001983642578125
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 77,
+      "nmse_db": -19.943777598092097
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "learned_9102",
+      "ber": 0.0007832845052083333,
+      "bootstrap95": [
+        4.0690104166666664e-05,
+        0.00201416015625
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 77,
+      "nmse_db": -20.107729516346396
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "learned_9103",
+      "ber": 0.0008443196614583334,
+      "bootstrap95": [
+        7.120768229166666e-05,
+        0.0020345052083333335
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 83,
+      "nmse_db": -18.898599669999793
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "em100",
+      "ber": 0.0009867350260416665,
+      "bootstrap95": [
+        0.00011189778645833334,
+        0.002248128255208333
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 97,
+      "nmse_db": -15.697753070329343
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "optshrink",
+      "ber": 0.0008443196614583333,
+      "bootstrap95": [
+        8.138020833333334e-05,
+        0.001963297526041667
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 83,
+      "nmse_db": -17.76456794076505
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "sparse_angle",
+      "ber": 0.000640869140625,
+      "bootstrap95": [
+        3.0517578125e-05,
+        0.0016278584798177093
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 63,
+      "nmse_db": -20.18354384867515
+    },
+    {
+      "regime": "L4",
+      "snr_db": 10,
+      "method": "learned_mean",
+      "ber": 0.0008036295572916667,
+      "bootstrap95": [
+        5.086263020833333e-05,
+        0.0020073784722222225
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 77,
+        "learned_9102": 77,
+        "learned_9103": 83
+      },
+      "ber_training_seed_range": [
+        0.0007832845052083333,
+        0.0008443196614583334
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "perfect_csi",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1,
+      "nmse_db": null
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "learned_9101",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1,
+      "nmse_db": -25.225791612989564
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "learned_9102",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1,
+      "nmse_db": -24.873325425561706
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "learned_9103",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1,
+      "nmse_db": -24.744719760459727
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "em100",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1,
+      "nmse_db": -20.70559759913884
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "optshrink",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1,
+      "nmse_db": -22.856264831861264
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "sparse_angle",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        6.103515625e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 2,
+      "nmse_db": -24.883550790736493
+    },
+    {
+      "regime": "L4",
+      "snr_db": 15,
+      "method": "learned_mean",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 1,
+        "learned_9102": 1,
+        "learned_9103": 1
+      },
+      "ber_training_seed_range": [
+        1.0172526041666666e-05,
+        1.0172526041666666e-05
+      ]
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "perfect_csi",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": null
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "learned_9101",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -29.655611584505067
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "learned_9102",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -28.34957275321891
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "learned_9103",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -30.509474767740294
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "em100",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -25.80677159649765
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "optshrink",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -27.308763892295463
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "sparse_angle",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -29.442840485951592
+    },
+    {
+      "regime": "L4",
+      "snr_db": 20,
+      "method": "learned_mean",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 0,
+        "learned_9102": 0,
+        "learned_9103": 0
+      },
+      "ber_training_seed_range": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "perfect_csi",
+      "ber": 0.034647623697916664,
+      "bootstrap95": [
+        0.029958089192708346,
+        0.03973388671875
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 3406,
+      "nmse_db": null
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "learned_9101",
+      "ber": 0.0562744140625,
+      "bootstrap95": [
+        0.04888839721679687,
+        0.06380233764648438
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5532,
+      "nmse_db": -9.32079065546718
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "learned_9102",
+      "ber": 0.05659993489583333,
+      "bootstrap95": [
+        0.04916381835937501,
+        0.06415837605794271
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5564,
+      "nmse_db": -9.258113335935787
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "learned_9103",
+      "ber": 0.056182861328125,
+      "bootstrap95": [
+        0.04912261962890626,
+        0.06368001302083331
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5523,
+      "nmse_db": -9.375206296210692
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "em100",
+      "ber": 0.08351643880208333,
+      "bootstrap95": [
+        0.07387161254882815,
+        0.09357706705729163
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 8210,
+      "nmse_db": -5.408411944755205
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "optshrink",
+      "ber": 0.055379231770833336,
+      "bootstrap95": [
+        0.04813563028971354,
+        0.06298828125
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 5444,
+      "nmse_db": -9.69928207523149
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "sparse_angle",
+      "ber": 0.050333658854166664,
+      "bootstrap95": [
+        0.0438738505045573,
+        0.057048034667968775
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 4948,
+      "nmse_db": -10.535737375509793
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 0,
+      "method": "learned_mean",
+      "ber": 0.05635240342881945,
+      "bootstrap95": [
+        0.04905183580186631,
+        0.06376817491319443
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 5532,
+        "learned_9102": 5564,
+        "learned_9103": 5523
+      },
+      "ber_training_seed_range": [
+        0.056182861328125,
+        0.05659993489583333
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "perfect_csi",
+      "ber": 0.002176920572916667,
+      "bootstrap95": [
+        0.0015459696451822916,
+        0.0028991699218749996
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 214,
+      "nmse_db": null
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "learned_9101",
+      "ber": 0.0037943522135416665,
+      "bootstrap95": [
+        0.002675374348958334,
+        0.005035400390624998
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 373,
+      "nmse_db": -14.36501945638225
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "learned_9102",
+      "ber": 0.003794352213541666,
+      "bootstrap95": [
+        0.0026753743489583335,
+        0.005025227864583334
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 373,
+      "nmse_db": -14.46314563818598
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "learned_9103",
+      "ber": 0.004150390625,
+      "bootstrap95": [
+        0.0029805501302083326,
+        0.005442301432291665
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 408,
+      "nmse_db": -13.46418711636705
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "em100",
+      "ber": 0.007039388020833333,
+      "bootstrap95": [
+        0.005177561442057291,
+        0.009053548177083334
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 692,
+      "nmse_db": -10.50536478990952
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "optshrink",
+      "ber": 0.004241943359375,
+      "bootstrap95": [
+        0.0030314127604166657,
+        0.005554453531901043
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 417,
+      "nmse_db": -13.470051131215152
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "sparse_angle",
+      "ber": 0.0037638346354166665,
+      "bootstrap95": [
+        0.0026753743489583335,
+        0.0049443562825520855
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 370,
+      "nmse_db": -14.897067926913438
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 5,
+      "method": "learned_mean",
+      "ber": 0.003913031684027778,
+      "bootstrap95": [
+        0.0027804904513888894,
+        0.005157555474175348
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 373,
+        "learned_9102": 373,
+        "learned_9103": 408
+      },
+      "ber_training_seed_range": [
+        0.003794352213541666,
+        0.004150390625
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "perfect_csi",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        5.086263020833333e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 2,
+      "nmse_db": null
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "learned_9101",
+      "ber": 1.0172526041666666e-05,
+      "bootstrap95": [
+        0.0,
+        3.0517578125e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 1,
+      "nmse_db": -19.87832660101018
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "learned_9102",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        5.086263020833333e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 2,
+      "nmse_db": -19.968310480855045
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "learned_9103",
+      "ber": 3.0517578125e-05,
+      "bootstrap95": [
+        0.0,
+        7.120768229166666e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 3,
+      "nmse_db": -18.966632468110625
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "em100",
+      "ber": 0.00016276041666666666,
+      "bootstrap95": [
+        3.0517578125e-05,
+        0.00035603841145833337
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 16,
+      "nmse_db": -15.960700801126395
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "optshrink",
+      "ber": 6.103515624999999e-05,
+      "bootstrap95": [
+        1.0172526041666666e-05,
+        0.00014241536458333332
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 6,
+      "nmse_db": -18.159897928504996
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "sparse_angle",
+      "ber": 6.103515625e-05,
+      "bootstrap95": [
+        1.0172526041666666e-05,
+        0.00014241536458333332
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 6,
+      "nmse_db": -20.096354406217678
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 10,
+      "method": "learned_mean",
+      "ber": 2.0345052083333332e-05,
+      "bootstrap95": [
+        0.0,
+        4.7471788194444445e-05
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 1,
+        "learned_9102": 2,
+        "learned_9103": 3
+      },
+      "ber_training_seed_range": [
+        1.0172526041666666e-05,
+        3.0517578125e-05
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "perfect_csi",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": null
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "learned_9101",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -24.454302096719296
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "learned_9102",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -23.909297761253107
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "learned_9103",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -24.180624530287446
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "em100",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -20.563378103597238
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "optshrink",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -22.705975248417623
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "sparse_angle",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -24.223550938578725
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 15,
+      "method": "learned_mean",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 0,
+        "learned_9102": 0,
+        "learned_9103": 0
+      },
+      "ber_training_seed_range": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "perfect_csi",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": null
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "learned_9101",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -29.199238996045516
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "learned_9102",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -27.81216331922606
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "learned_9103",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -30.038390511389878
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "em100",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -25.984052542346575
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "optshrink",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -27.456907712387544
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "sparse_angle",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "bit_errors": 0,
+      "nmse_db": -28.995378502410457
+    },
+    {
+      "regime": "random3to7",
+      "snr_db": 20,
+      "method": "learned_mean",
+      "ber": 0.0,
+      "bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "evaluated_bits": 98304,
+      "independent_channel_worlds": 64,
+      "errors_per_training_seed": {
+        "learned_9101": 0,
+        "learned_9102": 0,
+        "learned_9103": 0
+      },
+      "ber_training_seed_range": [
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "uncertainty": "95% percentile bootstrap resampling independent channel worlds within each condition. Neural fits are fixed; three fits are not tripled independent data.",
+  "zero_error_policy": "One error per cell corresponds to 1/98304 bits. Zero observed errors are not zero BER; degenerate zero bootstrap intervals do not bound rare failures.",
+  "scope": "Uncoded exact-ML magnitude-domain detector, N32 K3 P30 RSR12, QPSK, synthetic ULA channels. No throughput or hardware claim."
+}

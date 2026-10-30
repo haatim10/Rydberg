@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-18T16:04:35.483180+00:00",
+  "smoke_worlds": 128,
+  "generation_seconds": 0.054739832994528115,
+  "estimated_full_generation_seconds": 7.8825359512120485,
+  "measurements": {
+    "context21": {
+      "batch_seconds": 0.10830958298174664,
+      "observed_batch_seconds": [
+        0.12054799997713417,
+        0.10934633295983076,
+        0.10596441698726267,
+        0.10727283300366253,
+        0.10942520899698138,
+        0.10679954197257757
+      ],
+      "estimated_train_seconds_per_seed": 1109.0901297330856
+    },
+    "context30": {
+      "batch_seconds": 0.12149618746479973,
+      "observed_batch_seconds": [
+        0.1189974999288097,
+        0.16714841697830707,
+        0.11621158407069743,
+        0.12399487500078976,
+        0.1269740000134334,
+        0.11540133389644325
+      ],
+      "estimated_train_seconds_per_seed": 1244.1209596395493
+    }
+  },
+  "estimated_all_six_train_seconds": 7059.633268117905,
+  "estimated_float32_bank_bytes": 293363712,
+  "cpu_count": 8,
+  "threads": 1,
+  "batch_gather_bitwise_equivalent": true,
+  "peak_rss_bytes": 436486144,
+  "notes": "Estimates exclude validation and process contention; each worker contains both arms for one fit seed. Production gathers training columns only per minibatch."
+}

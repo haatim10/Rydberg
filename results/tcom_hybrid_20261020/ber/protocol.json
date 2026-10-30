@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "name": "Hybrid estimator: fresh fixed-alphabet BER",
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    "L2",
+    "L4",
+    "random3to7"
+  ],
+  "cases_per_cell": 128,
+  "test_seed": 2026102054,
+  "data_seed": 2026102055,
+  "source_methods": [
+    "hybrid_9101",
+    "hybrid_9102",
+    "hybrid_9103",
+    "hybrid0_9101",
+    "hybrid0_9102",
+    "hybrid0_9103",
+    "latest_9101",
+    "latest_9102",
+    "latest_9103",
+    "adaptive40_9101",
+    "adaptive40_9102",
+    "adaptive40_9103",
+    "global40_9101",
+    "global40_9102",
+    "global40_9103",
+    "classical40",
+    "em100",
+    "compact_sparse",
+    "optshrink"
+  ],
+  "additional_reference": "perfect_csi",
+  "neural_groups": {
+    "hybrid_mean": [
+      "hybrid_9101",
+      "hybrid_9102",
+      "hybrid_9103"
+    ],
+    "hybrid0_mean": [
+      "hybrid0_9101",
+      "hybrid0_9102",
+      "hybrid0_9103"
+    ],
+    "latest_mean": [
+      "latest_9101",
+      "latest_9102",
+      "latest_9103"
+    ],
+    "adaptive40_mean": [
+      "adaptive40_9101",
+      "adaptive40_9102",
+      "adaptive40_9103"
+    ],
+    "global40_mean": [
+      "global40_9101",
+      "global40_9102",
+      "global40_9103"
+    ]
+  },
+  "modulation": "All 64 equally likely joint Gray QPSK vectors once per channel, unit power per user and six bits per vector. This stratifies the uniform alphabet; it is not 64 independent random symbol selections.",
+  "data_noise": "Fresh proper complex Gaussian noise independent of pilot noise. SeedSequence([data_seed, regime_index, reference_index, local_index]) generates independent antenna/vector noise. Reuse the standardized noise across SNR and rescale by sqrt(sigma2).",
+  "identical_inputs": "Every method sees identical new data magnitudes, known reference/variance, and the same exact 64-hypothesis Rician ML detector. The detector receives no coherent observation.",
+  "inference": "Channel truth only generates data and the explicitly labeled perfect-CSI reference. No BER-dependent model, policy, sparse choice, cell selection or additional bit allocation.",
+  "sampling": "Fixed 128 anchors per reference/path setting, 64 vectors per channel, 384 bits per channel and 49152 bits per cell/fit. No adaptive extra bits.",
+  "bounds": "Zero observed errors and a collapsed empirical bootstrap interval do not establish zero BER, a rare-event bound, equivalence or population noninferiority. No independent-bit binomial intervals.",
+  "duplicates": "Bitwise-identical full channel arrays may reuse detector counts. Every reuse is recorded and audited; detector reuse is not estimator timing.",
+  "primary_scope": "All 153 conditions: hybrid versus frozen latest estimator and versus compact sparse. NMSE and BER form four outcomes.",
+  "hybrid_scope": "The hybrid policy selects starts and additional EM updates using only frozen observable development criteria and runtime eligibility. The same 30 fitting pilots, known reference and noise variance are available to every deployed estimator.",
+  "noem_scope": "hybrid0 uses the same chosen start and same final filter as hybrid with zero additional EM updates. It is not the raw pre-filter start. Raw adaptive/global diagnostics are NMSE-only and are excluded from BER groups.",
+  "controls": "Fixed adaptive40/global40/classical40 and direct EM100, compact sparse, OptShrink and the frozen latest estimator remain separate descriptive references. No BER-dependent policy or iteration selection.",
+  "freeze_binding": "The new study policy and scientific protocol bind every checkpoint and selected method configuration. BER reads no prior-study result manifest. This protocol binds the BER source, independent audit and immutable stateless detector.",
+  "primary_contrasts": {
+    "hybrid_vs_latest": [
+      "latest_mean",
+      "hybrid_mean"
+    ],
+    "hybrid_vs_compact": [
+      "compact_sparse",
+      "hybrid_mean"
+    ]
+  },
+  "descriptive_contrasts": {
+    "hybrid_vs_adaptive40": [
+      "adaptive40_mean",
+      "hybrid_mean"
+    ],
+    "hybrid_vs_global40": [
+      "global40_mean",
+      "hybrid_mean"
+    ],
+    "hybrid_vs_classical40": [
+      "classical40",
+      "hybrid_mean"
+    ],
+    "hybrid_vs_em100": [
+      "em100",
+      "hybrid_mean"
+    ],
+    "hybrid_vs_optshrink": [
+      "optshrink",
+      "hybrid_mean"
+    ],
+    "hybrid_vs_noem": [
+      "hybrid0_mean",
+      "hybrid_mean"
+    ]
+  },
+  "improvement_sign": "reference BER minus candidate BER",
+  "descriptive_scopes": [
+    "all",
+    "weak_warm100",
+    "strong_high",
+    "strong_transition",
+    "ordinary",
+    "weak",
+    "rsr5",
+    "rsr12",
+    "rsr20",
+    "all_L2",
+    "all_L4",
+    "all_random3to7",
+    "weak_warm100_L2",
+    "weak_warm100_L4",
+    "weak_warm100_random3to7",
+    "high_all",
+    "transition_all"
+  ],
+  "bootstrap": {
+    "resamples": 20000,
+    "seed": 2026102058,
+    "rule": "Multinomial 128-case weights in regime order L2,L4,random3to7, shared across every reference/SNR/method/fit within regime; regimes independent.",
+    "pointwise_quantiles": [
+      0.025,
+      0.975
+    ],
+    "primary_bonferroni4_quantiles": [
+      0.00625,
+      0.99375
+    ],
+    "interpretation": "Conditional on fixed weights/policies. Two primary contrasts in the whole-grid scope times NMSE/BER form four outcomes. No-EM and other-reference comparisons are descriptive. Three fits average individual metrics, never predictions, and do not triple the number of channels."
+  },
+  "source_hashes": {
+    "tcom_hybrid_20261020/ber.py": "48a7386b8947386fe16304dd22e6700ffd965c165758dd158773ce58396ec20e",
+    "tcom_hybrid_20261020/ber_audit.py": "1d1b9e473e7115b71934674ed14586db185b60c6a251352c25f9114b4971af9b",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c"
+  },
+  "frozen_unix": 1792510177.9185522
+}

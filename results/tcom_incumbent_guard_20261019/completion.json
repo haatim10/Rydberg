@@ -1,0 +1,45 @@
+{
+  "phase": "complete",
+  "completed_unix": 1792434678.194745,
+  "selection_sha256": "e81d56321e2a63a7c0386becc59e794ffa946315bd4fed5b38057961c35fce0a",
+  "protocol_sha256": "72d955cad2f3b3a4a7857be9ac9d09beb971a5f205bc22a235537ac3eee4fdfe",
+  "test_cells": 153,
+  "condition_cases": 19584,
+  "historical_eight_remaining_losses": 0,
+  "fresh_target_negative_cells": {
+    "repair_vs_old": [],
+    "repair_vs_prior": [],
+    "repair_vs_current": []
+  },
+  "audit_hashes": {
+    "checks.json": "0f2e677fdd3594b2acb7d1c6a70ce9ae30715acf87b9b8cebeecfa47afe672fe",
+    "risk_checks.json": "ae7d0ea45568857a9a73ade46a62934753416243d9b3e0d668ed7560095f2774",
+    "risk_data_checks.json": "919b641c394f1c5e3548c24d1e4911cae7d24d4e9fd65a8de3125c7f5181b7c3",
+    "shrink_checks.json": "87bc9517b719293d3c84430434da540b90e63d6b3aa126a28362ddc95dce86e2",
+    "audit/calibration.json": "fb3ebf165fb41dff13e5add52c0ea9b14063f567ac6d50a3abcc73a9af1e5474",
+    "audit/repair_selection.json": "649cf0cec581c64b3b5d8c8610cff604da876e72c6320c27e83f2fcf1a760f75",
+    "audit/selection.json": "519f23b763e9de76c6fb67c8bf400fa8185e866139acc94ab452a17b44f4e772",
+    "audit/test.json": "db1e0a6ef280095823cdb3b7d05d5d611a03e8d3bef681b115ebb9fe82c001bb",
+    "audit/summary.json": "61c2a26e5da189101d2076cb7d3f43394708a00acca67fb988e6b909e3866fa7",
+    "audit/timing.json": "9e58bb456c24d96527641af98bcaffb477326659ac5519afe2af2ab61cab2c02",
+    "ber/audit.json": "91c82e3b0b8a9e5b4cd5e68b2db748e3ece9c9207e98604c71d33211a946d833",
+    "sensitivity/audit.json": "27007f0297a7523be9b1b3353abebe8fd2e051481a29c39e3cabaa1fa99b0dfa",
+    "audit/sensitivity.json": "9b2f89118b7ea798edc4c69398445474751eac7c9a93d121e6e48779ab6df326",
+    "historical_replay/audit.json": "b0e5f3c3ff7b009b2180733a83c8949ff2e4233ddc4c417c6ad5a1294a8266f3"
+  },
+  "report_sha256": "a37dc9f97f1b38b94eb683a1b87ee41e2a489bcbb407480440d440115feb0d3f",
+  "figure_hashes": {
+    "repair_nmse.png": "5b4634c6579f03815469d92b42febb35378a22ab02eafb67b5071b069157d6c2",
+    "repair_target.png": "37d01205184cb7eee41d7547113ed98836094f60082b59e96febee9559923d58",
+    "repair_runtime.png": "2fa2ce869454c1af66cec64b1e16092a70a71c1907fe50989c8e8a4973d844cd",
+    "ber/ber.png": "025aa8419ad2c7d6f64534adf88f4fbe2aba5515022f82f435493f82b835e2b3"
+  },
+  "execution_partition_publication_sha256": "752a95f115e3c198a06dd36adc48fdce3dc69c961a65cb65363e792982f33749",
+  "manuscript_changed": false,
+  "limitations": [
+    "Observed BER target is zero for all methods; no BER superiority or population noninferiority claim.",
+    "Filter turns off at40dB, creating a0.96\u20134.83dB accuracy worsening from37.5dB on the test grid.",
+    "Noise-variance routing remains sensitive.",
+    "Five inherited outside-target losses versus prior repair are at most1.03e-5dB; no target losses."
+  ]
+}

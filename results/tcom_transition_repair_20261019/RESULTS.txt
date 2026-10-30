@@ -1,0 +1,335 @@
+WEAK-REFERENCE TRANSITION REPAIR: FRESH NMSE, BER AND RUNTIME COMPARISON
+Completed experiment. Manuscript and all earlier study outputs remain unchanged.
+
+KEY FINDINGS
+In the predeclared weak-reference transition target, repair changes mean NMSE by +16.208 dB relative to the previous bypass and +14.605 dB relative to the retrained model (positive is improvement).
+Observed target BER: previous bypass 0.012772%, repair 0.000000%. The adjusted intervals below determine whether the differences are resolved by this finite sample.
+4/4 prespecified primary NMSE/BER comparisons have strictly positive family-adjusted improvement intervals. This inference is conditional on the fixed models, policies and test grid.
+Target cells with worse mean NMSE: 0 versus previous bypass, 0 versus retrained model. All three path-regime target results and every adverse cell follow.
+Across the full grid, 10 conditions have worse mean NMSE than the old bypass, including 4 with pointwise 95% intervals supporting harm. The worst observed loss is 2.808 dB. The repair is not uniformly better than that policy.
+The rule retains the original estimate in 90/153 conditions and changes it in 63. Comparing against the original therefore includes many exact identities.
+Overall observed BER remains lower for the matched sparse/EM family (0.479718%) than for the repair (0.506578%); the repair preserves the original estimator's low-SNR behavior.
+Primary-window p90 latency is 11.258 ms for repair versus 5.326 ms for the old bypass (2.11 times as long). This target-window cost must not be hidden by the overall median.
+Final all-grid p90 latency: repair 10.957 ms; matched sparse/EM family 5.567 ms. Original outputs remain exactly unchanged through nominal 20 dB.
+
+DESIGN AND INTERPRETATION
+The three existing 30-pilot retrained checkpoints remain frozen. At nominal SNR<=20 dB the original estimator is returned exactly. Above 20 dB a development-selected lookup uses supplied noise variance and known reference power to choose the original estimator, 5/20/100 exact EM steps initialized by its output, or spectral-initialized EM100.
+Every deployed decision uses receiver-observable quantities. True channels and path counts are absent from inference. A path regime is used only as a calibration stratum and a test reporting label.
+The routing proxy is 10 log10(K/sigma^2), with K=3 and the declared unit-user-power normalization. Nearest declared SNR/reference bins determine the lookup; this is not an estimate of realized channel SNR.
+Initialization is the hypothesis under test: retaining the learned channel as the EM starting point may avoid the poor solutions reached by the previous fresh spectral fallback. Longer continuation is not assumed universally better.
+The tested repair combines learned initialization and guarded routing. This comparison does not isolate their separate causal contributions, and warm100 and spectral100 have different initialization costs.
+An exploratory screen used only an already available DEVELOPMENT observation subset to define this small menu. New calibration and new test banks are independent of that screen and the exposed previous test bank.
+Fresh development uses 96 channel/reference anchors per pair, with 30 fitting pilots and 9 held-out pilots. Each nonidentity candidate must have a one-sided 95% paired-bootstrap upper bound on held-out NLL change<=0 in EACH of three path regimes. Original is always admissible; constraints are never relaxed. Eligible choices minimize mean held-out NLL, using the frozen preference order for ties.
+This is a conservative development screen, not a guarantee of NMSE/BER safety. Multiple selection decisions, finite data and metric mismatch remain. No test outcomes change the rule.
+The primary target is reference 5 dB and SNR 32.5–45 dB: 18 conditions spanning 2, 4, and random3–7 paths. Two comparisons, repair versus previous bypass and versus retrained model, times NMSE and BER form four primary outcomes.
+Separate path-regime target scores, every adverse condition, tails and all-grid results are reported so a pooled improvement cannot hide the original weakness.
+Testing uses 128 fresh channel/reference anchors per pair: 1,152 unique channel/reference draws, reused at 17 SNRs to give 19,584 operating cases. Within each path regime, shared local indices preserve coupling across reference/SNR/method/fit in 20,000 bootstrap resamples.
+Three-fit groups average individual estimator metrics; they are not ensembles and do not triple independent channels. NMSE is equal-cell mean dB ratio-of-sums. Pooled NMSE is shown separately because aggregation can change rankings.
+BER uses every 64-vector joint GrayQPSK symbol once per channel, fresh data noise shared across estimators, and the same exact 64-hypothesis magnitude-domain Rician detector. There are 7,520,256 bits per estimator/fit across the full grid and 884,736 in the primary target. Zero observed errors do not prove zero BER.
+
+PRIMARY TARGET RESULTS
+
+Target bit errors by fitted model (seed order 9101, 9102, 9103); each fit uses the same 884,736 target bits:
+  original: [4, 0, 2082]
+  old_bypass: [112, 112, 115]
+  repair: [0, 0, 0]
+BER improvement versus the original can be concentrated in particular fitted models. Pooled target intervals do not establish improvement in every path subgroup or every fit. Zero-error empirical intervals can collapse to [0,0] and provide no rare-event guarantee.
+
+repair_vs_old:
+  NMSE gain 16.2084 dB; family-adjusted interval [10.8007, 18.2597] dB.
+  BER reduction 0.012772 percentage points; family-adjusted interval [0.000339, 0.030970].
+repair_vs_original:
+  NMSE gain 14.6052 dB; family-adjusted interval [13.3190, 16.0229] dB.
+  BER reduction 0.078592 percentage points; family-adjusted interval [0.042348, 0.123163].
+Primary intervals are two-sided 98.75% bootstrap percentile intervals, adjusted across four prespecified outcomes for nominal 95% family coverage.
+Intervals condition on the fixed checkpoints, selected policy and declared grid. They exclude training-population and selection uncertainty. Other intervals below are descriptive pointwise 95%.
+
+COMPARISON BY OPERATING RANGE
+Ordinary=0–20 dB; transition=22.5–45 dB; stress=50/60 dB; high-SNR=all tested points above 20 dB. Reference levels 5/12/20 dB; 2/4/random3–7 paths per user.
+All columns lower is better. Latency is batch-one on one Apple M2 CPU thread, including observable lookup, initialization, learned inference and all selected EM updates. Models and fixed lookup tables are preloaded.
+
+WEAK_TRANSITION (18 conditions)
+Estimator                       Equal-cell NMSE dB  Pooled NMSE dB  Observed BER %  p90 ms   Median ms
+------------------------------  ------------------  --------------  --------------  -------  ---------
+Retrained model                 -27.933             -23.015         0.078592        5.093    4.813    
+Previous spectral-EM100 bypass  -26.329             -23.793         0.012772        5.326    5.174    
+New transition repair           -42.538             -38.547         0.000000        11.258   10.865   
+Direct spectral EM100           -22.668             -22.378         0.019441        5.323    5.170    
+Frozen previous compact sparse  -23.873             -23.116         0.011868        4.538    4.376    
+Matched sparse/EM family        -22.668             -22.378         0.019441        5.270    5.189    
+Frozen full sparse              -23.319             -22.902         0.018311        108.126  107.004  
+Frozen OptShrink                -28.455             -28.228         0.006782        46.766   45.726   
+
+WEAK_TRANSITION_L2 (6 conditions)
+Estimator                       Equal-cell NMSE dB  Pooled NMSE dB  Observed BER %  p90 ms   Median ms
+------------------------------  ------------------  --------------  --------------  -------  ---------
+Retrained model                 -34.423             -31.093         0.003052        5.288    4.846    
+Previous spectral-EM100 bypass  -26.908             -22.412         0.018989        5.359    5.183    
+New transition repair           -44.723             -43.187         0.000000        11.292   10.868   
+Direct spectral EM100           -20.676             -20.676         0.028822        5.338    5.173    
+Frozen previous compact sparse  -21.282             -21.192         0.028144        4.563    4.422    
+Matched sparse/EM family        -20.676             -20.676         0.028822        5.286    5.194    
+Frozen full sparse              -20.996             -20.987         0.025431        108.720  107.173  
+Frozen OptShrink                -29.496             -29.494         0.000000        47.574   46.026   
+
+WEAK_TRANSITION_L4 (6 conditions)
+Estimator                       Equal-cell NMSE dB  Pooled NMSE dB  Observed BER %  p90 ms   Median ms
+------------------------------  ------------------  --------------  --------------  -------  ---------
+Retrained model                 -25.518             -22.822         0.080137        5.015    4.773    
+Previous spectral-EM100 bypass  -26.581             -25.623         0.013902        5.260    5.174    
+New transition repair           -42.770             -38.064         0.000000        11.117   10.808   
+Direct spectral EM100           -24.393             -24.392         0.021362        5.259    5.141    
+Frozen previous compact sparse  -27.436             -27.408         0.002035        4.455    4.376    
+Matched sparse/EM family        -24.393             -24.392         0.021362        5.264    5.166    
+Frozen full sparse              -25.298             -25.206         0.022719        107.625  106.934  
+Frozen OptShrink                -26.559             -26.558         0.020345        45.829   45.417   
+
+WEAK_TRANSITION_RANDOM3TO7 (6 conditions)
+Estimator                       Equal-cell NMSE dB  Pooled NMSE dB  Observed BER %  p90 ms   Median ms
+------------------------------  ------------------  --------------  --------------  -------  ---------
+Retrained model                 -23.857             -20.423         0.152588        4.981    4.812    
+Previous spectral-EM100 bypass  -25.499             -24.010         0.005425        5.353    5.170    
+New transition repair           -40.121             -37.285         0.000000        11.256   10.875   
+Direct spectral EM100           -22.935             -22.935         0.008138        5.273    5.181    
+Frozen previous compact sparse  -22.901             -22.879         0.005425        4.462    4.331    
+Matched sparse/EM family        -22.935             -22.935         0.008138        5.259    5.209    
+Frozen full sparse              -23.665             -23.642         0.006782        107.498  106.990  
+Frozen OptShrink                -29.310             -29.248         0.000000        46.470   45.867   
+
+ORDINARY (45 conditions)
+Estimator                       Equal-cell NMSE dB  Pooled NMSE dB  Observed BER %  p90 ms   Median ms
+------------------------------  ------------------  --------------  --------------  -------  ---------
+Retrained model                 -20.206             -15.191         1.722367        5.029    4.772    
+Previous spectral-EM100 bypass  -20.206             -15.191         1.722367        5.201    4.851    
+New transition repair           -20.206             -15.191         1.722367        5.108    4.827    
+Direct spectral EM100           -14.972             -10.221         2.774794        5.414    5.181    
+Frozen previous compact sparse  -18.718             -15.678         1.618381        4.564    4.386    
+Matched sparse/EM family        -18.813             -15.740         1.616437        5.742    4.925    
+Frozen full sparse              -20.315             -16.163         1.615623        108.150  106.992  
+Frozen OptShrink                -18.135             -14.533         1.829698        46.073   22.733   
+
+TRANSITION (90 conditions)
+Estimator                       Equal-cell NMSE dB  Pooled NMSE dB  Observed BER %  p90 ms   Median ms
+------------------------------  ------------------  --------------  --------------  -------  ---------
+Retrained model                 -32.290             -26.666         0.018876        5.077    4.795    
+Previous spectral-EM100 bypass  -36.916             -29.976         0.002554        5.299    5.145    
+New transition repair           -40.099             -36.567         0.000000        10.951   5.123    
+Direct spectral EM100           -33.906             -26.602         0.006284        5.270    5.139    
+Frozen previous compact sparse  -34.271             -27.437         0.003594        4.540    4.368    
+Matched sparse/EM family        -34.004             -26.766         0.005990        5.270    5.141    
+Frozen full sparse              -35.203             -28.035         0.005109        107.998  106.856  
+Frozen OptShrink                -36.770             -31.491         0.002215        46.148   23.413   
+
+STRESS (18 conditions)
+Estimator                       Equal-cell NMSE dB  Pooled NMSE dB  Observed BER %  p90 ms   Median ms
+------------------------------  ------------------  --------------  --------------  -------  ---------
+Retrained model                 -11.847             -9.833          0.821601        5.018    4.826    
+Previous spectral-EM100 bypass  -48.144             -27.257         0.006556        5.332    5.199    
+New transition repair           -59.631             -52.175         0.000000        11.201   10.857   
+Direct spectral EM100           -48.144             -27.257         0.006556        5.205    5.118    
+Frozen previous compact sparse  -45.605             -27.191         0.005086        4.472    4.360    
+Matched sparse/EM family        -48.144             -27.257         0.006556        5.276    5.168    
+Frozen full sparse              -46.409             -27.279         0.006443        108.134  107.102  
+Frozen OptShrink                -50.953             -33.009         0.002261        45.937   23.270   
+
+HIGH_SNR (108 conditions)
+Estimator                       Equal-cell NMSE dB  Pooled NMSE dB  Observed BER %  p90 ms   Median ms
+------------------------------  ------------------  --------------  --------------  -------  ---------
+Retrained model                 -28.883             -17.117         0.152663        5.064    4.799    
+Previous spectral-EM100 bypass  -38.787             -29.386         0.003221        5.302    5.159    
+New transition repair           -43.354             -37.245         0.000000        11.020   5.172    
+Direct spectral EM100           -36.279             -26.705         0.006330        5.266    5.132    
+Frozen previous compact sparse  -36.160             -27.395         0.003843        4.525    4.367    
+Matched sparse/EM family        -36.360             -26.844         0.006085        5.270    5.153    
+Frozen full sparse              -37.071             -27.899         0.005331        108.004  106.901  
+Frozen OptShrink                -39.134             -31.710         0.002223        46.133   23.406   
+
+ALL (153 conditions)
+Estimator                       Equal-cell NMSE dB  Pooled NMSE dB  Observed BER %  p90 ms   Median ms
+------------------------------  ------------------  --------------  --------------  -------  ---------
+Retrained model                 -26.331             -15.858         0.614341        5.050    4.791    
+Previous spectral-EM100 bypass  -33.322             -20.126         0.508852        5.296    5.113    
+New transition repair           -36.546             -20.441         0.506578        10.957   5.018    
+Direct spectral EM100           -30.012             -15.308         0.820584        5.322    5.150    
+Frozen previous compact sparse  -31.030             -20.342         0.478707        4.547    4.371    
+Matched sparse/EM family        -31.199             -20.314         0.479718        5.567    5.138    
+Frozen full sparse              -32.143             -20.830         0.478946        108.061  106.926  
+Frozen OptShrink                -32.958             -19.653         0.539716        46.114   23.293   
+
+ADVERSE CONDITIONS AND FIT VARIATION
+Negative gain means repair is worse than its comparator. A numerical tie tolerance of 1e-10 dB is used only for reporting identical estimates.
+
+repair_vs_old:
+  Negative means: 10 overall, 0 in target; pointwise 95% harm intervals: 4 overall.
+  Worst observed gain: -2.808 dB in random3to7_rsr12_snr32.5; interval [-3.438, -2.150].
+  All negative cells: L2_rsr20_snr32.5, L2_rsr20_snr42.5, L2_rsr20_snr45, L2_rsr20_snr50, L2_rsr20_snr60, L4_rsr12_snr32.5, L4_rsr20_snr32.5, random3to7_rsr12_snr32.5, random3to7_rsr20_snr32.5, random3to7_rsr20_snr37.5
+  Target fit-specific NMSE gains: {'9101': 17.026785940754394, '9102': 16.75457225333264, '9103': 14.843822881299765}
+repair_vs_original:
+  Negative means: 0 overall, 0 in target; pointwise 95% harm intervals: 0 overall.
+  Worst observed gain: 0.000 dB in L2_rsr5_snr0; interval [0.000, 0.000].
+  All negative cells: none
+  Target fit-specific NMSE gains: {'9101': 14.057940232620307, '9102': 10.225427230940376, '9103': 19.532369252784708}
+repair_vs_em100:
+  Negative means: 12 overall, 0 in target; pointwise 95% harm intervals: 6 overall.
+  Worst observed gain: -2.808 dB in random3to7_rsr12_snr32.5; interval [-3.438, -2.150].
+  All negative cells: L2_rsr20_snr32.5, L2_rsr20_snr42.5, L2_rsr20_snr45, L2_rsr20_snr50, L2_rsr20_snr60, L4_rsr12_snr32.5, L4_rsr20_snr32.5, random3to7_rsr12_snr30, random3to7_rsr12_snr32.5, random3to7_rsr20_snr30, random3to7_rsr20_snr32.5, random3to7_rsr20_snr37.5
+  Target fit-specific NMSE gains: {'9101': 21.091413650564597, '9102': 21.300390136257526, '9103': 17.21727849014401}
+repair_vs_compact:
+  Negative means: 30 overall, 0 in target; pointwise 95% harm intervals: 24 overall.
+  Worst observed gain: -2.808 dB in random3to7_rsr12_snr32.5; interval [-3.438, -2.150].
+  All negative cells: L2_rsr5_snr0, L2_rsr5_snr5, L2_rsr12_snr0, L2_rsr12_snr5, L2_rsr20_snr0, L2_rsr20_snr5, L2_rsr20_snr32.5, L2_rsr20_snr42.5, L2_rsr20_snr45, L2_rsr20_snr50, L2_rsr20_snr60, L4_rsr5_snr0, L4_rsr5_snr5, L4_rsr12_snr0, L4_rsr12_snr5, L4_rsr12_snr32.5, L4_rsr20_snr0, L4_rsr20_snr5, L4_rsr20_snr32.5, random3to7_rsr5_snr0, random3to7_rsr5_snr5, random3to7_rsr12_snr0, random3to7_rsr12_snr5, random3to7_rsr12_snr30, random3to7_rsr12_snr32.5, random3to7_rsr20_snr0, random3to7_rsr20_snr5, random3to7_rsr20_snr30, random3to7_rsr20_snr32.5, random3to7_rsr20_snr37.5
+  Target fit-specific NMSE gains: {'9101': 21.091413650564597, '9102': 21.300390136257526, '9103': 17.21727849014401}
+
+EVERY WEAK-REFERENCE TARGET CONDITION
+
+Paths       SNR dB  Retrained  Previous bypass  Repair   EM100    Matched sparse/EM  Repair gain over original CI95
+----------  ------  ---------  ---------------  -------  -------  -----------------  ------------------------------
+L2          32.5    -39.439    -39.439          -39.439  -20.653  -20.653            [0.000, 0.000]                
+L2          35.0    -39.286    -39.286          -41.366  -20.678  -20.678            [0.780, 3.248]                
+L2          37.5    -37.329    -20.685          -43.132  -20.685  -20.685            [3.582, 7.463]                
+L2          40.0    -34.117    -20.684          -45.633  -20.684  -20.684            [9.136, 13.251]               
+L2          42.5    -30.206    -20.680          -48.133  -20.680  -20.680            [15.474, 19.674]              
+L2          45.0    -26.159    -20.677          -50.633  -20.677  -20.677            [22.273, 26.073]              
+L4          32.5    -31.823    -31.823          -31.823  -24.227  -24.227            [0.000, 0.000]                
+L4          35.0    -29.841    -29.841          -37.645  -24.309  -24.309            [5.151, 9.459]                
+L4          37.5    -27.477    -24.362          -43.037  -24.362  -24.362            [10.529, 18.591]              
+L4          40.0    -24.512    -24.409          -45.538  -24.409  -24.409            [17.010, 23.547]              
+L4          42.5    -21.305    -24.521          -48.038  -24.521  -24.521            [23.735, 28.718]              
+L4          45.0    -18.151    -24.530          -50.538  -24.530  -24.530            [30.451, 33.825]              
+random3to7  32.5    -31.859    -31.859          -31.859  -22.853  -22.853            [0.000, 0.000]                
+random3to7  35.0    -29.284    -29.284          -37.293  -22.909  -22.909            [6.932, 8.855]                
+random3to7  37.5    -25.941    -22.942          -43.019  -22.942  -22.942            [14.255, 19.381]              
+random3to7  40.0    -22.220    -22.960          -41.156  -22.960  -22.960            [17.912, 23.139]              
+random3to7  42.5    -18.535    -22.971          -42.857  -22.971  -22.971            [23.214, 29.589]              
+random3to7  45.0    -15.302    -22.977          -44.543  -22.977  -22.977            [28.003, 35.453]              
+
+TAIL DIAGNOSTICS IN TARGET
+p95/p99 are quantiles of per-channel linear NMSE, averaged across fitted models. Severe means NMSE>1.
+
+Estimator                       p95 case NMSE  p99 case NMSE  Severe %
+------------------------------  -------------  -------------  --------
+Retrained model                 0.0875016      0.171114       0.0000  
+Previous spectral-EM100 bypass  0.00103795     0.115804       0.0000  
+New transition repair           0.000271025    0.000844065    0.0000  
+Direct spectral EM100           0.00401076     0.129268       0.0000  
+Frozen previous compact sparse  0.00469802     0.108218       0.0000  
+Matched sparse/EM family        0.00401076     0.129268       0.0000  
+Frozen full sparse              0.000210838    0.126396       0.0000  
+Frozen OptShrink                0.000139211    0.0425587      0.0000  
+
+RUNTIME AND BASELINE FAIRNESS
+The new repair rule is selected before isolated timing calibration. The compact sparse cap is the measured p90 of that actual rule; eligible sparse configurations are then selected on the same fresh development observations before any tests.
+That cap pools all 153 conditions and three fixed fits. It is neither a per-condition latency match nor a worst-branch runtime guarantee.
+All 16 declared compact candidates passed calibration eligibility. The compact menu is a limited family, not a global sparse-optimization claim. The previous compact sparse table, full sparse and OptShrink remain frozen transfer controls. Their earlier lookup calibration is not repeated for the new study.
+Some strong-reference warm100/spectral100 development losses differ by only about 1e-8 to 1e-6. These are near-equivalent finite-development choices, well above the measured arithmetic discrepancy but not evidence of a meaningful deployment advantage. The rule is not optimized for minimum runtime within a practical-equivalence tolerance.
+The fresh matched family selects exact zero-penalty EM100 in 27/51 lookup bins, including 6/6 weak-reference target bins. In those cells its prediction equals direct EM100; it is a selected sparse/EM family, not an independent sparse solution.
+Fresh final timing runs separately after accuracy work, with random method order and 3 repetitions per condition. All raw calls and outliers are retained. Calibration caps are measured quantiles, not hard deadlines; final cap violations are reported without reselection.
+The primary-window repair p90 is +2.53% relative to the pooled calibration cap. 11/51 repair condition-specific p90 values exceed that pooled cap; the matched sparse/EM family has 0/51. Each condition pools paths and fixed fits. These values show why pooled eligibility is not a per-condition runtime guarantee.
+Reference dB  SNR dB  Repair conditional p90 ms  Above pooled cap %
+------------  ------  -------------------------  ------------------
+5.0           37.5    11.2514                    2.47              
+5.0           40.0    11.2573                    2.52              
+5.0           42.5    11.5994                    5.64              
+5.0           45.0    11.2656                    2.60              
+5.0           50.0    11.2919                    2.84              
+5.0           60.0    11.5521                    5.21              
+20.0          40.0    11.2891                    2.81              
+20.0          42.5    11.1819                    1.84              
+20.0          45.0    11.0878                    0.98              
+20.0          50.0    11.1651                    1.69              
+20.0          60.0    11.1060                    1.15              
+{
+  "calibrated_cap_ms": 10.9800588,
+  "repair_p90_ms": 10.957266800000001,
+  "compact_p90_ms": 5.5668994000000005,
+  "repair_exceeds_calibrated_cap": false,
+  "compact_exceeds_calibrated_cap": false,
+  "compact_exceeds_fresh_repair": false
+}
+
+FROZEN POLICY
+Nominal SNR dB  Reference5 dB  Reference12 dB  Reference20 dB
+--------------  -------------  --------------  --------------
+0               original       original        original      
+5               original       original        original      
+10              original       original        original      
+15              original       original        original      
+20              original       original        original      
+22.5            original       original        original      
+25              original       original        original      
+27.5            original       original        original      
+30              original       original        original      
+32.5            original       original        original      
+35              warm5          warm5           warm5         
+37.5            warm100        warm20          warm20        
+40              warm100        spectral100     warm100       
+42.5            warm100        spectral100     warm100       
+45              warm100        spectral100     warm100       
+50              warm100        spectral100     warm100       
+60              warm100        spectral100     warm100       
+
+SUPPLIED-NOISE SENSITIVITY
+Fixed physical observations at reference 5/SNR 35, 40, 45 and reference12/20/SNR 32.5, all three path regimes, with supplied-variance offsets -3/0/+3 dB. The supplied variance changes both inference and routing. No sensitivity BER or retuning follows this diagnostic.
+Positive noise-mismatch loss means the repair is worse than with correctly supplied variance. Intervals below are descriptive pointwise 95%.
+Each mismatch loss compares the same repair under incorrect versus correct variance. It is not a repair-versus-original effect; that separate comparison supplies both estimators the same incorrect variance.
+Paths       Reference dB  Actual SNR dB  Variance error dB  Selected branch  Repair NMSE dB  Mismatch loss dB  Loss CI95       
+----------  ------------  -------------  -----------------  ---------------  --------------  ----------------  ----------------
+L2          5.0           35.0           -3.0               warm100          -40.631         0.735             [0.516, 0.920]  
+L2          5.0           35.0           0.0                warm5            -41.366         0.000             [0.000, 0.000]  
+L2          5.0           35.0           3.0                original         -40.607         0.760             [-0.453, 1.862] 
+L2          5.0           40.0           -3.0               warm100          -45.632         0.000             [-0.000, 0.001] 
+L2          5.0           40.0           0.0                warm100          -45.633         0.000             [0.000, 0.000]  
+L2          5.0           40.0           3.0                warm100          -45.633         0.000             [-0.001, 0.001] 
+L2          5.0           45.0           -3.0               warm100          -50.633         0.000             [-0.000, 0.000] 
+L2          5.0           45.0           0.0                warm100          -50.633         0.000             [0.000, 0.000]  
+L2          5.0           45.0           3.0                warm100          -50.633         0.000             [-0.000, 0.000] 
+L2          12.0          32.5           -3.0               warm5            -39.410         0.279             [-0.813, 1.556] 
+L2          12.0          32.5           0.0                original         -39.689         0.000             [0.000, 0.000]  
+L2          12.0          32.5           3.0                original         -40.379         -0.690            [-0.813, -0.550]
+L2          20.0          32.5           -3.0               warm5            -38.923         -1.061            [-2.292, 0.470] 
+L2          20.0          32.5           0.0                original         -37.862         0.000             [0.000, 0.000]  
+L2          20.0          32.5           3.0                original         -38.580         -0.718            [-0.832, -0.624]
+L4          5.0           35.0           -3.0               warm100          -40.536         -2.891            [-5.205, 0.116] 
+L4          5.0           35.0           0.0                warm5            -37.645         0.000             [0.000, 0.000]  
+L4          5.0           35.0           3.0                original         -32.396         5.249             [1.984, 6.846]  
+L4          5.0           40.0           -3.0               warm100          -45.537         0.000             [-0.000, 0.001] 
+L4          5.0           40.0           0.0                warm100          -45.538         0.000             [0.000, 0.000]  
+L4          5.0           40.0           3.0                warm100          -45.537         0.000             [-0.001, 0.001] 
+L4          5.0           45.0           -3.0               warm100          -50.537         0.000             [-0.000, 0.001] 
+L4          5.0           45.0           0.0                warm100          -50.538         0.000             [0.000, 0.000]  
+L4          5.0           45.0           3.0                warm100          -50.538         -0.000            [-0.001, 0.000] 
+L4          12.0          32.5           -3.0               warm5            -38.808         -1.684            [-2.233, -1.106]
+L4          12.0          32.5           0.0                original         -37.124         0.000             [0.000, 0.000]  
+L4          12.0          32.5           3.0                original         -37.855         -0.731            [-0.799, -0.665]
+L4          20.0          32.5           -3.0               warm5            -38.772         -2.198            [-2.698, -1.678]
+L4          20.0          32.5           0.0                original         -36.574         0.000             [0.000, 0.000]  
+L4          20.0          32.5           3.0                original         -37.423         -0.849            [-0.925, -0.777]
+random3to7  5.0           35.0           -3.0               warm100          -40.515         -3.222            [-4.735, -1.176]
+random3to7  5.0           35.0           0.0                warm5            -37.293         0.000             [0.000, 0.000]  
+random3to7  5.0           35.0           3.0                original         -32.951         4.342             [3.006, 5.106]  
+random3to7  5.0           40.0           -3.0               warm100          -41.156         0.000             [-0.000, 0.001] 
+random3to7  5.0           40.0           0.0                warm100          -41.156         0.000             [0.000, 0.000]  
+random3to7  5.0           40.0           3.0                warm100          -45.521         -4.364            [-5.936, 0.001] 
+random3to7  5.0           45.0           -3.0               warm100          -43.743         0.800             [-0.000, 7.124] 
+random3to7  5.0           45.0           0.0                warm100          -44.543         0.000             [0.000, 0.000]  
+random3to7  5.0           45.0           3.0                warm100          -44.543         0.000             [-0.001, 0.001] 
+random3to7  12.0          32.5           -3.0               warm5            -38.683         -3.063            [-3.552, -2.541]
+random3to7  12.0          32.5           0.0                original         -35.620         0.000             [0.000, 0.000]  
+random3to7  12.0          32.5           3.0                original         -36.515         -0.895            [-1.032, -0.787]
+random3to7  20.0          32.5           -3.0               warm5            -38.451         -2.949            [-3.409, -2.462]
+random3to7  20.0          32.5           0.0                original         -35.502         0.000             [0.000, 0.000]  
+random3to7  20.0          32.5           3.0                original         -36.418         -0.915            [-1.005, -0.831]
+
+LIMITS AND SCIENTIFIC ATTRIBUTION
+Any gains from a learned-initialized EM tail belong to the combined estimator. They do not establish a new learned controller, a global convergence result or uniform baseline superiority.
+The guarantee of exact original behavior at or below 20 dB refers to the supplied-noise SNR proxy. Misspecified noise can move an observation to a different lookup entry. Nearest-grid/reference lookup outside the declared operating grid is not validated.
+This follow-up is independent confirmation of a repair motivated by exposed earlier failures. Previous test scores are not reused as independent evidence for the new claim.
+The manuscript has not been changed. Interpret the target, subgroup, BER and latency results together before promoting the repair.
+
+VERIFICATION
+All required audits passed: checks.json, audit/calibration.json, audit/repair_selection.json, audit/selection.json, audit/test.json, audit/summary.json, audit/timing.json, ber/audit.json, sensitivity/audit.json, audit/sensitivity.json
+Frozen policy SHA256: d02db7d685622c25e5dfa435587d95deee0faed6c1331079912f2765914ebb69
+
+ARTIFACTS
+nmse_summary.json; nmse_bootstrap.npz; repair_nmse.png; repair_target.png; repair_runtime.png
+ber/summary.json; ber/ber.png; timing.json; sensitivity/summary.json; policy.json; protocol.json

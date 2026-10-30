@@ -1,0 +1,72 @@
+{
+  "initial_global_adaptive_max_abs": 0.0,
+  "all_60_epoch_masks_and_orders_match_adaptive": true,
+  "finite_training_gradients_and_changed_parameters": true,
+  "native_global_max_stage_abs_error": 3.3320854635495133e-15,
+  "native_global_scalar_batch_max_abs_error": 0.0,
+  "classical_checks": [
+    {
+      "config": {
+        "kind": "relative",
+        "relative_tau": 0.01,
+        "beta": 0.1
+      },
+      "max_stage_abs_error": 3.3330101278303995e-15
+    },
+    {
+      "config": {
+        "kind": "relative",
+        "relative_tau": 1.0,
+        "beta": 1.0
+      },
+      "max_stage_abs_error": 2.463258469952349e-15
+    },
+    {
+      "config": {
+        "kind": "noise",
+        "c": 0.5,
+        "beta": 0.1
+      },
+      "max_stage_abs_error": 3.132816463918267e-15
+    },
+    {
+      "config": {
+        "kind": "noise",
+        "c": 8.0,
+        "beta": 1.0
+      },
+      "max_stage_abs_error": 4.218938793823256e-15
+    }
+  ],
+  "em10_max_abs_error": 3.1791949213824896e-15,
+  "passed": true,
+  "at": "2026-10-20T11:25:44.145002+00:00",
+  "source_hashes": {
+    "tcom_start_ablation_20261020/training.py": "806a805e8adb9d85fd64027c819660ed65dc685677612afcfe470f97345048e1",
+    "tcom_start_ablation_20261020/starts.py": "2391e8379f5d726891207e46fa278ddfa4664d270f4cc4c916f9a2a204de3e00",
+    "tcom_runtime_repair_20261020/native.py": "7a60c4ba92259b27332382e14240b425e155576dc8a8df48b8470745cb976d77",
+    "tcom_runtime_bypass_20261017/sparse_fast.py": "ddc40216f4f23c1d4a2eaae7813b12f87dbd2c9645ef5e2cddaf82480e83ae37",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_pilot_em_20261018/training.py": "34b5f25455bb9dcf8ac927bd7e3e3e4e75e2379c74f5999d4a3046cbb63b75f7",
+    "tcom_pilot_em_20261018/training_data.py": "c9550fcd7bb83ee566b16de6b259865f103d3560349e2b52fed86a7b11ec491c",
+    "tcom_pilot_em_20261018/training_protocol.py": "b1ae455519075500ef4670bd182d1b57793c02c327df59a328ca43902ee27816",
+    "sahure/model.py": "c6a3d53d8adae23cc2c0b1309bedd21ebd7760194359256192897bdd19aaface",
+    "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+    "sahure/data.py": "efb3c019ed5209a243023f9ca83c48e216e2c3d6494f3c96b42312242abefeea",
+    "sahure/train.py": "bedef81896e71b57162367debb25fdd29625afc6ab44929bb1ebc9464884b04e"
+  },
+  "parameters": 30,
+  "bank_subset_cases": 128,
+  "batch_seconds": [
+    0.07558816694654524,
+    0.07283362501766533,
+    0.0755330000538379,
+    0.07509487494826317,
+    0.07765195902902633,
+    0.07183841697406024
+  ],
+  "median_batch_seconds": 0.07531393750105053,
+  "estimated_training_seconds_per_seed": 771.2147200107574,
+  "timing_note": "Approximate training cost only; excludes validation and concurrent-worker contention.",
+  "peak_rss_bytes": 446758912
+}

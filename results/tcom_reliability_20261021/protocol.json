@@ -1,0 +1,673 @@
+{
+  "name": "Reference-aware observable residual gate with algebraic fallback",
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "names": [
+    "receiver_9101",
+    "receiver_9102",
+    "receiver_9103",
+    "prior_9101",
+    "prior_9102",
+    "prior_9103",
+    "latest_9101",
+    "latest_9102",
+    "latest_9103",
+    "adaptive40_9101",
+    "adaptive40_9102",
+    "adaptive40_9103",
+    "global40_9101",
+    "global40_9102",
+    "global40_9103",
+    "classical40",
+    "em100",
+    "compact_sparse",
+    "algebraic20"
+  ],
+  "groups": {
+    "receiver_mean": [
+      "receiver_9101",
+      "receiver_9102",
+      "receiver_9103"
+    ],
+    "prior_mean": [
+      "prior_9101",
+      "prior_9102",
+      "prior_9103"
+    ],
+    "latest_mean": [
+      "latest_9101",
+      "latest_9102",
+      "latest_9103"
+    ],
+    "adaptive40_mean": [
+      "adaptive40_9101",
+      "adaptive40_9102",
+      "adaptive40_9103"
+    ],
+    "global40_mean": [
+      "global40_9101",
+      "global40_9102",
+      "global40_9103"
+    ]
+  },
+  "test_cases_per_reference_regime": 128,
+  "development_cases_per_regime": 256,
+  "seeds_by_role": {
+    "smoke": 2026102100,
+    "development": {
+      "A": 2026102101,
+      "C": 2026102102
+    },
+    "calibration": 2026102103,
+    "test": 2026102104,
+    "data": 2026102105,
+    "timing": 2026102106,
+    "holdout": 2026102107,
+    "bootstrap": 2026102108,
+    "development_probes": 2026102109
+  },
+  "rules": [
+    {
+      "id": "mean_t2_e10",
+      "metric": "mean",
+      "threshold": 2.0,
+      "tail": 10
+    },
+    {
+      "id": "mean_t2_e20",
+      "metric": "mean",
+      "threshold": 2.0,
+      "tail": 20
+    },
+    {
+      "id": "mean_t4_e10",
+      "metric": "mean",
+      "threshold": 4.0,
+      "tail": 10
+    },
+    {
+      "id": "mean_t4_e20",
+      "metric": "mean",
+      "threshold": 4.0,
+      "tail": 20
+    },
+    {
+      "id": "mean_t8_e10",
+      "metric": "mean",
+      "threshold": 8.0,
+      "tail": 10
+    },
+    {
+      "id": "mean_t8_e20",
+      "metric": "mean",
+      "threshold": 8.0,
+      "tail": 20
+    },
+    {
+      "id": "max_t2_e10",
+      "metric": "max",
+      "threshold": 2.0,
+      "tail": 10
+    },
+    {
+      "id": "max_t2_e20",
+      "metric": "max",
+      "threshold": 2.0,
+      "tail": 20
+    },
+    {
+      "id": "max_t4_e10",
+      "metric": "max",
+      "threshold": 4.0,
+      "tail": 10
+    },
+    {
+      "id": "max_t4_e20",
+      "metric": "max",
+      "threshold": 4.0,
+      "tail": 20
+    },
+    {
+      "id": "max_t8_e10",
+      "metric": "max",
+      "threshold": 8.0,
+      "tail": 10
+    },
+    {
+      "id": "max_t8_e20",
+      "metric": "max",
+      "threshold": 8.0,
+      "tail": 20
+    }
+  ],
+  "base_policy": {
+    "protocol_sha256": "315b09729e035e28d1cdd7b216e8548981fa3681c265897727ef74493c6b8e04",
+    "crossover_db": 30.0,
+    "tails": {
+      "5": {
+        "0": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "5": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "10": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "15": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "20": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "22.5": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "25": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "27.5": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "30": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "32.5": {
+          "family": "global",
+          "steps": 0
+        },
+        "35": {
+          "family": "global",
+          "steps": 0
+        },
+        "37.5": {
+          "family": "global",
+          "steps": 0
+        },
+        "40": {
+          "family": "global",
+          "steps": 40
+        },
+        "42.5": {
+          "family": "global",
+          "steps": 40
+        },
+        "45": {
+          "family": "global",
+          "steps": 40
+        },
+        "50": {
+          "family": "global",
+          "steps": 40
+        },
+        "60": {
+          "family": "global",
+          "steps": 40
+        }
+      },
+      "12": {
+        "0": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "5": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "10": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "15": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "20": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "22.5": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "25": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "27.5": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "30": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "32.5": {
+          "family": "global",
+          "steps": 10
+        },
+        "35": {
+          "family": "global",
+          "steps": 10
+        },
+        "37.5": {
+          "family": "global",
+          "steps": 20
+        },
+        "40": {
+          "family": "global",
+          "steps": 20
+        },
+        "42.5": {
+          "family": "global",
+          "steps": 20
+        },
+        "45": {
+          "family": "global",
+          "steps": 20
+        },
+        "50": {
+          "family": "global",
+          "steps": 40
+        },
+        "60": {
+          "family": "global",
+          "steps": 40
+        }
+      },
+      "20": {
+        "0": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "5": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "10": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "15": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "20": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "22.5": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "25": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "27.5": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "30": {
+          "family": "adaptive",
+          "steps": 0
+        },
+        "32.5": {
+          "family": "global",
+          "steps": 10
+        },
+        "35": {
+          "family": "global",
+          "steps": 40
+        },
+        "37.5": {
+          "family": "global",
+          "steps": 40
+        },
+        "40": {
+          "family": "global",
+          "steps": 40
+        },
+        "42.5": {
+          "family": "global",
+          "steps": 40
+        },
+        "45": {
+          "family": "global",
+          "steps": 40
+        },
+        "50": {
+          "family": "global",
+          "steps": 40
+        },
+        "60": {
+          "family": "global",
+          "steps": 40
+        }
+      }
+    },
+    "baseline_policy": {
+      "protocol_sha256": "f65bf5473d946a5b63b744b542871a61d0de1feb5e58db9f72b6c1ae4119cd9d",
+      "classical_config": {
+        "kind": "noise",
+        "c": 1.0,
+        "beta": 1.0
+      },
+      "budget_steps": {
+        "adaptive": 40,
+        "global": 50,
+        "classical": 50,
+        "spectral": 75,
+        "em10": 75
+      },
+      "budget_fallback_to_40": {
+        "adaptive": false,
+        "global": false,
+        "classical": false,
+        "spectral": false,
+        "em10": false
+      },
+      "ber_protocol_sha256": "b5e9b6774743be78b593d2bd67bd6c83c03d3893587335be34d662e8393f1ce3",
+      "ber_source_hashes": {
+        "tcom_start_budget_20261020/ber.py": "39931ef9155328e93bb75c295a0792baf7953552927d5f66b886501ea76378e5",
+        "tcom_start_budget_20261020/ber_audit.py": "8ebdd6b0e66bdfe3df41fd70a4a73fcaf6bd10aa1b684fd3d6a8dc463df5f233",
+        "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c"
+      },
+      "selection_evidence": {
+        "classical_selection.json": "0fb7fde1691bee619c9f5a502861963023c62f5b8aa58107c74e8e05977cc4f7",
+        "budget_selection.json": "5bfef937f0193c870adf7b840ca8340e0587aae9f5d374a3d25c6f930bc6586a"
+      },
+      "frozen_unix": 1792505283.7256582
+    },
+    "ber_protocol_sha256": "2eb393c86803c7c91525d18aff14b066486f1897e9a72f8cf968d203d13ad56b",
+    "ber_source_hashes": {
+      "tcom_hybrid_20261020/ber.py": "48a7386b8947386fe16304dd22e6700ffd965c165758dd158773ce58396ec20e",
+      "tcom_hybrid_20261020/ber_audit.py": "1d1b9e473e7115b71934674ed14586db185b60c6a251352c25f9114b4971af9b",
+      "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c"
+    },
+    "selection_evidence": {
+      "runtime_calibration.json": "09d31cf7c92776c2e13e425601b8e0e3fe9ef37d9701830b668a8a04b4dd80c3",
+      "crossover_selection.json": "333f5382d1d220e7e12da7426405e825fb94ce5bae28a67135c7b0213da56326",
+      "tail_proposals.json": "d2e49772816c1d57aa430311b32150eb2ab2aec76e3653a6cdb0a5b291c28aaa",
+      "tail_confirmation.json": "9c542b046b722f650d490a4b3b03345c73952d4b42d70f1efdfbbdd34cc782de"
+    },
+    "frozen_unix": 1792510418.30722
+  },
+  "base_protocol_sha256": "ae8219191a1ec63c40b7db3d7c9f21c9077b8d5b0e1a1e4b6eb4ed0a845b1773",
+  "base_completion_sha256": "dba5949ba7f0e801d774ddafcc11dbde089a97418dd60b7e9ffb8918bafd0f35",
+  "base_history": "Frozen B-proposal estimator; all21 nonzero tails failed its prior C confirmation. Explicit incumbent for this follow-up, not retroactively confirmed.",
+  "gate": {
+    "eligible": "Nearest reference key5 and continuous nominal SNR>30+1e-10; elsewhere exact incumbent.",
+    "score": "Per-antenna 2*mean_p((z-abs(GS+B))**2)/supplied_variance; mean or maximum across antennas. Heuristic fitted residual, not calibrated failure probability.",
+    "initializer": "Real intensity LS with6 linear and9 Hermitian quadratic nuisance columns; correct variance subtraction, rank15, condition<=1e8; repeated nonzero reference.",
+    "acceptance": "Only finite final filtered fallback with mean fitting Rician NLL strictly lower than final incumbent by>1e-12; otherwise incumbent bitwise.",
+    "tails": [
+      10,
+      20
+    ],
+    "invalid": "Gated invalid LS retains incumbent. Standalone algebraic20 uses spectral+20 on invalid LS.",
+    "no_extra_online_pilots": true,
+    "ordinary_bitwise_preserved": true
+  },
+  "development": {
+    "banks": [
+      "A",
+      "C"
+    ],
+    "reference": 5,
+    "snrs": [
+      32.5,
+      35.0,
+      37.5,
+      40.0,
+      42.5,
+      45.0,
+      50.0,
+      60.0
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "anchors_per_regime": 256,
+    "context": 30,
+    "heldout_gaussian_pilots": 9,
+    "known_symbol_probes": 64,
+    "truth_exported": false,
+    "selection": "A: runtime-eligible complete rule must improve mean heldout NLL>1e-12 in EACH path regime and not increase known-probe total BER in EACH regime. Incumbent always admissible. Minimize equal-fit/SNR/regime NLL.",
+    "tie": "Within1e-12 of minimum NLL: smaller trigger fraction; smaller EM tail; larger threshold; mean before max. Incumbent wins a numerical tie.",
+    "confirmation": "C: evaluate only A choice versus incumbent. Positive pooled weak-scope paired-bootstrap one-sided95 NLL lower bound and empirical probe BER nonincrease in EACH path regime. Regime NLL intervals descriptive; no formal BER noninferiority claim.",
+    "failure": "No candidate replacement/search on C. Operational rule remains incumbent if confirmation fails. Fresh receiver arm always names frozen A proposal and is labeled unconfirmed when applicable."
+  },
+  "test": {
+    "cells": 153,
+    "physical_anchors": 1152,
+    "heldout_used": false,
+    "primary_contrasts": [
+      "receiver_vs_prior",
+      "receiver_vs_latest"
+    ],
+    "reference_seed_domain": "physical_seed=1000*role_seed+round(10*reference_dB); independently separates random path counts, channels, fitting/heldout pilots and noise across references.",
+    "outcomes": [
+      "NMSE",
+      "BER"
+    ],
+    "adjustment": "Bonferroni4 on all153 only",
+    "bootstrap": "20,000 draws: independently resample128 indices within each of9(regime,reference) blocks; shared across SNR/method/fit within block.1152 physical anchor clusters.",
+    "omitted_baseline": "OptShrink omitted prospectively from budget-focused follow-up; previous measured p90~79-81ms exceeded10.74. No historical number presented as fresh."
+  },
+  "timing": {
+    "cap_ms": 10.74,
+    "calibration_cap_ms": 10.0,
+    "calibration_indices": [
+      401
+    ],
+    "calibration": "One complete12-rule randomized full-grid calibration before A, pooled full and weak_target p90<=10ms. Forced-fallback timing separately reported.",
+    "windows": 2,
+    "indices": [
+      [
+        500,
+        501,
+        502
+      ],
+      [
+        600,
+        601,
+        602
+      ]
+    ],
+    "worlds_per_window": 459,
+    "acceptance": "Both windows require full-grid AND weak-target p90<=10.74ms; weak-warm, triggered branch and51 bins separately disclosed. A p90 cap is not a hard per-call deadline.",
+    "complete_pipeline": true,
+    "one_cpu_thread": true,
+    "warmup": "Every method on ordinary and reference5/SNR60 observations; model loading/shape constants excluded.",
+    "order": "Window1 after policy freeze before fresh test; window2 after all numerical accuracy jobs are idle. No retries until passing."
+  },
+  "ber": {
+    "name": "Fresh reliability-check BER",
+    "N": 32,
+    "K": 3,
+    "P": 30,
+    "methods": [
+      "receiver_9101",
+      "receiver_9102",
+      "receiver_9103",
+      "prior_9101",
+      "prior_9102",
+      "prior_9103",
+      "latest_9101",
+      "latest_9102",
+      "latest_9103",
+      "adaptive40_9101",
+      "adaptive40_9102",
+      "adaptive40_9103",
+      "global40_9101",
+      "global40_9102",
+      "global40_9103",
+      "classical40",
+      "em100",
+      "compact_sparse",
+      "algebraic20"
+    ],
+    "groups": {
+      "receiver_mean": [
+        "receiver_9101",
+        "receiver_9102",
+        "receiver_9103"
+      ],
+      "prior_mean": [
+        "prior_9101",
+        "prior_9102",
+        "prior_9103"
+      ],
+      "latest_mean": [
+        "latest_9101",
+        "latest_9102",
+        "latest_9103"
+      ],
+      "adaptive40_mean": [
+        "adaptive40_9101",
+        "adaptive40_9102",
+        "adaptive40_9103"
+      ],
+      "global40_mean": [
+        "global40_9101",
+        "global40_9102",
+        "global40_9103"
+      ]
+    },
+    "cases_per_cell": 128,
+    "cells": 153,
+    "test_seed": 2026102104,
+    "data_seed": 2026102105,
+    "bootstrap_seed": 2026102108,
+    "sampling": "All64 joint unit-power Gray-QPSK vectors once per channel;384bits/case,49152bits/cell/fit. Fixed sampling, no adaptive extra bits.",
+    "data": "Fresh proper complex Gaussian data noise independent of fitting observations. SeedSequence([DATA_SEED,regime_index,reference_index,local_index]); standardized noise shared across SNR then scaled by sqrt(sigma2).",
+    "detector": "Same exact64-hypothesis Rician magnitude-domain ML detector and data/reference/variance for every channel estimate; no coherent observations.",
+    "truth": "Channel truth only generates shared data and the labeled perfect-CSI diagnostic. No truth input to estimation, checks, trigger selection or runtime routing.",
+    "duplicates": "Only bitwise-identical entire channel arrays may reuse counts. Every reuse is recorded and audited. Estimator timings never reuse outputs.",
+    "primary": "Receiver versus prior selective-EM and versus latest, all153conditions. NMSE and BER are four outcomes; Bonferroni4 intervals only there.",
+    "bootstrap": "20000 multinomial128-anchor draws independently within each(regime,reference)block, in regime/reference order, shared across SNR/method/fit. Freshworldseeds domain-separate reference pathcounts too:1152anchorclusters. Fits average metrics, not estimates.",
+    "confirmation": "The frozen A-selected receiver is evaluated even if C fails, labeled unconfirmed; the operational recommendation then remains the prior. Test results never change this decision.",
+    "zero_errors": "Zero errors/collapsed empirical intervals do not establish zero BER, rare-event bounds, equivalence or noninferiority.",
+    "statistical_scope": "Conditional on frozen trained fits/policy and simulation grid. Other references/scopes are descriptive."
+  },
+  "checks_sha256": "41795c5f03fd502b5f38c4ccc1cf922c03650178ff6a59a4312d653379353f79",
+  "pipeline_checks_sha256": "bd3f86967de880c8aacd46c47f9ffec97be89e7fbdf97a093cbec5f1dbf85cf0",
+  "source_hashes": {
+    "tcom_filter_continuation_20261019/analysis.py": "4d3826c0304f441723bd1630b74703199cad4ced507d33d847ebaf97abf9d6fa",
+    "tcom_filter_continuation_20261019/study.py": "1ce4cffa709b881508de362c7cd2aca95ba3ca8a3dba0de63f77b474ef6d0d77",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c",
+    "tcom_hybrid_20261020/analysis.py": "250112f954e80378beae3fa49b15e9dc32801084cea20e6cc791b650dedbf972",
+    "tcom_hybrid_20261020/ber.py": "48a7386b8947386fe16304dd22e6700ffd965c165758dd158773ce58396ec20e",
+    "tcom_hybrid_20261020/ber_audit.py": "1d1b9e473e7115b71934674ed14586db185b60c6a251352c25f9114b4971af9b",
+    "tcom_hybrid_20261020/checks.py": "8cc651d7302bffb41f0936be131fe4eef5b9cb71789eefe4d8fb106caf67f34c",
+    "tcom_hybrid_20261020/execution.py": "9452109557784dc847e1c6ee7eda130671ed8e0a99b2607e7b0d9a144f158fe9",
+    "tcom_hybrid_20261020/inference.py": "f980b125bcdc8aa25281756535d98cd212ddbdaf35f5ae967ecf2dc79552b8d3",
+    "tcom_hybrid_20261020/pipeline_checks.py": "2ba7f76e34b2760a8cdac4109a91e1c736a095f6ae648d9745d5eded77509d03",
+    "tcom_hybrid_20261020/study.py": "139703d9e4a1472a4e09c9b79f95e6609ad2e9c7a5fda39536033878182e29ec",
+    "tcom_hybrid_sensitivity_20261020/__init__.py": "d29eda05a0c3e0f67a6bd5d355e6108225b460bc52678202fbb39b2ee9e93b02",
+    "tcom_hybrid_sensitivity_20261020/analysis.py": "301e6dc21fe28e9a0b0cb5dd85d50d24bc77fd0eb2e6ed08b4c9a6d2247a44a8",
+    "tcom_hybrid_sensitivity_20261020/audit.py": "ea92f2df81e1cdc43c69c25464f34d7241a58ac2256eb08ae990e608634a3da1",
+    "tcom_hybrid_sensitivity_20261020/ber.py": "defd5fd11702c7a93e653ebe9047eb5381e608eda20f6949e2894206985ecdcc",
+    "tcom_hybrid_sensitivity_20261020/checks.py": "33762e9a0bc528a758935b094ab406009e91f19c965658b60121134e3866089f",
+    "tcom_hybrid_sensitivity_20261020/execution.py": "9452109557784dc847e1c6ee7eda130671ed8e0a99b2607e7b0d9a144f158fe9",
+    "tcom_hybrid_sensitivity_20261020/study.py": "134c918f903564be50ab98397d099b24008f66b239de50f076a4b62484800cdc",
+    "tcom_incumbent_guard_20261019/inference.py": "0cef3a0dc8a9f1ffa066e08896afc0d69f3a311b9ad729618ec9b760b78ab1eb",
+    "tcom_incumbent_guard_20261019/risk.py": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1",
+    "tcom_incumbent_guard_20261019/risk_data.py": "5a8474b3f87abea086c7999e7ca5ef8fbbab0b0fd57b58188db365ac85e07101",
+    "tcom_incumbent_guard_20261019/shrink.py": "f72debd9763e4a57532f635c0120fa9eaf516f94e0e360853e1155fee483ec6b",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_reliability_20261021/analysis.py": "7271287352e3d3a04a236893f4b8c6aed4b658751a2da4858099eb04b64d6c43",
+    "tcom_reliability_20261021/ber.py": "0ee76f8141f469de9b5d0b9555acb4443d147b17b2072bdb562b59724d785f1e",
+    "tcom_reliability_20261021/checks.py": "8deb713522feea8564a9fa7a58952c0cbc8557d00c0dcad11102fd130aa62f22",
+    "tcom_reliability_20261021/execution.py": "9452109557784dc847e1c6ee7eda130671ed8e0a99b2607e7b0d9a144f158fe9",
+    "tcom_reliability_20261021/inference.py": "b2807dc3d9d14dfe8fbbc7649dfcc36a2afe22f1f55ad52bd9603dd5fb4f585e",
+    "tcom_reliability_20261021/pipeline_checks.py": "46053d581a84ed46d8d4d40f82ec764d5cf3d383f5c88b07cd467b98e604ceaa",
+    "tcom_reliability_20261021/study.py": "a33085bfaec7bf7c235ff62e8d921c8f57aefb722f962e0b75b44295e5937ff1",
+    "tcom_runtime_repair_20261020/analysis.py": "e117a19d3f8e99924f1926afcff6862c7b7a2e03f97751ab368d6c65dc6234db",
+    "tcom_runtime_repair_20261020/execution.py": "dd9bad075a577f833dae8011b0909b9bf8353f2650f742b0ddeb7b1b074f7b57",
+    "tcom_runtime_repair_20261020/inference.py": "b90d476fcf7ac1f493b1f947e0de0ccec93e18628205a8251c12827491d4ae0a",
+    "tcom_runtime_repair_20261020/native.py": "7a60c4ba92259b27332382e14240b425e155576dc8a8df48b8470745cb976d77",
+    "tcom_runtime_repair_20261020/smoke_parity.py": "9df5870dfa613bfa7c10229102f394fe8db7cf80233a0e84ad0954f6eaf46124",
+    "tcom_runtime_repair_20261020/study.py": "d96e769486450b1cf56dc5fcf543bfd982bc9442a3a8d443a74831b8e0a0c031",
+    "tcom_start_ablation_20261020/starts.py": "2391e8379f5d726891207e46fa278ddfa4664d270f4cc4c916f9a2a204de3e00",
+    "tcom_start_ablation_20261020/training.py": "806a805e8adb9d85fd64027c819660ed65dc685677612afcfe470f97345048e1",
+    "tcom_start_budget_20261020/analysis.py": "1e3ff2b37ee63ac9d7f472f1761e9db48a2270aec6b232e08fd79b9e0c2a4c32",
+    "tcom_start_budget_20261020/checks.py": "7a8517fef848bb9c456569f54e9ad695ca52110f505022e38ca314372589d80d",
+    "tcom_start_budget_20261020/execution.py": "fd152c06afcdc124cbbc3659a5a5790fc6e550f0436d4123d0baef2b147fb630",
+    "tcom_start_budget_20261020/study.py": "58105b2f472e343225e28e6a50699db0ce7301289f0ffd9cc7f0e82cfd242847"
+  },
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9101/em_global_best.pt": "38cd26eb6883c8466abc35b1696bc230b55c67df5ea433bd1ae3df803a7420e5",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9102/em_global_best.pt": "8ba1872c91070d98f747e81bae5e9791b6ea708be7329410089f99f97ebcfffb",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9103/em_global_best.pt": "87e6ede797426f136ea8c5cac0c7b9553ec5be6b25dd75c00620663498329560"
+  },
+  "frozen_unix": 1792545599.573184
+}

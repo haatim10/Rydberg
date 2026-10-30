@@ -1,0 +1,142 @@
+{
+  "version": 1,
+  "name": "Retrained-model bypass: bounded full-grid magnitude-domain BER",
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    "L2",
+    "L4",
+    "random3to7"
+  ],
+  "cases_per_cell": 64,
+  "test_seed": 2026101822,
+  "data_seed": 2026101823,
+  "source_methods": [
+    "original_9101",
+    "original_9102",
+    "original_9103",
+    "off_9101",
+    "off_9102",
+    "off_9103",
+    "fast_bypass_9101",
+    "fast_bypass_9102",
+    "fast_bypass_9103",
+    "em100_bypass_9101",
+    "em100_bypass_9102",
+    "em100_bypass_9103",
+    "em100",
+    "optshrink",
+    "prior_sparse_matched",
+    "prior_sparse_50ms",
+    "prior_sparse_full",
+    "compact_sparse"
+  ],
+  "additional_reference": "perfect_csi",
+  "checkpoint_record": {
+    "context30_9101": {
+      "path": "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt",
+      "sha256": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e"
+    },
+    "context30_9102": {
+      "path": "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt",
+      "sha256": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76"
+    },
+    "context30_9103": {
+      "path": "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt",
+      "sha256": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c"
+    }
+  },
+  "neural_groups": {
+    "original_mean": [
+      "original_9101",
+      "original_9102",
+      "original_9103"
+    ],
+    "off_mean": [
+      "off_9101",
+      "off_9102",
+      "off_9103"
+    ],
+    "fast_bypass_mean": [
+      "fast_bypass_9101",
+      "fast_bypass_9102",
+      "fast_bypass_9103"
+    ],
+    "em100_bypass_mean": [
+      "em100_bypass_9101",
+      "em100_bypass_9102",
+      "em100_bypass_9103"
+    ]
+  },
+  "modulation": "All64 equally likely joint GrayQPSK vectors once per channel; unit power per user, six bits per vector. This is a stratified uniform-alphabet expectation, not64 independent random symbol selections.",
+  "data_noise": "Independent proper complex Gaussian noise for each transmitted vector and antenna; independent of pilot noise. SeedSequence([2026101823, regime_index, reference_index, local_index]) draws unit-variance noise. Reuse this standard noise across all SNRs and scale by sqrt(sigma2).",
+  "identical_inputs": "Every channel estimate sees exactly the same new data magnitudes, known reference and variance, and exact64-hypothesis Rician ML detector. No coherent data available to any detector.",
+  "inference": "True channel used only to generate data and for explicitly labeled perfectCSI reference. No BER-dependent checkpoint, threshold, sparse choice, cell selection or extra bit allocation.",
+  "bounds": "64 vectors/channel is fixed before tests; report zero errors without interpreting a collapsed bootstrap interval as a rare-event bound. Do not use independent-bit binomial confidence intervals.",
+  "duplicates": "Bitwise-identical saved channel arrays may share detector outputs; record and audit every reuse. Duplicate reuse is not an estimator-runtime measurement.",
+  "primary_scope": "All declared SNRs strictly greater than20dB, equal weighting of reference/path/SNR cells.",
+  "primary_contrasts": {
+    "bypass_vs_original": [
+      "original_mean",
+      "em100_bypass_mean"
+    ],
+    "bypass_vs_em100": [
+      "em100",
+      "em100_bypass_mean"
+    ],
+    "bypass_vs_compact": [
+      "compact_sparse",
+      "em100_bypass_mean"
+    ]
+  },
+  "improvement_sign": "reference BER minus candidate BER",
+  "descriptive_scopes": {
+    "ordinary": "SNR<=20",
+    "transition": "20<SNR<=45",
+    "stress": "SNR in50,60"
+  },
+  "bootstrap": {
+    "resamples": 20000,
+    "seed": 2026101829,
+    "rule": "Multinomial64-case weights in regime order L2,L4,random3to7, shared across all reference strengths, SNRs, methods and fits within a regime; regimes independent.",
+    "pointwise_quantiles": [
+      0.025,
+      0.975
+    ],
+    "primary_bonferroni6_quantiles": [
+      0.004166666666666667,
+      0.9958333333333333
+    ],
+    "interpretation": "Conditional on fixed fitted models and frozen policies. Three fits average metrics, never predictions; they do not triple independent test channels."
+  },
+  "source_hashes": {
+    "tcom_retrained_bypass_20261018/ber.py": "9bb265732503318884c773c0edd6699dc700103f975bf6d5a16698440352027a",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c"
+  },
+  "frozen_unix": 1792358250.968257
+}

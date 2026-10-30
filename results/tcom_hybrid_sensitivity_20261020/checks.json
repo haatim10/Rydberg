@@ -1,0 +1,263 @@
+{
+  "passed": true,
+  "completed_unix": 1792511089.74528,
+  "smoke_seed": 2026102050,
+  "local_indices": [
+    20,
+    21
+  ],
+  "worlds_per_condition": 2,
+  "fits": [
+    9101,
+    9102,
+    9103
+  ],
+  "conditions": [
+    {
+      "snr": 10.0,
+      "rsr": 12.0,
+      "L": 2,
+      "family": "adaptive",
+      "steps": 0
+    },
+    {
+      "snr": 22.5,
+      "rsr": 5.0,
+      "L": 2,
+      "family": "adaptive",
+      "steps": 0
+    },
+    {
+      "snr": 40.0,
+      "rsr": 5.0,
+      "L": 4,
+      "family": "global",
+      "steps": 40
+    },
+    {
+      "snr": 32.5,
+      "rsr": 12.0,
+      "L": null,
+      "family": "global",
+      "steps": 10
+    },
+    {
+      "snr": 37.5,
+      "rsr": 12.0,
+      "L": 2,
+      "family": "global",
+      "steps": 20
+    },
+    {
+      "snr": 40.0,
+      "rsr": 5.0,
+      "L": 2,
+      "family": "global",
+      "steps": 40
+    },
+    {
+      "snr": 60.0,
+      "rsr": 20.0,
+      "L": null,
+      "family": "global",
+      "steps": 40
+    }
+  ],
+  "exact_B_nonzero_proposals": [
+    {
+      "reference_key": "5",
+      "snr_key": "40",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "5",
+      "snr_key": "42.5",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "5",
+      "snr_key": "45",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "5",
+      "snr_key": "50",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "5",
+      "snr_key": "60",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "12",
+      "snr_key": "32.5",
+      "steps": 10,
+      "family": "global"
+    },
+    {
+      "reference_key": "12",
+      "snr_key": "35",
+      "steps": 10,
+      "family": "global"
+    },
+    {
+      "reference_key": "12",
+      "snr_key": "37.5",
+      "steps": 20,
+      "family": "global"
+    },
+    {
+      "reference_key": "12",
+      "snr_key": "40",
+      "steps": 20,
+      "family": "global"
+    },
+    {
+      "reference_key": "12",
+      "snr_key": "42.5",
+      "steps": 20,
+      "family": "global"
+    },
+    {
+      "reference_key": "12",
+      "snr_key": "45",
+      "steps": 20,
+      "family": "global"
+    },
+    {
+      "reference_key": "12",
+      "snr_key": "50",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "12",
+      "snr_key": "60",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "20",
+      "snr_key": "32.5",
+      "steps": 10,
+      "family": "global"
+    },
+    {
+      "reference_key": "20",
+      "snr_key": "35",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "20",
+      "snr_key": "37.5",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "20",
+      "snr_key": "40",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "20",
+      "snr_key": "42.5",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "20",
+      "snr_key": "45",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "20",
+      "snr_key": "50",
+      "steps": 40,
+      "family": "global"
+    },
+    {
+      "reference_key": "20",
+      "snr_key": "60",
+      "steps": 40,
+      "family": "global"
+    }
+  ],
+  "C_failed_nonzero_count": 21,
+  "steps_from_proposed_not_best": true,
+  "best_different_from_proposed_cases": [
+    {
+      "reference_key": "5",
+      "snr_key": "30",
+      "best_steps": 10,
+      "proposed_steps": 0
+    },
+    {
+      "reference_key": "5",
+      "snr_key": "32.5",
+      "best_steps": 10,
+      "proposed_steps": 0
+    },
+    {
+      "reference_key": "5",
+      "snr_key": "35",
+      "best_steps": 10,
+      "proposed_steps": 0
+    },
+    {
+      "reference_key": "5",
+      "snr_key": "37.5",
+      "best_steps": 20,
+      "proposed_steps": 0
+    }
+  ],
+  "only_tail_steps_changed": true,
+  "parent_policy_unchanged": true,
+  "ordinary_bitwise_checks": 3,
+  "manual_dispatch_max_abs_error": 0.0,
+  "only_smoke_observations": true,
+  "channel_truth_loaded": false,
+  "development_or_test_worlds_generated": false,
+  "parent_selection_sha256": "dd32419911ba706a9e14c517ea4d735723f29a2189c24bbc66875f9a2c3f38dc",
+  "source_hashes": {
+    "tcom_filter_continuation_20261019/analysis.py": "4d3826c0304f441723bd1630b74703199cad4ced507d33d847ebaf97abf9d6fa",
+    "tcom_filter_continuation_20261019/study.py": "1ce4cffa709b881508de362c7cd2aca95ba3ca8a3dba0de63f77b474ef6d0d77",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c",
+    "tcom_hybrid_20261020/analysis.py": "250112f954e80378beae3fa49b15e9dc32801084cea20e6cc791b650dedbf972",
+    "tcom_hybrid_20261020/ber.py": "48a7386b8947386fe16304dd22e6700ffd965c165758dd158773ce58396ec20e",
+    "tcom_hybrid_20261020/ber_audit.py": "1d1b9e473e7115b71934674ed14586db185b60c6a251352c25f9114b4971af9b",
+    "tcom_hybrid_20261020/checks.py": "8cc651d7302bffb41f0936be131fe4eef5b9cb71789eefe4d8fb106caf67f34c",
+    "tcom_hybrid_20261020/execution.py": "9452109557784dc847e1c6ee7eda130671ed8e0a99b2607e7b0d9a144f158fe9",
+    "tcom_hybrid_20261020/inference.py": "f980b125bcdc8aa25281756535d98cd212ddbdaf35f5ae967ecf2dc79552b8d3",
+    "tcom_hybrid_20261020/pipeline_checks.py": "2ba7f76e34b2760a8cdac4109a91e1c736a095f6ae648d9745d5eded77509d03",
+    "tcom_hybrid_20261020/study.py": "139703d9e4a1472a4e09c9b79f95e6609ad2e9c7a5fda39536033878182e29ec",
+    "tcom_hybrid_sensitivity_20261020/__init__.py": "d29eda05a0c3e0f67a6bd5d355e6108225b460bc52678202fbb39b2ee9e93b02",
+    "tcom_hybrid_sensitivity_20261020/checks.py": "33762e9a0bc528a758935b094ab406009e91f19c965658b60121134e3866089f",
+    "tcom_hybrid_sensitivity_20261020/study.py": "134c918f903564be50ab98397d099b24008f66b239de50f076a4b62484800cdc",
+    "tcom_incumbent_guard_20261019/inference.py": "0cef3a0dc8a9f1ffa066e08896afc0d69f3a311b9ad729618ec9b760b78ab1eb",
+    "tcom_incumbent_guard_20261019/risk.py": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1",
+    "tcom_incumbent_guard_20261019/risk_data.py": "5a8474b3f87abea086c7999e7ca5ef8fbbab0b0fd57b58188db365ac85e07101",
+    "tcom_incumbent_guard_20261019/shrink.py": "f72debd9763e4a57532f635c0120fa9eaf516f94e0e360853e1155fee483ec6b",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_runtime_repair_20261020/analysis.py": "e117a19d3f8e99924f1926afcff6862c7b7a2e03f97751ab368d6c65dc6234db",
+    "tcom_runtime_repair_20261020/execution.py": "dd9bad075a577f833dae8011b0909b9bf8353f2650f742b0ddeb7b1b074f7b57",
+    "tcom_runtime_repair_20261020/inference.py": "b90d476fcf7ac1f493b1f947e0de0ccec93e18628205a8251c12827491d4ae0a",
+    "tcom_runtime_repair_20261020/native.py": "7a60c4ba92259b27332382e14240b425e155576dc8a8df48b8470745cb976d77",
+    "tcom_runtime_repair_20261020/smoke_parity.py": "9df5870dfa613bfa7c10229102f394fe8db7cf80233a0e84ad0954f6eaf46124",
+    "tcom_runtime_repair_20261020/study.py": "d96e769486450b1cf56dc5fcf543bfd982bc9442a3a8d443a74831b8e0a0c031",
+    "tcom_start_ablation_20261020/starts.py": "2391e8379f5d726891207e46fa278ddfa4664d270f4cc4c916f9a2a204de3e00",
+    "tcom_start_ablation_20261020/training.py": "806a805e8adb9d85fd64027c819660ed65dc685677612afcfe470f97345048e1",
+    "tcom_start_budget_20261020/analysis.py": "1e3ff2b37ee63ac9d7f472f1761e9db48a2270aec6b232e08fd79b9e0c2a4c32",
+    "tcom_start_budget_20261020/checks.py": "7a8517fef848bb9c456569f54e9ad695ca52110f505022e38ca314372589d80d",
+    "tcom_start_budget_20261020/execution.py": "fd152c06afcdc124cbbc3659a5a5790fc6e550f0436d4123d0baef2b147fb630",
+    "tcom_start_budget_20261020/study.py": "58105b2f472e343225e28e6a50699db0ce7301289f0ffd9cc7f0e82cfd242847"
+  }
+}

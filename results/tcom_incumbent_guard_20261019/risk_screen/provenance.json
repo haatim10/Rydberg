@@ -1,0 +1,240 @@
+{
+  "purpose": "Exploratory observable raw-channel-MSE risk screen, not selection or a confirmatory test.",
+  "source_sha256": "0f8f32f26d03b6912a26fc779f947f39114d42c68dc34c9735677a0e891e9436",
+  "risk_source_sha256": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1",
+  "risk_checks_sha256": "ae7d0ea45568857a9a73ade46a62934753416243d9b3e0d668ed7560095f2774",
+  "candidate_screen_source_sha256": "c528639ffd3474449685cfcf4f56fbae3642c12413c21e34af717584e4b63b42",
+  "likelihood_screen_summary_sha256": "3eaa7ec54207d5aa6eba3eda0ca7ca626b5a90d1bb7a1cf838b9b6e62c652677",
+  "parent_protocol_sha256": "c20fd9a17a501914acc8cdf7e613b21a9498284840dc3adf44b716deadb890ca",
+  "current_policy_sha256": "f5945f47d0da7d98e1bcf28d774dd5e8c4df8d9963fd1eedd7b4bd515887077d",
+  "prior_policy_sha256": "d02db7d685622c25e5dfa435587d95deee0faed6c1331079912f2765914ebb69",
+  "bank_hashes": {
+    "rsr12_snr32.5.npz": "d28658fe93a4bb55ddc0f42dc78dcfe16d38353a1b6b97a431761c8b0060709d",
+    "rsr12_snr35.npz": "9428e6e2f0b9734d03128013bae52495a517fda38a5323dc5eabba44a36ef795",
+    "rsr12_snr37.5.npz": "22126dac68dfa60e130c7097610f13bf720a7bcaf77fe3501a0df714184014bc",
+    "rsr20_snr32.5.npz": "5be537d487f0963cde6d2b9190b5234d5e8e2d235d89945eb43d1a920a6c9646",
+    "rsr20_snr35.npz": "b1ceaa389b74f0d756ec03dee550f929a4b58b7f01ed72a34b72e8033b02a903",
+    "rsr20_snr37.5.npz": "6d348f472ac9f0a36df946adc05c3e96aa100697761d92cf0ef2677ac9dea6de"
+  },
+  "bootstrap_weights_sha256": "eaaa0632b58732196a58b32a34b821bb6359410f4d58336627c0341dabc94a81",
+  "configurations": {
+    "original": {
+      "kind": "continuation",
+      "steps": 0
+    },
+    "warm1": {
+      "kind": "continuation",
+      "steps": 1
+    },
+    "warm2": {
+      "kind": "continuation",
+      "steps": 2
+    },
+    "warm3": {
+      "kind": "continuation",
+      "steps": 3
+    },
+    "warm4": {
+      "kind": "continuation",
+      "steps": 4
+    },
+    "warm5": {
+      "kind": "continuation",
+      "steps": 5
+    },
+    "warm8": {
+      "kind": "continuation",
+      "steps": 8
+    },
+    "warm10": {
+      "kind": "continuation",
+      "steps": 10
+    },
+    "warm12": {
+      "kind": "continuation",
+      "steps": 12
+    },
+    "warm20": {
+      "kind": "continuation",
+      "steps": 20
+    },
+    "warm40": {
+      "kind": "continuation",
+      "steps": 40
+    },
+    "warm100": {
+      "kind": "continuation",
+      "steps": 100
+    },
+    "spectral100": {
+      "kind": "spectral",
+      "steps": 100
+    },
+    "blend_original_warm3_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "original",
+      "right": "warm3",
+      "weight_second": 0.25
+    },
+    "blend_original_warm3_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "original",
+      "right": "warm3",
+      "weight_second": 0.5
+    },
+    "blend_original_warm3_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "original",
+      "right": "warm3",
+      "weight_second": 0.75
+    },
+    "blend_warm2_warm3_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm2",
+      "right": "warm3",
+      "weight_second": 0.25
+    },
+    "blend_warm2_warm3_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm2",
+      "right": "warm3",
+      "weight_second": 0.5
+    },
+    "blend_warm2_warm3_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm2",
+      "right": "warm3",
+      "weight_second": 0.75
+    },
+    "blend_warm5_warm20_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "warm20",
+      "weight_second": 0.25
+    },
+    "blend_warm5_warm20_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "warm20",
+      "weight_second": 0.5
+    },
+    "blend_warm5_warm20_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "warm20",
+      "weight_second": 0.75
+    },
+    "blend_warm20_spectral100_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm20",
+      "right": "spectral100",
+      "weight_second": 0.25
+    },
+    "blend_warm20_spectral100_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm20",
+      "right": "spectral100",
+      "weight_second": 0.5
+    },
+    "blend_warm20_spectral100_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm20",
+      "right": "spectral100",
+      "weight_second": 0.75
+    },
+    "blend_warm5_spectral100_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "spectral100",
+      "weight_second": 0.25
+    },
+    "blend_warm5_spectral100_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "spectral100",
+      "weight_second": 0.5
+    },
+    "blend_warm5_spectral100_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "spectral100",
+      "weight_second": 0.75
+    }
+  },
+  "names": [
+    "original",
+    "warm1",
+    "warm2",
+    "warm3",
+    "warm4",
+    "warm5",
+    "warm8",
+    "warm10",
+    "warm12",
+    "warm20",
+    "warm40",
+    "warm100",
+    "spectral100",
+    "blend_original_warm3_0.25",
+    "blend_original_warm3_0.5",
+    "blend_original_warm3_0.75",
+    "blend_warm2_warm3_0.25",
+    "blend_warm2_warm3_0.5",
+    "blend_warm2_warm3_0.75",
+    "blend_warm5_warm20_0.25",
+    "blend_warm5_warm20_0.5",
+    "blend_warm5_warm20_0.75",
+    "blend_warm20_spectral100_0.25",
+    "blend_warm20_spectral100_0.5",
+    "blend_warm20_spectral100_0.75",
+    "blend_warm5_spectral100_0.25",
+    "blend_warm5_spectral100_0.5",
+    "blend_warm5_spectral100_0.75"
+  ],
+  "reference_order": [
+    "original",
+    "old_bypass",
+    "prior_repair",
+    "current_repair"
+  ],
+  "model_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "snrs": [
+    32.5,
+    35.0,
+    37.5
+  ],
+  "rsrs": [
+    12.0,
+    20.0
+  ],
+  "cases_per_regime": 384,
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "context_pilots": 30,
+  "heldout_pilots": 9,
+  "score": "Negative favors candidate. -2/(P*N*K) Re sum conj((Ga-Gb)S) * (Z^2-|B+(Ga+Gb)S/2|^2-sigma2) / conj(B).",
+  "scale": "Unnormalized coefficient Frobenius squared-error difference divided only by known N*K=96; no true-channel energy or NMSE normalization.",
+  "assumptions": "The population identity requires independent proper Gaussian heldout pilot columns with identity covariance, independent proper complex noise, and nonzero known B.",
+  "caveat": "These reused exploratory banks were accepted with a full39-pilot rank check; formal heldout independence is not claimed. Fresh confirmation must generate nine independent heldout pilots after fitting-context acceptance.",
+  "candidate_scope": "All candidates use context30 only. No heldout score, true channel, or path-count input enters any prediction.",
+  "objective": "Mean pairwise risk versus fixed current correction after strict four-incumbent, each-regime upper95 guards; no0.001 band. Pairwise finite scores need not be transitive.",
+  "bootstrap": "Exact existing4000 multinomial384 count vectors per regime shared over every bin/candidate/incumbent.",
+  "storage": "Every per-fit/per-anchor candidate-versus-four-incumbent score retained. Mean/CI/failed constraints included for every candidate.",
+  "started_unix": 1792427329.1021178
+}

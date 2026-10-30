@@ -1,0 +1,330 @@
+{
+  "passed": true,
+  "repair_selection_sha256": "0ffc7286e8eb0da1f6142d0a5c832ae6ce398c67f11e8ec0a1e53627f5c07b7c",
+  "protocol_sha256": "c20fd9a17a501914acc8cdf7e613b21a9498284840dc3adf44b716deadb890ca",
+  "observable_only_development_anchors_checked": 6,
+  "repair_loss_tables_checked": 6,
+  "guard_candidate_checks": 54,
+  "guard_constraint_checks": 324,
+  "bootstrap_weights_exactly_reconstructed": true,
+  "paired_fit_average_before_bootstrap": true,
+  "selected_counts": {
+    "original": 28,
+    "warm1": 0,
+    "warm2": 1,
+    "warm3": 1,
+    "warm5": 2,
+    "warm10": 0,
+    "warm20": 0,
+    "warm100": 6,
+    "spectral100": 13
+  },
+  "selection_status_counts": {
+    "fixed_prior_repair": 17,
+    "fixed_original": 18,
+    "dual_admissible": 6,
+    "fixed_spectral100": 10
+  },
+  "original_not_automatically_admissible": true,
+  "preference_band_only_after_strict_guards": true,
+  "fallback_failed_constraints_retained": true,
+  "maximum_direct_vs_centered_margin_error": 1.87436871579294e-15,
+  "reviews": [
+    {
+      "rsr": 12.0,
+      "snr": 32.5,
+      "choice": "warm2",
+      "selection_status": "dual_admissible",
+      "admissible": [
+        "warm2",
+        "warm3"
+      ],
+      "failed_constraints": [],
+      "centered_margins": [
+        {
+          "choice": "original",
+          "mean_nll_above_selected": 0.08541051361217493
+        },
+        {
+          "choice": "warm1",
+          "mean_nll_above_selected": 0.005758705766970253
+        },
+        {
+          "choice": "warm2",
+          "mean_nll_above_selected": 0.0
+        },
+        {
+          "choice": "warm3",
+          "mean_nll_above_selected": 0.004625002007266192
+        },
+        {
+          "choice": "warm5",
+          "mean_nll_above_selected": 0.015500074640369024
+        },
+        {
+          "choice": "warm10",
+          "mean_nll_above_selected": 0.02897821466323513
+        },
+        {
+          "choice": "warm20",
+          "mean_nll_above_selected": 0.0338967250557541
+        },
+        {
+          "choice": "warm100",
+          "mean_nll_above_selected": 0.03449715457468774
+        },
+        {
+          "choice": "spectral100",
+          "mean_nll_above_selected": 0.03449705936245822
+        }
+      ]
+    },
+    {
+      "rsr": 12.0,
+      "snr": 35.0,
+      "choice": "warm5",
+      "selection_status": "dual_admissible",
+      "admissible": [
+        "warm5",
+        "warm10",
+        "warm20",
+        "spectral100"
+      ],
+      "failed_constraints": [],
+      "centered_margins": [
+        {
+          "choice": "original",
+          "mean_nll_above_selected": 0.22759372916869888
+        },
+        {
+          "choice": "warm1",
+          "mean_nll_above_selected": 0.044445584508265815
+        },
+        {
+          "choice": "warm2",
+          "mean_nll_above_selected": 0.00761497703864971
+        },
+        {
+          "choice": "warm3",
+          "mean_nll_above_selected": -0.0009239587820001777
+        },
+        {
+          "choice": "warm5",
+          "mean_nll_above_selected": 0.0
+        },
+        {
+          "choice": "warm10",
+          "mean_nll_above_selected": 0.009014951443791623
+        },
+        {
+          "choice": "warm20",
+          "mean_nll_above_selected": 0.013435023838641804
+        },
+        {
+          "choice": "warm100",
+          "mean_nll_above_selected": 0.01402584294491263
+        },
+        {
+          "choice": "spectral100",
+          "mean_nll_above_selected": 0.014025721204772603
+        }
+      ]
+    },
+    {
+      "rsr": 12.0,
+      "snr": 37.5,
+      "choice": "spectral100",
+      "selection_status": "dual_admissible",
+      "admissible": [
+        "warm20",
+        "spectral100"
+      ],
+      "failed_constraints": [],
+      "centered_margins": [
+        {
+          "choice": "original",
+          "mean_nll_above_selected": 1.3786412315088479
+        },
+        {
+          "choice": "warm1",
+          "mean_nll_above_selected": 0.4654571914293545
+        },
+        {
+          "choice": "warm2",
+          "mean_nll_above_selected": 0.20841308084318302
+        },
+        {
+          "choice": "warm3",
+          "mean_nll_above_selected": 0.10256396391016158
+        },
+        {
+          "choice": "warm5",
+          "mean_nll_above_selected": 0.026529343845309576
+        },
+        {
+          "choice": "warm10",
+          "mean_nll_above_selected": -0.0006323472300805831
+        },
+        {
+          "choice": "warm20",
+          "mean_nll_above_selected": -0.0004849898191623012
+        },
+        {
+          "choice": "warm100",
+          "mean_nll_above_selected": 1.5950356506345193e-07
+        },
+        {
+          "choice": "spectral100",
+          "mean_nll_above_selected": 0.0
+        }
+      ]
+    },
+    {
+      "rsr": 20.0,
+      "snr": 32.5,
+      "choice": "warm3",
+      "selection_status": "dual_admissible",
+      "admissible": [
+        "warm3"
+      ],
+      "failed_constraints": [],
+      "centered_margins": [
+        {
+          "choice": "original",
+          "mean_nll_above_selected": 0.0923506933393834
+        },
+        {
+          "choice": "warm1",
+          "mean_nll_above_selected": 0.007431882601336066
+        },
+        {
+          "choice": "warm2",
+          "mean_nll_above_selected": -0.002136554808586781
+        },
+        {
+          "choice": "warm3",
+          "mean_nll_above_selected": 0.0
+        },
+        {
+          "choice": "warm5",
+          "mean_nll_above_selected": 0.008239521510333301
+        },
+        {
+          "choice": "warm10",
+          "mean_nll_above_selected": 0.019890139590144733
+        },
+        {
+          "choice": "warm20",
+          "mean_nll_above_selected": 0.02441293761026715
+        },
+        {
+          "choice": "warm100",
+          "mean_nll_above_selected": 0.024964742631545554
+        },
+        {
+          "choice": "spectral100",
+          "mean_nll_above_selected": 0.02496481138725001
+        }
+      ]
+    },
+    {
+      "rsr": 20.0,
+      "snr": 35.0,
+      "choice": "spectral100",
+      "selection_status": "dual_admissible",
+      "admissible": [
+        "warm20",
+        "spectral100"
+      ],
+      "failed_constraints": [],
+      "centered_margins": [
+        {
+          "choice": "original",
+          "mean_nll_above_selected": 0.296106667739321
+        },
+        {
+          "choice": "warm1",
+          "mean_nll_above_selected": 0.07797155617391664
+        },
+        {
+          "choice": "warm2",
+          "mean_nll_above_selected": 0.024779820620145335
+        },
+        {
+          "choice": "warm3",
+          "mean_nll_above_selected": 0.005768061586097249
+        },
+        {
+          "choice": "warm5",
+          "mean_nll_above_selected": -0.004752729569092866
+        },
+        {
+          "choice": "warm10",
+          "mean_nll_above_selected": -0.003588913637915631
+        },
+        {
+          "choice": "warm20",
+          "mean_nll_above_selected": -0.0005026679433971699
+        },
+        {
+          "choice": "warm100",
+          "mean_nll_above_selected": -9.051407459248073e-08
+        },
+        {
+          "choice": "spectral100",
+          "mean_nll_above_selected": 0.0
+        }
+      ]
+    },
+    {
+      "rsr": 20.0,
+      "snr": 37.5,
+      "choice": "spectral100",
+      "selection_status": "dual_admissible",
+      "admissible": [
+        "spectral100"
+      ],
+      "failed_constraints": [],
+      "centered_margins": [
+        {
+          "choice": "original",
+          "mean_nll_above_selected": 1.439388918011659
+        },
+        {
+          "choice": "warm1",
+          "mean_nll_above_selected": 0.5569827999520041
+        },
+        {
+          "choice": "warm2",
+          "mean_nll_above_selected": 0.28748080297254214
+        },
+        {
+          "choice": "warm3",
+          "mean_nll_above_selected": 0.16238592310892536
+        },
+        {
+          "choice": "warm5",
+          "mean_nll_above_selected": 0.05701538054008574
+        },
+        {
+          "choice": "warm10",
+          "mean_nll_above_selected": 0.0044703329280613765
+        },
+        {
+          "choice": "warm20",
+          "mean_nll_above_selected": -0.00019571992028080172
+        },
+        {
+          "choice": "warm100",
+          "mean_nll_above_selected": -1.1497674471995974e-07
+        },
+        {
+          "choice": "spectral100",
+          "mean_nll_above_selected": 0.0
+        }
+      ]
+    }
+  ],
+  "audit_source_sha256": "3cbf080f52cc29050798cd0da01c9f624d588f7b36437d63e78fc6be5b075808",
+  "caveat": "Fallback_old declares comparator priority when no candidate passes both empirical guards; it is not evidence of original-estimator nonharm. Fixed bins make no new guard claim."
+}

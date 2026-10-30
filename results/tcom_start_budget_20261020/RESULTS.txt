@@ -1,0 +1,211 @@
+CONTROLLED START COMPARISON: PRE-TEST 40-UPDATE REVISION
+
+The originally frozen 100-update plan failed its runtime calibration before any fresh test data were generated. All five start families exceeded the literal 10.74 ms cap at 100 updates; no candidate in the original 100/125/150/175/200 menu was eligible. Those sources and failed calibration remain unchanged in tcom_start_ablation_20261020.
+This separate study reduces the common continuation uniformly to 40 updates for every start and uses one prespecified 40/50/75/100 budget calibration. This is a change in computation, not a new name for the same pipeline. The trained adaptive/global weights, raw starts, classical calibration scores and selected classical configuration are reused unchanged; no additional training or classical recalibration was performed. Fresh test and BER seeds were untouched when this revision was frozen.
+
+ORIGINAL FAILED CALIBRATION (HISTORICAL; NOT A FINAL TIMING WINDOW)
+Start family | 100-update whole-grid p90 ms | Weak-region p90 ms
+-------------+------------------------------+-------------------
+adaptive     | 16.16518                     | 15.84114          
+global       | 13.93378                     | 13.50559          
+classical    | 14.02425                     | 13.51136          
+spectral     | 11.54958                     | 11.13477          
+em10         | 12.69800                     | 12.28116          
+
+FRESH COMMON-40 ACCURACY COMPARISON
+Against the trained global schedule, the whole-grid common-40 comparison supports higher error for the adaptive start in NMSE and supports lower error for the adaptive start in BER.
+Against the calibrated classical structured start, the whole-grid common-40 comparison supports lower error for the adaptive start in NMSE and does not resolve an error difference at the adjusted confidence level in BER.
+At ordinary SNR, the adaptive start changes from -20.21379 dB before refinement to -15.40568 dB after the forced continuation and final filter (+4.80810 dB change; positive is worse). The frozen latest estimator has -20.21379 dB in the same region.
+The forced-continuation experiment is a controlled comparison, not a recommendation to replace the frozen latest estimator.
+
+Every experimental start is used at every condition, followed by the same 40 exact EM updates and final noise/reference-dependent filter. The global control learns 30 per-stage constants offline and has no observation-conditioned controller; its relative thresholds retain scale normalization. The classical control uses one configuration selected from the prespecified validation grid. Classical calibration minimizes raw-start held-out likelihood loss, rather than loss after the 40-update continuation. The common final filter was inherited from earlier adaptive-led selection, so this comparison is conditional on that fixed filter. The control does not equalize model parameter count. This comparison does not select or replace the deployed estimator.
+Forty denotes the continuation, not total EM-style stages: adaptive, global, classical and EM10 starts each execute ten initial stages before the forty additional updates; the spectral initializer has no initial EM stage and receives forty updates. Runtime includes the entire pipeline. This finite-tail comparison evaluates these receivers, not the best converged likelihood solution or every classical estimator.
+The primary grid gives equal weight to 153 condition scores, including 108 conditions above 20 dB although training ends at 20 dB. It is not a deployment-weighted average. The pooled ratio of summed errors to summed channel energy uses different weighting and can reverse a close ranking; both versions are shown below.
+
+PRIMARY WHOLE-GRID EFFECTS
+Positive differences mean lower error for the adaptive start. BER differences are percentage points.
+Comparison            | NMSE gain dB | Bonferroni4 interval dB | BER reduction pp | Bonferroni4 interval pp 
+----------------------+--------------+-------------------------+------------------+-------------------------
+Adaptive vs global    | -0.695695    | [-0.7847, -0.29415]     | +0.00598384      | [0.003546, 0.008599]    
+Adaptive vs classical | +4.92887     | [2.666, 5.699]          | +0.00116574      | [-0.00062055, 0.0035416]
+The two contrasts across NMSE and BER form four prespecified outcomes. All subgroup, raw-start, budget-arm and reference comparisons below are descriptive.
+
+ALL 153 CONDITIONS
+The first five rows use the common 40-update continuation; remaining rows are separate references.
+Method                     | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %    
+---------------------------+--------------------+-----------------+--------------------+----------
+Adaptive learned start     | -35.72826          | -15.65083       | 0.0272218          | 0.8322101
+Global learned schedule    | -36.42396          | -15.60002       | 0.02754218         | 0.838194 
+Classical structured start | -30.79939          | -15.46151       | 0.02843476         | 0.8333759
+Spectral start             | -30.57232          | -15.26339       | 0.02976194         | 0.8489073
+EM10 start                 | -30.72754          | -15.26922       | 0.02972199         | 0.8507423
+Frozen latest estimator    | -36.94701          | -20.40028       | 0.009119524        | 0.5337274
+Direct EM100               | -29.48589          | -15.27267       | 0.02969842         | 0.8525907
+Frozen compact sparse      | -30.97578          | -20.53288       | 0.008845289        | 0.5035999
+Frozen OptShrink           | -34.38835          | -19.62553       | 0.01090052         | 0.5692891
+Perfect CSI reference      | —                  | —               | —                  | 0.3696417
+
+WEAK REFERENCE, SNR 37.5–60 DB: 18 CONDITIONS
+The first five rows use the common 40-update continuation; remaining rows are separate references.
+Method                     | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %      
+---------------------------+--------------------+-----------------+--------------------+------------
+Adaptive learned start     | -45.53475          | -41.54548       | 7.005707e-05       | 0          
+Global learned schedule    | -51.25651          | -47.46910       | 1.790975e-05       | 0          
+Classical structured start | -24.10141          | -23.75306       | 0.004213992        | 0.002034505
+Spectral start             | -23.76772          | -23.50486       | 0.004461842        | 0.002034505
+EM10 start                 | -24.09706          | -23.74749       | 0.004219404        | 0.002034505
+Frozen latest estimator    | -45.89142          | -41.61315       | 6.897392e-05       | 0          
+Direct EM100               | -24.62059          | -24.08505       | 0.00390387         | 0.002034505
+Frozen compact sparse      | -25.56832          | -25.24140       | 0.002991298        | 0.002147533
+Frozen OptShrink           | -37.51075          | -30.27555       | 0.0009385243       | 0          
+Perfect CSI reference      | —                  | —               | —                  | 0          
+
+STRONG REFERENCES, SNR 40–60 DB: 30 CONDITIONS
+The first five rows use the common 40-update continuation; remaining rows are separate references.
+Method                     | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %
+---------------------------+--------------------+-----------------+--------------------+------
+Adaptive learned start     | -58.35171          | -54.69225       | 3.394497e-06       | 0    
+Global learned schedule    | -58.48810          | -54.69972       | 3.388658e-06       | 0    
+Classical structured start | -54.46127          | -41.48666       | 7.101229e-05       | 0    
+Spectral start             | -54.12998          | -41.50169       | 7.076703e-05       | 0    
+EM10 start                 | -54.46122          | -41.48659       | 7.101353e-05       | 0    
+Frozen latest estimator    | -54.49882          | -41.48173       | 7.109307e-05       | 0    
+Direct EM100               | -50.02448          | -41.05711       | 7.839517e-05       | 0    
+Frozen compact sparse      | -50.02448          | -41.05711       | 7.839517e-05       | 0    
+Frozen OptShrink           | -54.85845          | -51.36591       | 7.30145e-06        | 0    
+Perfect CSI reference      | —                  | —               | —                  | 0    
+
+ORDINARY SNR 0–20 DB: 45 CONDITIONS
+The first five rows use the common 40-update continuation; remaining rows are separate references.
+Method                     | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %   
+---------------------------+--------------------+-----------------+--------------------+---------
+Adaptive learned start     | -15.40568          | -10.36998       | 0.09183367         | 2.826802
+Global learned schedule    | -15.39127          | -10.31632       | 0.09297529         | 2.847147
+Classical structured start | -15.05133          | -10.33629       | 0.09254883         | 2.829002
+Spectral start             | -14.82947          | -10.14123       | 0.09680045         | 2.881854
+EM10 start                 | -14.85312          | -10.13752       | 0.09688319         | 2.888048
+Frozen latest estimator    | -20.21379          | -15.14999       | 0.03054931         | 1.813422
+Direct EM100               | -14.88784          | -10.13197       | 0.09700689         | 2.894332
+Frozen compact sparse      | -18.84503          | -15.66464       | 0.02713539         | 1.70808 
+Frozen OptShrink           | -18.11359          | -14.45377       | 0.03586109         | 1.933187
+Perfect CSI reference      | —                  | —               | —                  | 1.255968
+
+RAW STARTS BEFORE CONTINUATION AND FINAL FILTER
+These are descriptive NMSE diagnostics; no raw-start BER experiment was run.
+Start                      | All dB    | Weak18 dB | Strong-high30 dB | Ordinary45 dB
+---------------------------+-----------+-----------+------------------+--------------
+Adaptive learned start     | -26.51674 | -21.11751 | -21.53406        | -20.21379    
+Global learned schedule    | -29.79343 | -35.30795 | -35.16587        | -18.58868    
+Classical structured start | -22.65601 | -15.97984 | -28.31305        | -18.48110    
+Spectral start             | -0.49657  | -1.22920  | -0.15040         | -0.46483     
+EM10 start                 | -20.79439 | -15.96449 | -28.23368        | -13.78111    
+
+TRAINING-FIT VARIATION
+Groups average the three individual metrics, never the predicted channels. Three fits do not triple the number of independent channels.
+Scope        | Start    | Fit  | NMSE dB   | BER %     | Bit errors | Bits   
+-------------+----------+------+-----------+-----------+------------+--------
+all          | adaptive | 9101 | -35.99605 | 0.8320594 | 62573      | 7520256
+all          | adaptive | 9102 | -36.34775 | 0.8324185 | 62600      | 7520256
+all          | adaptive | 9103 | -34.84098 | 0.8321525 | 62580      | 7520256
+all          | global   | 9101 | -36.42412 | 0.8380034 | 63020      | 7520256
+all          | global   | 9102 | -36.42400 | 0.8379768 | 63018      | 7520256
+all          | global   | 9103 | -36.42375 | 0.8386018 | 63065      | 7520256
+weak_warm100 | adaptive | 9101 | -47.72838 | 0         | 0          | 884736 
+weak_warm100 | adaptive | 9102 | -50.64354 | 0         | 0          | 884736 
+weak_warm100 | adaptive | 9103 | -38.23234 | 0         | 0          | 884736 
+weak_warm100 | global   | 9101 | -51.25752 | 0         | 0          | 884736 
+weak_warm100 | global   | 9102 | -51.25654 | 0         | 0          | 884736 
+weak_warm100 | global   | 9103 | -51.25547 | 0         | 0          | 884736 
+
+CONDITION-SPECIFIC LOSSES
+Counts cover all 153 conditions. Pointwise intervals below are descriptive and do not constitute additional familywise claims. Full lists are saved in completion.json.
+Contrast (candidate vs reference) | NMSE worse | NMSE harm CI | BER worse | BER harm CI
+----------------------------------+------------+--------------+-----------+------------
+adaptive_vs_global                | 74         | 32           | 1         | 0          
+adaptive_vs_classical             | 41         | 25           | 3         | 0          
+adaptive_vs_spectral              | 27         | 10           | 4         | 0          
+adaptive_vs_em10                  | 19         | 9            | 4         | 0          
+adaptive_vs_latest                | 127        | 100          | 35        | 26         
+adaptive_vs_em100                 | 0          | 0            | 2         | 0          
+adaptive_vs_compact               | 63         | 61           | 34        | 25         
+adaptive_vs_optshrink             | 81         | 78           | 34        | 25         
+budget_adaptive_vs_global         | 50         | 26           | 1         | 0          
+budget_adaptive_vs_classical      | 25         | 12           | 3         | 0          
+budget_adaptive_vs_adaptive       | 0          | 0            | 0         | 0          
+adaptive_vs_global: NMSE is worse in 74 cells, with 32 pointwise intervals supporting harm; worst L4_rsr5_snr60 (-22.5362 dB gain). BER is worse in 1 cells, with 0 pointwise intervals supporting harm.
+Five lowest BER differences: random3to7_rsr20_snr5: -0.00406901 pp [-0.012207, 0]; L2_rsr5_snr20: +0 pp [0, 0]; L2_rsr5_snr22.5: +0 pp [0, 0]; L2_rsr5_snr25: +0 pp [0, 0]; L2_rsr5_snr27.5: +0 pp [0, 0]
+adaptive_vs_classical: NMSE is worse in 41 cells, with 25 pointwise intervals supporting harm; worst random3to7_rsr12_snr60 (-0.882056 dB gain). BER is worse in 3 cells, with 0 pointwise intervals supporting harm.
+Five lowest BER differences: L4_rsr5_snr5: -0.012207 pp [-0.042046, 0.008138]; L2_rsr12_snr0: -0.0101725 pp [-0.029839, 0.0027127]; random3to7_rsr5_snr10: -0.00203451 pp [-0.0061035, 0]; L2_rsr5_snr30: +0 pp [0, 0]; L2_rsr5_snr32.5: +0 pp [0, 0]
+
+SEPARATE COMPUTATION-BUDGET COMPARISON
+Continuation counts were selected using timing alone, with a 10.0 ms calibration threshold for both whole-grid and weak-region p90. Accuracy did not select the counts. Unequal continuation counts assess computational allocation, not initialization alone.
+Start family | Selected continuation | Calibration-eligible counts | Selected count eligible
+-------------+-----------------------+-----------------------------+------------------------
+adaptive     | 40                    | 40                          | yes                    
+global       | 50                    | 40, 50                      | yes                    
+classical    | 50                    | 40, 50                      | yes                    
+spectral     | 75                    | 40, 50, 75                  | yes                    
+em10         | 75                    | 40, 50, 75                  | yes                    
+Budget-arm accuracy (descriptive; NMSE dB / BER %):
+Budget arm            | All                   | Weak18                  | Strong-high30 | Ordinary45          
+----------------------+-----------------------+-------------------------+---------------+---------------------
+Adaptive, budget arm  | -35.72826 / 0.8322101 | -45.53475 / 0           | -58.35171 / 0 | -15.40568 / 2.826802
+Global, budget arm    | -36.42460 / 0.8393819 | -51.27802 / 0           | -58.48897 / 0 | -15.38545 / 2.851186
+Classical, budget arm | -30.86292 / 0.8349583 | -24.34273 / 0.002034505 | -54.49513 / 0 | -15.05083 / 2.834382
+Spectral, budget arm  | -30.83715 / 0.8516598 | -24.55480 / 0.002034505 | -54.49867 / 0 | -14.87852 / 2.891168
+EM10, budget arm      | -30.84447 / 0.8522981 | -24.60426 / 0.002034505 | -54.49881 / 0 | -14.88247 / 2.893338
+
+COMPLETE PIPELINE RUNTIME
+The literal cap is 10.74 ms in BOTH final timing windows, applied to the whole-grid pooled batch-one p90. Weak-region p90 is reported separately. A family pools individual fit calls; it is not an ensemble runtime. All overruns remain visible and no algorithm is selected by this report. These are host-specific observed quantiles, not hard per-call deadlines or hardware-independent runtime guarantees.
+Pipeline                   | W1 all p90 ms | W2 all p90 ms | W1 weak p90 ms | W2 weak p90 ms | 10.74 ms cap
+---------------------------+---------------+---------------+----------------+----------------+-------------
+Adaptive learned start     | 9.1313        | 9.1428        | 8.8952         | 8.8356         | PASS        
+Global learned schedule    | 7.1772        | 7.1845        | 6.8776         | 6.8709         | PASS        
+Classical structured start | 7.2167        | 7.2160        | 7.0003         | 6.9299         | PASS        
+Spectral start             | 4.9160        | 4.9170        | 4.5605         | 4.5584         | PASS        
+EM10 start                 | 5.9813        | 6.0044        | 5.6581         | 5.6637         | PASS        
+Adaptive, budget arm       | 9.1168        | 9.1267        | 8.7557         | 8.8905         | PASS        
+Global, budget arm         | 8.2096        | 8.2029        | 7.9588         | 7.9034         | PASS        
+Classical, budget arm      | 8.2502        | 8.2755        | 7.8622         | 7.9594         | PASS        
+Spectral, budget arm       | 8.5421        | 8.5540        | 8.1940         | 8.2444         | PASS        
+EM10, budget arm           | 9.6447        | 9.6243        | 9.4639         | 9.2846         | PASS        
+Frozen latest estimator    | 14.7529       | 14.7915       | 15.0194        | 15.0651        | FAIL        
+Direct EM100               | 8.8845        | 8.9051        | 8.8933         | 8.8294         | PASS        
+Frozen compact sparse      | 9.5737        | 9.5284        | 8.7794         | 8.7785         | PASS        
+Frozen OptShrink           | 78.3431       | 78.2150       | 79.1415        | 79.7896        | FAIL        
+Condition-specific p90 overruns are descriptive; the declared acceptance rule uses the pooled whole grid.
+Pipeline                   | Window 1: overruns; worst bin   | Window 2: overruns; worst bin   
+---------------------------+---------------------------------+---------------------------------
+Adaptive learned start     | 0/51; 9.4027 ms (rsr20_snr50)   | 0/51; 9.5771 ms (rsr12_snr42.5) 
+Global learned schedule    | 0/51; 7.4154 ms (rsr20_snr37.5) | 0/51; 7.4168 ms (rsr20_snr37.5) 
+Classical structured start | 0/51; 8.3006 ms (rsr5_snr60)    | 0/51; 7.5052 ms (rsr20_snr50)   
+Spectral start             | 0/51; 5.0977 ms (rsr20_snr42.5) | 0/51; 5.0517 ms (rsr12_snr60)   
+EM10 start                 | 0/51; 6.4711 ms (rsr5_snr60)    | 0/51; 6.9130 ms (rsr20_snr37.5) 
+Adaptive, budget arm       | 0/51; 9.4179 ms (rsr20_snr32.5) | 0/51; 9.5441 ms (rsr20_snr37.5) 
+Global, budget arm         | 0/51; 8.5370 ms (rsr12_snr32.5) | 0/51; 8.5153 ms (rsr20_snr37.5) 
+Classical, budget arm      | 0/51; 8.5661 ms (rsr20_snr50)   | 1/51; 11.5178 ms (rsr12_snr25)  
+Spectral, budget arm       | 0/51; 8.6974 ms (rsr20_snr37.5) | 0/51; 8.8108 ms (rsr12_snr32.5) 
+EM10, budget arm           | 0/51; 10.1140 ms (rsr5_snr50)   | 0/51; 10.0989 ms (rsr20_snr37.5)
+Frozen latest estimator    | 6/51; 15.1229 ms (rsr5_snr45)   | 6/51; 15.2215 ms (rsr5_snr37.5) 
+Direct EM100               | 0/51; 10.0601 ms (rsr5_snr45)   | 0/51; 10.1176 ms (rsr12_snr25)  
+Frozen compact sparse      | 0/51; 10.1007 ms (rsr12_snr5)   | 0/51; 10.0196 ms (rsr20_snr5)   
+Frozen OptShrink           | 48/51; 103.0988 ms (rsr5_snr50) | 48/51; 81.2525 ms (rsr5_snr42.5)
+Individual-fit whole-grid p90 ranges (window 1; window 2):
+adaptive: 9.1025–9.1475 ms; 9.1325–9.1523 ms
+global: 7.1691–7.1843 ms; 7.1799–7.1862 ms
+budget_adaptive: 9.1082–9.1262 ms; 9.1108–9.1407 ms
+budget_global: 8.2028–8.2142 ms; 8.1968–8.2117 ms
+latest: 14.7427–14.7756 ms; 14.7828–14.7981 ms
+
+INTERPRETATION AND VERIFICATION
+The test contains 128 anchors for each of nine reference/path combinations: 1,152 physical anchors reused across 17 SNR values, and 384 index clusters for the coupled bootstrap. Each channel transmits all 64 joint Gray-QPSK vectors once, with independent data noise shared across estimators. Every detector observes magnitudes only and evaluates the same 64-hypothesis exact Rician likelihood.
+The simulated receiver has N=32 antennas, K=3 users and P=30 fitting pilots, with known reference and noise variance. The tested range and these assumptions limit generalization.
+NMSE is the equal-cell mean of dB ratios of summed channel errors to summed channel energy. BER averages the same channel samples. The 20,000 paired bootstrap draws share local indices across references and SNR within each path regime. Intervals are conditional on the fixed trained weights, calibrated controls and study grid.
+Zero observed errors, zero-versus-zero differences and collapsed empirical intervals do not establish zero population BER, statistical equivalence or population noninferiority. Bit counts are not independent channel trials.
+Classical configuration: {"beta": 1.0, "c": 1.0, "kind": "noise"}.
+Required audits passed: selection, test predictions, raw/final summaries, both timing windows, and BER. The BER audit independently regenerates data and redecodes every method on the prespecified spot cases. This report does not edit the manuscript or make a publication/novelty claim.
+
+ARTIFACTS
+nmse_summary.json; raw_start_summary.json; ber/summary.json; timing_window1.json; timing_window2.json; audit/*.json; ber/audit.json.
+Figures: start_nmse.png, raw_start_nmse_readable.png, start_gains.png, start_runtime.png, ber/ber.png. The readable raw-start redraw has separate provenance; the original figure is preserved.
+Policy SHA256: 1879f793286f9b380b8dac42d55957a274777b6c7928cc381390466c79f0704a

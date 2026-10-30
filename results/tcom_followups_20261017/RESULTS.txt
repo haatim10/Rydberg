@@ -1,0 +1,37 @@
+Three completed follow-up experiments for the merged TCOM draft
+
+The new sparse baseline, common-detector BER experiment, and controlled high-SNR sweep are complete. Existing model checkpoints and manuscript sources were left unchanged.
+
+The ordinary comparison uses 960 new channel worlds over 15 conditions: SNR 0,5,10,15,20 dB; RSR 12 dB; two paths, four paths, or random 3–7 paths per user. Each channel is held fixed for 256 new QPSK data vectors. The detector enumerates all 64 possible three-user symbol vectors with the exact referenced-magnitude Rician likelihood. All estimators receive identical pilots and data magnitudes.
+
+Method | mean cell NMSE(dB) | BER(%) | warmed batch-one CPU latency(ms)
+Your learned estimator | -20.385 | 1.3333 | 4.86
+Angle-domain sparse EM | -20.726 | 1.2485 | 408.79
+Frozen offline OptShrink | -18.536 | 1.3899 | 14.29
+Unfiltered EM100 | -15.761 | 2.0999 | 12.93
+
+The sparse comparator is slightly more accurate on this balanced test grid and has lower aggregate BER than the learned estimator. The difference is not uniform: sparse fitting generally wins at lower SNR, while the learned estimator becomes competitive at higher SNR and wins clearly for two-path channels at 15–20 dB. The two-path aggregate NMSE difference has a confidence interval that includes zero. The learned estimator still improves BER over the existing frozen OptShrink and EM100 controls. This supports an accuracy-versus-computation comparison, with communication performance measured explicitly, rather than a claim of universal accuracy superiority.
+Measured sparse/learned mean inference-time ratio: 84.03. This applies to the implemented solver and selected budgets, not an intrinsic complexity lower bound; a more optimized or shorter-budget sparse implementation may narrow the gap.
+
+Paired learned-minus-sparse mean NMSE difference: 0.341 dB; 95% channel-bootstrap interval [0.282, 0.396]. Negative favors learned.
+Paired learned-minus-em100 BER difference: -0.7666 percentage points; 95% interval [-0.8177, -0.7174]. Negative favors learned.
+Paired learned-minus-optshrink BER difference: -0.0566 percentage points; 95% interval [-0.0777, -0.0373]. Negative favors learned.
+Paired learned-minus-sparse_angle BER difference: 0.0848 percentage points; 95% interval [0.0672, 0.1042]. Negative favors learned.
+
+Sparse-estimator design: a 128-column angle dictionary, continuous off-grid generated paths, exact Rician posterior-field updates, and a complex L1-penalized M-step. Regularization and iteration budget were selected using 21 fitting and 9 heldout pilots on a separate 180-world development set. True channel and path count were unavailable to selection. This is a validated first sparse implementation; it does not establish the strongest possible sparse or off-grid competitor.
+
+The high-SNR study contains 96 evaluated conditions from 576 distinct anchor worlds. It holds channels, pilots, reference, and standardized noise fixed across SNR. Same-weight filter-off controls retain the 10 learned step sizes. EM10 and EM100 separate filtering bias from iteration limits.
+Mean filtering-benefit sign-change brackets at RSR 12 dB (exploratory 2.5 dB refinement):
+L2: 30–32.5 dB
+L4: 27.5–30 dB
+random3to7: 25–27.5 dB
+
+These are descriptive mean crossing brackets, not certified safe cutoffs. Reference strength and path regime change the boundary; pointwise intervals are in high_snr/summary.json. Classical OptShrink settings above 20 dB are clamped to their existing 20 dB validation choice and are not optimized for the stress regime.
+
+Uncertainty and scope: channel-block bootstrap preserves dependence between all estimators and the three fixed learned fits. It does not measure variation across new training/development populations. Low or zero error counts at high SNR need more independent channels; a degenerate zero bootstrap interval is not evidence of zero population BER. Perfect CSI is an ideal-information reference under vector ML, not a claimed mathematical lower bound on bit error. No coded throughput, hardware, or universal-channel claim is made.
+
+Validation: sparse finite-difference gradient, exact zero-penalty EM equivalence, monotone penalized likelihood, all 64 noiseless QPSK hypotheses, independent SciPy Rician-density comparison, high-SNR endpoint replays, and cross-study byte-identical observations/estimates all passed. Original input hashes are unchanged. The three studies share data; there are 1344 distinct primary evaluation pilot worlds, excluding development and timing worlds.
+
+For the manuscript: include this sparse method and the common-detector BER figure, explain the low/high-SNR crossover, and state the operating range explicitly. A useful next comparison is a sparse accuracy-versus-runtime curve at similar inference budgets. A useful method improvement to investigate is a filter-bypass safeguard selected on fresh validation data. The observed test crossing must not be presented as an independently validated deployment threshold.
+
+Useful outputs: overview.png; sparse/sparse_comparison.png and paired_bootstrap.json; ber/summary_with_sparse.json and ber_with_sparse_final.png; high_snr/high_snr_filtering_gain.png; timing.json; audit.json. Individual channel estimates and error counts are retained in the study subfolders.

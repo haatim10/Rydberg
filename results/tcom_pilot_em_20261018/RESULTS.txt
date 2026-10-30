@@ -1,0 +1,185 @@
+PILOT-MATCHED RETRAINING AND SHORT EM CONTINUATION
+Fresh test comparison; manuscript not updated.
+
+FINDINGS AND DECISION
+Pilot-matched training gives a modest improvement: 0.219 dB in equal-cell NMSE and 0.01758 percentage points in BER versus the paired 21-pilot control. One of the three training seeds worsens on both metrics.
+The retrained model leads fresh matched-budget sparse by 1.317 dB in equal-cell NMSE, but sparse wins all six 0/5 dB cells, pooled linear NMSE, and overall BER (1.36251% versus 1.43903%). This is not an overall baseline win.
+Unregularized EM continuation is rejected for the ordinary range: held-out validation chooses zero steps at every tested SNR, and forced one/two/five-step tails worsen both NMSE and BER.
+Keep the retrained checkpoints as candidates, retain zero continuation for ordinary SNR, and address high-SNR bypass separately before promoting a new model or updating the manuscript.
+
+MAIN COMPARISON
+
+Method                        Equal-cell NMSE dB  Pooled NMSE dB  BER %    p90 ms   Median ms
+----------------------------  ------------------  --------------  -------  -------  ---------
+Original learned model        -20.214             -15.345         1.44788  5.162    4.943    
+Original + selected EM        -20.214             -15.345         1.44788  5.245    5.000    
+Fresh 21-pilot control        -20.191             -15.306         1.45660  5.153    4.935    
+Fresh 21-pilot + selected EM  -20.191             -15.306         1.45660  5.195    4.981    
+Fresh 30-pilot training       -20.410             -15.478         1.43903  5.246    4.958    
+Fresh 30-pilot + selected EM  -20.410             -15.478         1.43903  5.256    4.984    
+Fresh sparse, matched budget  -19.093             -15.901         1.36251  5.780    5.086    
+Prior sparse, matched budget  -19.034             -15.849         1.36624  5.027    4.761    
+Prior sparse, 10 ms budget    -19.614             -16.094         1.35634  9.307    8.751    
+Prior sparse, 20 ms budget    -20.121             -16.260         1.35295  18.186   14.757   
+Prior sparse, 50 ms budget    -20.549             -16.325         1.35247  50.304   49.589   
+Full sparse (100 x 25)        -20.562             -16.298         1.36386  109.285  107.815  
+Optimized exact EM100         -15.606             -10.665         2.29485  5.607    5.428    
+Frozen offline OptShrink      -18.400             -14.854         1.50231  24.035   10.051   
+
+Lower is better for every table column. Neural rows average scores from three separately evaluated fits; they are not ensembles.
+Group latency pools single-model timings across the three fits; it is not the cost of running three models.
+Perfect-channel magnitude-detector BER: 0.98256%.
+
+PRESPECIFIED PAIRED CONTRASTS
+Positive NMSE gain or BER reduction means the candidate improves. Adjusted intervals cover eight primary outcomes (four contrasts x two metrics).
+
+Candidate vs reference                              NMSE gain dB  Adjusted interval  BER reduction pp  Adjusted interval pp
+--------------------------------------------------  ------------  -----------------  ----------------  --------------------
+30-pilot vs paired 21-pilot training                0.219         [0.205, 0.233]     0.01758           [0.01303, 0.02245]  
+Selected EM vs original model alone                 0.000         [0.000, 0.000]     0.00000           [0.00000, 0.00000]  
+Selected EM vs 30-pilot model alone                 0.000         [0.000, 0.000]     0.00000           [0.00000, 0.00000]  
+30-pilot selected pipeline vs fresh matched sparse  1.317         [1.255, 1.379]     -0.07652          [-0.09637, -0.05734]
+
+Intervals use 20,000 paired resamples, with case indices shared across SNR within each path regime.
+There are 1,920 test channel worlds and 384 coupled index clusters. Intervals are conditional on the fitted models and frozen choices; they do not include training-population or selection uncertainty.
+
+HELD-OUT EM-TAIL CHOICES
+Zero, one, two and five exact EM steps were compared on development observations only.
+
+Model family  0 dB  5 dB  10 dB  15 dB  20 dB
+------------  ----  ----  -----  -----  -----
+old           0     0     0      0      0    
+context21     0     0     0      0      0    
+context30     0     0     0      0      0    
+
+Continuation starts at the learned estimate and uses the same pilots, exact Rician posterior and unregularized M-step. It does not restart from a spectral initialization.
+A reduction in fitting NLL does not imply an improvement in held-out NLL, NMSE or BER.
+
+Fixed-tail diagnostic  Steps  Equal-cell NMSE dB  BER %         p90 ms
+---------------------  -----  ------------------  ------------  ------
+old                    0      -20.214             1.44788       5.162 
+old                    1      -18.760             1.65739       5.320 
+old                    2      -17.693             1.81644       5.344 
+old                    5      -16.402             2.04698       5.603 
+context21              0      -20.191             1.45660       5.153 
+context21              1      -18.597             not measured  5.296 
+context21              2      -17.581             not measured  5.344 
+context21              5      -16.363             not measured  5.571 
+context30              0      -20.410             1.43903       5.246 
+context30              1      -18.697             1.64967       5.334 
+context30              2      -17.623             1.81317       5.364 
+context30              5      -16.369             2.04890       5.566 
+
+These fixed-tail results are diagnostic. They are not used to replace the development-selected choice.
+The fixed-tail BER supplement was frozen before test generation. It covers the original and 30-pilot-trained families, uses identical core data, and leaves all primary contrasts unchanged.
+
+RUNTIME MATCHING
+Calibration and final timings ran with other experiment jobs idle, using one CPU thread, batch size one, initialization and all continuation overhead included.
+Fresh sparse choices use the same development measurements and a measured family-specific latency cap. The full declared sparse grid was eligible for timing; old cached losses only saved computation.
+
+Family     Calibrated cap ms  Final learned p90 ms  Final sparse p90 ms  Above cap?  Above learned?
+---------  -----------------  --------------------  -------------------  ----------  --------------
+old        5.592              5.245                 5.216                False       False         
+context21  5.915              5.195                 5.730                False       True          
+context30  5.787              5.256                 5.780                False       True          
+
+Fresh context30 sparse meets its frozen 5.787 ms cap, but its final 5.780 ms p90 is about 10% slower than the remeasured 5.256 ms selected neural pipeline. The final measurements are budget matched by the calibration rule, not exactly equal latency.
+Final timing variation is reported directly; there is no post-test sparse reselection.
+Runtime is a measurement of these CPU implementations, not hardware-independent algorithmic complexity.
+
+WHERE IMPROVEMENTS HOLD OR FAIL
+
+30-pilot vs paired 21-pilot training:
+  Fit-specific aggregate NMSE gains (dB): {'9101': 0.2781439899433842, '9102': -0.13166162225213895, '9103': 0.510588598519373}
+  Worst ordinary cell: L4_snr10 (-0.006 dB gain).
+  Negative point-estimate cells: L4_snr10.
+  Descriptive pointwise 95% harm cells: none.
+Selected EM vs original model alone:
+  Fit-specific aggregate NMSE gains (dB): {'9101': 0.0, '9102': 0.0, '9103': 0.0}
+  Worst ordinary cell: L2_snr0 (0.000 dB gain).
+  Negative point-estimate cells: none.
+  Descriptive pointwise 95% harm cells: none.
+Selected EM vs 30-pilot model alone:
+  Fit-specific aggregate NMSE gains (dB): {'9101': 0.0, '9102': 0.0, '9103': 0.0}
+  Worst ordinary cell: L2_snr0 (0.000 dB gain).
+  Negative point-estimate cells: none.
+  Descriptive pointwise 95% harm cells: none.
+30-pilot selected pipeline vs fresh matched sparse:
+  Fit-specific aggregate NMSE gains (dB): {'9101': 1.4583773043672394, '9102': 1.1794659807453733, '9103': 1.3124607441083498}
+  Worst ordinary cell: L4_snr5 (-0.767 dB gain).
+  Negative point-estimate cells: L2_snr0, L4_snr0, random3to7_snr0, L2_snr5, L4_snr5, random3to7_snr5.
+  Descriptive pointwise 95% harm cells: L2_snr0, L4_snr0, random3to7_snr0, L2_snr5, L4_snr5, random3to7_snr5.
+
+Tail diagnostic               p95 case NMSE (linear)  p99 case NMSE (linear)  Cases NMSE > 1 (%)
+----------------------------  ----------------------  ----------------------  ------------------
+Original learned model        0.14103                 0.20946                 0.000             
+Fresh 21-pilot control        0.13598                 0.19709                 0.000             
+Fresh 30-pilot + selected EM  0.12942                 0.18454                 0.000             
+Fresh sparse, matched budget  0.11012                 0.15443                 0.000             
+Full sparse (100 x 25)        0.1094                  0.15228                 0.000             
+Optimized exact EM100         0.39606                 0.63691                 0.000             
+Frozen offline OptShrink      0.13379                 0.20193                 0.000             
+For neural groups, quantiles are averaged across three individual fits. These diagnostics are not additional primary tests.
+
+DESCRIPTIVE GUARDS (NOT USED FOR SELECTION)
+The ordinary-range choices are reused at these out-of-range points, with the SNR lookup clamped to 20 dB. These are diagnostics, not a tuned high-SNR bypass.
+Earlier bypass thresholds were calibrated for the original weights. If a retrained model is adopted, those thresholds need separate recalibration and confirmation.
+
+Guard           Estimator                NMSE dB
+--------------  -----------------------  -------
+high_snr        old_tail0_mean           -6.948 
+high_snr        old_tail5_mean           -23.123
+high_snr        context21_tail0_mean     -8.083 
+high_snr        context30_tail0_mean     -6.925 
+high_snr        context30_tail5_mean     -23.283
+high_snr        context30_selected_mean  -6.925 
+high_snr        sparse_fresh_context30   -58.173
+high_snr        em100                    -65.539
+weak_reference  old_tail0_mean           -25.846
+weak_reference  old_tail5_mean           -39.667
+weak_reference  context21_tail0_mean     -28.791
+weak_reference  context30_tail0_mean     -27.464
+weak_reference  context30_tail5_mean     -40.469
+weak_reference  context30_selected_mean  -27.464
+weak_reference  sparse_fresh_context30   -23.137
+weak_reference  em100                    -50.832
+
+COMPLETED TRAINING
+
+Model           Selected epoch  Common validation NLL  Updates completed  Update-loop minutes
+--------------  --------------  ---------------------  -----------------  -------------------
+context21_9101  20              3.328229               10240              25.24              
+context30_9101  19              3.327380               10240              27.26              
+context21_9102  16              3.353724               10240              25.16              
+context30_9102  20              3.328745               10240              27.29              
+context21_9103  20              3.329288               10240              25.31              
+context30_9103  19              3.327552               10240              27.13              
+Both fresh arms complete 10,240 optimizer updates. Update-loop time excludes validation and was recorded with concurrent training workers; it is not isolated inference latency.
+
+PROTOCOL AND INTERPRETATION
+Three paired seeds; two fresh training arms; identical 188-parameter ten-stage architecture; 16,384 training and 2,048 validation cases; 20 epochs, batch 32, Adam at 0.001.
+Both arms use the same simulated channels, initialization, batch orders and nine held-out measurements. The 21-pilot context is nested inside the 30-pilot context.
+A 39-pilot bank is needed only for offline training/validation. Every deployed estimator receives exactly 30 pilot measurements.
+Training and checkpoint/tail/sparse selection use observations and design strata, not the true channel. Test truth is used for simulation and scoring only.
+Both fresh arms select checkpoints by the same 30-context held-out likelihood. Therefore the fresh 21-pilot control is not an exact reproduction of the original checkpoint-selection procedure.
+Checkpoint validation covers 126 broader strata: SNR -10 to 20 dB, RSR 5/12/20 dB, and sparse through dense path regimes. Improved broad validation likelihood need not improve every fit on the narrower primary NMSE test.
+The paired fresh comparison isolates training context count under shared selection. Comparisons against the original checkpoint also change the training data and selection protocol.
+Changing context count changes both the explicit pilot-count feature and the information/noise properties of the training estimate. This study does not isolate feature extrapolation as the sole mechanism.
+Main evaluation: N=32, K=3, P=30, RSR=12 dB; SNR=0/5/10/15/20 dB; two paths, four paths, and random 3-7 paths per user; 128 channels per cell.
+BER: 256 fresh joint QPSK vectors per channel, 2,949,120 bits per estimator. All estimators share identical magnitude-domain data and the exact 64-hypothesis Rician ML detector.
+A zero observed BER is not proof of zero error probability; the finite channel bank limits rare-error conclusions.
+All choices were frozen before generating test/guard data. Original source files, checkpoints, previous results and manuscript were preserved.
+
+VERIFICATION
+Independent design, completed-training, prediction/selection, core BER, fixed-tail BER and final-runtime audits passed.
+Verified nested pilot contexts, held-out isolation, paired initial states/orders/masks, checkpoint minima, source/checkpoint hashes, exact continuation parity, monotonic fitting NLL, test-error recomputation, selected-tail array identity, detector reconstruction and common data.
+The runtime audit independently recomputed 1,260 overall/per-SNR statistics from 4,950 positive finite measurements across 55 methods: exact agreement. Fifteen neural groups pool individual fit timings rather than summing an ensemble cost. Raw timing outliers were retained.
+Frozen final selection SHA256: e1a2753bc3c3808223e09f65c1ce632162edf19890aa90724173221015612503
+
+ARTIFACTS
+training_summary.json; training_curves.png
+evaluation/nmse_summary.json; evaluation/pilot_em_nmse.png; evaluation/pilot_em_runtime.png
+evaluation/final_timing.json; evaluation/selection.json
+ber/summary.json; ber/ber.png
+ber_fixed_tails/summary.json; ber_fixed_tails/ber_fixed_tails.png
+audit/design.json; audit/training.json; audit/study.json; audit/ber.json; audit/fixed_tails.json; audit/timing.json

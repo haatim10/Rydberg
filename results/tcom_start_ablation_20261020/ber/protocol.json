@@ -1,0 +1,190 @@
+{
+  "version": 1,
+  "name": "Controlled start ablation: fresh fixed-alphabet BER",
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    "L2",
+    "L4",
+    "random3to7"
+  ],
+  "cases_per_cell": 128,
+  "test_seed": 2026102012,
+  "data_seed": 2026102013,
+  "source_methods": [
+    "adaptive_9101",
+    "adaptive_9102",
+    "adaptive_9103",
+    "global_9101",
+    "global_9102",
+    "global_9103",
+    "classical",
+    "spectral",
+    "em10",
+    "budget_adaptive_9101",
+    "budget_adaptive_9102",
+    "budget_adaptive_9103",
+    "budget_global_9101",
+    "budget_global_9102",
+    "budget_global_9103",
+    "budget_classical",
+    "budget_spectral",
+    "budget_em10",
+    "latest_9101",
+    "latest_9102",
+    "latest_9103",
+    "em100",
+    "compact_sparse",
+    "optshrink"
+  ],
+  "additional_reference": "perfect_csi",
+  "neural_groups": {
+    "adaptive_mean": [
+      "adaptive_9101",
+      "adaptive_9102",
+      "adaptive_9103"
+    ],
+    "global_mean": [
+      "global_9101",
+      "global_9102",
+      "global_9103"
+    ],
+    "budget_adaptive_mean": [
+      "budget_adaptive_9101",
+      "budget_adaptive_9102",
+      "budget_adaptive_9103"
+    ],
+    "budget_global_mean": [
+      "budget_global_9101",
+      "budget_global_9102",
+      "budget_global_9103"
+    ],
+    "latest_mean": [
+      "latest_9101",
+      "latest_9102",
+      "latest_9103"
+    ]
+  },
+  "modulation": "All 64 equally likely joint Gray QPSK vectors once per channel, unit power per user and six bits per vector. This stratifies the uniform alphabet; it is not 64 independent random symbol selections.",
+  "data_noise": "Fresh proper complex Gaussian noise independent of pilot noise. SeedSequence([data_seed, regime_index, reference_index, local_index]) generates independent antenna/vector noise. Reuse the standardized noise across SNR and rescale by sqrt(sigma2).",
+  "identical_inputs": "Every method sees identical new data magnitudes, known reference/variance, and the same exact 64-hypothesis Rician ML detector. The detector receives no coherent observation.",
+  "inference": "Channel truth only generates data and the explicitly labeled perfect-CSI reference. No BER-dependent model, policy, sparse choice, cell selection or additional bit allocation.",
+  "sampling": "Fixed 128 anchors per reference/path setting, 64 vectors per channel, 384 bits per channel and 49152 bits per cell/fit. No adaptive extra bits.",
+  "bounds": "Zero observed errors and a collapsed empirical bootstrap interval do not establish zero BER, a rare-event bound, equivalence or population noninferiority. No independent-bit binomial intervals.",
+  "duplicates": "Bitwise-identical full channel arrays may reuse detector counts. Every reuse is recorded and audited; detector reuse is not estimator timing.",
+  "primary_scope": "All 153 conditions: adaptive versus learned global schedule, and adaptive versus development-selected classical structured start. NMSE and BER form four outcomes.",
+  "controlled_scope": "Starts are forced on every main condition with the same 30 fitting pilots, 100 exact EM continuation updates and common final filter. Global is a learned per-stage nonadaptive schedule; it is not an untrained classical fixed-parameter baseline.",
+  "budget_scope": "Separate budget_* arms use timing-selected continuation counts under the literal 10.74 ms pipeline cap. Their BER comparisons are descriptive and cannot influence budget selection. Latest, direct EM100, compact and OptShrink are separate references.",
+  "freeze_binding": "The new study policy and scientific protocol bind every checkpoint and selected method configuration. BER reads no prior-study result manifest. This protocol binds the BER source, independent audit and immutable stateless detector.",
+  "primary_contrasts": {
+    "adaptive_vs_global": [
+      "global_mean",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_classical": [
+      "classical",
+      "adaptive_mean"
+    ]
+  },
+  "descriptive_contrasts": {
+    "adaptive_vs_spectral": [
+      "spectral",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_em10": [
+      "em10",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_latest": [
+      "latest_mean",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_em100": [
+      "em100",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_compact": [
+      "compact_sparse",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_optshrink": [
+      "optshrink",
+      "adaptive_mean"
+    ],
+    "budget_adaptive_vs_global": [
+      "budget_global_mean",
+      "budget_adaptive_mean"
+    ],
+    "budget_adaptive_vs_classical": [
+      "budget_classical",
+      "budget_adaptive_mean"
+    ],
+    "budget_adaptive_vs_adaptive": [
+      "adaptive_mean",
+      "budget_adaptive_mean"
+    ]
+  },
+  "improvement_sign": "reference BER minus candidate BER",
+  "descriptive_scopes": [
+    "all",
+    "weak_warm100",
+    "strong_high",
+    "strong_transition",
+    "ordinary",
+    "weak",
+    "rsr5",
+    "rsr12",
+    "rsr20",
+    "all_L2",
+    "all_L4",
+    "all_random3to7",
+    "weak_warm100_L2",
+    "weak_warm100_L4",
+    "weak_warm100_random3to7"
+  ],
+  "bootstrap": {
+    "resamples": 20000,
+    "seed": 2026102019,
+    "rule": "Multinomial 128-case weights in regime order L2,L4,random3to7, shared across every reference/SNR/method/fit within regime; regimes independent.",
+    "pointwise_quantiles": [
+      0.025,
+      0.975
+    ],
+    "primary_bonferroni4_quantiles": [
+      0.00625,
+      0.99375
+    ],
+    "interpretation": "Conditional on fixed weights/policies. Two primary contrasts in the whole-grid scope times NMSE/BER form four outcomes. Budget-arm and other-reference comparisons are descriptive. Three fits average individual metrics, never predictions, and do not triple the number of channels."
+  },
+  "source_hashes": {
+    "tcom_start_ablation_20261020/ber.py": "caddd20d0d240792018de98d4edf1aeef83c0c8ca8ddb4643391f5667be5d1ef",
+    "tcom_start_ablation_20261020/ber_audit.py": "808bee94d629dea8317d84b13e4b383cb615310955719e4f02759925cf235908",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c"
+  },
+  "frozen_unix": 1792504618.755569
+}

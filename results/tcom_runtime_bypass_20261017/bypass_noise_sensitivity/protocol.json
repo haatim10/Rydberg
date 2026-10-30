@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "name": "Fixed-policy supplied-variance sensitivity",
+  "actual_snrs": [
+    20.0,
+    30.0,
+    60.0
+  ],
+  "rsr": 12.0,
+  "regime": "random3to7",
+  "supplied_variance_offsets_db": [
+    -3.0,
+    0.0,
+    3.0
+  ],
+  "test_seed": 2026101762,
+  "test_anchors": 64,
+  "selection_sha256": "5b6f2d0bd6034785225857e2fe60afc5f10aae0836131d046027e0944b83013c",
+  "parent_protocol_sha256": "6e07f37507588dff6d3547ff0a3e7b2e2fb63b217211b499a65a0efc87994c19",
+  "policies": {
+    "same_steps": {
+      "5": 40.0,
+      "12": 32.5,
+      "20": 35.0
+    },
+    "em100": {
+      "5": 40.0,
+      "12": 30.0,
+      "20": 30.0
+    }
+  },
+  "source_sha256": "0c4472d920a52c51bb0d753734742038ab345b6bfc35cf8e2210dd4631821758",
+  "receiver_variance": "actual variance multiplied by10^(offset_dB/10); measured magnitudes and actual channel are unchanged",
+  "zero_offset": "Reuse all predictions from the primary experiment without fitting again",
+  "methods": [
+    "learned_9101",
+    "learned_9102",
+    "learned_9103",
+    "off_9101",
+    "off_9102",
+    "off_9103",
+    "fast_bypass_9101",
+    "fast_bypass_9102",
+    "fast_bypass_9103",
+    "em100",
+    "em100_bypass_9101",
+    "em100_bypass_9102",
+    "em100_bypass_9103"
+  ],
+  "group_indices": {
+    "original_mean": [
+      0,
+      1,
+      2
+    ],
+    "off_mean": [
+      3,
+      4,
+      5
+    ],
+    "fast_bypass_mean": [
+      6,
+      7,
+      8
+    ],
+    "em100": [
+      9
+    ],
+    "em100_bypass_mean": [
+      10,
+      11,
+      12
+    ]
+  },
+  "uncertainty": "3000 paired bootstrap replicates of64 whole anchors, with identical indices across SNR, supplied-variance offsets, methods, and fits; seed2026101773. Pointwise95 intervals; conditional on frozen policies and weights.",
+  "scope": "Diagnostic only, with no policy adaptation or new deployment claim"
+}

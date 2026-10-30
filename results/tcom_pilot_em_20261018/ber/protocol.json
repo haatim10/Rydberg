@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "name": "Fresh paired BER: context-count training and exact EM continuation",
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "RSR_dB": 12,
+  "SNR_dB": [
+    0,
+    5,
+    10,
+    15,
+    20
+  ],
+  "path_regimes": [
+    "L2",
+    "L4",
+    "random3to7"
+  ],
+  "cases_per_cell": 128,
+  "main_cells": 15,
+  "total_channel_realizations": 1920,
+  "coupled_resampling_clusters": 384,
+  "pilot_seed": 2026101804,
+  "data_seed": 2026101805,
+  "data_seed_rule": "SeedSequence([2026101805, cell_index, local_case_index]); cell order regime L2,L4,random3to7, then SNR0,5,10,15,20.",
+  "independent_QPSK_vectors_per_channel": 256,
+  "modulation": "Unit-power Gray QPSK, two bits/user/symbol, three users.",
+  "source_methods": [
+    "old_9101_tail0",
+    "old_9102_tail0",
+    "old_9103_tail0",
+    "old_9101_selected",
+    "old_9102_selected",
+    "old_9103_selected",
+    "context21_9101_tail0",
+    "context21_9102_tail0",
+    "context21_9103_tail0",
+    "context21_9101_selected",
+    "context21_9102_selected",
+    "context21_9103_selected",
+    "context30_9101_tail0",
+    "context30_9102_tail0",
+    "context30_9103_tail0",
+    "context30_9101_selected",
+    "context30_9102_selected",
+    "context30_9103_selected",
+    "sparse_fresh_context30",
+    "prior_sparse_matched",
+    "prior_sparse_10ms",
+    "prior_sparse_20ms",
+    "prior_sparse_50ms",
+    "prior_sparse_full",
+    "em100",
+    "optshrink"
+  ],
+  "additional_method": "perfect_csi",
+  "neural_metric_groups": {
+    "old_tail0_mean": [
+      "old_9101_tail0",
+      "old_9102_tail0",
+      "old_9103_tail0"
+    ],
+    "old_selected_mean": [
+      "old_9101_selected",
+      "old_9102_selected",
+      "old_9103_selected"
+    ],
+    "context21_tail0_mean": [
+      "context21_9101_tail0",
+      "context21_9102_tail0",
+      "context21_9103_tail0"
+    ],
+    "context21_selected_mean": [
+      "context21_9101_selected",
+      "context21_9102_selected",
+      "context21_9103_selected"
+    ],
+    "context30_tail0_mean": [
+      "context30_9101_tail0",
+      "context30_9102_tail0",
+      "context30_9103_tail0"
+    ],
+    "context30_selected_mean": [
+      "context30_9101_selected",
+      "context30_9102_selected",
+      "context30_9103_selected"
+    ]
+  },
+  "detector": "Identical exact Rician magnitude-only ML over all64 jointQPSK hypotheses for every estimate. Known reference and variance. No coherent data observations are available.",
+  "common_data": "One fresh bit/noise realization per test channel, shared by every detector; independent of pilot noise. Truth is used only for generation, scoring and explicitly labeled perfectCSI reference.",
+  "duplicates": "Bitwise-identical saved channel arrays within a cell may reuse exact detector outputs; these are recorded as duplicate_of, never treated as a timing advantage.",
+  "selection": "Consume only predictions that cite the fully frozen evaluation/selection.json. No BER-based estimator, tail, checkpoint, hyperparameter or test-cell selection.",
+  "aggregation": "Each ofthree fixed neuralfits evaluated separately; groups average BER, never estimates or decisions. The three fits do not triple the independent test data.",
+  "primary_contrasts": {
+    "pilot_count": [
+      "context21_tail0_mean",
+      "context30_tail0_mean"
+    ],
+    "old_continuation": [
+      "old_tail0_mean",
+      "old_selected_mean"
+    ],
+    "matched_continuation": [
+      "context30_tail0_mean",
+      "context30_selected_mean"
+    ],
+    "matched_vs_sparse": [
+      "sparse_fresh_context30",
+      "context30_selected_mean"
+    ]
+  },
+  "improvement_sign": "reference BER minus candidate BER; positive means candidate improves",
+  "uncertainty": {
+    "method": "Paired coupled-block percentile bootstrap conditional on fixed models and selections",
+    "resamples": 20000,
+    "seed": 2026101894,
+    "construction": "Per-regime multinomial128-case weights in L2,L4,random3to7 order, shared across every SNR and method; regimes independent.",
+    "pointwise_quantiles": [
+      0.025,
+      0.975
+    ],
+    "primary_bonferroni_quantiles": [
+      0.003125,
+      0.996875
+    ],
+    "family": "Eight co-primary outcomes: four frozen contrasts times NMSE/BER; individual99.375% intervals provide Bonferroni95% family coverage."
+  },
+  "zeros": "Zero observed errors are not zero BER or a bound; collapsed empirical bootstrap intervals cannot resolve unseen rare events.",
+  "guard_policy": "No guard BER; only the15 prespecified ordinary-range cells. Guard NMSE handled separately.",
+  "timing": "No detector work during isolated calibration/final estimator timing. Detector walltime is diagnostic only.",
+  "source_hashes": {
+    "tcom_pilot_em_20261018/ber.py": "57774fd475a494f4b5616cb18c29e770187ca00417d310fc9eb8412e1679f5d3",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c"
+  },
+  "training_protocol_sha256": "5d4619780a491d8dd8cf65a00e88a4f1a5a1074a720078c9c6ff4a4b603e8b6e",
+  "frozen_unix": 1792339869.988085
+}

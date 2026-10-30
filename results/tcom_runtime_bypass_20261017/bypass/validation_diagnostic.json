@@ -1,0 +1,3385 @@
+{
+  "policy_sha256": "5b6f2d0bd6034785225857e2fe60afc5f10aae0836131d046027e0944b83013c",
+  "policies": {
+    "same_steps": {
+      "5": 40.0,
+      "12": 32.5,
+      "20": 35.0
+    },
+    "em100": {
+      "5": 40.0,
+      "12": 30.0,
+      "20": 30.0
+    }
+  },
+  "development_only": true,
+  "frozen_loss_hashes_verified": true,
+  "bootstrap_repetitions": 4000,
+  "bootstrap_seed": 2026101769,
+  "summation_check": "Compare ordinary float64 means, math.fsum compensated sums, and differences centered per anchor before summation. NumPy longdouble offers no additional precision on this host and is not used as an independent precision check.",
+  "bootstrap_scope": "Fixed models and losses; resample 24 development anchors within each path regime/reference, preserving each complete SNR trajectory. This estimates finite-development-bank sensitivity, not deployment generalization or model-training variability.",
+  "likelihood_implementation": "Existing sahure.math.nll evaluates (z-|mu|)^2/v - log(i0e(2*z*|mu|/v)) in its regular branch. This avoids subtracting large z^2+|mu|^2 and 2*z*|mu| terms. Data-only constants are shared between candidates.",
+  "interpretation": "Positive fallback-minus-learned NLL favors retaining filtering. Positive candidate margin favors the frozen selected cutoff. High-SNR constants shared by nearby cutoff policies cancel in centered comparisons.",
+  "loss_ranges": {
+    "5": {
+      "minimum_NLL": 2.8302829535118565,
+      "maximum_NLL": 515460.8809359764,
+      "all_finite": true,
+      "float64_ulp_at_largest_NLL": 5.820766091346741e-11
+    },
+    "12": {
+      "minimum_NLL": 3.707991211958652,
+      "maximum_NLL": 605808.6098100098,
+      "all_finite": true,
+      "float64_ulp_at_largest_NLL": 1.1641532182693481e-10
+    },
+    "20": {
+      "minimum_NLL": 4.602319885064131,
+      "maximum_NLL": 356452.8253043709,
+      "all_finite": true,
+      "float64_ulp_at_largest_NLL": 5.820766091346741e-11
+    }
+  },
+  "reviews": {
+    "same_steps_5": {
+      "selected_cutoff_db": 40.0,
+      "selected_mean_NLL": 800.8010650483882,
+      "maximum_saved_score_reproduction_error": 9.094947017729282e-13,
+      "maximum_float64_vs_compensated_sum_error": 1.1368683772161603e-13,
+      "maximum_direct_vs_centered_margin_error": 9.094947017729282e-13,
+      "smallest_positive_candidate_margin": 4.105020167370678,
+      "numerical_error_to_smallest_margin_ratio": 2.2155669514176155e-13,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 4.105020167370678,
+          "paired_anchor_bootstrap_95_CI": [
+            0.6331418101545669,
+            8.620012323907911
+          ],
+          "probability_neighbor_worse": 0.99325
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 14.624445952526177,
+          "paired_anchor_bootstrap_95_CI": [
+            -3.05584199097339,
+            30.399372040132448
+          ],
+          "probability_neighbor_worse": 0.95075
+        }
+      ],
+      "all_candidate_margins": [
+        {
+          "cutoff_db": 20.0,
+          "mean_NLL_above_selected": 8.77423885774562
+        },
+        {
+          "cutoff_db": 22.5,
+          "mean_NLL_above_selected": 8.65797740839654
+        },
+        {
+          "cutoff_db": 25.0,
+          "mean_NLL_above_selected": 8.450300875285015
+        },
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 8.076864238405555
+        },
+        {
+          "cutoff_db": 30.0,
+          "mean_NLL_above_selected": 7.393864558386923
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 6.190627167211697
+        },
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 4.105020167370678
+        },
+        {
+          "cutoff_db": 40.0,
+          "mean_NLL_above_selected": 0.0
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 14.624445952526177
+        },
+        {
+          "cutoff_db": 50.0,
+          "mean_NLL_above_selected": 219.5860349710733
+        },
+        {
+          "cutoff_db": 60.0,
+          "mean_NLL_above_selected": 6574.955959395032
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0,
+        "30": 0.0,
+        "32.5": 0.0,
+        "35": 0.00675,
+        "40": 0.944,
+        "45": 0.04925,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "em100_5": {
+      "selected_cutoff_db": 40.0,
+      "selected_mean_NLL": 385.3256871461393,
+      "maximum_saved_score_reproduction_error": 9.094947017729282e-13,
+      "maximum_float64_vs_compensated_sum_error": 1.1368683772161603e-13,
+      "maximum_direct_vs_centered_margin_error": 9.094947017729282e-13,
+      "smallest_positive_candidate_margin": 0.641206153016325,
+      "numerical_error_to_smallest_margin_ratio": 1.4184123116949763e-12,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 0.641206153016325,
+          "paired_anchor_bootstrap_95_CI": [
+            -2.467333922447501,
+            4.577412179172677
+          ],
+          "probability_neighbor_worse": 0.6345
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 26.084187728120536,
+          "paired_anchor_bootstrap_95_CI": [
+            10.203870699260762,
+            41.308859680311265
+          ],
+          "probability_neighbor_worse": 0.9995
+        }
+      ],
+      "all_candidate_margins": [
+        {
+          "cutoff_db": 20.0,
+          "mean_NLL_above_selected": 2.8557681588689428
+        },
+        {
+          "cutoff_db": 22.5,
+          "mean_NLL_above_selected": 2.7978954092818773
+        },
+        {
+          "cutoff_db": 25.0,
+          "mean_NLL_above_selected": 2.696383210097631
+        },
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 2.508006618040185
+        },
+        {
+          "cutoff_db": 30.0,
+          "mean_NLL_above_selected": 2.1596389868782047
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 1.5862162242615139
+        },
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 0.641206153016325
+        },
+        {
+          "cutoff_db": 40.0,
+          "mean_NLL_above_selected": 0.0
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 26.084187728120536
+        },
+        {
+          "cutoff_db": 50.0,
+          "mean_NLL_above_selected": 267.62728220941364
+        },
+        {
+          "cutoff_db": 60.0,
+          "mean_NLL_above_selected": 6990.431337297281
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0,
+        "30": 0.0005,
+        "32.5": 0.0015,
+        "35": 0.3635,
+        "40": 0.634,
+        "45": 0.0005,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "same_steps_12": {
+      "selected_cutoff_db": 32.5,
+      "selected_mean_NLL": 12.82493168066294,
+      "maximum_saved_score_reproduction_error": 9.094947017729282e-13,
+      "maximum_float64_vs_compensated_sum_error": 3.552713678800501e-15,
+      "maximum_direct_vs_centered_margin_error": 9.094947017729282e-13,
+      "smallest_positive_candidate_margin": 0.0036842805210560202,
+      "numerical_error_to_smallest_margin_ratio": 2.468581576715122e-10,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 30.0,
+          "mean_NLL_above_selected": 0.0036842805210560202,
+          "paired_anchor_bootstrap_95_CI": [
+            -0.0026978013025308134,
+            0.01044539808780671
+          ],
+          "probability_neighbor_worse": 0.8605
+        },
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 0.020985973399424155,
+          "paired_anchor_bootstrap_95_CI": [
+            0.0012125655377680986,
+            0.044440710874494985
+          ],
+          "probability_neighbor_worse": 0.98125
+        }
+      ],
+      "all_candidate_margins": [
+        {
+          "cutoff_db": 20.0,
+          "mean_NLL_above_selected": 0.05025971475620016
+        },
+        {
+          "cutoff_db": 22.5,
+          "mean_NLL_above_selected": 0.037647328318783875
+        },
+        {
+          "cutoff_db": 25.0,
+          "mean_NLL_above_selected": 0.024860831107306282
+        },
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 0.012956531573317222
+        },
+        {
+          "cutoff_db": 30.0,
+          "mean_NLL_above_selected": 0.0036842805210560202
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.0
+        },
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 0.020985973399424155
+        },
+        {
+          "cutoff_db": 40.0,
+          "mean_NLL_above_selected": 1.1983377072431258
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 23.398725534758967
+        },
+        {
+          "cutoff_db": 50.0,
+          "mean_NLL_above_selected": 220.79025688539622
+        },
+        {
+          "cutoff_db": 60.0,
+          "mean_NLL_above_selected": 5829.372146578371
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0,
+        "30": 0.1395,
+        "32.5": 0.84175,
+        "35": 0.01875,
+        "40": 0.0,
+        "45": 0.0,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "em100_12": {
+      "selected_cutoff_db": 30.0,
+      "selected_mean_NLL": 6.401171476482397,
+      "maximum_saved_score_reproduction_error": 9.094947017729282e-13,
+      "maximum_float64_vs_compensated_sum_error": 2.842170943040401e-14,
+      "maximum_direct_vs_centered_margin_error": 1.8189894035458565e-12,
+      "smallest_positive_candidate_margin": 0.002628457296386541,
+      "numerical_error_to_smallest_margin_ratio": 6.920368864453318e-10,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 0.002628457296386541,
+          "paired_anchor_bootstrap_95_CI": [
+            -2.653078454447205e-05,
+            0.005169681038854179
+          ],
+          "probability_neighbor_worse": 0.97325
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.00703201664680248,
+          "paired_anchor_bootstrap_95_CI": [
+            0.002238339326904489,
+            0.012577039209068091
+          ],
+          "probability_neighbor_worse": 0.99775
+        }
+      ],
+      "all_candidate_margins": [
+        {
+          "cutoff_db": 20.0,
+          "mean_NLL_above_selected": 0.02955016270507036
+        },
+        {
+          "cutoff_db": 22.5,
+          "mean_NLL_above_selected": 0.019044557407888955
+        },
+        {
+          "cutoff_db": 25.0,
+          "mean_NLL_above_selected": 0.009694573460200091
+        },
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 0.002628457296386541
+        },
+        {
+          "cutoff_db": 30.0,
+          "mean_NLL_above_selected": 0.0
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.00703201664680248
+        },
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 0.04651165926197655
+        },
+        {
+          "cutoff_db": 40.0,
+          "mean_NLL_above_selected": 1.2810418655245093
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 23.66039694080468
+        },
+        {
+          "cutoff_db": 50.0,
+          "mean_NLL_above_selected": 221.61468242285193
+        },
+        {
+          "cutoff_db": 60.0,
+          "mean_NLL_above_selected": 5835.795906782551
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.02675,
+        "30": 0.971,
+        "32.5": 0.00225,
+        "35": 0.0,
+        "40": 0.0,
+        "45": 0.0,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "same_steps_20": {
+      "selected_cutoff_db": 35.0,
+      "selected_mean_NLL": 27.61074331204251,
+      "maximum_saved_score_reproduction_error": 2.842170943040401e-14,
+      "maximum_float64_vs_compensated_sum_error": 9.094947017729282e-13,
+      "maximum_direct_vs_centered_margin_error": 9.094947017729282e-13,
+      "smallest_positive_candidate_margin": 0.018668242289321874,
+      "numerical_error_to_smallest_margin_ratio": 4.8718818176746826e-11,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.018668242289321874,
+          "paired_anchor_bootstrap_95_CI": [
+            -0.01106576882090688,
+            0.057771263853094064
+          ],
+          "probability_neighbor_worse": 0.87025
+        },
+        {
+          "cutoff_db": 40.0,
+          "mean_NLL_above_selected": 0.6861862767712132,
+          "paired_anchor_bootstrap_95_CI": [
+            0.278560692195863,
+            1.2309516533249263
+          ],
+          "probability_neighbor_worse": 1.0
+        }
+      ],
+      "all_candidate_margins": [
+        {
+          "cutoff_db": 20.0,
+          "mean_NLL_above_selected": 0.10726662982161728
+        },
+        {
+          "cutoff_db": 22.5,
+          "mean_NLL_above_selected": 0.09349124283194199
+        },
+        {
+          "cutoff_db": 25.0,
+          "mean_NLL_above_selected": 0.0785361482741092
+        },
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 0.06171373410922388
+        },
+        {
+          "cutoff_db": 30.0,
+          "mean_NLL_above_selected": 0.041967796076096776
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.018668242289321874
+        },
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 0.0
+        },
+        {
+          "cutoff_db": 40.0,
+          "mean_NLL_above_selected": 0.6861862767712132
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 17.741374538562
+        },
+        {
+          "cutoff_db": 50.0,
+          "mean_NLL_above_selected": 184.2155390669949
+        },
+        {
+          "cutoff_db": 60.0,
+          "mean_NLL_above_selected": 5166.623061473458
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0,
+        "30": 0.0,
+        "32.5": 0.12975,
+        "35": 0.87025,
+        "40": 0.0,
+        "45": 0.0,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "em100_20": {
+      "selected_cutoff_db": 30.0,
+      "selected_mean_NLL": 7.331182830629883,
+      "maximum_saved_score_reproduction_error": 3.552713678800501e-15,
+      "maximum_float64_vs_compensated_sum_error": 9.094947017729282e-13,
+      "maximum_direct_vs_centered_margin_error": 9.094947017729282e-13,
+      "smallest_positive_candidate_margin": 0.0032122319439880816,
+      "numerical_error_to_smallest_margin_ratio": 2.831348164241725e-10,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 0.0032122319439880816,
+          "paired_anchor_bootstrap_95_CI": [
+            -0.00015020331954729925,
+            0.006308146040657704
+          ],
+          "probability_neighbor_worse": 0.9695
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.006787824921581423,
+          "paired_anchor_bootstrap_95_CI": [
+            0.00032098768161707155,
+            0.013924197886216263
+          ],
+          "probability_neighbor_worse": 0.981
+        }
+      ],
+      "all_candidate_margins": [
+        {
+          "cutoff_db": 20.0,
+          "mean_NLL_above_selected": 0.032655812525342706
+        },
+        {
+          "cutoff_db": 22.5,
+          "mean_NLL_above_selected": 0.021281941921840256
+        },
+        {
+          "cutoff_db": 25.0,
+          "mean_NLL_above_selected": 0.011071460255571564
+        },
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 0.0032122319439880816
+        },
+        {
+          "cutoff_db": 30.0,
+          "mean_NLL_above_selected": 0.0
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.006787824921581423
+        },
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 0.04243035120060992
+        },
+        {
+          "cutoff_db": 40.0,
+          "mean_NLL_above_selected": 0.9032671880320646
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 18.5152122499943
+        },
+        {
+          "cutoff_db": 50.0,
+          "mean_NLL_above_selected": 186.75722884898158
+        },
+        {
+          "cutoff_db": 60.0,
+          "mean_NLL_above_selected": 5186.9026219548705
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0305,
+        "30": 0.9505,
+        "32.5": 0.019,
+        "35": 0.0,
+        "40": 0.0,
+        "45": 0.0,
+        "50": 0.0,
+        "60": 0.0
+      }
+    }
+  },
+  "reference_SNR_branch_differences": [
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 10.0,
+      "fallback_minus_learned_mean_NLL": 0.24980819583212574
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 15.0,
+      "fallback_minus_learned_mean_NLL": 0.4364387450084342
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 20.0,
+      "fallback_minus_learned_mean_NLL": 0.9247733233538177
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 22.5,
+      "fallback_minus_learned_mean_NLL": 1.5113988415380402
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 25.0,
+      "fallback_minus_learned_mean_NLL": 2.6997949304498223
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 27.5,
+      "fallback_minus_learned_mean_NLL": 4.854676279432969
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 30.0,
+      "fallback_minus_learned_mean_NLL": 8.878995840242226
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 32.5,
+      "fallback_minus_learned_mean_NLL": 15.64208608527793
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 35.0,
+      "fallback_minus_learned_mean_NLL": 27.112890997933263
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 40.0,
+      "fallback_minus_learned_mean_NLL": 53.365262175818806
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 45.0,
+      "fallback_minus_learned_mean_NLL": -190.1177973828403
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 50.0,
+      "fallback_minus_learned_mean_NLL": -2664.5006572411125
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "snr_db": 60.0,
+      "fallback_minus_learned_mean_NLL": -82619.80901751148
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 10.0,
+      "fallback_minus_learned_mean_NLL": 0.2100473961038174
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 15.0,
+      "fallback_minus_learned_mean_NLL": 0.26400405437521046
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 20.0,
+      "fallback_minus_learned_mean_NLL": 0.48372350158308786
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 22.5,
+      "fallback_minus_learned_mean_NLL": 0.7523457446318448
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 25.0,
+      "fallback_minus_learned_mean_NLL": 1.3196585893951989
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 27.5,
+      "fallback_minus_learned_mean_NLL": 2.448895696746799
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 30.0,
+      "fallback_minus_learned_mean_NLL": 4.528779205105749
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 32.5,
+      "fallback_minus_learned_mean_NLL": 7.454495914016976
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 35.0,
+      "fallback_minus_learned_mean_NLL": 12.285130926187456
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 40.0,
+      "fallback_minus_learned_mean_NLL": 8.335679989212226
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 45.0,
+      "fallback_minus_learned_mean_NLL": -339.09444046556695
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 50.0,
+      "fallback_minus_learned_mean_NLL": -3140.0602282568107
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "snr_db": 60.0,
+      "fallback_minus_learned_mean_NLL": -87396.45271614229
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 10.0,
+      "fallback_minus_learned_mean_NLL": 0.13566160698563756
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 15.0,
+      "fallback_minus_learned_mean_NLL": 0.14596989437101857
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 20.0,
+      "fallback_minus_learned_mean_NLL": 0.15898063713880614
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 22.5,
+      "fallback_minus_learned_mean_NLL": 0.16396102368641163
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 25.0,
+      "fallback_minus_learned_mean_NLL": 0.16622446374920877
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 27.5,
+      "fallback_minus_learned_mean_NLL": 0.15475589394185774
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 30.0,
+      "fallback_minus_learned_mean_NLL": 0.1205392636793956
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 32.5,
+      "fallback_minus_learned_mean_NLL": 0.04789564677372826
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 35.0,
+      "fallback_minus_learned_mean_NLL": -0.27281765419251397
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 40.0,
+      "fallback_minus_learned_mean_NLL": -15.30557253996812
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 45.0,
+      "fallback_minus_learned_mean_NLL": -288.605041757706
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 50.0,
+      "fallback_minus_learned_mean_NLL": -2566.0899075582843
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "snr_db": 60.0,
+      "fallback_minus_learned_mean_NLL": -72911.56456600869
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 10.0,
+      "fallback_minus_learned_mean_NLL": 0.13802535339032743
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 15.0,
+      "fallback_minus_learned_mean_NLL": 0.1412200839099271
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 20.0,
+      "fallback_minus_learned_mean_NLL": 0.14288706903173565
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 22.5,
+      "fallback_minus_learned_mean_NLL": 0.1365728688633584
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 25.0,
+      "fallback_minus_learned_mean_NLL": 0.12154979131995523
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 27.5,
+      "fallback_minus_learned_mean_NLL": 0.09185951012957616
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 30.0,
+      "fallback_minus_learned_mean_NLL": 0.03416994485302503
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 32.5,
+      "fallback_minus_learned_mean_NLL": -0.09141621640843223
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 35.0,
+      "fallback_minus_learned_mean_NLL": -0.5132353539972629
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 40.0,
+      "fallback_minus_learned_mean_NLL": -16.048892681412923
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 45.0,
+      "fallback_minus_learned_mean_NLL": -290.9316159786422
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 50.0,
+      "fallback_minus_learned_mean_NLL": -2573.405711266614
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "snr_db": 60.0,
+      "fallback_minus_learned_mean_NLL": -72984.3559166761
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 10.0,
+      "fallback_minus_learned_mean_NLL": 0.13769223633503083
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 15.0,
+      "fallback_minus_learned_mean_NLL": 0.15100105416542897
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 20.0,
+      "fallback_minus_learned_mean_NLL": 0.16835007260592386
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 22.5,
+      "fallback_minus_learned_mean_NLL": 0.17908003086577892
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 25.0,
+      "fallback_minus_learned_mean_NLL": 0.19441622925182622
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 27.5,
+      "fallback_minus_learned_mean_NLL": 0.2186913841435091
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 30.0,
+      "fallback_minus_learned_mean_NLL": 0.25669719443065236
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 32.5,
+      "fallback_minus_learned_mean_NLL": 0.30289419922807376
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 35.0,
+      "fallback_minus_learned_mean_NLL": 0.24268714976118436
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 40.0,
+      "fallback_minus_learned_mean_NLL": -8.920421598025774
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 45.0,
+      "fallback_minus_learned_mean_NLL": -221.71744740328018
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 50.0,
+      "fallback_minus_learned_mean_NLL": -2164.1641388696275
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "snr_db": 60.0,
+      "fallback_minus_learned_mean_NLL": -64771.29779128402
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 10.0,
+      "fallback_minus_learned_mean_NLL": 0.14184322015639902
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 15.0,
+      "fallback_minus_learned_mean_NLL": 0.15092719951061825
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 20.0,
+      "fallback_minus_learned_mean_NLL": 0.15397280273157987
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 22.5,
+      "fallback_minus_learned_mean_NLL": 0.1478603178455319
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 25.0,
+      "fallback_minus_learned_mean_NLL": 0.13273626166149302
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 27.5,
+      "fallback_minus_learned_mean_NLL": 0.10216996805058524
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 30.0,
+      "fallback_minus_learned_mean_NLL": 0.041759015271845064
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 32.5,
+      "fallback_minus_learned_mean_NLL": -0.0882417239805585
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 35.0,
+      "fallback_minus_learned_mean_NLL": -0.46335284162737045
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 40.0,
+      "fallback_minus_learned_mean_NLL": -11.190878878808912
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 45.0,
+      "fallback_minus_learned_mean_NLL": -228.95528580550902
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 50.0,
+      "fallback_minus_learned_mean_NLL": -2187.146215786835
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "snr_db": 60.0,
+      "fallback_minus_learned_mean_NLL": -65001.89011037655
+    }
+  ],
+  "path_reference_SNR_branch_differences": [
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.048205786969802,
+      "fallback_mean_NLL": 3.2700163513826315,
+      "fallback_minus_learned_mean_NLL": 0.22181056441282956,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 3.6250698954882288,
+      "fallback_mean_NLL": 3.927435852042551,
+      "fallback_minus_learned_mean_NLL": 0.3023659565543222,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.1955884241619,
+      "fallback_mean_NLL": 4.75189900834725,
+      "fallback_minus_learned_mean_NLL": 0.5563105841853496,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 4.483441277854269,
+      "fallback_mean_NLL": 5.301765528432745,
+      "fallback_minus_learned_mean_NLL": 0.8183242505784762,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 4.774304915380419,
+      "fallback_mean_NLL": 6.059810131506921,
+      "fallback_minus_learned_mean_NLL": 1.2855052161265006,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.069840573017709,
+      "fallback_mean_NLL": 7.102100815922654,
+      "fallback_minus_learned_mean_NLL": 2.032260242904945,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 5.373463454655621,
+      "fallback_mean_NLL": 8.810659172396118,
+      "fallback_minus_learned_mean_NLL": 3.4371957177404986,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 5.693147215772871,
+      "fallback_mean_NLL": 11.636107678636483,
+      "fallback_minus_learned_mean_NLL": 5.94296046286361,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 6.054233429995104,
+      "fallback_mean_NLL": 16.45410222190308,
+      "fallback_minus_learned_mean_NLL": 10.399868791907977,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 8.650189753775905,
+      "fallback_mean_NLL": 39.50358753669369,
+      "fallback_minus_learned_mean_NLL": 30.853397782917785,
+      "fraction_anchors_fallback_better": 0.125
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 74.52980868371793,
+      "fallback_mean_NLL": 111.35026113554348,
+      "fallback_minus_learned_mean_NLL": 36.82045245182555,
+      "fraction_anchors_fallback_better": 0.4166666666666667
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 799.607002842747,
+      "fallback_mean_NLL": 337.64518931394593,
+      "fallback_minus_learned_mean_NLL": -461.96181352880086,
+      "fraction_anchors_fallback_better": 0.8333333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 34899.41081932585,
+      "fallback_mean_NLL": 3313.267888195185,
+      "fallback_minus_learned_mean_NLL": -31586.142931130667,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.1638720679299923,
+      "fallback_mean_NLL": 3.4413770129834806,
+      "fallback_minus_learned_mean_NLL": 0.2775049450534883,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 3.822089129148338,
+      "fallback_mean_NLL": 4.346785834797333,
+      "fallback_minus_learned_mean_NLL": 0.5246967056489953,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.6404914132364254,
+      "fallback_mean_NLL": 5.764533825673797,
+      "fallback_minus_learned_mean_NLL": 1.1240424124373722,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 5.164618780491583,
+      "fallback_mean_NLL": 7.078489039943793,
+      "fallback_minus_learned_mean_NLL": 1.9138702594522112,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 5.581326697122936,
+      "fallback_mean_NLL": 9.332522938599494,
+      "fallback_minus_learned_mean_NLL": 3.751196241476558,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.792418817198187,
+      "fallback_mean_NLL": 12.886401932501428,
+      "fallback_minus_learned_mean_NLL": 7.093983115303241,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 5.608573021942462,
+      "fallback_mean_NLL": 19.125562964659057,
+      "fallback_minus_learned_mean_NLL": 13.516989942716599,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.13847930557358,
+      "fallback_mean_NLL": 30.038953651055056,
+      "fallback_minus_learned_mean_NLL": 23.900474345481474,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 7.659153490951624,
+      "fallback_mean_NLL": 49.22912811446425,
+      "fallback_minus_learned_mean_NLL": 41.56997462351262,
+      "fraction_anchors_fallback_better": 0.125
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 46.77755201632439,
+      "fallback_mean_NLL": 143.49944886596728,
+      "fallback_minus_learned_mean_NLL": 96.72189684964287,
+      "fraction_anchors_fallback_better": 0.3333333333333333
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 592.3066453019192,
+      "fallback_mean_NLL": 439.41177304079366,
+      "fallback_minus_learned_mean_NLL": -152.89487226112553,
+      "fraction_anchors_fallback_better": 0.8333333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 4605.705878916784,
+      "fallback_mean_NLL": 1373.772463813384,
+      "fallback_minus_learned_mean_NLL": -3231.9334151034,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 119858.18389200384,
+      "fallback_mean_NLL": 13653.970840929338,
+      "fallback_minus_learned_mean_NLL": -106204.21305107449,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.1366029374181994,
+      "fallback_mean_NLL": 3.3867120154482584,
+      "fallback_minus_learned_mean_NLL": 0.2501090780300593,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 3.717002469419377,
+      "fallback_mean_NLL": 4.1992560422413625,
+      "fallback_minus_learned_mean_NLL": 0.4822535728219853,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.296440365350919,
+      "fallback_mean_NLL": 5.39040733878965,
+      "fallback_minus_learned_mean_NLL": 1.0939669734387314,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 4.594591923848489,
+      "fallback_mean_NLL": 6.396593938431923,
+      "fallback_minus_learned_mean_NLL": 1.802002014583433,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 4.903466737457357,
+      "fallback_mean_NLL": 7.966150071203764,
+      "fallback_minus_learned_mean_NLL": 3.0626833337464077,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.233296238933231,
+      "fallback_mean_NLL": 10.671081719023954,
+      "fallback_minus_learned_mean_NLL": 5.437785480090722,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 5.636297773984272,
+      "fallback_mean_NLL": 15.319099634253853,
+      "fallback_minus_learned_mean_NLL": 9.68280186026958,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.298467682333361,
+      "fallback_mean_NLL": 23.381291129822063,
+      "fallback_minus_learned_mean_NLL": 17.082823447488707,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 8.270738906452925,
+      "fallback_mean_NLL": 37.63956848483211,
+      "fallback_minus_learned_mean_NLL": 29.368829578379188,
+      "fraction_anchors_fallback_better": 0.08333333333333333
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 75.38993426749164,
+      "fallback_mean_NLL": 107.91042616238741,
+      "fallback_minus_learned_mean_NLL": 32.52049189489576,
+      "fraction_anchors_fallback_better": 0.5416666666666666
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 784.9716970804006,
+      "fallback_mean_NLL": 330.69272474117986,
+      "fallback_minus_learned_mean_NLL": -454.27897233922096,
+      "fraction_anchors_fallback_better": 0.7083333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 5338.051742008586,
+      "fallback_mean_NLL": 1038.4449989174502,
+      "fallback_minus_learned_mean_NLL": -4299.606743091136,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 120434.96356835989,
+      "fallback_mean_NLL": 10365.892498030635,
+      "fallback_minus_learned_mean_NLL": -110069.07107032924,
+      "fraction_anchors_fallback_better": 0.9583333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.048205786969802,
+      "fallback_mean_NLL": 3.256211848043492,
+      "fallback_minus_learned_mean_NLL": 0.2080060610736901,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 3.6250698954882288,
+      "fallback_mean_NLL": 3.812691938652549,
+      "fallback_minus_learned_mean_NLL": 0.18762204316432082,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.1955884241619,
+      "fallback_mean_NLL": 4.419304222897468,
+      "fallback_minus_learned_mean_NLL": 0.22371579873556768,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 4.483441277854269,
+      "fallback_mean_NLL": 4.750659353368338,
+      "fallback_minus_learned_mean_NLL": 0.26721807551406856,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 4.774304915380419,
+      "fallback_mean_NLL": 5.112772964814135,
+      "fallback_minus_learned_mean_NLL": 0.33846804943371556,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.069840573017709,
+      "fallback_mean_NLL": 5.604257026357895,
+      "fallback_minus_learned_mean_NLL": 0.5344164533401847,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 5.373463454655621,
+      "fallback_mean_NLL": 6.211131223057476,
+      "fallback_minus_learned_mean_NLL": 0.837667768401857,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 5.693147215772871,
+      "fallback_mean_NLL": 7.039442651240319,
+      "fallback_minus_learned_mean_NLL": 1.3462954354674472,
+      "fraction_anchors_fallback_better": 0.041666666666666664
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 6.054233429995104,
+      "fallback_mean_NLL": 8.27858572117398,
+      "fallback_minus_learned_mean_NLL": 2.2243522911788776,
+      "fraction_anchors_fallback_better": 0.125
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 8.650189753775905,
+      "fallback_mean_NLL": 15.625822214444119,
+      "fallback_minus_learned_mean_NLL": 6.975632460668213,
+      "fraction_anchors_fallback_better": 0.5833333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 74.52980868371793,
+      "fallback_mean_NLL": 36.29948742770994,
+      "fallback_minus_learned_mean_NLL": -38.23032125600799,
+      "fraction_anchors_fallback_better": 0.75
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 799.607002842747,
+      "fallback_mean_NLL": 100.23511465615188,
+      "fallback_minus_learned_mean_NLL": -699.3718881865949,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 34899.41081932585,
+      "fallback_mean_NLL": 935.3497198815298,
+      "fallback_minus_learned_mean_NLL": -33964.06109944432,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.1638720679299923,
+      "fallback_mean_NLL": 3.3858586260408923,
+      "fallback_minus_learned_mean_NLL": 0.2219865581108995,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 3.822089129148338,
+      "fallback_mean_NLL": 4.114973358125103,
+      "fallback_minus_learned_mean_NLL": 0.29288422897676486,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.6404914132364254,
+      "fallback_mean_NLL": 5.199525496101977,
+      "fallback_minus_learned_mean_NLL": 0.5590340828655511,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 5.164618780491583,
+      "fallback_mean_NLL": 6.085318305677119,
+      "fallback_minus_learned_mean_NLL": 0.9206995251855362,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 5.581326697122936,
+      "fallback_mean_NLL": 7.424472560703784,
+      "fallback_minus_learned_mean_NLL": 1.8431458635808464,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.792418817198187,
+      "fallback_mean_NLL": 9.573514968528032,
+      "fallback_minus_learned_mean_NLL": 3.781096151329845,
+      "fraction_anchors_fallback_better": 0.16666666666666666
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 5.608573021942462,
+      "fallback_mean_NLL": 13.138602507048503,
+      "fallback_minus_learned_mean_NLL": 7.530029485106041,
+      "fraction_anchors_fallback_better": 0.2916666666666667
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.13847930557358,
+      "fallback_mean_NLL": 18.219118211478193,
+      "fallback_minus_learned_mean_NLL": 12.080638905904612,
+      "fraction_anchors_fallback_better": 0.4583333333333333
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 7.659153490951624,
+      "fallback_mean_NLL": 27.764040916801605,
+      "fallback_minus_learned_mean_NLL": 20.104887425849984,
+      "fraction_anchors_fallback_better": 0.6666666666666666
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 46.77755201632439,
+      "fallback_mean_NLL": 80.90468024734132,
+      "fallback_minus_learned_mean_NLL": 34.12712823101694,
+      "fraction_anchors_fallback_better": 0.8333333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 592.3066453019192,
+      "fallback_mean_NLL": 224.79786324523843,
+      "fallback_minus_learned_mean_NLL": -367.5087820566808,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 4605.705878916784,
+      "fallback_mean_NLL": 689.9090710353315,
+      "fallback_minus_learned_mean_NLL": -3915.7968078814524,
+      "fraction_anchors_fallback_better": 0.9583333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 119858.18389200384,
+      "fallback_mean_NLL": 6808.5909442249285,
+      "fallback_minus_learned_mean_NLL": -113049.59294777892,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.1366029374181994,
+      "fallback_mean_NLL": 3.336752506545061,
+      "fallback_minus_learned_mean_NLL": 0.20014956912686255,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 3.717002469419377,
+      "fallback_mean_NLL": 4.028508360403923,
+      "fallback_minus_learned_mean_NLL": 0.31150589098454573,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.296440365350919,
+      "fallback_mean_NLL": 4.964860988499065,
+      "fallback_minus_learned_mean_NLL": 0.6684206231481449,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 4.594591923848489,
+      "fallback_mean_NLL": 5.663711557044418,
+      "fallback_minus_learned_mean_NLL": 1.0691196331959294,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 4.903466737457357,
+      "fallback_mean_NLL": 6.680828592628392,
+      "fallback_minus_learned_mean_NLL": 1.7773618551710344,
+      "fraction_anchors_fallback_better": 0.125
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.233296238933231,
+      "fallback_mean_NLL": 8.264470724503598,
+      "fallback_minus_learned_mean_NLL": 3.031174485570368,
+      "fraction_anchors_fallback_better": 0.20833333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 5.636297773984272,
+      "fallback_mean_NLL": 10.854938135793622,
+      "fallback_minus_learned_mean_NLL": 5.218640361809348,
+      "fraction_anchors_fallback_better": 0.375
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.298467682333361,
+      "fallback_mean_NLL": 15.235021083012233,
+      "fallback_minus_learned_mean_NLL": 8.93655340067887,
+      "fraction_anchors_fallback_better": 0.5833333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 8.270738906452925,
+      "fallback_mean_NLL": 22.79689196798643,
+      "fallback_minus_learned_mean_NLL": 14.526153061533506,
+      "fraction_anchors_fallback_better": 0.75
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 75.38993426749164,
+      "fallback_mean_NLL": 59.29421354344316,
+      "fallback_minus_learned_mean_NLL": -16.095720724048476,
+      "fraction_anchors_fallback_better": 0.8333333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 784.9716970804006,
+      "fallback_mean_NLL": 173.42747899638888,
+      "fallback_minus_learned_mean_NLL": -611.544218084012,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 5338.051742008586,
+      "fallback_mean_NLL": 533.0397533062022,
+      "fallback_minus_learned_mean_NLL": -4805.011988702384,
+      "fraction_anchors_fallback_better": 0.9583333333333334
+    },
+    {
+      "reference_db": 5.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 120434.96356835989,
+      "fallback_mean_NLL": 5259.2594671562665,
+      "fallback_minus_learned_mean_NLL": -115175.7041012036,
+      "fraction_anchors_fallback_better": 0.9583333333333334
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.798919821373192,
+      "fallback_mean_NLL": 3.938103190082654,
+      "fallback_minus_learned_mean_NLL": 0.1391833687094619,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 4.369384325838961,
+      "fallback_mean_NLL": 4.515212899807467,
+      "fallback_minus_learned_mean_NLL": 0.1458285739685067,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.943866539641193,
+      "fallback_mean_NLL": 5.095030425746519,
+      "fallback_minus_learned_mean_NLL": 0.1511638861053267,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 5.2357379048233765,
+      "fallback_mean_NLL": 5.388526823463633,
+      "fallback_minus_learned_mean_NLL": 0.15278891864025704,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 5.532712700152616,
+      "fallback_mean_NLL": 5.688609877343192,
+      "fallback_minus_learned_mean_NLL": 0.15589717719057583,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.837846412612706,
+      "fallback_mean_NLL": 5.991556784440562,
+      "fallback_minus_learned_mean_NLL": 0.15371037182785743,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 6.1573257523960905,
+      "fallback_mean_NLL": 6.3117790955559245,
+      "fallback_minus_learned_mean_NLL": 0.15445334315983542,
+      "fraction_anchors_fallback_better": 0.041666666666666664
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.504449708115534,
+      "fallback_mean_NLL": 6.657591967159134,
+      "fallback_minus_learned_mean_NLL": 0.15314225904359946,
+      "fraction_anchors_fallback_better": 0.20833333333333334
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 6.91220214953093,
+      "fallback_mean_NLL": 7.049049842827205,
+      "fallback_minus_learned_mean_NLL": 0.13684769329627508,
+      "fraction_anchors_fallback_better": 0.2916666666666667
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 8.703314682308244,
+      "fallback_mean_NLL": 8.139650807013233,
+      "fallback_minus_learned_mean_NLL": -0.563663875295009,
+      "fraction_anchors_fallback_better": 0.5
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 54.588356032776595,
+      "fallback_mean_NLL": 10.350854825352874,
+      "fallback_minus_learned_mean_NLL": -44.237501207423726,
+      "fraction_anchors_fallback_better": 0.875
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 868.0687359122597,
+      "fallback_mean_NLL": 16.11143669463078,
+      "fallback_minus_learned_mean_NLL": -851.957299217629,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 40479.61015819712,
+      "fallback_mean_NLL": 85.64466107291959,
+      "fallback_minus_learned_mean_NLL": -40393.96549712421,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.829134364333109,
+      "fallback_mean_NLL": 3.9690329658148236,
+      "fallback_minus_learned_mean_NLL": 0.13989860148171426,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 4.398844941579864,
+      "fallback_mean_NLL": 4.554528633023646,
+      "fallback_minus_learned_mean_NLL": 0.1556836914437825,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.971477744292153,
+      "fallback_mean_NLL": 5.1545032248411475,
+      "fallback_minus_learned_mean_NLL": 0.18302548054899406,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 5.26492496855375,
+      "fallback_mean_NLL": 5.464988549031356,
+      "fallback_minus_learned_mean_NLL": 0.20006358047760664,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 5.567030540530193,
+      "fallback_mean_NLL": 5.782737226879664,
+      "fallback_minus_learned_mean_NLL": 0.21570668634947332,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.883857376155944,
+      "fallback_mean_NLL": 6.093234563181627,
+      "fallback_minus_learned_mean_NLL": 0.20937718702568298,
+      "fraction_anchors_fallback_better": 0.08333333333333333
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 6.228575422997587,
+      "fallback_mean_NLL": 6.389549364744368,
+      "fallback_minus_learned_mean_NLL": 0.16097394174677945,
+      "fraction_anchors_fallback_better": 0.16666666666666666
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.635470704035973,
+      "fallback_mean_NLL": 6.726152583344917,
+      "fallback_minus_learned_mean_NLL": 0.09068187930894504,
+      "fraction_anchors_fallback_better": 0.3333333333333333
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 7.246422898519394,
+      "fallback_mean_NLL": 7.1221588928763735,
+      "fallback_minus_learned_mean_NLL": -0.12426400564302002,
+      "fraction_anchors_fallback_better": 0.375
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 27.438693636519123,
+      "fallback_mean_NLL": 8.246775561630162,
+      "fallback_minus_learned_mean_NLL": -19.19191807488896,
+      "fraction_anchors_fallback_better": 0.8333333333333334
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 438.79775694226174,
+      "fallback_mean_NLL": 10.547748144462851,
+      "fallback_minus_learned_mean_NLL": -428.2500087977989,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 3697.292439875091,
+      "fallback_mean_NLL": 16.545948559074663,
+      "fallback_minus_learned_mean_NLL": -3680.746491316016,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 96810.49922016471,
+      "fallback_mean_NLL": 88.68958012187899,
+      "fallback_minus_learned_mean_NLL": -96721.80964004283,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.8481920184295753,
+      "fallback_mean_NLL": 3.9760948691953115,
+      "fallback_minus_learned_mean_NLL": 0.12790285076573646,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 4.417330579633283,
+      "fallback_mean_NLL": 4.55372799733405,
+      "fallback_minus_learned_mean_NLL": 0.13639741770076644,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.992210502829767,
+      "fallback_mean_NLL": 5.134963047591865,
+      "fallback_minus_learned_mean_NLL": 0.14275254476209764,
+      "fraction_anchors_fallback_better": 0.041666666666666664
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 5.289649231330697,
+      "fallback_mean_NLL": 5.428679803272068,
+      "fallback_minus_learned_mean_NLL": 0.13903057194137128,
+      "fraction_anchors_fallback_better": 0.041666666666666664
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 5.599429290032952,
+      "fallback_mean_NLL": 5.72649881774053,
+      "fallback_minus_learned_mean_NLL": 0.12706952770757715,
+      "fraction_anchors_fallback_better": 0.125
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.930375715572315,
+      "fallback_mean_NLL": 6.0315558385443495,
+      "fallback_minus_learned_mean_NLL": 0.10118012297203283,
+      "fraction_anchors_fallback_better": 0.25
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 6.303119280070159,
+      "fallback_mean_NLL": 6.34930978620173,
+      "fallback_minus_learned_mean_NLL": 0.04619050613157194,
+      "fraction_anchors_fallback_better": 0.375
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.789513259248541,
+      "fallback_mean_NLL": 6.689376061217183,
+      "fallback_minus_learned_mean_NLL": -0.10013719803135972,
+      "fraction_anchors_fallback_better": 0.5833333333333334
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 7.899796979079511,
+      "fallback_mean_NLL": 7.068760328848714,
+      "fallback_minus_learned_mean_NLL": -0.831036650230797,
+      "fraction_anchors_fallback_better": 0.6666666666666666
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 34.250408464772434,
+      "fallback_mean_NLL": 8.08927279505205,
+      "fallback_minus_learned_mean_NLL": -26.16113566972039,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 403.38146283434634,
+      "fallback_mean_NLL": 10.053847566450981,
+      "fallback_minus_learned_mean_NLL": -393.3276152678953,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 3180.555659906367,
+      "fallback_mean_NLL": 14.989727765159039,
+      "fallback_minus_learned_mean_NLL": -3165.5659321412077,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 81692.11204432209,
+      "fallback_mean_NLL": 73.19348346309754,
+      "fallback_minus_learned_mean_NLL": -81618.918560859,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.798919821373192,
+      "fallback_mean_NLL": 3.94147124868509,
+      "fallback_minus_learned_mean_NLL": 0.14255142731189718,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 4.369384325838961,
+      "fallback_mean_NLL": 4.513324479930866,
+      "fallback_minus_learned_mean_NLL": 0.14394015409190497,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.943866539641193,
+      "fallback_mean_NLL": 5.08857226364153,
+      "fallback_minus_learned_mean_NLL": 0.14470572400033643,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 5.2357379048233765,
+      "fallback_mean_NLL": 5.3765593738775905,
+      "fallback_minus_learned_mean_NLL": 0.1408214690542149,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 5.532712700152616,
+      "fallback_mean_NLL": 5.664550634322513,
+      "fallback_minus_learned_mean_NLL": 0.13183793416989684,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.837846412612706,
+      "fallback_mean_NLL": 5.952515648476421,
+      "fallback_minus_learned_mean_NLL": 0.11466923586371687,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 6.1573257523960905,
+      "fallback_mean_NLL": 6.2404507791182455,
+      "fallback_minus_learned_mean_NLL": 0.08312502672215501,
+      "fraction_anchors_fallback_better": 0.16666666666666666
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.504449708115534,
+      "fallback_mean_NLL": 6.528359872598432,
+      "fallback_minus_learned_mean_NLL": 0.023910164482896918,
+      "fraction_anchors_fallback_better": 0.25
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 6.91220214953093,
+      "fallback_mean_NLL": 6.816248046911475,
+      "fallback_minus_learned_mean_NLL": -0.0959541026194561,
+      "fraction_anchors_fallback_better": 0.4583333333333333
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 8.703314682308244,
+      "fallback_mean_NLL": 7.3919797131136,
+      "fallback_minus_learned_mean_NLL": -1.311334969194643,
+      "fraction_anchors_fallback_better": 0.7083333333333334
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 54.588356032776595,
+      "fallback_mean_NLL": 7.967673556154975,
+      "fallback_minus_learned_mean_NLL": -46.62068247662162,
+      "fraction_anchors_fallback_better": 0.9583333333333334
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 868.0687359122597,
+      "fallback_mean_NLL": 8.543346071313493,
+      "fallback_minus_learned_mean_NLL": -859.5253898409463,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 40479.61015819712,
+      "fallback_mean_NLL": 9.694662292100203,
+      "fallback_minus_learned_mean_NLL": -40469.91549590503,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.829134364333109,
+      "fallback_mean_NLL": 3.9715626343645773,
+      "fallback_minus_learned_mean_NLL": 0.14242827003146852,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 4.398844941579864,
+      "fallback_mean_NLL": 4.543011043617387,
+      "fallback_minus_learned_mean_NLL": 0.14416610203752286,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.971477744292153,
+      "fallback_mean_NLL": 5.119477708661644,
+      "fallback_minus_learned_mean_NLL": 0.14799996436948995,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 5.26492496855375,
+      "fallback_mean_NLL": 5.4076076183573525,
+      "fallback_minus_learned_mean_NLL": 0.14268264980360254,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 5.567030540530193,
+      "fallback_mean_NLL": 5.695725431387912,
+      "fallback_minus_learned_mean_NLL": 0.12869489085772043,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.883857376155944,
+      "fallback_mean_NLL": 5.983896537654367,
+      "fallback_minus_learned_mean_NLL": 0.10003916149842366,
+      "fraction_anchors_fallback_better": 0.08333333333333333
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 6.228575422997587,
+      "fallback_mean_NLL": 6.27210831375211,
+      "fallback_minus_learned_mean_NLL": 0.04353289075452168,
+      "fraction_anchors_fallback_better": 0.375
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.635470704035973,
+      "fallback_mean_NLL": 6.560106399402201,
+      "fallback_minus_learned_mean_NLL": -0.07536430463377149,
+      "fraction_anchors_fallback_better": 0.4583333333333333
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 7.246422898519394,
+      "fallback_mean_NLL": 6.847983975892942,
+      "fallback_minus_learned_mean_NLL": -0.3984389226264507,
+      "fraction_anchors_fallback_better": 0.625
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 27.438693636519123,
+      "fallback_mean_NLL": 7.423705956872351,
+      "fallback_minus_learned_mean_NLL": -20.01498767964677,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 438.79775694226174,
+      "fallback_mean_NLL": 7.999397808190437,
+      "fallback_minus_learned_mean_NLL": -430.7983591340713,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 3697.292439875091,
+      "fallback_mean_NLL": 8.575074905074365,
+      "fallback_minus_learned_mean_NLL": -3688.7173649700167,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 96810.49922016471,
+      "fallback_mean_NLL": 9.72644132823495,
+      "fallback_minus_learned_mean_NLL": -96800.77277883647,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 3.8481920184295753,
+      "fallback_mean_NLL": 3.9772883812571913,
+      "fallback_minus_learned_mean_NLL": 0.12909636282761663,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 4.417330579633283,
+      "fallback_mean_NLL": 4.552884575233636,
+      "fallback_minus_learned_mean_NLL": 0.1355539956003534,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 4.992210502829767,
+      "fallback_mean_NLL": 5.128166021555147,
+      "fallback_minus_learned_mean_NLL": 0.13595551872538056,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 5.289649231330697,
+      "fallback_mean_NLL": 5.415863719062955,
+      "fallback_minus_learned_mean_NLL": 0.1262144877322577,
+      "fraction_anchors_fallback_better": 0.041666666666666664
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 5.599429290032952,
+      "fallback_mean_NLL": 5.7035458389652005,
+      "fallback_minus_learned_mean_NLL": 0.10411654893224842,
+      "fraction_anchors_fallback_better": 0.20833333333333334
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 5.930375715572315,
+      "fallback_mean_NLL": 5.991245848598904,
+      "fallback_minus_learned_mean_NLL": 0.06087013302658795,
+      "fraction_anchors_fallback_better": 0.2916666666666667
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 6.303119280070159,
+      "fallback_mean_NLL": 6.278971197152558,
+      "fallback_minus_learned_mean_NLL": -0.024148082917601583,
+      "fraction_anchors_fallback_better": 0.5
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 6.789513259248541,
+      "fallback_mean_NLL": 6.566718750174121,
+      "fallback_minus_learned_mean_NLL": -0.22279450907442214,
+      "fraction_anchors_fallback_better": 0.6666666666666666
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 7.899796979079511,
+      "fallback_mean_NLL": 6.854483942333629,
+      "fallback_minus_learned_mean_NLL": -1.045313036745882,
+      "fraction_anchors_fallback_better": 0.875
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 34.250408464772434,
+      "fallback_mean_NLL": 7.430053069375071,
+      "fallback_minus_learned_mean_NLL": -26.82035539539736,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 403.38146283434634,
+      "fallback_mean_NLL": 8.005656509112608,
+      "fallback_minus_learned_mean_NLL": -395.3758063252337,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 3180.555659906367,
+      "fallback_mean_NLL": 8.581280917487405,
+      "fallback_minus_learned_mean_NLL": -3171.9743789888794,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 12.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 81692.11204432209,
+      "fallback_mean_NLL": 9.732569035291698,
+      "fallback_minus_learned_mean_NLL": -81682.3794752868,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 4.728209895631689,
+      "fallback_mean_NLL": 4.896382055378179,
+      "fallback_minus_learned_mean_NLL": 0.16817215974649,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 5.293158593358659,
+      "fallback_mean_NLL": 5.478824233048624,
+      "fallback_minus_learned_mean_NLL": 0.18566563968996444,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 5.863344687466511,
+      "fallback_mean_NLL": 6.0780111189920705,
+      "fallback_minus_learned_mean_NLL": 0.2146664315255602,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 6.155570271596345,
+      "fallback_mean_NLL": 6.393523603961325,
+      "fallback_minus_learned_mean_NLL": 0.23795333236498042,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 6.456306379587727,
+      "fallback_mean_NLL": 6.73135884956609,
+      "fallback_minus_learned_mean_NLL": 0.275052469978363,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 6.771655918254987,
+      "fallback_mean_NLL": 7.1091306144609305,
+      "fallback_minus_learned_mean_NLL": 0.3374746962059431,
+      "fraction_anchors_fallback_better": 0.041666666666666664
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 7.114619096614447,
+      "fallback_mean_NLL": 7.558245183735114,
+      "fallback_minus_learned_mean_NLL": 0.44362608712066615,
+      "fraction_anchors_fallback_better": 0.041666666666666664
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 7.515115155851544,
+      "fallback_mean_NLL": 8.134663070135737,
+      "fallback_minus_learned_mean_NLL": 0.6195479142841923,
+      "fraction_anchors_fallback_better": 0.20833333333333334
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 8.05549343058575,
+      "fallback_mean_NLL": 8.938045522746918,
+      "fallback_minus_learned_mean_NLL": 0.8825520921611689,
+      "fraction_anchors_fallback_better": 0.2916666666666667
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 12.897702301195034,
+      "fallback_mean_NLL": 12.073738228057374,
+      "fallback_minus_learned_mean_NLL": -0.8239640731376587,
+      "fraction_anchors_fallback_better": 0.5416666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 105.27443094647758,
+      "fallback_mean_NLL": 20.77529438654129,
+      "fallback_minus_learned_mean_NLL": -84.49913655993629,
+      "fraction_anchors_fallback_better": 0.7916666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 1126.9210180059183,
+      "fallback_mean_NLL": 47.101231925375714,
+      "fallback_minus_learned_mean_NLL": -1079.8197860805426,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L2",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 42758.607841081954,
+      "fallback_mean_NLL": 387.7543751939767,
+      "fallback_minus_learned_mean_NLL": -42370.85346588798,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 4.771750891002363,
+      "fallback_mean_NLL": 4.901676166839633,
+      "fallback_minus_learned_mean_NLL": 0.1299252758372692,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 5.338423596319842,
+      "fallback_mean_NLL": 5.4827900104346625,
+      "fallback_minus_learned_mean_NLL": 0.14436641411482135,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 5.9120454560047655,
+      "fallback_mean_NLL": 6.074402383241471,
+      "fallback_minus_learned_mean_NLL": 0.16235692723670667,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 6.207145271433904,
+      "fallback_mean_NLL": 6.380617264160368,
+      "fallback_minus_learned_mean_NLL": 0.17347199272646371,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 6.512173199311836,
+      "fallback_mean_NLL": 6.701565393302455,
+      "fallback_minus_learned_mean_NLL": 0.18939219399061835,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 6.83460139361799,
+      "fallback_mean_NLL": 7.048952265635271,
+      "fallback_minus_learned_mean_NLL": 0.21435087201728056,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 7.191833100858502,
+      "fallback_mean_NLL": 7.443645783793584,
+      "fallback_minus_learned_mean_NLL": 0.2518126829350817,
+      "fraction_anchors_fallback_better": 0.041666666666666664
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 7.6349478777212525,
+      "fallback_mean_NLL": 7.922832568872484,
+      "fallback_minus_learned_mean_NLL": 0.2878846911512325,
+      "fraction_anchors_fallback_better": 0.3333333333333333
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 8.390267351623885,
+      "fallback_mean_NLL": 8.552749901121674,
+      "fallback_minus_learned_mean_NLL": 0.1624825494977855,
+      "fraction_anchors_fallback_better": 0.5416666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 21.68670925408269,
+      "fallback_mean_NLL": 10.828517412693918,
+      "fallback_minus_learned_mean_NLL": -10.858191841388773,
+      "fraction_anchors_fallback_better": 0.9583333333333334
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 293.8743668520295,
+      "fallback_mean_NLL": 16.804111937715522,
+      "fallback_minus_learned_mean_NLL": -277.0702549143139,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 2726.503134751113,
+      "fallback_mean_NLL": 34.49816781590647,
+      "fallback_minus_learned_mean_NLL": -2692.004966935207,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "L4",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 77808.18068776967,
+      "fallback_mean_NLL": 261.413811974784,
+      "fallback_minus_learned_mean_NLL": -77546.76687579488,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 4.761953683699912,
+      "fallback_mean_NLL": 4.876932957121245,
+      "fallback_minus_learned_mean_NLL": 0.1149792734213333,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 5.33071902464468,
+      "fallback_mean_NLL": 5.453690133336181,
+      "fallback_minus_learned_mean_NLL": 0.12297110869150114,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 5.905164330093044,
+      "fallback_mean_NLL": 6.033191189148547,
+      "fallback_minus_learned_mean_NLL": 0.1280268590555047,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 6.1997957191524735,
+      "fallback_mean_NLL": 6.325610486658367,
+      "fallback_minus_learned_mean_NLL": 0.12581476750589263,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 6.502984375698925,
+      "fallback_mean_NLL": 6.621788399485421,
+      "fallback_minus_learned_mean_NLL": 0.1188040237864973,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 6.8204545968643755,
+      "fallback_mean_NLL": 6.92470318107168,
+      "fallback_minus_learned_mean_NLL": 0.1042485842073037,
+      "fraction_anchors_fallback_better": 0.125
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 7.165016085786881,
+      "fallback_mean_NLL": 7.23966889902309,
+      "fallback_minus_learned_mean_NLL": 0.07465281323620931,
+      "fraction_anchors_fallback_better": 0.16666666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 7.574910008170569,
+      "fallback_mean_NLL": 7.576160000419364,
+      "fallback_minus_learned_mean_NLL": 0.0012499922487963684,
+      "fraction_anchors_fallback_better": 0.4166666666666667
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 8.268030812429254,
+      "fallback_mean_NLL": 7.951057620053853,
+      "fallback_minus_learned_mean_NLL": -0.3169731923754014,
+      "fraction_anchors_fallback_better": 0.625
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 24.038890162975985,
+      "fallback_mean_NLL": 8.959781283425096,
+      "fallback_minus_learned_mean_NLL": -15.079108879550885,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 314.494644494182,
+      "fallback_mean_NLL": 10.911693758591731,
+      "fallback_minus_learned_mean_NLL": -303.58295073559026,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 2736.51912739936,
+      "fallback_mean_NLL": 15.85146380622755,
+      "fallback_minus_learned_mean_NLL": -2720.6676635931326,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "same_steps",
+      "regime": "random3to7",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 74470.84414341218,
+      "fallback_mean_NLL": 74.57111124298044,
+      "fallback_minus_learned_mean_NLL": -74396.27303216919,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 4.728209895631689,
+      "fallback_mean_NLL": 4.901734297473893,
+      "fallback_minus_learned_mean_NLL": 0.17352440184220286,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 5.293158593358659,
+      "fallback_mean_NLL": 5.477115655307119,
+      "fallback_minus_learned_mean_NLL": 0.18395706194845982,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 5.863344687466511,
+      "fallback_mean_NLL": 6.052659326580803,
+      "fallback_minus_learned_mean_NLL": 0.18931463911429303,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 6.155570271596345,
+      "fallback_mean_NLL": 6.340456813702652,
+      "fallback_minus_learned_mean_NLL": 0.18488654210630673,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 6.456306379587727,
+      "fallback_mean_NLL": 6.6282634274076,
+      "fallback_minus_learned_mean_NLL": 0.17195704781987486,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 6.771655918254987,
+      "fallback_mean_NLL": 6.916076291210499,
+      "fallback_minus_learned_mean_NLL": 0.14442037295551088,
+      "fraction_anchors_fallback_better": 0.16666666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 7.114619096614447,
+      "fallback_mean_NLL": 7.203893882083734,
+      "fallback_minus_learned_mean_NLL": 0.08927478546928735,
+      "fraction_anchors_fallback_better": 0.20833333333333334
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 7.515115155851544,
+      "fallback_mean_NLL": 7.491715637417741,
+      "fallback_minus_learned_mean_NLL": -0.02339951843380413,
+      "fraction_anchors_fallback_better": 0.2916666666666667
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 8.05549343058575,
+      "fallback_mean_NLL": 7.779541855330932,
+      "fallback_minus_learned_mean_NLL": -0.275951575254817,
+      "fraction_anchors_fallback_better": 0.375
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 12.897702301195034,
+      "fallback_mean_NLL": 8.355214427396955,
+      "fallback_minus_learned_mean_NLL": -4.542487873798078,
+      "fraction_anchors_fallback_better": 0.6666666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 105.27443094647758,
+      "fallback_mean_NLL": 8.930946328605856,
+      "fallback_minus_learned_mean_NLL": -96.34348461787171,
+      "fraction_anchors_fallback_better": 0.9166666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 1126.9210180059183,
+      "fallback_mean_NLL": 9.506849816362525,
+      "fallback_minus_learned_mean_NLL": -1117.4141681895558,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L2",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 42758.607841081954,
+      "fallback_mean_NLL": 10.661322322182356,
+      "fallback_minus_learned_mean_NLL": -42747.946518759774,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 4.771750891002363,
+      "fallback_mean_NLL": 4.906282808412777,
+      "fallback_minus_learned_mean_NLL": 0.13453191741041373,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 5.338423596319842,
+      "fallback_mean_NLL": 5.4829786074707085,
+      "fallback_minus_learned_mean_NLL": 0.14455501115086658,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 5.9120454560047655,
+      "fallback_mean_NLL": 6.0592452141031545,
+      "fallback_minus_learned_mean_NLL": 0.14719975809839045,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 6.207145271433904,
+      "fallback_mean_NLL": 6.347267387687388,
+      "fallback_minus_learned_mean_NLL": 0.1401221162534828,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 6.512173199311836,
+      "fallback_mean_NLL": 6.635236287703194,
+      "fallback_minus_learned_mean_NLL": 0.12306308839135634,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 6.83460139361799,
+      "fallback_mean_NLL": 6.923163195472516,
+      "fallback_minus_learned_mean_NLL": 0.08856180185452733,
+      "fraction_anchors_fallback_better": 0.125
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 7.191833100858502,
+      "fallback_mean_NLL": 7.211056445494417,
+      "fallback_minus_learned_mean_NLL": 0.019223344635914946,
+      "fraction_anchors_fallback_better": 0.25
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 7.6349478777212525,
+      "fallback_mean_NLL": 7.498921932427141,
+      "fallback_minus_learned_mean_NLL": -0.1360259452941115,
+      "fraction_anchors_fallback_better": 0.4583333333333333
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 8.390267351623885,
+      "fallback_mean_NLL": 7.78676358161993,
+      "fallback_minus_learned_mean_NLL": -0.6035037700039579,
+      "fraction_anchors_fallback_better": 0.75
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 21.68670925408269,
+      "fallback_mean_NLL": 8.362383926490837,
+      "fallback_minus_learned_mean_NLL": -13.324325327591852,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 293.8743668520295,
+      "fallback_mean_NLL": 8.937928533454132,
+      "fallback_minus_learned_mean_NLL": -284.9364383185753,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 2726.503134751113,
+      "fallback_mean_NLL": 9.513426325087815,
+      "fallback_minus_learned_mean_NLL": -2716.989708426025,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "L4",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 77808.18068776967,
+      "fallback_mean_NLL": 10.665354154133153,
+      "fallback_minus_learned_mean_NLL": -77797.51533361552,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 10.0,
+      "learned_mean_NLL": 4.761953683699912,
+      "fallback_mean_NLL": 4.879427024916493,
+      "fallback_minus_learned_mean_NLL": 0.11747334121658053,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 15.0,
+      "learned_mean_NLL": 5.33071902464468,
+      "fallback_mean_NLL": 5.454988550077208,
+      "fallback_minus_learned_mean_NLL": 0.12426952543252841,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 20.0,
+      "learned_mean_NLL": 5.905164330093044,
+      "fallback_mean_NLL": 6.0305683410750985,
+      "fallback_minus_learned_mean_NLL": 0.1254040109820561,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 22.5,
+      "learned_mean_NLL": 6.1997957191524735,
+      "fallback_mean_NLL": 6.31836801432928,
+      "fallback_minus_learned_mean_NLL": 0.11857229517680623,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 25.0,
+      "learned_mean_NLL": 6.502984375698925,
+      "fallback_mean_NLL": 6.606173024472173,
+      "fallback_minus_learned_mean_NLL": 0.10318864877324785,
+      "fraction_anchors_fallback_better": 0.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 27.5,
+      "learned_mean_NLL": 6.8204545968643755,
+      "fallback_mean_NLL": 6.8939823262060935,
+      "fallback_minus_learned_mean_NLL": 0.07352772934171752,
+      "fraction_anchors_fallback_better": 0.125
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 30.0,
+      "learned_mean_NLL": 7.165016085786881,
+      "fallback_mean_NLL": 7.181795001497213,
+      "fallback_minus_learned_mean_NLL": 0.01677891571033289,
+      "fraction_anchors_fallback_better": 0.16666666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 32.5,
+      "learned_mean_NLL": 7.574910008170569,
+      "fallback_mean_NLL": 7.469610299956808,
+      "fallback_minus_learned_mean_NLL": -0.10529970821375985,
+      "fraction_anchors_fallback_better": 0.5416666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 35.0,
+      "learned_mean_NLL": 8.268030812429254,
+      "fallback_mean_NLL": 7.757427632805919,
+      "fallback_minus_learned_mean_NLL": -0.5106031796233365,
+      "fraction_anchors_fallback_better": 0.7916666666666666
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 40.0,
+      "learned_mean_NLL": 24.038890162975985,
+      "fallback_mean_NLL": 8.333066727939178,
+      "fallback_minus_learned_mean_NLL": -15.705823435036805,
+      "fraction_anchors_fallback_better": 0.9583333333333334
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 45.0,
+      "learned_mean_NLL": 314.494644494182,
+      "fallback_mean_NLL": 8.908710014101928,
+      "fallback_minus_learned_mean_NLL": -305.5859344800801,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 50.0,
+      "learned_mean_NLL": 2736.51912739936,
+      "fallback_mean_NLL": 9.48435665443604,
+      "fallback_minus_learned_mean_NLL": -2727.034770744924,
+      "fraction_anchors_fallback_better": 1.0
+    },
+    {
+      "reference_db": 20.0,
+      "fallback": "em100",
+      "regime": "random3to7",
+      "snr_db": 60.0,
+      "learned_mean_NLL": 74470.84414341218,
+      "fallback_mean_NLL": 10.635664657816276,
+      "fallback_minus_learned_mean_NLL": -74460.20847875436,
+      "fraction_anchors_fallback_better": 1.0
+    }
+  ]
+}

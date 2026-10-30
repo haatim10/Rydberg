@@ -1,0 +1,440 @@
+{
+  "version": 1,
+  "name": "Short EM continuation with strict original/old-bypass development guards",
+  "smoke_seed": 2026101930,
+  "development_seed": 2026101931,
+  "test_seed": 2026101932,
+  "data_seed": 2026101933,
+  "timing_seed": 2026101934,
+  "mask_seed": 2026101935,
+  "N": 32,
+  "K": 3,
+  "generated_P": 39,
+  "context_P": 30,
+  "heldout_P": 9,
+  "deployment_P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "model_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "development_counts": {
+    "5": {
+      "0": 96,
+      "5": 96,
+      "10": 96,
+      "15": 96,
+      "20": 96,
+      "22.5": 96,
+      "25": 96,
+      "27.5": 96,
+      "30": 96,
+      "32.5": 96,
+      "35": 96,
+      "37.5": 96,
+      "40": 96,
+      "42.5": 96,
+      "45": 96,
+      "50": 96,
+      "60": 96
+    },
+    "12": {
+      "0": 96,
+      "5": 96,
+      "10": 96,
+      "15": 96,
+      "20": 96,
+      "22.5": 96,
+      "25": 96,
+      "27.5": 96,
+      "30": 96,
+      "32.5": 384,
+      "35": 384,
+      "37.5": 384,
+      "40": 96,
+      "42.5": 96,
+      "45": 96,
+      "50": 96,
+      "60": 96
+    },
+    "20": {
+      "0": 96,
+      "5": 96,
+      "10": 96,
+      "15": 96,
+      "20": 96,
+      "22.5": 96,
+      "25": 96,
+      "27.5": 96,
+      "30": 96,
+      "32.5": 384,
+      "35": 384,
+      "37.5": 384,
+      "40": 96,
+      "42.5": 96,
+      "45": 96,
+      "50": 96,
+      "60": 96
+    }
+  },
+  "development_target_count": 384,
+  "development_elsewhere_count": 96,
+  "test_cases_per_reference_regime": 128,
+  "menu": [
+    "original",
+    "warm1",
+    "warm2",
+    "warm3",
+    "warm5",
+    "warm10",
+    "warm20",
+    "warm100",
+    "spectral100"
+  ],
+  "preference_order": [
+    "original",
+    "warm1",
+    "warm2",
+    "warm3",
+    "warm5",
+    "spectral100",
+    "warm10",
+    "warm20",
+    "warm100"
+  ],
+  "preference_band_mean_nll": 0.001,
+  "preference": "After strict dual admissibility only, retain candidates within0.001 mean heldout NLL of the admissible optimum and choose the fixed preference order. This is not measured speed and never relaxes a guard.",
+  "routing": "Use nearest declared reference and SNR bins, ties lower. Reference5 exactly retains previous frozen repair at every bin. Strong references12/20 use original through bin30, calibrate only32.5/35/37.5, and canonical spectral100 from bin40. Ordinary proxy<=20 remains original.",
+  "model": "Same three frozen context30 checkpoints. No neural training. Exact gamma1 Rician EM continuation starts from learned estimate; no spectral reset.",
+  "candidate_design": "Expanded short-tail menu motivated only by the previous observable development screen. Prior exposed test regressions motivate the question; they are not reused as a fresh test.",
+  "data": "Fresh observable-only development anchors;39 columns with fixed30/9 masks. Test and timing use first30. The10dB anchor retains G/S/B/standardized noise across SNR. Bootstrap shares local indices across reference/SNR within each regime.",
+  "masks": "Torchseed2026101935+100*regime_index+reference_index. Target384 and elsewhere96 banks share the first96 anchor/mask rows. Every method in a bin receives exactly the same saved context/heldout bank.",
+  "repair_guard": {
+    "samples": 4000,
+    "seed": 2026101937,
+    "rule": "Reuse one4000x384 multinomial count matrix per regime across all six calibrated bins. Paired heldout losses average the three fixed fits per anchor. Candidate admissible only if bootstrap-mean upper95<=0 versus BOTH original and old spectral100 bypass in EACH of three regimes. Original is not automatically admissible.",
+    "fallback": "If the feasible set is empty, use spectral100 with selection_status=fallback_old, dual_admissible=false, and explicit failed constraints. This is a declared priority fallback, not a successful dual guard.",
+    "caveat": "Empirical development evidence, not a population noninferiority guarantee after adaptive selection."
+  },
+  "calibration": {
+    "local_index": 100,
+    "snrs": [
+      0.0,
+      5.0,
+      10.0,
+      15.0,
+      20.0,
+      22.5,
+      25.0,
+      27.5,
+      30.0,
+      32.5,
+      35.0,
+      37.5,
+      40.0,
+      42.5,
+      45.0,
+      50.0,
+      60.0
+    ],
+    "rsrs": [
+      5.0,
+      12.0,
+      20.0
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "repeats": 3,
+    "rule": "Freeze repair table first. With other CPU jobs idle, time actual selected repair plus all16 compact candidates. Pooled three-fit repair p90 defines the global eligibility cap; include lookup, initialization, setup and conversions."
+  },
+  "compact": {
+    "grid": {
+      "d128_i8_o12_f0.03": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.03
+      },
+      "d128_i8_o12_f0.1": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.1
+      },
+      "d128_i8_o12_f0.3": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "d128_i8_o12_f1": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 1.0
+      },
+      "d128_i8_o12_f3": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 3.0
+      },
+      "d256_i8_o12_f0.03": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.03
+      },
+      "d256_i8_o12_f0.1": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.1
+      },
+      "d256_i8_o12_f0.3": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "d256_i8_o12_f1": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 1.0
+      },
+      "d256_i8_o12_f3": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 3.0
+      },
+      "d256_i2_o40_f0.03": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.03
+      },
+      "d256_i2_o40_f0.1": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "d256_i2_o40_f0.3": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "d256_i2_o40_f1": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 1.0
+      },
+      "d256_i2_o40_f3": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 3.0
+      },
+      "em100": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      }
+    },
+    "selection": "Same saved384-case context/heldout banks in six target bins and96-case banks elsewhere; select eligible minimum equal-regime heldout NLL per reference/SNR. This is a limited compact family, not a global optimum."
+  },
+  "methods": [
+    "original_9101",
+    "original_9102",
+    "original_9103",
+    "old_bypass_9101",
+    "old_bypass_9102",
+    "old_bypass_9103",
+    "prior_repair_9101",
+    "prior_repair_9102",
+    "prior_repair_9103",
+    "repair_9101",
+    "repair_9102",
+    "repair_9103",
+    "em100",
+    "optshrink",
+    "prior_compact",
+    "compact_sparse",
+    "prior_sparse_full"
+  ],
+  "groups": {
+    "original_mean": [
+      "original_9101",
+      "original_9102",
+      "original_9103"
+    ],
+    "old_bypass_mean": [
+      "old_bypass_9101",
+      "old_bypass_9102",
+      "old_bypass_9103"
+    ],
+    "prior_repair_mean": [
+      "prior_repair_9101",
+      "prior_repair_9102",
+      "prior_repair_9103"
+    ],
+    "repair_mean": [
+      "repair_9101",
+      "repair_9102",
+      "repair_9103"
+    ]
+  },
+  "contrasts": {
+    "repair_vs_old": [
+      "old_bypass_mean",
+      "repair_mean"
+    ],
+    "repair_vs_prior": [
+      "prior_repair_mean",
+      "repair_mean"
+    ],
+    "repair_vs_original": [
+      "original_mean",
+      "repair_mean"
+    ],
+    "repair_vs_em100": [
+      "em100",
+      "repair_mean"
+    ],
+    "repair_vs_compact": [
+      "compact_sparse",
+      "repair_mean"
+    ]
+  },
+  "primary": "Strong references12/20 at SNR32.5,35,37.5 across three regimes:18 cells. Repair versus old bypass and versus previous repair, with NMSE and BER as four prespecified co-outcomes.",
+  "success_review": "Report all primary cells and path subgroups, every adverse cell and tail, all-grid outcomes, and exact weak-reference preservation. Do not require or promise zero negative sample point estimates.",
+  "bootstrap": {
+    "samples": 20000,
+    "seed": 2026101939,
+    "unit": "Multinomial128 local-index weights per regime shared across references/SNR/methods/fits",
+    "scope": "Conditional fixed fits/policies. Pointwise95 plus Bonferroni4 individual98.75% primary intervals. Other comparisons descriptive."
+  },
+  "sensitivity": "Frozen45-condition supplied-variance diagnostic, offsets-3/0/+3dB, same fresh test anchors; no recalibration and no BER diagnostic.",
+  "historical_replay": "After policy freeze only:22 exposed old cells, the union of18 strong-transition cells and the10 previously flagged cells. Diagnostic repair check, never independent confirmatory evidence or a basis for policy revision.",
+  "final_timing": {
+    "local_index": 200,
+    "snrs": [
+      0.0,
+      5.0,
+      10.0,
+      15.0,
+      20.0,
+      22.5,
+      25.0,
+      27.5,
+      30.0,
+      32.5,
+      35.0,
+      37.5,
+      40.0,
+      42.5,
+      45.0,
+      50.0,
+      60.0
+    ],
+    "rsrs": [
+      5.0,
+      12.0,
+      20.0
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "repeats": 3,
+    "scope": "Fresh isolated full153-grid timing of all17 methods. Report pooled and conditional latency and every cap exceedance; no reselection."
+  },
+  "freeze": "Scientific sources/checkpoints before development; correction before calibration; calibration and compact/BER bindings before every fresh test anchor or historical replay.",
+  "source_hashes": {
+    "tcom_dual_guard_20261019/study.py": "8e8ebc05165016e77d93912181815df14631d034cc92f222e0c67637724dcb68",
+    "tcom_dual_guard_20261019/inference.py": "570552e09722713288c2fa85822a8053286cc1c85b967076204db21ceb36be77",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_dual_guard_20261019/sensitivity.py": "de329804810a229acd6d9512fc3d5378848e97d5f67df6b3fbda0b946fb4e781",
+    "tcom_dual_guard_20261019/historical_replay.py": "617d823cc6c46e03e8183f91c874f6b97332e310e69668b2882a7f9dc47bf21b"
+  },
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c"
+  },
+  "previous_protocol_sha256": "3c48c8aa739eb96f7c2415eef5805ad83fe454f80aa1b0e8c9da2769af693abb",
+  "previous_repair_policy_sha256": "d02db7d685622c25e5dfa435587d95deee0faed6c1331079912f2765914ebb69",
+  "previous_compact_policy_sha256": "1d5fd733346c715a48d8c15c6d12e2e0f6dfde4864816165f4b351be098f1cb6",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "frozen_unix": 1792422277.160268
+}

@@ -1,0 +1,66 @@
+{
+  "purpose": "Development-only candidate-design screen; no new policy or test claim.",
+  "source_sha256": "5dc3a0c3cbac0da1ebf587ed4ae3743a6c690dbe107577e76393867c6f94f408",
+  "parent_protocol_sha256": "3c48c8aa739eb96f7c2415eef5805ad83fe454f80aa1b0e8c9da2769af693abb",
+  "parent_repair_selection_sha256": "49cb521a96c9cadeb93b028a9b899aa8f349665d137e5e2595de576049965e0d",
+  "development_anchor_hashes": {
+    "L2_rsr12.npz": "c2695aa41c0650eaad8c5c293eddb9b7a52ec1817be19f17753683cff19207ef",
+    "L2_rsr20.npz": "8ea245ed9a9fde1e875e9e834f7f37de5fb38938b9c4835244d4214bc8dd4f74",
+    "L2_rsr5.npz": "a47b612b7b60fc4b58c318e412eae9f972887bd6d4ec468e9f4c03fafa59522b",
+    "L4_rsr12.npz": "cb9968fe3f3eee5afed9b63f6e0779dbcdd82d44722de0571969c81fd06b2558",
+    "L4_rsr20.npz": "d0c8cbea78b2bbf1f1eacb9607640706ed797ec85192992a2df3eb6272aac0be",
+    "L4_rsr5.npz": "948edbf49a44996e10243268844479e3fd294f9acabf82c57c9e89b645721db9",
+    "random3to7_rsr12.npz": "1ced8109aa7e35856f3c6b31a4d3f4b8e4a085298888c89897ebf77c220de328",
+    "random3to7_rsr20.npz": "34aee7c35124f656ef366c3cbcad8fe812b5ee3c85f1da234827fd3317abe141",
+    "random3to7_rsr5.npz": "d8a6d4988eb063ed9075db3d8c911d08ead18ed18a630eb5e734dde71e6d5249"
+  },
+  "bootstrap_weights_sha256": "8c77cc27a757e35eaab7e2f549d9b1f6ef165cfc9110452e770ce87883a770b1",
+  "snrs": [
+    30.0,
+    32.5,
+    35.0,
+    37.5
+  ],
+  "rsrs": [
+    12.0,
+    20.0
+  ],
+  "names": [
+    "original",
+    "warm1",
+    "warm2",
+    "warm3",
+    "warm5",
+    "warm10",
+    "warm20",
+    "warm100",
+    "spectral100"
+  ],
+  "seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "cases_per_regime": 96,
+  "context_pilots": 30,
+  "heldout_pilots": 9,
+  "masks": "Unchanged tcom_transition_repair_20261019.fit_holdout masks.",
+  "inference": "Only fitting Observations and frozen learned estimates enter EM. No truth or path-count input.",
+  "guard": "Average three model-fit paired loss deltas within each anchor; existing 4000 multinomial weights independently per regime, shared across conditions and candidates; upper one-sided95 percentile versus original and old bypass.",
+  "old_bypass": "At RSR12/20, original through nominal30dB and spectral100 above30dB.",
+  "started_unix": 1792421410.524134
+}

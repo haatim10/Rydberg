@@ -1,0 +1,179 @@
+{
+  "passed": true,
+  "audit_source_sha256": "40227138d78d89d0586226031548e240e5abcfcbf722bf14528f396c4a9896b7",
+  "selection_sha256": "96bda1a6179d6ddc2a903215a4f44cb39c23ff55ee8e778b330af4b6986966cc",
+  "raw_calls": 9180,
+  "worlds": 153,
+  "individual_methods": 20,
+  "repeats": 3,
+  "all_quantiles_condition_counts_and_routes_verified": true,
+  "cap_verification": {
+    "calibrated_cap_ms": 10.743966200000001,
+    "repair_p90_ms": 18.788992,
+    "compact_p90_ms": 9.6637666,
+    "repair_exceeds_calibrated_cap": true,
+    "compact_exceeds_calibrated_cap": false,
+    "compact_exceeds_fresh_repair": false
+  },
+  "timing_sha256": "228d39f7081bbf9599fa6575aba25e2548a59d1ed8432c16406413cdf036bea6",
+  "cross_window_drift": {
+    "repair": {
+      "calibration": {
+        "p90_ms": 10.743966200000001,
+        "median_ms": 4.999916,
+        "mean_ms": 5.738723842411038,
+        "calls": 1377
+      },
+      "final": {
+        "p90_ms": 18.788992,
+        "median_ms": 8.760458,
+        "mean_ms": 10.233504057371096,
+        "calls": 1377
+      },
+      "median_ratio": 1.7521210356333987,
+      "p90_ratio": 1.7487947793432186
+    },
+    "repair_by_branch": {
+      "original": {
+        "calibration": {
+          "p90_ms": 4.9832505000000005,
+          "median_ms": 4.8357085,
+          "mean_ms": 4.866063968253968,
+          "calls": 756
+        },
+        "final": {
+          "p90_ms": 8.6954165,
+          "median_ms": 8.3653335,
+          "mean_ms": 8.824758994708993,
+          "calls": 756
+        },
+        "median_ratio": 1.7299085542480488,
+        "p90_ratio": 1.7449286364392076
+      },
+      "shrink_c2_beta1": {
+        "calibration": {
+          "p90_ms": 5.52275,
+          "median_ms": 5.373833,
+          "mean_ms": 5.390410925925927,
+          "calls": 81
+        },
+        "final": {
+          "p90_ms": 9.799541,
+          "median_ms": 9.337708,
+          "mean_ms": 9.436157913580246,
+          "calls": 81
+        },
+        "median_ratio": 1.7376252667323302,
+        "p90_ratio": 1.7743951835589153
+      },
+      "shrink_c4_beta1": {
+        "calibration": {
+          "p90_ms": 5.427625,
+          "median_ms": 5.363958,
+          "mean_ms": 5.389287883190884,
+          "calls": 351
+        },
+        "final": {
+          "p90_ms": 9.586625,
+          "median_ms": 9.332,
+          "mean_ms": 9.508839504273503,
+          "calls": 351
+        },
+        "median_ratio": 1.7397600801497701,
+        "p90_ratio": 1.7662651712305106
+      },
+      "warm100": {
+        "calibration": {
+          "p90_ms": 10.9565711,
+          "median_ms": 10.797833,
+          "mean_ms": 10.83477699382716,
+          "calls": 162
+        },
+        "final": {
+          "p90_ms": 19.259304399999998,
+          "median_ms": 18.9130415,
+          "mean_ms": 18.968072771604938,
+          "calls": 162
+        },
+        "median_ratio": 1.751558993364687,
+        "p90_ratio": 1.757785736451799
+      },
+      "warm5": {
+        "calibration": {
+          "p90_ms": 5.2527996,
+          "median_ms": 5.174042,
+          "mean_ms": 5.18448762962963,
+          "calls": 27
+        },
+        "final": {
+          "p90_ms": 9.184683,
+          "median_ms": 9.050708,
+          "mean_ms": 9.083631148148148,
+          "calls": 27
+        },
+        "median_ratio": 1.7492529051754895,
+        "p90_ratio": 1.748531011919815
+      }
+    },
+    "em100": {
+      "calibration": {
+        "p90_ms": 5.1961334,
+        "median_ms": 5.0815,
+        "mean_ms": 5.125477583877996,
+        "calls": 459
+      },
+      "final": {
+        "p90_ms": 9.0830494,
+        "median_ms": 8.789333,
+        "mean_ms": 8.961513620915035,
+        "calls": 459
+      },
+      "median_ratio": 1.7296729312210959,
+      "p90_ratio": 1.748040071488542
+    },
+    "selected_compact_identical_configuration_mix": {
+      "calibration": {
+        "p90_ms": 5.4522418,
+        "median_ms": 4.504208,
+        "mean_ms": 4.74766294117647,
+        "calls": 459
+      },
+      "final": {
+        "p90_ms": 9.6637666,
+        "median_ms": 8.430792,
+        "mean_ms": 8.403698233115467,
+        "calls": 459
+      },
+      "median_ratio": 1.8717590306664345,
+      "p90_ratio": 1.7724391093586496
+    },
+    "final_strong_high": {
+      "repair": {
+        "p90_ms": 9.610229799999999,
+        "median_ms": 9.3335835,
+        "mean_ms": 9.556388607407408,
+        "calls": 270
+      },
+      "incumbent": {
+        "p90_ms": 9.0441167,
+        "median_ms": 8.849562500000001,
+        "mean_ms": 9.002556318518518,
+        "calls": 270
+      },
+      "direct_em100": {
+        "p90_ms": 8.8652455,
+        "median_ms": 8.738624999999999,
+        "mean_ms": 9.054021266666668,
+        "calls": 90
+      },
+      "compact": {
+        "p90_ms": 9.012916,
+        "median_ms": 8.830479,
+        "mean_ms": 8.988713855555556,
+        "calls": 90
+      }
+    },
+    "interpretation": "Descriptive cross-window comparisons use different prespecified timing anchors (100 versus 200). Shared slowdown is evidence against uniquely attributing the overrun to the new filter, but does not identify its host-level cause. No normalization, retiming, or reselection is performed."
+  },
+  "caveat": "Retained samples do not independently prove host isolation or a worst-case deadline."
+}

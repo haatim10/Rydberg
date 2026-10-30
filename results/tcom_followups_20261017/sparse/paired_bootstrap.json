@@ -1,0 +1,330 @@
+{
+  "bootstrap_repetitions": 2000,
+  "bootstrap_seed": 2026101717,
+  "inference": "Channel-world paired bootstrap independently within each of 15 cells; seed-mean learned score, no ensemble. CI conditions on the selected controls and trained models, and excludes training/development variability.",
+  "sign": "negative learned-minus-sparse dB favors the learned estimator",
+  "cells": [
+    {
+      "snr_db": 0.0,
+      "path_regime": "L2",
+      "nmse_db": {
+        "sparse": -12.745697551192258,
+        "em100": -5.575483578018813,
+        "optshrink": -11.082393625773845,
+        "learned_9101": -12.370891220771556,
+        "learned_9102": -12.44340733937782,
+        "learned_9103": -11.356037579869936,
+        "learned_seed_mean": -12.056778713339769
+      },
+      "learned_minus_sparse_db": 0.6889188378524889,
+      "paired_95_percentile_CI_db": [
+        0.5194375406443124,
+        0.8653589541566021
+      ]
+    },
+    {
+      "snr_db": 0.0,
+      "path_regime": "L4",
+      "nmse_db": {
+        "sparse": -10.861151070933559,
+        "em100": -5.3395504076865405,
+        "optshrink": -10.238746599734105,
+        "learned_9101": -9.965346840079729,
+        "learned_9102": -9.923859552943412,
+        "learned_9103": -9.73572376168217,
+        "learned_seed_mean": -9.874976718235104
+      },
+      "learned_minus_sparse_db": 0.9861743526984554,
+      "paired_95_percentile_CI_db": [
+        0.8282112281217263,
+        1.1402200185773663
+      ]
+    },
+    {
+      "snr_db": 0.0,
+      "path_regime": "random3-7",
+      "nmse_db": {
+        "sparse": -10.535737375509793,
+        "em100": -5.408411944755205,
+        "optshrink": -9.69928207523149,
+        "learned_9101": -9.32079065546718,
+        "learned_9102": -9.258113335935787,
+        "learned_9103": -9.375206296210692,
+        "learned_seed_mean": -9.318036762537886
+      },
+      "learned_minus_sparse_db": 1.2177006129719068,
+      "paired_95_percentile_CI_db": [
+        1.078021005430651,
+        1.3583190587017857
+      ]
+    },
+    {
+      "snr_db": 5.0,
+      "path_regime": "L2",
+      "nmse_db": {
+        "sparse": -17.37754090961175,
+        "em100": -10.88715875918718,
+        "optshrink": -14.160559328474706,
+        "learned_9101": -17.00360354303693,
+        "learned_9102": -17.291316038178834,
+        "learned_9103": -15.31934524590515,
+        "learned_seed_mean": -16.538088275706972
+      },
+      "learned_minus_sparse_db": 0.8394526339047772,
+      "paired_95_percentile_CI_db": [
+        0.6747991563544591,
+        1.0187341194463535
+      ]
+    },
+    {
+      "snr_db": 5.0,
+      "path_regime": "L4",
+      "nmse_db": {
+        "sparse": -15.941460903269695,
+        "em100": -10.842742635578777,
+        "optshrink": -14.13514545583839,
+        "learned_9101": -15.342738872965313,
+        "learned_9102": -15.54112501885612,
+        "learned_9103": -14.183584107322337,
+        "learned_seed_mean": -15.022482666381258
+      },
+      "learned_minus_sparse_db": 0.9189782368884369,
+      "paired_95_percentile_CI_db": [
+        0.7485271676569863,
+        1.0786949400668935
+      ]
+    },
+    {
+      "snr_db": 5.0,
+      "path_regime": "random3-7",
+      "nmse_db": {
+        "sparse": -14.897067926913438,
+        "em100": -10.50536478990952,
+        "optshrink": -13.470051131215152,
+        "learned_9101": -14.36501945638225,
+        "learned_9102": -14.46314563818598,
+        "learned_9103": -13.46418711636705,
+        "learned_seed_mean": -14.097450736978425
+      },
+      "learned_minus_sparse_db": 0.7996171899350131,
+      "paired_95_percentile_CI_db": [
+        0.640622679086575,
+        0.9566678661717457
+      ]
+    },
+    {
+      "snr_db": 10.0,
+      "path_regime": "L2",
+      "nmse_db": {
+        "sparse": -22.30174663373312,
+        "em100": -15.986172810952803,
+        "optshrink": -18.267481289171446,
+        "learned_9101": -22.53349305768173,
+        "learned_9102": -22.8101870279426,
+        "learned_9103": -20.826334153915255,
+        "learned_seed_mean": -22.05667141317986
+      },
+      "learned_minus_sparse_db": 0.24507522055326092,
+      "paired_95_percentile_CI_db": [
+        0.059229241478302885,
+        0.42957338576046233
+      ]
+    },
+    {
+      "snr_db": 10.0,
+      "path_regime": "L4",
+      "nmse_db": {
+        "sparse": -20.18354384867515,
+        "em100": -15.697753070329343,
+        "optshrink": -17.76456794076505,
+        "learned_9101": -19.943777598092097,
+        "learned_9102": -20.107729516346396,
+        "learned_9103": -18.898599669999793,
+        "learned_seed_mean": -19.650035594812763
+      },
+      "learned_minus_sparse_db": 0.5335082538623865,
+      "paired_95_percentile_CI_db": [
+        0.3852242120857244,
+        0.6821535360989454
+      ]
+    },
+    {
+      "snr_db": 10.0,
+      "path_regime": "random3-7",
+      "nmse_db": {
+        "sparse": -20.096354406217678,
+        "em100": -15.960700801126395,
+        "optshrink": -18.159897928504996,
+        "learned_9101": -19.87832660101018,
+        "learned_9102": -19.968310480855045,
+        "learned_9103": -18.966632468110625,
+        "learned_seed_mean": -19.604423183325284
+      },
+      "learned_minus_sparse_db": 0.49193122289239355,
+      "paired_95_percentile_CI_db": [
+        0.32117218843037865,
+        0.6547120104483356
+      ]
+    },
+    {
+      "snr_db": 15.0,
+      "path_regime": "L2",
+      "nmse_db": {
+        "sparse": -26.9939414453625,
+        "em100": -20.96461864610777,
+        "optshrink": -23.139400248601575,
+        "learned_9101": -27.906629627559486,
+        "learned_9102": -27.813193496582965,
+        "learned_9103": -26.888274346013095,
+        "learned_seed_mean": -27.53603249005185
+      },
+      "learned_minus_sparse_db": -0.5420910446893501,
+      "paired_95_percentile_CI_db": [
+        -0.7875452265244476,
+        -0.28168752943762504
+      ]
+    },
+    {
+      "snr_db": 15.0,
+      "path_regime": "L4",
+      "nmse_db": {
+        "sparse": -24.883550790736493,
+        "em100": -20.70559759913884,
+        "optshrink": -22.856264831861264,
+        "learned_9101": -25.225791612989564,
+        "learned_9102": -24.873325425561706,
+        "learned_9103": -24.744719760459727,
+        "learned_seed_mean": -24.947945599670334
+      },
+      "learned_minus_sparse_db": -0.06439480893384086,
+      "paired_95_percentile_CI_db": [
+        -0.2834527226191666,
+        0.1553725490879287
+      ]
+    },
+    {
+      "snr_db": 15.0,
+      "path_regime": "random3-7",
+      "nmse_db": {
+        "sparse": -24.223550938578725,
+        "em100": -20.563378103597238,
+        "optshrink": -22.705975248417623,
+        "learned_9101": -24.454302096719296,
+        "learned_9102": -23.909297761253107,
+        "learned_9103": -24.180624530287446,
+        "learned_seed_mean": -24.18140812941995
+      },
+      "learned_minus_sparse_db": 0.04214280915877566,
+      "paired_95_percentile_CI_db": [
+        -0.15297091839964994,
+        0.23823032933072
+      ]
+    },
+    {
+      "snr_db": 20.0,
+      "path_regime": "L2",
+      "nmse_db": {
+        "sparse": -31.412132678243378,
+        "em100": -26.181248612019136,
+        "optshrink": -27.599965064277082,
+        "learned_9101": -32.46744045096523,
+        "learned_9102": -31.730822257377596,
+        "learned_9103": -32.92162956407314,
+        "learned_seed_mean": -32.373297424138656
+      },
+      "learned_minus_sparse_db": -0.9611647458952781,
+      "paired_95_percentile_CI_db": [
+        -1.3300978273158266,
+        -0.5866159302023068
+      ]
+    },
+    {
+      "snr_db": 20.0,
+      "path_regime": "L4",
+      "nmse_db": {
+        "sparse": -29.442840485951592,
+        "em100": -25.80677159649765,
+        "optshrink": -27.308763892295463,
+        "learned_9101": -29.655611584505067,
+        "learned_9102": -28.34957275321891,
+        "learned_9103": -30.509474767740294,
+        "learned_seed_mean": -29.504886368488087
+      },
+      "learned_minus_sparse_db": -0.0620458825364949,
+      "paired_95_percentile_CI_db": [
+        -0.317155855263975,
+        0.20334393949087484
+      ]
+    },
+    {
+      "snr_db": 20.0,
+      "path_regime": "random3-7",
+      "nmse_db": {
+        "sparse": -28.995378502410457,
+        "em100": -25.984052542346575,
+        "optshrink": -27.456907712387544,
+        "learned_9101": -29.199238996045516,
+        "learned_9102": -27.81216331922606,
+        "learned_9103": -30.038390511389878,
+        "learned_seed_mean": -29.01659760888715
+      },
+      "learned_minus_sparse_db": -0.021219106476692673,
+      "paired_95_percentile_CI_db": [
+        -0.3931972178788598,
+        0.3612606111870534
+      ]
+    }
+  ],
+  "all": {
+    "learned_minus_sparse_db": 0.3408389188124159,
+    "paired_95_percentile_CI_db": [
+      0.28225831615140506,
+      0.39619668376549955
+    ],
+    "equal_cell_nmse_db": {
+      "sparse": -20.726113031155975,
+      "learned_seed_mean": -20.385274112343552,
+      "optshrink": -18.536360158169984,
+      "em100": -15.760600393150119
+    }
+  },
+  "L2": {
+    "learned_minus_sparse_db": 0.05403818034517975,
+    "paired_95_percentile_CI_db": [
+      -0.053457372655664415,
+      0.15639196859637391
+    ],
+    "equal_cell_nmse_db": {
+      "sparse": -22.166211843628602,
+      "learned_seed_mean": -22.11217366328342,
+      "optshrink": -18.84995991125973,
+      "em100": -15.91893648125714
+    }
+  },
+  "L4": {
+    "learned_minus_sparse_db": 0.46244403039578863,
+    "paired_95_percentile_CI_db": [
+      0.37189683653081157,
+      0.5486731001344777
+    ],
+    "equal_cell_nmse_db": {
+      "sparse": -20.262509419913297,
+      "learned_seed_mean": -19.80006538951751,
+      "optshrink": -18.460697744098855,
+      "em100": -15.678483061846231
+    }
+  },
+  "random3-7": {
+    "learned_minus_sparse_db": 0.5060345456962793,
+    "paired_95_percentile_CI_db": [
+      0.4052502761692199,
+      0.6014723454252947
+    ],
+    "equal_cell_nmse_db": {
+      "sparse": -19.749617829926017,
+      "learned_seed_mean": -19.24358328422974,
+      "optshrink": -18.298422819151362,
+      "em100": -15.684381636346988
+    }
+  }
+}

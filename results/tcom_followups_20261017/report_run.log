@@ -1,0 +1,235 @@
+/Users/haatim/.matplotlib is not a writable directory
+Matplotlib created a temporary cache directory at /var/folders/69/nnmj7m7963lczgy148msyxf00000gn/T/matplotlib-l29pbvln because there was an issue with the default path (/Users/haatim/.matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.
+Matplotlib is building the font cache; this may take a moment.
+{
+  "completed": true,
+  "ordinary_cells": 15,
+  "channels_per_cell": 64,
+  "ordinary_worlds": 960,
+  "data_bits_per_estimator": 1474560,
+  "distinct_pilot_worlds": 1344,
+  "neural_fits": 3,
+  "high_snr_cells": 96,
+  "high_snr_anchor_worlds": 576,
+  "comparison": [
+    {
+      "method": "Your learned estimator",
+      "equal_cell_mean_nmse_db": -20.385274112343552,
+      "mean_BER": 0.01333346896701389,
+      "mean_latency_ms": 4.864884967901235
+    },
+    {
+      "method": "Angle-domain sparse EM",
+      "equal_cell_mean_nmse_db": -20.726113031155975,
+      "mean_BER": 0.01248508029513889,
+      "mean_latency_ms": 408.7875808740741
+    },
+    {
+      "method": "Frozen offline OptShrink",
+      "equal_cell_mean_nmse_db": -18.536360158169984,
+      "mean_BER": 0.013899061414930554,
+      "mean_latency_ms": 14.289994733333334
+    },
+    {
+      "method": "Unfiltered EM100",
+      "equal_cell_mean_nmse_db": -15.760600393150119,
+      "mean_BER": 0.020999484592013888,
+      "mean_latency_ms": 12.928650585185187
+    }
+  ],
+  "paired_NMSE_learned_minus_sparse": {
+    "learned_minus_sparse_db": 0.3408389188124159,
+    "paired_95_percentile_CI_db": [
+      0.28225831615140506,
+      0.39619668376549955
+    ],
+    "equal_cell_nmse_db": {
+      "sparse": -20.726113031155975,
+      "learned_seed_mean": -20.385274112343552,
+      "optshrink": -18.536360158169984,
+      "em100": -15.760600393150119
+    }
+  },
+  "paired_BER": {
+    "em100": {
+      "learned_minus_comparator_ber": -0.007666015624999999,
+      "bootstrap95": [
+        -0.00817715680157697,
+        -0.007174106174045144
+      ],
+      "learned_better_cells": 10,
+      "total_cells": 15
+    },
+    "optshrink": {
+      "learned_minus_comparator_ber": -0.0005655924479166655,
+      "bootstrap95": [
+        -0.0007771809895833343,
+        -0.0003732130262586829
+      ],
+      "learned_better_cells": 8,
+      "total_cells": 15
+    },
+    "sparse_angle": {
+      "learned_minus_comparator_ber": 0.0008483886718750006,
+      "bootstrap95": [
+        0.0006724887424045086,
+        0.0010418983742042833
+      ],
+      "learned_better_cells": 3,
+      "total_cells": 15
+    }
+  },
+  "crossover_brackets": {
+    "L2": {
+      "5": [
+        {
+          "lower_snr": 45.0,
+          "upper_snr": 47.5,
+          "lower_gain": 1.8905800392884693,
+          "upper_gain": -1.9485916929261613,
+          "lower_ci": [
+            -2.295434002109893,
+            5.498293026239627
+          ],
+          "upper_ci": [
+            -5.880408915665509,
+            1.150298344368116
+          ]
+        }
+      ],
+      "12": [
+        {
+          "lower_snr": 30.0,
+          "upper_snr": 32.5,
+          "lower_gain": 1.5781324139129964,
+          "upper_gain": -0.2384425936877861,
+          "lower_ci": [
+            0.6448244499834784,
+            2.689229432006444
+          ],
+          "upper_ci": [
+            -1.2896608171132433,
+            1.029371872743173
+          ]
+        }
+      ],
+      "20": [
+        {
+          "lower_snr": 30.0,
+          "upper_snr": 32.5,
+          "lower_gain": 1.8641935718374587,
+          "upper_gain": -0.09220395907970176,
+          "lower_ci": [
+            0.6636920521736105,
+            3.181589022883393
+          ],
+          "upper_ci": [
+            -1.6126958071812123,
+            1.5837856976234397
+          ]
+        }
+      ]
+    },
+    "L4": {
+      "5": [
+        {
+          "lower_snr": 42.5,
+          "upper_snr": 45.0,
+          "lower_gain": 1.9948695692442584,
+          "upper_gain": -1.7408167272242132,
+          "lower_ci": [
+            -1.9561937800375846,
+            4.646653845726839
+          ],
+          "upper_ci": [
+            -5.64483460500439,
+            0.8875347129679343
+          ]
+        }
+      ],
+      "12": [
+        {
+          "lower_snr": 27.5,
+          "upper_snr": 30.0,
+          "lower_gain": 0.8481037340674055,
+          "upper_gain": -0.6141376388021959,
+          "lower_ci": [
+            -0.0438352313633054,
+            1.774057136717394
+          ],
+          "upper_ci": [
+            -1.790406450855453,
+            0.5979187067580286
+          ]
+        }
+      ],
+      "20": [
+        {
+          "lower_snr": 27.5,
+          "upper_snr": 30.0,
+          "lower_gain": 0.1499000767479437,
+          "upper_gain": -1.5574085352860578,
+          "lower_ci": [
+            -0.49584584781261015,
+            0.8163396313894012
+          ],
+          "upper_ci": [
+            -2.299837540901975,
+            -0.782859940227988
+          ]
+        }
+      ]
+    },
+    "random3to7": {
+      "5": [
+        {
+          "lower_snr": 40.0,
+          "upper_snr": 42.5,
+          "lower_gain": 2.336555013664984,
+          "upper_gain": -0.938506522340114,
+          "lower_ci": [
+            -1.7085445028600135,
+            5.475713006743916
+          ],
+          "upper_ci": [
+            -5.120710600639506,
+            1.7917724528265402
+          ]
+        }
+      ],
+      "12": [
+        {
+          "lower_snr": 25.0,
+          "upper_snr": 27.5,
+          "lower_gain": 0.7552150371488319,
+          "upper_gain": -0.7266188020989534,
+          "lower_ci": [
+            0.24345987043743586,
+            1.316369274781481
+          ],
+          "upper_ci": [
+            -1.359451036240086,
+            -0.022203352311770255
+          ]
+        }
+      ],
+      "20": [
+        {
+          "lower_snr": 25.0,
+          "upper_snr": 27.5,
+          "lower_gain": 0.49673732257574227,
+          "upper_gain": -1.0275149099413123,
+          "lower_ci": [
+            -0.07674113930172267,
+            1.1145361739425121
+          ],
+          "upper_ci": [
+            -1.7247039075583799,
+            -0.26262470878035005
+          ]
+        }
+      ]
+    }
+  },
+  "scope": "Initial synthetic ULA study; 64 independent worlds per cell; N32 K3 P30. Ordinary comparisons use SNR0,5,10,15,20 and RSR12; high-SNR sweep includes RSR5,12,20. Pointwise uncertainty conditions on frozen training fits and sparse validation selection. No universal high-SNR cutoff or deployment switching policy was established."
+}

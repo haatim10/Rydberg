@@ -1,0 +1,239 @@
+{
+  "purpose": "Exploratory development-only candidate screen; no deployed policy or confirmatory test.",
+  "source_sha256": "c528639ffd3474449685cfcf4f56fbae3642c12413c21e34af717584e4b63b42",
+  "parent_protocol_sha256": "c20fd9a17a501914acc8cdf7e613b21a9498284840dc3adf44b716deadb890ca",
+  "parent_repair_selection_sha256": "0ffc7286e8eb0da1f6142d0a5c832ae6ce398c67f11e8ec0a1e53627f5c07b7c",
+  "current_policy_sha256": "f5945f47d0da7d98e1bcf28d774dd5e8c4df8d9963fd1eedd7b4bd515887077d",
+  "prior_policy_sha256": "d02db7d685622c25e5dfa435587d95deee0faed6c1331079912f2765914ebb69",
+  "bank_hashes": {
+    "rsr12_snr32.5.npz": "d28658fe93a4bb55ddc0f42dc78dcfe16d38353a1b6b97a431761c8b0060709d",
+    "rsr12_snr35.npz": "9428e6e2f0b9734d03128013bae52495a517fda38a5323dc5eabba44a36ef795",
+    "rsr12_snr37.5.npz": "22126dac68dfa60e130c7097610f13bf720a7bcaf77fe3501a0df714184014bc",
+    "rsr20_snr32.5.npz": "5be537d487f0963cde6d2b9190b5234d5e8e2d235d89945eb43d1a920a6c9646",
+    "rsr20_snr35.npz": "b1ceaa389b74f0d756ec03dee550f929a4b58b7f01ed72a34b72e8033b02a903",
+    "rsr20_snr37.5.npz": "6d348f472ac9f0a36df946adc05c3e96aa100697761d92cf0ef2677ac9dea6de"
+  },
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c"
+  },
+  "bootstrap_weights_sha256": "eaaa0632b58732196a58b32a34b821bb6359410f4d58336627c0341dabc94a81",
+  "configurations": {
+    "original": {
+      "kind": "continuation",
+      "steps": 0
+    },
+    "warm1": {
+      "kind": "continuation",
+      "steps": 1
+    },
+    "warm2": {
+      "kind": "continuation",
+      "steps": 2
+    },
+    "warm3": {
+      "kind": "continuation",
+      "steps": 3
+    },
+    "warm4": {
+      "kind": "continuation",
+      "steps": 4
+    },
+    "warm5": {
+      "kind": "continuation",
+      "steps": 5
+    },
+    "warm8": {
+      "kind": "continuation",
+      "steps": 8
+    },
+    "warm10": {
+      "kind": "continuation",
+      "steps": 10
+    },
+    "warm12": {
+      "kind": "continuation",
+      "steps": 12
+    },
+    "warm20": {
+      "kind": "continuation",
+      "steps": 20
+    },
+    "warm40": {
+      "kind": "continuation",
+      "steps": 40
+    },
+    "warm100": {
+      "kind": "continuation",
+      "steps": 100
+    },
+    "spectral100": {
+      "kind": "spectral",
+      "steps": 100
+    },
+    "blend_original_warm3_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "original",
+      "right": "warm3",
+      "weight_second": 0.25
+    },
+    "blend_original_warm3_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "original",
+      "right": "warm3",
+      "weight_second": 0.5
+    },
+    "blend_original_warm3_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "original",
+      "right": "warm3",
+      "weight_second": 0.75
+    },
+    "blend_warm2_warm3_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm2",
+      "right": "warm3",
+      "weight_second": 0.25
+    },
+    "blend_warm2_warm3_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm2",
+      "right": "warm3",
+      "weight_second": 0.5
+    },
+    "blend_warm2_warm3_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm2",
+      "right": "warm3",
+      "weight_second": 0.75
+    },
+    "blend_warm5_warm20_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "warm20",
+      "weight_second": 0.25
+    },
+    "blend_warm5_warm20_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "warm20",
+      "weight_second": 0.5
+    },
+    "blend_warm5_warm20_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "warm20",
+      "weight_second": 0.75
+    },
+    "blend_warm20_spectral100_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm20",
+      "right": "spectral100",
+      "weight_second": 0.25
+    },
+    "blend_warm20_spectral100_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm20",
+      "right": "spectral100",
+      "weight_second": 0.5
+    },
+    "blend_warm20_spectral100_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm20",
+      "right": "spectral100",
+      "weight_second": 0.75
+    },
+    "blend_warm5_spectral100_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "spectral100",
+      "weight_second": 0.25
+    },
+    "blend_warm5_spectral100_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "spectral100",
+      "weight_second": 0.5
+    },
+    "blend_warm5_spectral100_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "spectral100",
+      "weight_second": 0.75
+    }
+  },
+  "names": [
+    "original",
+    "warm1",
+    "warm2",
+    "warm3",
+    "warm4",
+    "warm5",
+    "warm8",
+    "warm10",
+    "warm12",
+    "warm20",
+    "warm40",
+    "warm100",
+    "spectral100",
+    "blend_original_warm3_0.25",
+    "blend_original_warm3_0.5",
+    "blend_original_warm3_0.75",
+    "blend_warm2_warm3_0.25",
+    "blend_warm2_warm3_0.5",
+    "blend_warm2_warm3_0.75",
+    "blend_warm5_warm20_0.25",
+    "blend_warm5_warm20_0.5",
+    "blend_warm5_warm20_0.75",
+    "blend_warm20_spectral100_0.25",
+    "blend_warm20_spectral100_0.5",
+    "blend_warm20_spectral100_0.75",
+    "blend_warm5_spectral100_0.25",
+    "blend_warm5_spectral100_0.5",
+    "blend_warm5_spectral100_0.75"
+  ],
+  "snrs": [
+    32.5,
+    35.0,
+    37.5
+  ],
+  "rsrs": [
+    12.0,
+    20.0
+  ],
+  "cases_per_regime": 384,
+  "model_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "context_pilots": 30,
+  "heldout_pilots": 9,
+  "input_scope": "Exact existing observable banks and masks. No generation or reading of test anchors, channel truth or path counts.",
+  "inference": "One original estimate and one EM trajectory per fit; shared spectral100 across fits. Blends are (1-alpha)*left+alpha*right. No fitting or heldout loss enters a prediction.",
+  "comparison": "Paired per-anchor loss differences averaged over three frozen model fits; all four incumbents (original, old bypass, previous transition repair, current dual guard).",
+  "bootstrap": "Existing4000 multinomial384 count vectors per regime, shared over all bins and candidates. Strict upper95<=0 in each regime for every incumbent; no preference band or tolerance.",
+  "interpretation": "Exploratory reused development evidence; no population guarantee, selection commitment or training-uncertainty claim.",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "started_unix": 1792426860.341763
+}

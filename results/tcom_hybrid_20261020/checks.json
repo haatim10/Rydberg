@@ -1,0 +1,844 @@
+{
+  "passed": true,
+  "completed_unix": 1792509911.929363,
+  "smoke_seed": 2026102050,
+  "holdout_seed": 2026102055,
+  "condition_count": 12,
+  "worlds_per_condition": 2,
+  "fits": [
+    9101,
+    9102,
+    9103
+  ],
+  "condition_specs": [
+    [
+      0.0,
+      5.0,
+      2
+    ],
+    [
+      20.0,
+      12.0,
+      4
+    ],
+    [
+      22.5,
+      5.0,
+      null
+    ],
+    [
+      25.0,
+      12.0,
+      2
+    ],
+    [
+      27.5,
+      20.0,
+      4
+    ],
+    [
+      30.0,
+      5.0,
+      null
+    ],
+    [
+      32.5,
+      12.0,
+      4
+    ],
+    [
+      35.0,
+      20.0,
+      2
+    ],
+    [
+      37.5,
+      5.0,
+      null
+    ],
+    [
+      40.0,
+      12.0,
+      4
+    ],
+    [
+      50.0,
+      20.0,
+      2
+    ],
+    [
+      60.0,
+      12.0,
+      null
+    ]
+  ],
+  "canonical_tail_lengths": [
+    10,
+    20,
+    40
+  ],
+  "maximum_scalar_batch_abs_error": 0.0,
+  "maximum_canonical_pipeline_abs_error": 1.299051823280758e-13,
+  "maximum_zero_tail_abs_error": 0.0,
+  "ordinary_bitwise_checks": 12,
+  "ordinary_no_EM_no_final_filter": true,
+  "one_start_per_world": true,
+  "one_selected_tail_per_nonordinary_world": true,
+  "actual_start_calls": [
+    {
+      "family": "adaptive",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "adaptive",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "adaptive",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "adaptive",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "adaptive",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "adaptive",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "global",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "global",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "global",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "global",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "global",
+      "worlds": 2,
+      "seed": 9101
+    },
+    {
+      "family": "global",
+      "worlds": 2,
+      "seed": 9101
+    }
+  ],
+  "actual_tail_calls": [
+    {
+      "worlds": 2,
+      "steps": 40
+    },
+    {
+      "worlds": 2,
+      "steps": 10
+    },
+    {
+      "worlds": 2,
+      "steps": 20
+    },
+    {
+      "worlds": 2,
+      "steps": 40
+    },
+    {
+      "worlds": 2,
+      "steps": 10
+    },
+    {
+      "worlds": 2,
+      "steps": 20
+    },
+    {
+      "worlds": 2,
+      "steps": 40
+    },
+    {
+      "worlds": 2,
+      "steps": 10
+    },
+    {
+      "worlds": 2,
+      "steps": 10
+    },
+    {
+      "worlds": 2,
+      "steps": 20
+    }
+  ],
+  "continuous_routing_probes": [
+    {
+      "crossover": 20.0,
+      "requested_proxy_db": 19.999999,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 19.999999000000003,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 20.0,
+      "requested_proxy_db": 20.0,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 20.0,
+      "requested_proxy_db": 20.00000000005,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.00000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 20.0,
+      "requested_proxy_db": 20.000001,
+      "family": "global",
+      "steps": 0,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.000001000000005,
+      "mismatch_fallback": true
+    },
+    {
+      "crossover": 20.0,
+      "requested_proxy_db": 39.999999,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 39.999999,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 20.0,
+      "requested_proxy_db": 39.99999999995,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 39.99999999995,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 20.0,
+      "requested_proxy_db": 40.0,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 40.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 20.0,
+      "requested_proxy_db": 40.000001,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 40.000001,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 19.999999,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 19.999999000000003,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 20.0,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 20.00000000005,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.00000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 20.000001,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.000001000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 24.999999,
+      "family": "adaptive",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "25",
+      "snr_db": 24.999998999999995,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 25.0,
+      "family": "adaptive",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "25",
+      "snr_db": 25.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 25.00000000005,
+      "family": "adaptive",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "25",
+      "snr_db": 25.00000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 25.000001,
+      "family": "global",
+      "steps": 0,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "25",
+      "snr_db": 25.000001000000005,
+      "mismatch_fallback": true
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 39.999999,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 39.999999,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 39.99999999995,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 39.99999999995,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 40.0,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 40.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 25.0,
+      "requested_proxy_db": 40.000001,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 40.000001,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 19.999999,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 19.999999000000003,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 20.0,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 20.00000000005,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.00000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 20.000001,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.000001000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 29.999999,
+      "family": "adaptive",
+      "steps": 40,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "30",
+      "snr_db": 29.999998999999995,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 30.0,
+      "family": "adaptive",
+      "steps": 40,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "30",
+      "snr_db": 30.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 30.00000000005,
+      "family": "adaptive",
+      "steps": 40,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "30",
+      "snr_db": 30.00000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 30.000001,
+      "family": "global",
+      "steps": 0,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "30",
+      "snr_db": 30.000001000000005,
+      "mismatch_fallback": true
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 39.999999,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 39.999999,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 39.99999999995,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 39.99999999995,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 40.0,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 40.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 30.0,
+      "requested_proxy_db": 40.000001,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 40.000001,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 19.999999,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 19.999999000000003,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 20.0,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 20.00000000005,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": true,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.00000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 20.000001,
+      "family": "adaptive",
+      "steps": 0,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "20",
+      "snr_db": 20.000001000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 34.999999,
+      "family": "adaptive",
+      "steps": 20,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "35",
+      "snr_db": 34.999999,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 35.0,
+      "family": "adaptive",
+      "steps": 20,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "35",
+      "snr_db": 35.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 35.00000000005,
+      "family": "adaptive",
+      "steps": 20,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "35",
+      "snr_db": 35.00000000005,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 35.000001,
+      "family": "global",
+      "steps": 0,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "35",
+      "snr_db": 35.000001,
+      "mismatch_fallback": true
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 39.999999,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 39.999999,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 39.99999999995,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 39.99999999995,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 40.0,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 40.0,
+      "mismatch_fallback": false
+    },
+    {
+      "crossover": 35.0,
+      "requested_proxy_db": 40.000001,
+      "family": "global",
+      "steps": 10,
+      "ordinary": false,
+      "reference_key": "12",
+      "snr_key": "40",
+      "snr_db": 40.000001,
+      "mismatch_fallback": false
+    }
+  ],
+  "mismatch_fallback_exact_checks": [
+    {
+      "crossover": 20.0,
+      "bitwise_expected": true
+    },
+    {
+      "crossover": 25.0,
+      "bitwise_expected": true
+    },
+    {
+      "crossover": 30.0,
+      "bitwise_expected": true
+    },
+    {
+      "crossover": 35.0,
+      "bitwise_expected": true
+    }
+  ],
+  "supplied_variance_dispatch_checks": [
+    {
+      "actual_proxy_db": 20.0,
+      "variance_offset_db": -3.0,
+      "supplied_route": {
+        "family": "adaptive",
+        "steps": 40,
+        "ordinary": false,
+        "reference_key": "12",
+        "snr_key": "22.5",
+        "snr_db": 23.000000000000004,
+        "mismatch_fallback": false
+      }
+    },
+    {
+      "actual_proxy_db": 20.0,
+      "variance_offset_db": 0.0,
+      "supplied_route": {
+        "family": "adaptive",
+        "steps": 0,
+        "ordinary": true,
+        "reference_key": "12",
+        "snr_key": "20",
+        "snr_db": 20.0,
+        "mismatch_fallback": false
+      }
+    },
+    {
+      "actual_proxy_db": 20.0,
+      "variance_offset_db": 3.0,
+      "supplied_route": {
+        "family": "adaptive",
+        "steps": 0,
+        "ordinary": true,
+        "reference_key": "12",
+        "snr_key": "15",
+        "snr_db": 17.0,
+        "mismatch_fallback": false
+      }
+    },
+    {
+      "actual_proxy_db": 32.5,
+      "variance_offset_db": -3.0,
+      "supplied_route": {
+        "family": "global",
+        "steps": 20,
+        "ordinary": false,
+        "reference_key": "12",
+        "snr_key": "35",
+        "snr_db": 35.5,
+        "mismatch_fallback": false
+      }
+    },
+    {
+      "actual_proxy_db": 32.5,
+      "variance_offset_db": 0.0,
+      "supplied_route": {
+        "family": "global",
+        "steps": 10,
+        "ordinary": false,
+        "reference_key": "12",
+        "snr_key": "32.5",
+        "snr_db": 32.5,
+        "mismatch_fallback": false
+      }
+    },
+    {
+      "actual_proxy_db": 32.5,
+      "variance_offset_db": 3.0,
+      "supplied_route": {
+        "family": "adaptive",
+        "steps": 40,
+        "ordinary": false,
+        "reference_key": "12",
+        "snr_key": "30",
+        "snr_db": 29.499999999999996,
+        "mismatch_fallback": false
+      }
+    },
+    {
+      "actual_proxy_db": 60.0,
+      "variance_offset_db": -3.0,
+      "supplied_route": {
+        "family": "global",
+        "steps": 20,
+        "ordinary": false,
+        "reference_key": "12",
+        "snr_key": "60",
+        "snr_db": 63.0,
+        "mismatch_fallback": false
+      }
+    },
+    {
+      "actual_proxy_db": 60.0,
+      "variance_offset_db": 0.0,
+      "supplied_route": {
+        "family": "global",
+        "steps": 20,
+        "ordinary": false,
+        "reference_key": "12",
+        "snr_key": "60",
+        "snr_db": 60.0,
+        "mismatch_fallback": false
+      }
+    },
+    {
+      "actual_proxy_db": 60.0,
+      "variance_offset_db": 3.0,
+      "supplied_route": {
+        "family": "global",
+        "steps": 20,
+        "ordinary": false,
+        "reference_key": "12",
+        "snr_key": "60",
+        "snr_db": 57.0,
+        "mismatch_fallback": false
+      }
+    }
+  ],
+  "variance_check_scope": "Routing/finite-output smoke only; no performance or robustness claim.",
+  "independent_observable_inputs": true,
+  "only30_deployment_pilots": true,
+  "previous_protocol_sha256": "f65bf5473d946a5b63b744b542871a61d0de1feb5e58db9f72b6c1ae4119cd9d",
+  "previous_policy_sha256": "1879f793286f9b380b8dac42d55957a274777b6c7928cc381390466c79f0704a",
+  "source_hashes": {
+    "sahure/data.py": "efb3c019ed5209a243023f9ca83c48e216e2c3d6494f3c96b42312242abefeea",
+    "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+    "tcom_filter_continuation_20261019/analysis.py": "4d3826c0304f441723bd1630b74703199cad4ced507d33d847ebaf97abf9d6fa",
+    "tcom_filter_continuation_20261019/study.py": "1ce4cffa709b881508de362c7cd2aca95ba3ca8a3dba0de63f77b474ef6d0d77",
+    "tcom_hybrid_20261020/checks.py": "8cc651d7302bffb41f0936be131fe4eef5b9cb71789eefe4d8fb106caf67f34c",
+    "tcom_hybrid_20261020/inference.py": "f980b125bcdc8aa25281756535d98cd212ddbdaf35f5ae967ecf2dc79552b8d3",
+    "tcom_incumbent_guard_20261019/inference.py": "0cef3a0dc8a9f1ffa066e08896afc0d69f3a311b9ad729618ec9b760b78ab1eb",
+    "tcom_incumbent_guard_20261019/risk.py": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1",
+    "tcom_incumbent_guard_20261019/risk_data.py": "5a8474b3f87abea086c7999e7ca5ef8fbbab0b0fd57b58188db365ac85e07101",
+    "tcom_incumbent_guard_20261019/shrink.py": "f72debd9763e4a57532f635c0120fa9eaf516f94e0e360853e1155fee483ec6b",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_runtime_repair_20261020/analysis.py": "e117a19d3f8e99924f1926afcff6862c7b7a2e03f97751ab368d6c65dc6234db",
+    "tcom_runtime_repair_20261020/execution.py": "dd9bad075a577f833dae8011b0909b9bf8353f2650f742b0ddeb7b1b074f7b57",
+    "tcom_runtime_repair_20261020/inference.py": "b90d476fcf7ac1f493b1f947e0de0ccec93e18628205a8251c12827491d4ae0a",
+    "tcom_runtime_repair_20261020/native.py": "7a60c4ba92259b27332382e14240b425e155576dc8a8df48b8470745cb976d77",
+    "tcom_runtime_repair_20261020/smoke_parity.py": "9df5870dfa613bfa7c10229102f394fe8db7cf80233a0e84ad0954f6eaf46124",
+    "tcom_runtime_repair_20261020/study.py": "d96e769486450b1cf56dc5fcf543bfd982bc9442a3a8d443a74831b8e0a0c031",
+    "tcom_start_ablation_20261020/starts.py": "2391e8379f5d726891207e46fa278ddfa4664d270f4cc4c916f9a2a204de3e00",
+    "tcom_start_ablation_20261020/training.py": "806a805e8adb9d85fd64027c819660ed65dc685677612afcfe470f97345048e1",
+    "tcom_start_budget_20261020/analysis.py": "1e3ff2b37ee63ac9d7f472f1761e9db48a2270aec6b232e08fd79b9e0c2a4c32",
+    "tcom_start_budget_20261020/checks.py": "7a8517fef848bb9c456569f54e9ad695ca52110f505022e38ca314372589d80d",
+    "tcom_start_budget_20261020/execution.py": "fd152c06afcdc124cbbc3659a5a5790fc6e550f0436d4123d0baef2b147fb630",
+    "tcom_start_budget_20261020/study.py": "58105b2f472e343225e28e6a50699db0ce7301289f0ffd9cc7f0e82cfd242847"
+  }
+}

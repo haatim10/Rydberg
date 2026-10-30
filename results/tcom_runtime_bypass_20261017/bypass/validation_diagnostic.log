@@ -1,0 +1,258 @@
+{
+  "policies": {
+    "same_steps": {
+      "5": 40.0,
+      "12": 32.5,
+      "20": 35.0
+    },
+    "em100": {
+      "5": 40.0,
+      "12": 30.0,
+      "20": 30.0
+    }
+  },
+  "loss_ranges": {
+    "5": {
+      "minimum_NLL": 2.8302829535118565,
+      "maximum_NLL": 515460.8809359764,
+      "all_finite": true,
+      "float64_ulp_at_largest_NLL": 5.820766091346741e-11
+    },
+    "12": {
+      "minimum_NLL": 3.707991211958652,
+      "maximum_NLL": 605808.6098100098,
+      "all_finite": true,
+      "float64_ulp_at_largest_NLL": 1.1641532182693481e-10
+    },
+    "20": {
+      "minimum_NLL": 4.602319885064131,
+      "maximum_NLL": 356452.8253043709,
+      "all_finite": true,
+      "float64_ulp_at_largest_NLL": 5.820766091346741e-11
+    }
+  },
+  "reviews": {
+    "same_steps_5": {
+      "selected_cutoff_db": 40.0,
+      "numerical_error_to_smallest_margin_ratio": 2.2155669514176155e-13,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 4.105020167370678,
+          "paired_anchor_bootstrap_95_CI": [
+            0.6331418101545669,
+            8.620012323907911
+          ],
+          "probability_neighbor_worse": 0.99325
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 14.624445952526177,
+          "paired_anchor_bootstrap_95_CI": [
+            -3.05584199097339,
+            30.399372040132448
+          ],
+          "probability_neighbor_worse": 0.95075
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0,
+        "30": 0.0,
+        "32.5": 0.0,
+        "35": 0.00675,
+        "40": 0.944,
+        "45": 0.04925,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "em100_5": {
+      "selected_cutoff_db": 40.0,
+      "numerical_error_to_smallest_margin_ratio": 1.4184123116949763e-12,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 0.641206153016325,
+          "paired_anchor_bootstrap_95_CI": [
+            -2.467333922447501,
+            4.577412179172677
+          ],
+          "probability_neighbor_worse": 0.6345
+        },
+        {
+          "cutoff_db": 45.0,
+          "mean_NLL_above_selected": 26.084187728120536,
+          "paired_anchor_bootstrap_95_CI": [
+            10.203870699260762,
+            41.308859680311265
+          ],
+          "probability_neighbor_worse": 0.9995
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0,
+        "30": 0.0005,
+        "32.5": 0.0015,
+        "35": 0.3635,
+        "40": 0.634,
+        "45": 0.0005,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "same_steps_12": {
+      "selected_cutoff_db": 32.5,
+      "numerical_error_to_smallest_margin_ratio": 2.468581576715122e-10,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 30.0,
+          "mean_NLL_above_selected": 0.0036842805210560202,
+          "paired_anchor_bootstrap_95_CI": [
+            -0.0026978013025308134,
+            0.01044539808780671
+          ],
+          "probability_neighbor_worse": 0.8605
+        },
+        {
+          "cutoff_db": 35.0,
+          "mean_NLL_above_selected": 0.020985973399424155,
+          "paired_anchor_bootstrap_95_CI": [
+            0.0012125655377680986,
+            0.044440710874494985
+          ],
+          "probability_neighbor_worse": 0.98125
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0,
+        "30": 0.1395,
+        "32.5": 0.84175,
+        "35": 0.01875,
+        "40": 0.0,
+        "45": 0.0,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "em100_12": {
+      "selected_cutoff_db": 30.0,
+      "numerical_error_to_smallest_margin_ratio": 6.920368864453318e-10,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 0.002628457296386541,
+          "paired_anchor_bootstrap_95_CI": [
+            -2.653078454447205e-05,
+            0.005169681038854179
+          ],
+          "probability_neighbor_worse": 0.97325
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.00703201664680248,
+          "paired_anchor_bootstrap_95_CI": [
+            0.002238339326904489,
+            0.012577039209068091
+          ],
+          "probability_neighbor_worse": 0.99775
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.02675,
+        "30": 0.971,
+        "32.5": 0.00225,
+        "35": 0.0,
+        "40": 0.0,
+        "45": 0.0,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "same_steps_20": {
+      "selected_cutoff_db": 35.0,
+      "numerical_error_to_smallest_margin_ratio": 4.8718818176746826e-11,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.018668242289321874,
+          "paired_anchor_bootstrap_95_CI": [
+            -0.01106576882090688,
+            0.057771263853094064
+          ],
+          "probability_neighbor_worse": 0.87025
+        },
+        {
+          "cutoff_db": 40.0,
+          "mean_NLL_above_selected": 0.6861862767712132,
+          "paired_anchor_bootstrap_95_CI": [
+            0.278560692195863,
+            1.2309516533249263
+          ],
+          "probability_neighbor_worse": 1.0
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0,
+        "30": 0.0,
+        "32.5": 0.12975,
+        "35": 0.87025,
+        "40": 0.0,
+        "45": 0.0,
+        "50": 0.0,
+        "60": 0.0
+      }
+    },
+    "em100_20": {
+      "selected_cutoff_db": 30.0,
+      "numerical_error_to_smallest_margin_ratio": 2.831348164241725e-10,
+      "neighboring_cutoffs": [
+        {
+          "cutoff_db": 27.5,
+          "mean_NLL_above_selected": 0.0032122319439880816,
+          "paired_anchor_bootstrap_95_CI": [
+            -0.00015020331954729925,
+            0.006308146040657704
+          ],
+          "probability_neighbor_worse": 0.9695
+        },
+        {
+          "cutoff_db": 32.5,
+          "mean_NLL_above_selected": 0.006787824921581423,
+          "paired_anchor_bootstrap_95_CI": [
+            0.00032098768161707155,
+            0.013924197886216263
+          ],
+          "probability_neighbor_worse": 0.981
+        }
+      ],
+      "bootstrap_winner_frequencies": {
+        "20": 0.0,
+        "22.5": 0.0,
+        "25": 0.0,
+        "27.5": 0.0305,
+        "30": 0.9505,
+        "32.5": 0.019,
+        "35": 0.0,
+        "40": 0.0,
+        "45": 0.0,
+        "50": 0.0,
+        "60": 0.0
+      }
+    }
+  }
+}

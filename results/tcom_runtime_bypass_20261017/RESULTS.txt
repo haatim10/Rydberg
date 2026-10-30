@@ -1,0 +1,137 @@
+Runtime-matched sparse comparison and high-SNR bypass: completed evidence
+
+At similar measured runtime, the learned estimator has a 1.139 dB advantage on the prespecified equal-cell NMSE score. Sparse remains better at low SNR, on pooled linear NMSE, and on aggregate BER. This supports a conditional efficiency claim, not universal superiority.
+Measured p90 latency: learned 5.292 ms; matched sparse 4.891 ms. BER: learned 1.36188%; matched sparse 1.29510%.
+
+The high-SNR safeguard is implemented and tested with separate development and test channels. It preserves the original ordinary-range estimator and switches to unfiltered ten-step inference or EM100 using only known receiver quantities. The detailed report includes intermediate-SNR losses, finite-iteration limits, noise sensitivity, latency, and conditional uncertainty.
+
+Material exception: the fast ten-step bypass worsens the two-path, RSR 5 dB, SNR 45 dB cell by about 6.08 dB. The separate EM100 fallback has no negative cell-level mean gain on the tested grid and is the better-supported candidate for the paper, with its additional runtime and calibration limits stated. Neither result establishes a universal guarantee.
+
+For the merged paper: present runtime versus accuracy with the low-SNR/BER tradeoff, followed by the calibrated bypass as an operating-range safeguard. Describe it as an engineering extension to the frozen model. These experiments strengthen the empirical evidence but do not by themselves establish publication novelty or acceptance readiness.
+
+Frozen checkpoints and original manuscript/source files were not edited. New implementation: tcom_runtime_bypass_20261017/. All artifacts for this study: results/tcom_runtime_bypass_20261017/.
+
+========================================================================
+
+Completed runtime-matched sparse comparison
+
+The optimized sparse solver was validated against the original solver to numerical precision. It retains the exact Rician likelihood, spectral initialization, angle dictionary and monotone FISTA sparse fit; FFTs and cached quadratic calculations reduce implementation overhead.
+
+Controls were selected from 180 fresh development channel realizations using only 21 fitting and 9 held-out pilot magnitudes. Candidate families span 64/128/256 dictionary atoms, 1/2/4/8/16/25 inner updates, and 2/4/8/12/20/40/80/100 outer updates. The receiver selects settings from known noise variance; it does not receive true path count or channel.
+
+The matched cap was 5.460 ms, the learned model's calibrated p90 latency. Separate fresh timing verifies every selected estimator. Timings below include initialization, observation-dependent setup and parameter dispatch, use one CPU thread and float64/complex128, and exclude loading models and generating data. They are implementation measurements, not hard deadlines.
+
+Method | fresh p90 ms | equal-cell mean NMSE dB | pooled linear-error NMSE dB | BER %
+Learned model, mean of three separate fits | 5.292 | -20.190 | -15.387 | 1.36188
+Sparse, matched budget | 4.891 | -19.051 | -15.892 | 1.29510
+Sparse, 10 ms budget | 9.168 | -19.635 | -16.144 | 1.28662
+Sparse, 20 ms budget | 17.946 | -20.145 | -16.317 | 1.28255
+Sparse, 50 ms budget | 49.846 | -20.568 | -16.382 | 1.28140
+Sparse, full 100 x 25 | 107.672 | -20.573 | -16.351 | 1.29150
+
+The learned model's advantage on the prespecified equal-cell dB criterion is 1.139 dB (simultaneous 95% interval [1.049, 1.232]). The observed sparse-20-ms aggregate channel error is similar; its difference interval includes zero, which is not a formal equivalence result.
+
+The conclusion depends on operating conditions and the metric. Sparse wins at 0 dB and mostly at 5 dB; the learned model wins every tested 10, 15 and 20 dB channel-error cell. Averaging each condition in dB gives those conditions equal weight. Pooling squared errors instead makes the noisiest cells dominate and favors matched sparse. Aggregate BER also favors matched sparse. The report therefore does not claim overall or uniform superiority for the learned estimator.
+
+Learned aggregate BER: 1.36188%. Matched sparse BER: 1.29510%. Relative bit-error reduction from matched sparse: 4.90%.
+
+Test scope: 960 new channel realizations, 64 per condition; SNR 0/5/10/15/20 dB; RSR 12 dB; 2, 4 or random 3-7 paths per user; N=32, K=3, P=30. Every estimator uses the same pilot observations and the same exact magnitude-domain QPSK detector on 1,474,560 bits per estimator. Three learned fits are evaluated separately, not ensembled or counted as extra independent data.
+
+Bootstrap intervals preserve repeated path-count vectors by sharing case resamples across SNR within each regime: 192 resampling clusters. They condition on the trained fits and selected controls. Rare-error claims remain limited by the number of channel realizations.
+
+All pooled p90 caps passed. The 50 ms arm slightly exceeded 50 ms in three individual SNR strata (about 50.04-50.24 ms); these measurements were retained and controls were not reselected.
+
+Checks passed: original and optimized solver parity, finite-difference gradient, exact zero-penalty EM equivalence, a deliberately triggered FISTA restart, eligibility and validation winner checks, unchanged checkpoint/source hashes, raw-error recomputation and 150 single-case prediction replays.
+
+Paper implication: the strongest measured advantage is efficient moderate/high-SNR channel estimation. Include the low-SNR and BER results as well as the runtime curve; the primary NMSE score alone would hide an important tradeoff.
+
+Figures: runtime/runtime_accuracy.png; runtime/nmse_by_snr.png; runtime_ber/runtime_ber.png.
+Full values and uncertainty: runtime/nmse_summary.json; runtime/final_timing.json; runtime_ber/summary.json.
+Audit: runtime_audit.json. Protocol, frozen selections, per-world predictions and bit counts are retained.
+
+========================================================================
+
+Completed high-SNR bypass experiment
+
+This is a separately calibrated engineering safeguard around the frozen estimator. No neural weights were trained or changed. At inference it uses only the supplied noise variance, number of users, and known reference power. It executes one branch per channel realization; it does not run both candidates and pick using the true channel.
+
+The nominal SNR proxy is 10 log10(K / supplied noise variance), using the existing unit-power-per-user normalization. Reference power selects the nearest bin in {5, 12, 20} dB. Filtering remains unchanged at or below the selected cutoff; the fallback is used strictly above it. A separate guard preserves the original estimator at proxy SNR <=20 dB.
+
+Reference strength dB | ten-step cutoff dB | EM100 cutoff dB
+5 | 40 | 40
+12 | 32.5 | 30
+20 | 35 | 30
+
+Calibration used 216 new development anchors: 24 per path regime/reference pair. For each anchor, 21 pilot magnitudes were available for initialization and fitting; nine were withheld for exact Rician likelihood scoring. The same cutoff is shared across all path regimes and all three trained fits. The 13-point SNR grid spans 10 to 60 dB. Both policy tables and all development losses were frozen before generating the fresh test bank.
+
+Test scope: 576 channel/reference anchors, 7488 condition-cases over 117 cells. Within an anchor, the channel, pilots, reference and standardized noise remain fixed across SNR. The repeated SNR cases are not independent channel draws. Confidence intervals resample 192 case-index clusters, sharing indices across SNR and reference within each path regime; trained fits and selected policies are held fixed.
+
+Equal-cell NMSE over the prespecified high-SNR grid (SNR >20 dB; lower is better)
+Method | mean NMSE dB
+Original learned estimator | -27.099
+Always disable filtering; same ten learned steps | -32.095
+Calibrated ten-step bypass | -35.059
+Always exact EM100 | -36.873
+Calibrated EM100 fallback | -38.814
+Calibrated ten-step bypass: gain over original 7.961 dB; simultaneous 95% interval [7.670, 8.402].
+Calibrated EM100 fallback: gain over original 11.715 dB; simultaneous 95% interval [11.350, 13.245].
+
+Concrete example: random 3-7 paths per user, RSR 12 dB, SNR 60 dB
+Method | NMSE dB | fresh batch-one p90 ms at this SNR/reference (pooled path regimes)
+Original learned estimator | -6.746 | 4.826
+Always disable filtering; same ten learned steps | -43.983 | 1.820
+Calibrated ten-step bypass | -43.983 | 1.856
+Always exact EM100 | -66.015 | 5.222
+Calibrated EM100 fallback | -66.015 | 5.261
+
+All reference/path conditions at SNR 60 dB
+Reference dB | path regime | original NMSE dB | fast bypass NMSE dB | EM100 fallback NMSE dB
+5 | L2 | -10.568 | -19.565 | -26.899
+12 | L2 | -10.668 | -48.656 | -65.883
+20 | L2 | -10.935 | -43.806 | -65.694
+5 | L4 | -6.670 | -19.854 | -29.795
+12 | L4 | -7.487 | -47.040 | -65.877
+20 | L4 | -7.965 | -47.167 | -65.625
+5 | random3to7 | -5.635 | -18.912 | -21.729
+12 | random3to7 | -6.746 | -43.983 | -66.015
+20 | random3to7 | -7.039 | -47.917 | -65.786
+
+The weak-reference RSR 5 dB cases retain substantial error floors even with EM100. The 12 dB example must not be generalized to every reference strength.
+
+Same-window branch p90 timings: original estimator directly 4.806 ms; fast bypass's filtered branch 4.897 ms and unfiltered branch 1.879 ms; EM100 bypass's filtered branch 4.892 ms and EM100 branch 5.272 ms.
+
+Implementation distinction: the EM100 reference point in the first runtime figure uses the original Torch implementation (13.27 ms). This bypass uses the numerically equivalent optimized NumPy/SciPy implementation (about 5.25 ms direct in the new timing window). The original timing is not an unavoidable cost of EM100. Optimized zero-penalty EM was also eligible in the runtime-matched candidate search. Cross-study timings use different input grids and windows; compare branches within the same window.
+
+All tested 10/15/20 dB predictions are bitwise identical to the original estimator under correctly supplied noise. The ordinary-range BER therefore remains unchanged for the same detector and data. A new high-SNR BER claim is not made here.
+
+Remaining limitations and costs
+Calibrated ten-step bypass: 1 of 117 cells have worse point-estimate NMSE than the original; 1 have pointwise 95% intervals wholly on the harmful side.
+Material exception: L2_rsr5_snr45, original -25.619 dB versus bypass -19.539 dB. Gain -6.080 dB; pointwise 95% interval [-8.155, -1.839]. This variant should not be described as a universally safe improvement.
+Largest high-SNR penalty versus always disabling filtering: 9.161 dB at random3to7_rsr20_snr35; pointwise 95% interval [7.495, 10.551]. The validation-selected cutoff was retained without test-based adjustment.
+Calibrated EM100 fallback: 0 of 117 cells have worse point-estimate NMSE than the original; 0 have pointwise 95% intervals wholly on the harmful side.
+Largest high-SNR penalty versus always disabling filtering: 3.048 dB at random3to7_rsr20_snr30; pointwise 95% interval [2.314, 3.734]. The validation-selected cutoff was retained without test-based adjustment.
+In the 60 dB example, ten unfiltered learned steps still trail exact EM100 by 22.031 dB. Disabling filtering removes the harmful filter action but does not remove the finite-iteration error. The EM100 fallback addresses that limitation at a separately measured computation cost.
+
+Supplied-noise sensitivity (RSR 12 dB, random 3-7 paths, same 64 fresh anchors)
+Actual SNR | supplied variance error dB | receiver SNR proxy | fast bypass fraction | fast-bypass NMSE dB | EM100-bypass NMSE dB
+20 | -3 | 23 | 0% | -28.452 | -28.452
+20 | +0 | 20 | 0% | -28.924 | -28.924
+20 | +3 | 17 | 0% | -29.118 | -29.118
+30 | -3 | 33 | 100% | -35.376 | -36.011
+30 | +0 | 30 | 0% | -33.200 | -33.200
+30 | +3 | 27 | 0% | -33.975 | -33.975
+60 | -3 | 63 | 100% | -43.983 | -66.015
+60 | +0 | 60 | 100% | -43.983 | -66.015
+60 | +3 | 57 | 100% | -43.983 | -66.015
+
+A positive supplied-variance error means the receiver assumes more noise than was actually present, reducing its SNR proxy. The guarantee through 20 dB applies to that proxy, not to unknown actual SNR when noise is miscalibrated. These nine diagnostic cells do not establish robustness to arbitrary mismatch. Threshold transfer beyond the tested dimensions, reference bins, channel distribution and power normalization also remains unverified.
+
+Development-only resampling also shows cutoff-selection uncertainty: at RSR 5, EM100 selects the frozen 40 dB cutoff in 63.4% of resamples and 35 dB in 36.35%. The test confidence intervals condition on the selected policy and do not include this calibration uncertainty. Centered and compensated likelihood summation confirm that numerical cancellation does not explain the selected thresholds.
+
+Timing includes initialization and observable-only dispatch, with preloaded models and one requested CPU thread in float64/complex128. The filtered and unfiltered branches each retain their own computational cost. There is no simultaneous dual inference or online held-out pilot scoring. These local p90 timings are not hard real-time guarantees.
+
+Checks passed: identical frozen checkpoint states; exact ordinary-range preservation; filter-off equivalence to a zero gate; high-SNR EM100 numerical parity; heterogeneous batch dispatch; one branch per world; independent cutoff recomputation; unchanged source/checkpoint/development hashes; policy frozen before test; raw test-error recomputation and fresh dispatch replays.
+
+Figures: bypass/bypass_nmse.png, bypass/bypass_gain.png, bypass_noise_sensitivity/noise_sensitivity.png.
+Full results: bypass/summary.json, bypass/timing.json, bypass_noise_sensitivity/summary.json, bypass/validation_diagnostic.json. Raw predictions and losses are retained.
+Independent audits: bypass_audit/audit.json and bypass_audit/study_audit.json.

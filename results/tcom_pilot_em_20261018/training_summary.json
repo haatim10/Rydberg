@@ -1,0 +1,378 @@
+{
+  "version": 1,
+  "completed_at": "2026-10-18T17:06:12.863420+00:00",
+  "config": {
+    "version": 1,
+    "N": 32,
+    "K": 3,
+    "generated_P": 39,
+    "heldout_P": 9,
+    "contexts": {
+      "context21": 21,
+      "context30": 30
+    },
+    "deployment_P": 30,
+    "stages": 10,
+    "train_cases": 16384,
+    "val_cases": 2048,
+    "epochs": 20,
+    "batch_size": 32,
+    "lr": 0.001,
+    "seeds": [
+      9101,
+      9102,
+      9103
+    ],
+    "snrs": [
+      -10,
+      -5,
+      0,
+      5,
+      10,
+      15,
+      20
+    ],
+    "rsrs": [
+      5,
+      12,
+      20
+    ],
+    "fixed_paths": [
+      2,
+      4,
+      8,
+      12,
+      16
+    ],
+    "train_data_seed": 2026101801,
+    "val_data_seed": 2026101802,
+    "validation_mask_seed": 2026101810,
+    "smoke_seed": 2026101800,
+    "training_mixture": "half random per-user 3..7; half evenly allocated fixed 2,4,8,12,16",
+    "training_weighting": "equal weight per case, preserving previous training mixture",
+    "validation_weighting": "equal means across 126 SNR/RSR/path-regime strata",
+    "checkpoint_selection": "minimum held-out exact Rician NLL with 30 fitting and 9 held-out pilots for BOTH arms; 21-context score diagnostic only",
+    "paired_protocol": "same 39 observations, same 9 held-out columns, context21 nested in context30, same initialization and epoch order per training seed",
+    "interpretation": "fresh paired controlled retraining; context21 is not an exact reproduction of the old checkpoint-selection procedure, which validated at context21",
+    "training_precision": "float32/complex64",
+    "evaluation_precision": "float64/complex128",
+    "training_only_extra_observations": true,
+    "channel_truth_used_for_training": false,
+    "optimizer": "Adam defaults except lr=.001",
+    "threads_per_worker": 1
+  },
+  "protocol_sha256": "5d4619780a491d8dd8cf65a00e88a4f1a5a1074a720078c9c6ff4a4b603e8b6e",
+  "source_hashes_verified": true,
+  "data_manifest_hashes": {
+    "train": "37dfede70c2fcd762ba4e1dc7df27cdd25cd4403faac48ddd059434fc8ffe158",
+    "val": "7f057d7acec2d43798c8817908fa2ed82dc357b938bebb7d423caebbac90c0a2"
+  },
+  "all_120_epochs_complete": true,
+  "total_optimizer_updates": 61440,
+  "elapsed_training_phase_seconds_from_first_log_to_last_completion": 3623.484892845154,
+  "measured_training_loop_wall_seconds_sum": 9443.538288920303,
+  "timing_interpretation": "Training-loop durations exclude validation and overlap across workers; phase elapsed includes loading, validation and checkpointing. These are not inference latency measurements.",
+  "workers": [
+    {
+      "seed": 9101,
+      "completed_at": "2026-10-18T17:03:31.363672+00:00",
+      "log_created_at": "2026-10-18T16:05:49.378555+00:00",
+      "process_elapsed_seconds_from_log_creation": 3461.9851171970367
+    },
+    {
+      "seed": 9102,
+      "completed_at": "2026-10-18T17:03:28.907935+00:00",
+      "log_created_at": "2026-10-18T16:05:49.378527+00:00",
+      "process_elapsed_seconds_from_log_creation": 3459.5294077396393
+    },
+    {
+      "seed": 9103,
+      "completed_at": "2026-10-18T17:06:12.863420+00:00",
+      "log_created_at": "2026-10-18T16:08:34.343242+00:00",
+      "process_elapsed_seconds_from_log_creation": 3458.5201783180237
+    }
+  ],
+  "checkpoints": [
+    {
+      "seed": 9101,
+      "arm": "context21",
+      "selected_epoch": 20,
+      "epochs_completed": 20,
+      "minimum_common_context30_validation_nll": 3.3282286731797037,
+      "selected_context21_diagnostic_nll": 3.3650909904229804,
+      "final_epoch_context30_validation_nll": 3.3282286731797037,
+      "optimizer_updates": 10240,
+      "training_loop_wall_seconds": 1514.4026638341602,
+      "parameters": 188,
+      "checkpoint": "results/tcom_pilot_em_20261018/checkpoints/context21/seed_9101/em_adaptive_best.pt",
+      "checkpoint_sha256": "9e1070eb13d636e7ab4076e7989d9594ab43f37fa2d45b3132b24d1dc9e200b1",
+      "latest_checkpoint_sha256": "2b416c1f1fd16988531c859e080cb4dea2d0c001e408fc92a5a262edceb26b7c",
+      "initial_state_sha256": "8abdf56b32f384145de7bd06227c21e44265af57a4baeeac81fd1c6955f8e277",
+      "epoch_mask_order_evidence_sha256": "6ad4b5ecaa4287c5bcf4175c54c17d684dfb96b8d642f254960eab3beb61eece",
+      "learned_gamma_by_stage": [
+        1.8460826304865678,
+        1.7873888993546165,
+        1.7871052797118965,
+        1.8205501127574677,
+        1.8716022880572127,
+        1.9122612166906916,
+        1.9256811822616904,
+        1.9288549844467622,
+        1.9112843035175944,
+        1.5618185982762134
+      ]
+    },
+    {
+      "seed": 9101,
+      "arm": "context30",
+      "selected_epoch": 19,
+      "epochs_completed": 20,
+      "minimum_common_context30_validation_nll": 3.3273797626794934,
+      "selected_context21_diagnostic_nll": 3.371548786970051,
+      "final_epoch_context30_validation_nll": 3.3274338523834333,
+      "optimizer_updates": 10240,
+      "training_loop_wall_seconds": 1635.4499260018347,
+      "parameters": 188,
+      "checkpoint": "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt",
+      "checkpoint_sha256": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+      "latest_checkpoint_sha256": "10d695fa68074703ccf1d6283f23828a808b3bfcf1a7b3a9cfc6f773afcc4801",
+      "initial_state_sha256": "8abdf56b32f384145de7bd06227c21e44265af57a4baeeac81fd1c6955f8e277",
+      "epoch_mask_order_evidence_sha256": "6ad4b5ecaa4287c5bcf4175c54c17d684dfb96b8d642f254960eab3beb61eece",
+      "learned_gamma_by_stage": [
+        1.7870194074540575,
+        1.7147329733013816,
+        1.7463647664419086,
+        1.7909060286049219,
+        1.8200865914036664,
+        1.8467973076568658,
+        1.8655989730365952,
+        1.859181280204922,
+        1.7735566329073584,
+        1.2004620908130363
+      ]
+    },
+    {
+      "seed": 9102,
+      "arm": "context21",
+      "selected_epoch": 16,
+      "epochs_completed": 20,
+      "minimum_common_context30_validation_nll": 3.353724164206399,
+      "selected_context21_diagnostic_nll": 3.3728521310897586,
+      "final_epoch_context30_validation_nll": 3.356903598840227,
+      "optimizer_updates": 10240,
+      "training_loop_wall_seconds": 1509.738669874263,
+      "parameters": 188,
+      "checkpoint": "results/tcom_pilot_em_20261018/checkpoints/context21/seed_9102/em_adaptive_best.pt",
+      "checkpoint_sha256": "11e8e04050524ebbceb170c2716753a54d91211371009adebc90460a82dc0089",
+      "latest_checkpoint_sha256": "90e3c8415515bf0b57e4dc14f01344f2e860f3550e8e5adeae291bf356a229a2",
+      "initial_state_sha256": "004cfec4bcb674a31a3d10d6fa01fe4767a30869ef0fecbd69a53ad8b72ee92a",
+      "epoch_mask_order_evidence_sha256": "2960f75974f5655fc12fb444210a173e131b612b2bfaa30d4de04b60c5c0e1cb",
+      "learned_gamma_by_stage": [
+        1.5319160404835128,
+        1.509400197529008,
+        1.4968796820286903,
+        1.5526463963517316,
+        1.691301644388301,
+        1.8261175950061777,
+        1.858771068043981,
+        1.887681635716674,
+        1.8722902161530772,
+        1.6559974143198368
+      ]
+    },
+    {
+      "seed": 9102,
+      "arm": "context30",
+      "selected_epoch": 20,
+      "epochs_completed": 20,
+      "minimum_common_context30_validation_nll": 3.3287453136915257,
+      "selected_context21_diagnostic_nll": 3.3812076120251424,
+      "final_epoch_context30_validation_nll": 3.3287453136915257,
+      "optimizer_updates": 10240,
+      "training_loop_wall_seconds": 1637.5336131668882,
+      "parameters": 188,
+      "checkpoint": "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt",
+      "checkpoint_sha256": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+      "latest_checkpoint_sha256": "6672ee8426779e4a517808a89ea09eb3b4bb5ff0233cfacb5c7c854c64d9a1c6",
+      "initial_state_sha256": "004cfec4bcb674a31a3d10d6fa01fe4767a30869ef0fecbd69a53ad8b72ee92a",
+      "epoch_mask_order_evidence_sha256": "2960f75974f5655fc12fb444210a173e131b612b2bfaa30d4de04b60c5c0e1cb",
+      "learned_gamma_by_stage": [
+        1.6374834934638685,
+        1.6355862700499946,
+        1.6457062554166764,
+        1.684818770729221,
+        1.7573430117963547,
+        1.8506396618285748,
+        1.8931726565986948,
+        1.891652540385412,
+        1.8077337194208989,
+        1.197624260646298
+      ]
+    },
+    {
+      "seed": 9103,
+      "arm": "context21",
+      "selected_epoch": 20,
+      "epochs_completed": 20,
+      "minimum_common_context30_validation_nll": 3.3292878450738455,
+      "selected_context21_diagnostic_nll": 3.3715611855977428,
+      "final_epoch_context30_validation_nll": 3.3292878450738455,
+      "optimizer_updates": 10240,
+      "training_loop_wall_seconds": 1518.3577517499216,
+      "parameters": 188,
+      "checkpoint": "results/tcom_pilot_em_20261018/checkpoints/context21/seed_9103/em_adaptive_best.pt",
+      "checkpoint_sha256": "70bb0e1f6ee8902b5408e19233f77981b14e3f95ffd06ff25d3e6970aa806d81",
+      "latest_checkpoint_sha256": "e1a2a2e68b87e32c13cec567cb4ad953b26b8f2fbb7ff972f296cd0a3b3c6ce9",
+      "initial_state_sha256": "77af15fb286b45c6f9a9bd342107e6fc3ea8c9d70eb1fd743af0e8e1ff3efebd",
+      "epoch_mask_order_evidence_sha256": "3ab5d486d4632a40e2e85cc5a8c18a5121a53c4aee6f46797fc44fc93ebf7b15",
+      "learned_gamma_by_stage": [
+        1.3478404189028406,
+        1.7056065180653592,
+        1.7934769213647335,
+        1.7971304166800912,
+        1.8246524113062619,
+        1.8778008132004396,
+        1.9313216874633787,
+        1.954220095811998,
+        1.949570322609015,
+        1.8564508241761464
+      ]
+    },
+    {
+      "seed": 9103,
+      "arm": "context30",
+      "selected_epoch": 19,
+      "epochs_completed": 20,
+      "minimum_common_context30_validation_nll": 3.3275521261587437,
+      "selected_context21_diagnostic_nll": 3.3673954574667393,
+      "final_epoch_context30_validation_nll": 3.327753209532052,
+      "optimizer_updates": 10240,
+      "training_loop_wall_seconds": 1628.0556642932352,
+      "parameters": 188,
+      "checkpoint": "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt",
+      "checkpoint_sha256": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c",
+      "latest_checkpoint_sha256": "663f8e89928134eff8b8c7053ca20602aaa43a4b1e7c89d2b6d47fdcdcbb8dd1",
+      "initial_state_sha256": "77af15fb286b45c6f9a9bd342107e6fc3ea8c9d70eb1fd743af0e8e1ff3efebd",
+      "epoch_mask_order_evidence_sha256": "3ab5d486d4632a40e2e85cc5a8c18a5121a53c4aee6f46797fc44fc93ebf7b15",
+      "learned_gamma_by_stage": [
+        1.6672708592984813,
+        1.7280483688448376,
+        1.7361706116528286,
+        1.7447642748876286,
+        1.7793785554758865,
+        1.8247569271317683,
+        1.8576193616082846,
+        1.856059582799197,
+        1.7717465931347842,
+        1.241724255870765
+      ]
+    }
+  ],
+  "paired_audit": [
+    {
+      "seed": 9101,
+      "initial_states_identical": true,
+      "epoch_masks_and_orders_identical": true,
+      "validation_masks_identical": true,
+      "number_of_paired_epochs": 20,
+      "matched30_minus_context21_validation_nll": -0.0008489105002102981,
+      "selected_parameter_l2_difference": 11.635341768861569,
+      "selected_parameter_relative_l2_difference": 0.6219811538905583,
+      "per_parameter_differences": {
+        "steps": {
+          "l2_difference": 1.8630271084004533,
+          "maximum_absolute_difference": 1.0118465423583984
+        },
+        "net.0.weight": {
+          "l2_difference": 11.39917474985009,
+          "maximum_absolute_difference": 7.829168796539307
+        },
+        "net.0.bias": {
+          "l2_difference": 0.1742339115321085,
+          "maximum_absolute_difference": 0.06674280762672424
+        },
+        "net.2.weight": {
+          "l2_difference": 1.3909283970410848,
+          "maximum_absolute_difference": 0.7957265302538872
+        },
+        "net.2.bias": {
+          "l2_difference": 0.06390486942896045,
+          "maximum_absolute_difference": 0.06049370765686035
+        }
+      },
+      "parameter_diagnostic_note": "Compares independently selected best checkpoints; differences describe parameters, not a causal mechanism or test performance."
+    },
+    {
+      "seed": 9102,
+      "initial_states_identical": true,
+      "epoch_masks_and_orders_identical": true,
+      "validation_masks_identical": true,
+      "number_of_paired_epochs": 20,
+      "matched30_minus_context21_validation_nll": -0.02497885051487314,
+      "selected_parameter_l2_difference": 12.627946341003367,
+      "selected_parameter_relative_l2_difference": 0.6915022745751038,
+      "per_parameter_differences": {
+        "steps": {
+          "l2_difference": 1.5476192650303782,
+          "maximum_absolute_difference": 1.1709915101528168
+        },
+        "net.0.weight": {
+          "l2_difference": 12.499907428277703,
+          "maximum_absolute_difference": 10.612863540649414
+        },
+        "net.0.bias": {
+          "l2_difference": 0.43907533778998015,
+          "maximum_absolute_difference": 0.33122115582227707
+        },
+        "net.2.weight": {
+          "l2_difference": 0.7887019554950836,
+          "maximum_absolute_difference": 0.47045890986919403
+        },
+        "net.2.bias": {
+          "l2_difference": 0.0859055260029862,
+          "maximum_absolute_difference": 0.08280682563781738
+        }
+      },
+      "parameter_diagnostic_note": "Compares independently selected best checkpoints; differences describe parameters, not a causal mechanism or test performance."
+    },
+    {
+      "seed": 9103,
+      "initial_states_identical": true,
+      "epoch_masks_and_orders_identical": true,
+      "validation_masks_identical": true,
+      "number_of_paired_epochs": 20,
+      "matched30_minus_context21_validation_nll": -0.0017357189151017138,
+      "selected_parameter_l2_difference": 18.166247090767367,
+      "selected_parameter_relative_l2_difference": 0.8917669006669715,
+      "per_parameter_differences": {
+        "steps": {
+          "l2_difference": 3.166144579755021,
+          "maximum_absolute_difference": 2.066534996032715
+        },
+        "net.0.weight": {
+          "l2_difference": 17.81719317893124,
+          "maximum_absolute_difference": 12.998415470123291
+        },
+        "net.0.bias": {
+          "l2_difference": 0.43790679350831757,
+          "maximum_absolute_difference": 0.25496038608253
+        },
+        "net.2.weight": {
+          "l2_difference": 1.5298067546315859,
+          "maximum_absolute_difference": 0.8925850093364716
+        },
+        "net.2.bias": {
+          "l2_difference": 0.060149989447992644,
+          "maximum_absolute_difference": 0.05330073833465576
+        }
+      },
+      "parameter_diagnostic_note": "Compares independently selected best checkpoints; differences describe parameters, not a causal mechanism or test performance."
+    }
+  ],
+  "environment_file": "results/tcom_pilot_em_20261018/training_environment.json",
+  "mean_selected_validation_nll_by_arm": {
+    "context21": 3.33708022748665,
+    "context30": 3.327892400843254
+  },
+  "interpretation": "Validation diagnostics only. Frozen test channel error/BER and independent audit are reported separately. Context21 is fresh controlled retraining; both arms share context30 checkpoint selection."
+}

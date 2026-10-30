@@ -1,0 +1,527 @@
+{
+  "version": 1,
+  "name": "Noise-scaled Hankel refinement with four-incumbent observable channel-risk guards",
+  "smoke_seed": 2026101940,
+  "development_seed": 2026101941,
+  "test_seed": 2026101942,
+  "data_seed": 2026101943,
+  "timing_seed": 2026101944,
+  "holdout_seed": 2026101945,
+  "N": 32,
+  "K": 3,
+  "context_P": 30,
+  "heldout_P": 9,
+  "deployment_P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "model_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "development_target_count": 384,
+  "test_cases_per_reference_regime": 128,
+  "menu": [
+    "original",
+    "warm1",
+    "warm2",
+    "warm3",
+    "warm4",
+    "warm5",
+    "warm8",
+    "warm10",
+    "warm12",
+    "warm20",
+    "warm40",
+    "warm100",
+    "spectral100",
+    "blend_original_warm3_0.25",
+    "blend_original_warm3_0.5",
+    "blend_original_warm3_0.75",
+    "blend_warm2_warm3_0.25",
+    "blend_warm2_warm3_0.5",
+    "blend_warm2_warm3_0.75",
+    "blend_warm5_warm20_0.25",
+    "blend_warm5_warm20_0.5",
+    "blend_warm5_warm20_0.75",
+    "blend_warm20_spectral100_0.25",
+    "blend_warm20_spectral100_0.5",
+    "blend_warm20_spectral100_0.75",
+    "blend_warm5_spectral100_0.25",
+    "blend_warm5_spectral100_0.5",
+    "blend_warm5_spectral100_0.75",
+    "shrink_c0.5_beta0.5",
+    "shrink_c0.5_beta1",
+    "shrink_c1_beta0.5",
+    "shrink_c1_beta1",
+    "shrink_c2_beta0.5",
+    "shrink_c2_beta1",
+    "shrink_c4_beta0.5",
+    "shrink_c4_beta1"
+  ],
+  "candidate_configs": {
+    "original": {
+      "kind": "continuation",
+      "steps": 0
+    },
+    "warm1": {
+      "kind": "continuation",
+      "steps": 1
+    },
+    "warm2": {
+      "kind": "continuation",
+      "steps": 2
+    },
+    "warm3": {
+      "kind": "continuation",
+      "steps": 3
+    },
+    "warm4": {
+      "kind": "continuation",
+      "steps": 4
+    },
+    "warm5": {
+      "kind": "continuation",
+      "steps": 5
+    },
+    "warm8": {
+      "kind": "continuation",
+      "steps": 8
+    },
+    "warm10": {
+      "kind": "continuation",
+      "steps": 10
+    },
+    "warm12": {
+      "kind": "continuation",
+      "steps": 12
+    },
+    "warm20": {
+      "kind": "continuation",
+      "steps": 20
+    },
+    "warm40": {
+      "kind": "continuation",
+      "steps": 40
+    },
+    "warm100": {
+      "kind": "continuation",
+      "steps": 100
+    },
+    "spectral100": {
+      "kind": "spectral",
+      "steps": 100
+    },
+    "blend_original_warm3_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "original",
+      "right": "warm3",
+      "weight_second": 0.25
+    },
+    "blend_original_warm3_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "original",
+      "right": "warm3",
+      "weight_second": 0.5
+    },
+    "blend_original_warm3_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "original",
+      "right": "warm3",
+      "weight_second": 0.75
+    },
+    "blend_warm2_warm3_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm2",
+      "right": "warm3",
+      "weight_second": 0.25
+    },
+    "blend_warm2_warm3_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm2",
+      "right": "warm3",
+      "weight_second": 0.5
+    },
+    "blend_warm2_warm3_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm2",
+      "right": "warm3",
+      "weight_second": 0.75
+    },
+    "blend_warm5_warm20_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "warm20",
+      "weight_second": 0.25
+    },
+    "blend_warm5_warm20_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "warm20",
+      "weight_second": 0.5
+    },
+    "blend_warm5_warm20_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "warm20",
+      "weight_second": 0.75
+    },
+    "blend_warm20_spectral100_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm20",
+      "right": "spectral100",
+      "weight_second": 0.25
+    },
+    "blend_warm20_spectral100_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm20",
+      "right": "spectral100",
+      "weight_second": 0.5
+    },
+    "blend_warm20_spectral100_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm20",
+      "right": "spectral100",
+      "weight_second": 0.75
+    },
+    "blend_warm5_spectral100_0.25": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "spectral100",
+      "weight_second": 0.25
+    },
+    "blend_warm5_spectral100_0.5": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "spectral100",
+      "weight_second": 0.5
+    },
+    "blend_warm5_spectral100_0.75": {
+      "kind": "convex_channel_blend",
+      "left": "warm5",
+      "right": "spectral100",
+      "weight_second": 0.75
+    },
+    "shrink_c0.5_beta0.5": {
+      "kind": "noise_scaled_hankel",
+      "c": 0.5,
+      "beta": 0.5
+    },
+    "shrink_c0.5_beta1": {
+      "kind": "noise_scaled_hankel",
+      "c": 0.5,
+      "beta": 1.0
+    },
+    "shrink_c1_beta0.5": {
+      "kind": "noise_scaled_hankel",
+      "c": 1.0,
+      "beta": 0.5
+    },
+    "shrink_c1_beta1": {
+      "kind": "noise_scaled_hankel",
+      "c": 1.0,
+      "beta": 1.0
+    },
+    "shrink_c2_beta0.5": {
+      "kind": "noise_scaled_hankel",
+      "c": 2.0,
+      "beta": 0.5
+    },
+    "shrink_c2_beta1": {
+      "kind": "noise_scaled_hankel",
+      "c": 2.0,
+      "beta": 1.0
+    },
+    "shrink_c4_beta0.5": {
+      "kind": "noise_scaled_hankel",
+      "c": 4.0,
+      "beta": 0.5
+    },
+    "shrink_c4_beta1": {
+      "kind": "noise_scaled_hankel",
+      "c": 4.0,
+      "beta": 1.0
+    }
+  },
+  "routing": "Only nearest reference12/20 SNR32.5/35/37.5 cells may change. All other135 cells exactly preserve current correction. Ordinary proxy<=20 remains original. Receiver uses supplied variance and known reference power, never truth or path count.",
+  "model": "Three frozen context30 fits; no neural training. Candidates:12 learned-initialized EM checkpoints, spectral100,15 convex blends,8 final noise-scaled Hankel filters on current correction. No search beyond this36-candidate menu.",
+  "shrink": "Per-user tau=c*sqrt(2*sigma2*diag((S S^H)^-1)*max(Hankel shape)); smooth singular shrink s^3/(s^2+tau^2), blend beta. Heuristic scale, not a covariance claim. Supplied variance strictly positive.",
+  "data": "Context30 generated with world(P=30). Nine independent unconditioned proper Gaussian heldout columns/noise added after context acceptance; distinct pilot/noise/data-split streams. Fixed first30/last9 split. Development exports no truth. Shared channel/pilots/standardized noise across17SNRs.",
+  "repair_guard": {
+    "samples": 4000,
+    "seed": 2026101947,
+    "rule": "Pairwise observable raw-MSE/NK risk, candidate versus original/old/prior/current, averaged across three fits per anchor. Shared4000x384 multinomial weights per regime. Every candidate needs upper95<=0 for all four references in all three regimes.",
+    "score": "-2/(P*N*K) Re sum conj((A-C)S)*(Z^2-|B+(A+C)S/2|^2-sigma2)/conj(B). Unbiased conditional raw-MSE difference for context-only candidates under independent CN(0,I) pilots and correct noise second moment; not true-energy-normalized NMSE.",
+    "objective": "Minimize mean pairwise risk versus fixed current correction; menu index breaks exact ties. No preference band. Heldout NLL is diagnostic only.",
+    "fallback": "Empty intersection: retain current correction with selection_status=fallback_current and explicit missing guards. No joint protection claim.",
+    "caveat": "Individual development bounds, not simultaneous over search or a guarantee of NMSE/BER noninferiority; finite pairwise scores need not be transitive."
+  },
+  "calibration": {
+    "local_index": 100,
+    "repeats": 3,
+    "grid": "All153 conditions, selected repair3fits and all16 compact candidates, actual batch-one full path, one CPU thread, preloaded models/tables.",
+    "cap": "Pooled selected-repair p90 across fits/conditions. This is not a conditionwise cap."
+  },
+  "compact": {
+    "grid": {
+      "d128_i8_o12_f0.03": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.03
+      },
+      "d128_i8_o12_f0.1": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.1
+      },
+      "d128_i8_o12_f0.3": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "d128_i8_o12_f1": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 1.0
+      },
+      "d128_i8_o12_f3": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 3.0
+      },
+      "d256_i8_o12_f0.03": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.03
+      },
+      "d256_i8_o12_f0.1": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.1
+      },
+      "d256_i8_o12_f0.3": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "d256_i8_o12_f1": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 1.0
+      },
+      "d256_i8_o12_f3": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 3.0
+      },
+      "d256_i2_o40_f0.03": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.03
+      },
+      "d256_i2_o40_f0.1": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "d256_i2_o40_f0.3": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "d256_i2_o40_f1": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 1.0
+      },
+      "d256_i2_o40_f3": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 3.0
+      },
+      "em100": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      }
+    },
+    "selection": "Refresh only six target bins on same384-observable banks, minimum eligible equal-regime heldout NLL; preserve other45 frozen current-compact choices. Eligibility from fresh full-grid calibration. Prior compact comparator is entire frozen current-dual policy."
+  },
+  "methods": [
+    "original_9101",
+    "original_9102",
+    "original_9103",
+    "old_bypass_9101",
+    "old_bypass_9102",
+    "old_bypass_9103",
+    "prior_repair_9101",
+    "prior_repair_9102",
+    "prior_repair_9103",
+    "current_repair_9101",
+    "current_repair_9102",
+    "current_repair_9103",
+    "repair_9101",
+    "repair_9102",
+    "repair_9103",
+    "em100",
+    "optshrink",
+    "prior_compact",
+    "compact_sparse",
+    "prior_sparse_full"
+  ],
+  "groups": {
+    "original_mean": [
+      "original_9101",
+      "original_9102",
+      "original_9103"
+    ],
+    "old_bypass_mean": [
+      "old_bypass_9101",
+      "old_bypass_9102",
+      "old_bypass_9103"
+    ],
+    "prior_repair_mean": [
+      "prior_repair_9101",
+      "prior_repair_9102",
+      "prior_repair_9103"
+    ],
+    "current_repair_mean": [
+      "current_repair_9101",
+      "current_repair_9102",
+      "current_repair_9103"
+    ],
+    "repair_mean": [
+      "repair_9101",
+      "repair_9102",
+      "repair_9103"
+    ]
+  },
+  "contrasts": {
+    "repair_vs_current": [
+      "current_repair_mean",
+      "repair_mean"
+    ],
+    "repair_vs_old": [
+      "old_bypass_mean",
+      "repair_mean"
+    ],
+    "repair_vs_prior": [
+      "prior_repair_mean",
+      "repair_mean"
+    ],
+    "repair_vs_original": [
+      "original_mean",
+      "repair_mean"
+    ],
+    "repair_vs_em100": [
+      "em100",
+      "repair_mean"
+    ],
+    "repair_vs_compact": [
+      "compact_sparse",
+      "repair_mean"
+    ]
+  },
+  "primary": "All18 strong-transition cells: new versus old bypass, previous repair, current correction, each NMSE/BER; six outcomes.",
+  "bootstrap": {
+    "samples": 20000,
+    "seed": 2026101949,
+    "unit": "128 local-index clusters per regime shared across reference/SNR/method/fit",
+    "scope": "Conditional on fixed fits/policy/grid; six primary intervals at99.1667% for Bonferroni95 family. Other intervals descriptive95."
+  },
+  "historical_replay": "Exactly18 archived current-dual target cells after final freeze. Eight prior-repair losses fixed from prior report. Diagnostic only, never retune after replay.",
+  "sensitivity": "45 fixed supplied-variance cases, offsets-3/0/+3,17 methods; same test anchors, no BER or tuning.",
+  "final_timing": {
+    "local_index": 200,
+    "repeats": 3,
+    "methods": 20,
+    "conditions": 153,
+    "scope": "All9180 actual full-path calls, randomized method order, one CPU thread with other scientific jobs idle; no reselection."
+  },
+  "freeze": "Scientific sources/checkpoints before fresh development; repair before calibration; compact/BER bindings before any fresh test or historical replay.",
+  "exploratory_summary_hashes": {
+    "results/tcom_incumbent_guard_20261019/exploratory/summary.json": "3eaa7ec54207d5aa6eba3eda0ca7ca626b5a90d1bb7a1cf838b9b6e62c652677",
+    "results/tcom_incumbent_guard_20261019/risk_screen/summary.json": "c38d17b79c6a633934024bd7bed1a897a2652ef790fd07533fea7aa333dc4101",
+    "results/tcom_incumbent_guard_20261019/shrink_screen/summary.json": "bde4f206154507f6cc0119bbdddec09e9bb8a6a2c4c54bd161857ff41fe4c896"
+  },
+  "source_hashes": {
+    "tcom_incumbent_guard_20261019/study.py": "a12843cfbfce74e28c7b576b42602b07143b22e07ae3b48a050cc1e87889e53c",
+    "tcom_incumbent_guard_20261019/inference.py": "0cef3a0dc8a9f1ffa066e08896afc0d69f3a311b9ad729618ec9b760b78ab1eb",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_incumbent_guard_20261019/risk.py": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1",
+    "tcom_incumbent_guard_20261019/risk_data.py": "5a8474b3f87abea086c7999e7ca5ef8fbbab0b0fd57b58188db365ac85e07101",
+    "tcom_incumbent_guard_20261019/shrink.py": "f72debd9763e4a57532f635c0120fa9eaf516f94e0e360853e1155fee483ec6b",
+    "tcom_incumbent_guard_20261019/sensitivity.py": "304775b0aca881a646b24e57d67c935f5a6407d7c5a81a1962d032c397339aa9",
+    "tcom_incumbent_guard_20261019/historical_replay.py": "26f79493788a8903feb4129fd52d906a71feb736e99fb05d2fcc1c5456f8a7b7",
+    "tcom_incumbent_guard_20261019/analysis.py": "92131ebcc653af9a935e22d95a1d37b4a5f68f49884448535d608be7ae037c01"
+  },
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c"
+  },
+  "previous_protocol_sha256": "3c48c8aa739eb96f7c2415eef5805ad83fe454f80aa1b0e8c9da2769af693abb",
+  "current_protocol_sha256": "c20fd9a17a501914acc8cdf7e613b21a9498284840dc3adf44b716deadb890ca",
+  "previous_repair_policy_sha256": "d02db7d685622c25e5dfa435587d95deee0faed6c1331079912f2765914ebb69",
+  "current_repair_policy_sha256": "f5945f47d0da7d98e1bcf28d774dd5e8c4df8d9963fd1eedd7b4bd515887077d",
+  "previous_compact_policy_sha256": "f5945f47d0da7d98e1bcf28d774dd5e8c4df8d9963fd1eedd7b4bd515887077d",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "frozen_unix": 1792432662.73633
+}

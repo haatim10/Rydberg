@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "completed_unix": 1792357716.9821382,
+  "timing_sha256": "f1f7361b8565d2cbffae2624d8bd07e5ad8dcb0addcb27819c30fa48e0a1267c",
+  "selection_sha256": "e1a2753bc3c3808223e09f65c1ce632162edf19890aa90724173221015612503",
+  "raw_methods": 55,
+  "raw_samples": 4950,
+  "pooled_groups": 15,
+  "summaries_checked": 70,
+  "scalar_statistics_checked": 1260,
+  "maximum_absolute_discrepancy_ms": 0.0,
+  "arithmetic_absolute_tolerance_ms": 1e-12,
+  "all_samples_finite_and_positive": true,
+  "every_method_has_complete_balanced90_sample_grid": true,
+  "group_definition": "270 separate single-fit calls pooled across3fixedfits; no ensemble sum",
+  "nmse_summary_timing_copy_and_hash_match": true,
+  "cap_verification": {
+    "old": {
+      "cap_ms": 5.591625,
+      "selected_pipeline_p90_ms": 5.2446125,
+      "sparse_p90_ms": 5.216158,
+      "sparse_exceeds_calibrated_cap": false,
+      "sparse_exceeds_fresh_pipeline": false,
+      "sparse_to_pipeline_ratio": 0.9945745276700615
+    },
+    "context21": {
+      "cap_ms": 5.915,
+      "selected_pipeline_p90_ms": 5.1949328,
+      "sparse_p90_ms": 5.7303419,
+      "sparse_exceeds_calibrated_cap": false,
+      "sparse_exceeds_fresh_pipeline": true,
+      "sparse_to_pipeline_ratio": 1.1030637200927795
+    },
+    "context30": {
+      "cap_ms": 5.787459,
+      "selected_pipeline_p90_ms": 5.2558663999999995,
+      "sparse_p90_ms": 5.7798962000000005,
+      "sparse_exceeds_calibrated_cap": false,
+      "sparse_exceeds_fresh_pipeline": true,
+      "sparse_to_pipeline_ratio": 1.0997037900354547
+    }
+  },
+  "raw_samples_above10times_method_median": [
+    {
+      "method": "old_9103_tail1",
+      "median_ms": 5.0639585,
+      "ms": 97.063875,
+      "repeat": 1,
+      "snr": 10.0,
+      "regime": "random3to7",
+      "index": 100
+    },
+    {
+      "method": "sparse_fresh_context30",
+      "median_ms": 5.0858335,
+      "ms": 94.831167,
+      "repeat": 1,
+      "snr": 0.0,
+      "regime": "L4",
+      "index": 101
+    }
+  ],
+  "interpretation": "Calibrated caps and fresh observed latency are reported separately. Runtime samples, including outliers, were retained without modification.",
+  "benchmark_rerun": false,
+  "previous_audits_rerun": false,
+  "audit_source_sha256": "86500eb38ed01bdd1471a293243522cfc6396b7454a4f41a3b6102c4942e8202"
+}

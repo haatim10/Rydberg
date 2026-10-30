@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/tcom_start_budget_20261020/audit.py", line 429, in <module>
+    print(json.dumps(globals()[args.phase]()),flush=True)
+                     ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/.venv-paper2/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/tcom_start_budget_20261020/audit.py", line 310, in selection
+    bank,conditions=study.load_set('val');_,context,held=study.paired_split(bank,2026101810)
+                    ^^^^^^^^^^^^^^
+AttributeError: module 'tcom_start_budget_20261020.study' has no attribute 'load_set'

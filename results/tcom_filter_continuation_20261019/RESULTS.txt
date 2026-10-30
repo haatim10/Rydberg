@@ -1,0 +1,140 @@
+40 dB FILTER SWITCH-OFF REPAIR — FRESH COMPARISON
+Frozen study: tcom_filter_continuation_20261019
+The paper has not been updated. Earlier studies, results and checkpoints are unchanged.
+
+CHANGE AND VALIDATION
+Keep the inherited c=4, beta=1 final Hankel filter on spectral EM100 in strong-reference bins 40, 42.5, 45, 50, 60 and above. The same recipe already applies at 37.5. The nearest-bin cutoff was 38.75dB; the filter now remains active across it. Tau is computed from actual supplied noise variance and tends to zero with that variance. No finite high-SNR switch-off remains in this branch; no neural retraining or new parameter search.
+Only 30 of 153 grid conditions change. The other 123 are exactly the latest incumbent, including all 18 previous strong-transition conditions and all 51 weak-reference conditions. Ordinary 45 remain exactly original. These are output identities, not statistical noninferiority claims.
+One fixed recipe was declared before development, globally accepted after all 30 independent-heldout observable-risk upper95 guards passed. Each guard used 384 anchors/regime, 30 fitting pilots plus 9 independent validation-only pilots, 4000 paired resamples. The bounds are development diagnostics, not simultaneous population guarantees.
+The final policy and compact comparator were frozen before fresh test data. Deployment uses 30 pilots. Development never exported true channels. Fresh testing uses 128 anchors per reference/path setting; three fitted neural seeds average individual metrics and do not multiply the sample size. High-branch outputs are fit-independent.
+NMSE: equal-cell mean of dB ratio-of-sums NMSE. Main 153-condition grid aggregates exclude 54 added boundary cells. 20,000 coupled channel-index bootstrap resamples per regime. Primary 30 cells compare new versus latest and matched compact on NMSE and BER: four outcomes, Bonferroni-adjusted adjusted intervals. All other intervals are descriptive.
+
+PRIMARY: STRONG REFERENCES, 40–60dB (30 conditions)
+Method                                               NMSE dB        BER %      p90 ms
+Retrained learned model                           -21.287704     0.223027      8.8655
+Old EM100 bypass                                  -53.364243     0.000000      9.0262
+Earlier transition repair                         -53.364246     0.000000     19.1359
+Latest refinement (before this fix)               -53.364243     0.000000      9.0441
+Continuous filter (new)                           -58.557106     0.000000      9.6102
+Direct spectral EM100                             -53.364243     0.000000      8.8652
+Previously frozen compact baseline                -53.364243     0.000000      9.0068
+New runtime-matched sparse/EM baseline            -53.364243     0.000000      9.0129
+Full sparse baseline                              -51.585811     0.000000    187.1865
+OptShrink baseline                                -54.928318     0.000000     41.3318
+
+PRESERVED EARLIER TRANSITION (18 conditions)
+Method                                               NMSE dB        BER %      p90 ms
+Retrained learned model                           -36.603137     0.000000      8.6291
+Old EM100 bypass                                  -40.864267     0.000000      9.0202
+Earlier transition repair                         -40.647509     0.000000     10.6939
+Latest refinement (before this fix)               -45.463780     0.000000      9.6303
+Continuous filter (new)                           -45.463780     0.000000      9.6422
+Direct spectral EM100                             -40.864267     0.000000      8.8678
+Previously frozen compact baseline                -40.864267     0.000000      8.9839
+New runtime-matched sparse/EM baseline            -40.864267     0.000000      8.9222
+Full sparse baseline                              -41.559644     0.000000    187.0258
+OptShrink baseline                                -42.429260     0.000000     40.8405
+
+FULL 153-CONDITION GRID
+Method                                               NMSE dB        BER %      p90 ms
+Retrained learned model                           -26.364406     0.626601      8.6524
+Old EM100 bypass                                  -33.684623     0.524902      8.9836
+Earlier transition repair                         -36.621297     0.524783     18.9104
+Latest refinement (before this fix)               -37.187916     0.524783     18.7483
+Continuous filter (new)                           -38.206125     0.524783     18.7890
+Direct spectral EM100                             -30.662838     0.821674      9.0830
+Previously frozen compact baseline                -31.832120     0.485369      9.6686
+New runtime-matched sparse/EM baseline            -31.832120     0.485369      9.6638
+Full sparse baseline                              -32.812054     0.486047    186.2411
+OptShrink baseline                                -34.659672     0.546497     79.1778
+
+PRIMARY EFFECTS (positive gain/reduction favors the new filter)
+repair_vs_current: NMSE gain=5.192863dB, Bonferroni4 interval=[5.105080240465473, 5.284186850953859]; BER reduction=0, adjusted interval=[0.0, 0.0]
+repair_vs_compact: NMSE gain=5.192863dB, Bonferroni4 interval=[5.105080240465473, 5.284186850953859]; BER reduction=0, adjusted interval=[0.0, 0.0]
+Latest incumbent equals direct EM100 throughout these 30 conditions. The fresh compact selector also chose EM100 in all 10 changed bins, so both primary NMSE effects are numerically identical. These are duplicate numerical evidence, not independent confirmation.
+BER uses the same 64-vector joint Gray-QPSK alphabet, data magnitudes, reference, variance and exact magnitude-domain Rician ML detector for every estimator. 384 bits/channel,49,152 bits/condition/fit,1,474,560 bits per primary-region fit. Perfect CSI is an explicitly labeled diagnostic. Zero observed errors and collapsed bootstrap intervals do not establish zero BER, equivalence or noninferiority; no independent-bit binomial bounds are used.
+
+BOUNDARY:37.5→40dB (positive change means worsening)
+Regime          Ref dB   Latest change      New change
+L2                  12        4.703491       -2.514026
+L2                  20        4.781821       -2.521317
+L4                  12        1.914523       -2.546396
+L4                  20        1.943319       -2.560803
+random3to7          12        1.130939       -2.537600
+random3to7          20        1.073658       -2.544982
+Dense boundary probe:72cells at 12 SNRs, 54 additional to main grid; 0 of 66 adjacent new-filter changes worsen on the sample mean.
+Fixed-observation epsilon tests separately verify continuity across the routing midpoint: new outputs match the same explicit formula on either side. Smooth sampled NMSE curves alone would not prove estimator continuity or globally monotone performance.
+
+CELLWISE GAINS AND POSSIBLE HARMS
+repair_vs_current: mean-negative=0/153; primary-negative=0/30; pointwise95 harm=0; worst=L2_rsr5_snr0 (+0dB)
+repair_vs_old: mean-negative=0/153; primary-negative=0/30; pointwise95 harm=0; worst=L2_rsr5_snr0 (+0dB)
+repair_vs_prior: mean-negative=0/153; primary-negative=0/30; pointwise95 harm=0; worst=L2_rsr5_snr0 (+0dB)
+repair_vs_original: mean-negative=0/153; primary-negative=0/30; pointwise95 harm=0; worst=L2_rsr5_snr0 (+0dB)
+repair_vs_em100: mean-negative=2/153; primary-negative=0/30; pointwise95 harm=1; worst=random3to7_rsr20_snr30 (-0.730174939dB)
+  Mean-negative cells: random3to7_rsr12_snr30, random3to7_rsr20_snr30
+repair_vs_compact: mean-negative=21/153; primary-negative=0/30; pointwise95 harm=19; worst=random3to7_rsr5_snr0 (-1.45568859dB)
+  Mean-negative cells: L2_rsr5_snr0, L2_rsr5_snr5, L2_rsr12_snr0, L2_rsr12_snr5, L2_rsr20_snr0, L2_rsr20_snr5, L4_rsr5_snr0, L4_rsr5_snr5, L4_rsr12_snr0, L4_rsr12_snr5, L4_rsr20_snr0, L4_rsr20_snr5, random3to7_rsr5_snr0, random3to7_rsr5_snr5, random3to7_rsr5_snr10, random3to7_rsr12_snr0, random3to7_rsr12_snr5, random3to7_rsr12_snr30, random3to7_rsr20_snr0, random3to7_rsr20_snr5, random3to7_rsr20_snr30
+All 30 changed cells: latest NMSE / new NMSE / gain, in dB
+  L2_rsr12_snr40                     -45.81626   -53.03377    7.21752
+  L2_rsr12_snr42.5                   -48.31626   -55.55105    7.23479
+  L2_rsr12_snr45                     -50.81627   -58.06825    7.25199
+  L2_rsr12_snr50                     -55.81627   -63.09406    7.27779
+  L2_rsr12_snr60                     -65.81625   -73.11887    7.30262
+  L2_rsr20_snr40                     -45.86486   -53.16800    7.30314
+  L2_rsr20_snr42.5                   -48.36484   -55.68478    7.31994
+  L2_rsr20_snr45                     -50.86483   -58.19444    7.32961
+  L2_rsr20_snr50                     -55.86480   -63.20032    7.33552
+  L2_rsr20_snr60                     -65.86475   -73.21627    7.35152
+  L4_rsr12_snr40                     -45.86239   -50.32331    4.46092
+  L4_rsr12_snr42.5                   -48.36228   -52.85670    4.49441
+  L4_rsr12_snr45                     -50.86214   -55.38133    4.51919
+  L4_rsr12_snr50                     -55.86188   -60.42077    4.55888
+  L4_rsr12_snr60                     -65.86168   -70.50164    4.63997
+  L4_rsr20_snr40                     -46.04264   -50.54677    4.50412
+  L4_rsr20_snr42.5                   -48.54261   -53.09465    4.55204
+  L4_rsr20_snr45                     -51.04258   -55.62596    4.58338
+  L4_rsr20_snr50                     -56.04255   -60.65128    4.60873
+  L4_rsr20_snr60                     -66.04252   -70.70479    4.66227
+  random3to7_rsr12_snr40             -45.73851   -49.40705    3.66854
+  random3to7_rsr12_snr42.5           -48.23859   -51.93352    3.69493
+  random3to7_rsr12_snr45             -50.73864   -54.45309    3.71445
+  random3to7_rsr12_snr50             -55.73869   -59.48879    3.75009
+  random3to7_rsr12_snr60             -65.73872   -69.55319    3.81447
+  random3to7_rsr20_snr40             -45.86110   -49.47974    3.61864
+  random3to7_rsr20_snr42.5           -48.36110   -52.02114    3.66004
+  random3to7_rsr20_snr45             -50.86110   -54.56050    3.69939
+  random3to7_rsr20_snr50             -55.86110   -59.63655    3.77545
+  random3to7_rsr20_snr60             -65.86108   -69.74262    3.88154
+
+RUNTIME AND COMPARATOR FAIRNESS
+Apple M2 CPU, one thread; preloaded models/tables, batch-one complete estimator call including dispatch, initialization, neural inference when used, EM and filtering. Calibration and final timing run with other experiment jobs idle. Final 20 methods×153 conditions×3 repeats=9,180 measured calls; timing is separate from cached BER decoding.
+{"calibrated_cap_ms": 10.743966200000001, "compact_exceeds_calibrated_cap": false, "compact_exceeds_fresh_repair": false, "compact_p90_ms": 9.6637666, "repair_exceeds_calibrated_cap": true, "repair_p90_ms": 18.788992}
+The measured pooled runtime cap was exceeded and is not claimed as satisfied. Read-only audit found similar calibration-to-final p90 increases for the new method (1.749x), direct EM100 (1.748x), and the identical-config compact mix (1.772x), including unchanged learned/EM branches. These windows used different prespecified anchors 100 and 200. Shared slowdown cannot identify the host cause; no normalization, retiming or reselection was performed. Within the final window, prior refinement pooled p90 was 18.7482582 ms versus new 18.788992 ms.
+The calibration cap is a pooled whole-grid p90, not a per-condition limit. All 16 compact sparse/EM candidates were considered for fresh eligibility; the 10 changed reference/SNR bins were refreshed by heldout likelihood, and 41 other choices retained. A slower full sparse estimator is also shown as an unrestricted accuracy comparator. Check below for conditional cap exceedances.
+repair_mean conditional p90 above pooled calibration cap: {"rsr12_snr0": 11.446483, "rsr12_snr15": 18.552550000000018, "rsr12_snr27.5": 21.149175400000043, "rsr12_snr60": 17.0674336, "rsr5_snr37.5": 19.3477752, "rsr5_snr40": 19.166916399999998, "rsr5_snr42.5": 19.107358, "rsr5_snr45": 18.9713672, "rsr5_snr50": 19.622783000000002, "rsr5_snr60": 19.1046}
+compact_sparse conditional p90 above pooled calibration cap: {"rsr12_snr0": 12.5572662, "rsr12_snr15": 12.934442000000002, "rsr12_snr25": 11.870008200000003, "rsr12_snr60": 11.762491400000002}
+New compact choices in changed bins:
+  ref12 SNR40: em100, heldout NLL=7.3338577
+  ref12 SNR42.5: em100, heldout NLL=7.6216825
+  ref12 SNR45: em100, heldout NLL=7.9095063
+  ref12 SNR50: em100, heldout NLL=8.4851528
+  ref12 SNR60: em100, heldout NLL=9.6364445
+  ref20 SNR40: em100, heldout NLL=8.2529848
+  ref20 SNR42.5: em100, heldout NLL=8.5408066
+  ref20 SNR45: em100, heldout NLL=8.8286288
+  ref20 SNR50: em100, heldout NLL=9.4042736
+  ref20 SNR60: em100, heldout NLL=10.555565
+
+LIMITATIONS
+Conditional simulation evidence under the declared channel, reference and noise model; no proof of uniform superiority, BER gain or extrapolation beyond tested 60dB. Threshold scaling is heuristic. Unknown/mismatched noise, finite-iteration EM local solutions, other path distributions and hardware may change performance. Existing lower-SNR routing transitions remain outside this change. The design was motivated by prior observed failures, but the new confirmatory bank and policy freeze are separate from that evidence.
+The filter tends toward identity as supplied variance decreases; this alone does not establish exact zero-noise numerical validity. The added boundary points are diagnostic, not extra independently weighted confirmation.
+
+AUDIT AND REPRODUCIBILITY
+Preflight passed: {"conditions": 153, "changed_conditions": 30, "exact_current_conditions": 123, "exact_earlier_transition_conditions": 18, "exact_weak_reference_conditions": 51, "maximum_actual_scalar_batch_error": 7.216449660063518e-15}
+Development guards: 30/30 passed.
+Independent audit files: boundary_summary, calibration, repair_selection, selection, summary, test, timing, ber, ber_execution
+Policy SHA256: 96bda1a6179d6ddc2a903215a4f44cb39c23ff55ee8e778b330af4b6986966cc
+Protocol SHA256: 3d9730c4f23d7519ff55b2639383f7c46df6ac9410170c8113239c61a723fd96
+BER protocol SHA256: a5e2bc672cfb775d2fbfe0186c5ac363c397569da596b2ab81630ebb1fdbebd5
+Fresh seeds: {"development": 2026101951, "test": 2026101952, "data": 2026101953, "timing": 2026101954, "holdout": 2026101955, "bootstrap": 2026101959}
+Main data: test/cells; boundary data: boundary/cells; development and timing raw evidence retained in this result directory. Figures: repair_nmse.png, repair_target.png, repair_runtime.png, ber/ber.png, boundary/nmse_boundary.png, boundary/nmse_adjacent_changes_readable.png (reporting-only layout correction; rendering hashes in boundary/plot_rendering.json).

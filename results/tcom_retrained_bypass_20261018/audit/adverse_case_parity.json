@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "selection_sha256": "1d5fd733346c715a48d8c15c6d12e2e0f6dfde4864816165f4b351be098f1cb6",
+  "source_sha256": "3e5e9e9bc83cc75407105b4b48d828793c580f572b7458896ad98110b1fc08b1",
+  "cases": [
+    {
+      "snr": 37.5,
+      "rsr": 5.0,
+      "regime": "L2",
+      "local_case": 30,
+      "effective_case": 100030,
+      "canonical_vs_saved_max_abs_error": 2.0471501066083613e-15,
+      "optimized_replay_vs_saved_max_abs_error": 0.0,
+      "canonical_case_nmse": 0.09115775931399901,
+      "saved_case_nmse": 0.09115775931399905,
+      "source_cell_sha256": "537cdba880fdcaa35c094cabd3bcde89a6b0e43a9f9acd3c3070b321bf676a47"
+    },
+    {
+      "snr": 37.5,
+      "rsr": 5.0,
+      "regime": "L2",
+      "local_case": 18,
+      "effective_case": 100018,
+      "canonical_vs_saved_max_abs_error": 2.8435583831733384e-15,
+      "optimized_replay_vs_saved_max_abs_error": 0.0,
+      "canonical_case_nmse": 0.07026419532947883,
+      "saved_case_nmse": 0.07026419532947885,
+      "source_cell_sha256": "537cdba880fdcaa35c094cabd3bcde89a6b0e43a9f9acd3c3070b321bf676a47"
+    },
+    {
+      "snr": 60.0,
+      "rsr": 5.0,
+      "regime": "L2",
+      "local_case": 30,
+      "effective_case": 100030,
+      "canonical_vs_saved_max_abs_error": 1.4432899320127035e-15,
+      "optimized_replay_vs_saved_max_abs_error": 0.0,
+      "canonical_case_nmse": 0.09098522512440774,
+      "saved_case_nmse": 0.09098522512440774,
+      "source_cell_sha256": "8b0d539f3dbd1334add792f65dacab971270d5ccf399fbd46cafb5384eb6b9d4"
+    },
+    {
+      "snr": 60.0,
+      "rsr": 5.0,
+      "regime": "L2",
+      "local_case": 18,
+      "effective_case": 100018,
+      "canonical_vs_saved_max_abs_error": 3.331131634682349e-15,
+      "optimized_replay_vs_saved_max_abs_error": 0.0,
+      "canonical_case_nmse": 0.06971566377208341,
+      "saved_case_nmse": 0.06971566377208334,
+      "source_cell_sha256": "8b0d539f3dbd1334add792f65dacab971270d5ccf399fbd46cafb5384eb6b9d4"
+    }
+  ],
+  "interpretation": "Post-test implementation diagnosis on the observed adverse cases only. Canonical and optimized EM100 agree; no extra iterations, starts, tuning, model changes or selection changes were made. Agreement does not establish a global optimum."
+}

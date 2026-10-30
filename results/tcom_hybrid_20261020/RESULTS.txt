@@ -1,0 +1,237 @@
+HYBRID ESTIMATOR: FRESH PAIRED COMPARISON
+
+Against the frozen latest estimator, the whole-grid comparison supports higher error for the hybrid in NMSE and does not resolve a difference at the adjusted confidence level in BER.
+Against compact sparse, the whole-grid comparison supports higher error for the hybrid in NMSE and supports higher error for the hybrid in BER.
+The confirmed policy selected zero additional EM everywhere. The hybrid and its zero-tail control are therefore the same estimator on this grid; this is not evidence that additional EM cannot help.
+The confirmed hybrid does not meet the intended accuracy objective and these results do not support replacing the previous estimator.
+
+The hybrid start and additional EM count are frozen from observable development criteria and runtime eligibility before this fresh test. The no-EM arm uses exactly the same chosen start and final filter with zero additional EM. It isolates the continuation; it is not the raw pre-filter starting estimate.
+Both starts already execute ten EM/structure stages. Zero tail means no ADDITIONAL EM updates. The global schedule contains 30 globally trained parameters; the adaptive controller contains 188 parameters and conditions its decisions on observations. The fixed schedule still uses normalization and known noise variance.
+Primary claims concern hybrid versus latest and compact over all 153 conditions. The two contrasts across NMSE and BER form four outcomes with Bonferroni adjustment. Other methods, subgroups, raw starts and no-EM comparisons are descriptive.
+This report compares the fixed receivers; it does not automatically select, deploy or recommend replacing an estimator.
+
+PRIMARY EFFECTS
+Positive differences mean lower error for hybrid. BER differences are percentage points.
+Contrast          | NMSE gain dB | Adjusted interval dB | BER reduction pp | Adjusted interval pp      
+------------------+--------------+----------------------+------------------+---------------------------
+hybrid_vs_latest  | -8.19737     | [-8.65887, -7.75376] | +7.97845e-05     | [-0.000797845, 0.00126325]
+hybrid_vs_compact | -2.70149     | [-3.49899, -1.84422] | -0.0346797       | [-0.040801, -0.028882]    
+
+FROZEN START AND EM POLICY
+The shared transition crossover is 30 dB. Ordinary SNR <=20 dB returns the adaptive raw output exactly; SNR >=40 dB uses the global schedule. Between them, the adaptive start is used through the crossover and the global start above it. Outside the ordinary branch, the inherited final filter is applied.
+The table gives selected start / additional EM updates. C rejected means the independent confirmation bank rejected the proposed nonzero tail, so the evaluated policy retains zero extra EM; no alternative tail was tested on that bank.
+SNR dB | RSR 5                   | RSR 12                  | RSR 20                 
+-------+-------------------------+-------------------------+------------------------
+0      | adaptive / 0 (raw)      | adaptive / 0 (raw)      | adaptive / 0 (raw)     
+5      | adaptive / 0 (raw)      | adaptive / 0 (raw)      | adaptive / 0 (raw)     
+10     | adaptive / 0 (raw)      | adaptive / 0 (raw)      | adaptive / 0 (raw)     
+15     | adaptive / 0 (raw)      | adaptive / 0 (raw)      | adaptive / 0 (raw)     
+20     | adaptive / 0 (raw)      | adaptive / 0 (raw)      | adaptive / 0 (raw)     
+22.5   | adaptive / 0            | adaptive / 0            | adaptive / 0           
+25     | adaptive / 0            | adaptive / 0            | adaptive / 0           
+27.5   | adaptive / 0            | adaptive / 0            | adaptive / 0           
+30     | adaptive / 0            | adaptive / 0            | adaptive / 0           
+32.5   | global / 0              | global / 0 (C rejected) | global / 0 (C rejected)
+35     | global / 0              | global / 0 (C rejected) | global / 0 (C rejected)
+37.5   | global / 0              | global / 0 (C rejected) | global / 0 (C rejected)
+40     | global / 0 (C rejected) | global / 0 (C rejected) | global / 0 (C rejected)
+42.5   | global / 0 (C rejected) | global / 0 (C rejected) | global / 0 (C rejected)
+45     | global / 0 (C rejected) | global / 0 (C rejected) | global / 0 (C rejected)
+50     | global / 0 (C rejected) | global / 0 (C rejected) | global / 0 (C rejected)
+60     | global / 0 (C rejected) | global / 0 (C rejected) | global / 0 (C rejected)
+
+Selection uses three independent development banks: A chooses the crossover from complete zero-tail outputs; B proposes a runtime-eligible tail; C confirms that single proposal against zero in every path regime. The one-sided Student-t bounds with nominal multiplicity corrections are approximate screening rules, not finite-sample guarantees of likelihood, NMSE or BER safety.
+Calibration eligibility requires both whole-grid and weak-region pooled p90 <=10.0 ms. Zero remains an explicit fallback even if its calibration misses that screening cap. Final acceptance separately checks the literal 10.74 ms cap in both runtime windows.
+Start    | Extra EM | Calibration p90 ms | Weak p90 ms | Eligible | Selected bins / 51
+---------+----------+--------------------+-------------+----------+-------------------
+adaptive | 0        | 4.8516             | 4.4746      | True     | 27                
+adaptive | 10       | 5.9647             | 5.6008      | True     | 0                 
+adaptive | 20       | 7.0107             | 6.6284      | True     | 0                 
+adaptive | 40       | 9.0819             | 8.6582      | True     | 0                 
+global   | 0        | 2.9506             | 2.5352      | True     | 24                
+global   | 10       | 4.0448             | 3.6580      | True     | 0                 
+global   | 20       | 5.0838             | 4.6930      | True     | 0                 
+global   | 40       | 7.1519             | 6.7899      | True     | 0                 
+
+ALL (153 conditions)
+Method                          | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %    
+--------------------------------+--------------------+-----------------+--------------------+----------
+Hybrid                          | -29.19933          | -20.21819       | 0.009510016        | 0.5161792
+Same hybrid, zero additional EM | -29.19933          | -20.21819       | 0.009510016        | 0.5161792
+Frozen latest estimator         | -37.39670          | -20.34752       | 0.009230989        | 0.516259 
+Adaptive start + EM40           | -35.19208          | -15.73850       | 0.02667782         | 0.7949242
+Global schedule + EM40          | -33.28679          | -15.66495       | 0.02713347         | 0.8012538
+Classical start + EM40          | -32.34908          | -15.63085       | 0.02734731         | 0.7953719
+Direct EM100                    | -31.01147          | -15.46547       | 0.0284088          | 0.8148127
+Compact sparse                  | -31.90082          | -20.64270       | 0.008624418        | 0.4814996
+OptShrink                       | -33.18807          | -19.65799       | 0.01081935         | 0.5413114
+Perfect CSI reference           | —                  | —               | —                  | 0.3503205
+
+ORDINARY (45 conditions)
+Method                          | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %   
+--------------------------------+--------------------+-----------------+--------------------+---------
+Hybrid                          | -19.93210          | -15.12527       | 0.03072368         | 1.752628
+Same hybrid, zero additional EM | -19.93210          | -15.12527       | 0.03072368         | 1.752628
+Frozen latest estimator         | -19.93210          | -15.12527       | 0.03072368         | 1.752628
+Adaptive start + EM40           | -15.40487          | -10.46216       | 0.08990505         | 2.701537
+Global schedule + EM40          | -15.34523          | -10.41826       | 0.09081842         | 2.71623 
+Classical start + EM40          | -15.19609          | -10.44193       | 0.09032471         | 2.700602
+Direct EM100                    | -15.11665          | -10.25922       | 0.09420591         | 2.766611
+Compact sparse                  | -18.87740          | -15.75548       | 0.0265737          | 1.634476
+OptShrink                       | -18.15489          | -14.51752       | 0.03533853         | 1.8344  
+Perfect CSI reference           | —                  | —               | —                  | 1.191045
+
+TRANSITION_ALL (63 conditions)
+Method                          | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %       
+--------------------------------+--------------------+-----------------+--------------------+-------------
+Hybrid                          | -33.26495          | -32.03861       | 0.0006253723       | 0.001001106 
+Same hybrid, zero additional EM | -33.26495          | -32.03861       | 0.0006253723       | 0.001001106 
+Frozen latest estimator         | -37.54417          | -33.79564       | 0.0004172884       | 0.001388631 
+Adaptive start + EM40           | -36.93764          | -33.16593       | 0.0004823994       | 0.0002906436
+Global schedule + EM40          | -34.77855          | -31.01883       | 0.0007908916       | 0.003390842 
+Classical start + EM40          | -33.72634          | -28.87849       | 0.001294645        | 0.00164698  
+Direct EM100                    | -32.61844          | -29.20425       | 0.001201088        | 0.001711568 
+Compact sparse                  | -32.41301          | -28.83967       | 0.00130627         | 0.001227162 
+OptShrink                       | -34.48406          | -31.39230       | 0.0007257221       | 0.002551205 
+Perfect CSI reference           | —                  | —               | —                  | 3.229373e-05
+
+HIGH_ALL (45 conditions)
+Method                          | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %       
+--------------------------------+--------------------+-----------------+--------------------+-------------
+Hybrid                          | -32.77469          | -31.33802       | 0.0007348486       | 0.0009795766
+Same hybrid, zero additional EM | -32.77469          | -31.33802       | 0.0007348486       | 0.0009795766
+Frozen latest estimator         | -54.65485          | -41.10836       | 7.747535e-05       | 0.0007083092
+Adaptive start + EM40           | -52.53550          | -39.05998       | 0.0001241659       | 0.0007987317
+Global schedule + EM40          | -49.13987          | -34.83967       | 0.0003281201       | 0.003285349 
+Classical start + EM40          | -47.57391          | -30.73839       | 0.0008436476       | 0.001356337 
+Direct EM100                    | -44.65655          | -31.53355       | 0.000702498        | 0.001356337 
+Compact sparse                  | -44.20717          | -30.35954       | 0.0009205477       | 0.0009042245
+OptShrink                       | -46.40686          | -33.65254       | 0.000431267        | 0.002486617 
+Perfect CSI reference           | —                  | —               | —                  | 0           
+
+WEAK_WARM100 (18 conditions)
+Method                          | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %      
+--------------------------------+--------------------+-----------------+--------------------+------------
+Hybrid                          | -28.72065          | -28.68923       | 0.001352313        | 0.00293873 
+Same hybrid, zero additional EM | -28.72065          | -28.68923       | 0.001352313        | 0.00293873 
+Frozen latest estimator         | -46.38008          | -37.12811       | 0.0001937264       | 0.001770773
+Adaptive start + EM40           | -41.99960          | -35.05641       | 0.000312147        | 0.001996829
+Global schedule + EM40          | -30.45465          | -30.12417       | 0.0009718144       | 0.009795766
+Classical start + EM40          | -26.38877          | -26.03512       | 0.002491657        | 0.00406901 
+Direct EM100                    | -27.39032          | -26.84777       | 0.002066439        | 0.00406901 
+Compact sparse                  | -25.97585          | -25.60184       | 0.00275306         | 0.002712674
+OptShrink                       | -29.67245          | -28.96995       | 0.001267665        | 0.007459852
+Perfect CSI reference           | —                  | —               | —                  | 0          
+
+STRONG_HIGH (30 conditions)
+Method                          | Equal-cell NMSE dB | Pooled ratio dB | Pooled linear NMSE | BER %
+--------------------------------+--------------------+-----------------+--------------------+------
+Hybrid                          | -34.79815          | -33.75451       | 0.0004212588       | 0    
+Same hybrid, zero additional EM | -34.79815          | -33.75451       | 0.0004212588       | 0    
+Frozen latest estimator         | -58.46742          | -54.65143       | 3.426547e-06       | 0    
+Adaptive start + EM40           | -57.83752          | -54.56862       | 3.492509e-06       | 0    
+Global schedule + EM40          | -58.46501          | -54.65212       | 3.426003e-06       | 0    
+Classical start + EM40          | -58.16428          | -54.60819       | 3.460839e-06       | 0    
+Direct EM100                    | -53.28102          | -49.78601       | 1.050508e-05       | 0    
+Compact sparse                  | -53.28102          | -49.78601       | 1.050508e-05       | 0    
+OptShrink                       | -54.76294          | -51.37038       | 7.293929e-06       | 0    
+Perfect CSI reference           | —                  | —               | —                  | 0    
+
+RAW STARTS BEFORE FINAL FILTERING
+Raw adaptive/global starts have NMSE diagnostics only. They are different from hybrid0, which includes the same chosen final filter as hybrid.
+Raw start     | all       | ordinary  | transition_all | high_all  | weak_warm100 | strong_high
+--------------+-----------+-----------+----------------+-----------+--------------+------------
+adaptive_mean | -25.46875 | -19.93210 | -33.78442      | -19.36346 | -17.90004    | -20.93452  
+global_mean   | -28.23465 | -18.35953 | -31.97374      | -32.87504 | -28.72065    | -34.94867  
+
+FIT SPREAD AND ACTUAL BIT COUNTS
+Three fits average individual metrics, never channels, and do not triple the channel sample size.
+Scope        | Fit          | NMSE dB   | BER %        | Errors | Bits   
+-------------+--------------+-----------+--------------+--------+--------
+all          | hybrid_9101  | -29.23448 | 0.5121102    | 38512  | 7520256
+all          | hybrid_9102  | -29.26750 | 0.5203014    | 39128  | 7520256
+all          | hybrid_9103  | -29.09601 | 0.516126     | 38814  | 7520256
+all          | hybrid0_9101 | -29.23448 | 0.5121102    | 38512  | 7520256
+all          | hybrid0_9102 | -29.26750 | 0.5203014    | 39128  | 7520256
+all          | hybrid0_9103 | -29.09601 | 0.516126     | 38814  | 7520256
+all          | latest_9101  | -37.95731 | 0.5116847    | 38480  | 7520256
+all          | latest_9102  | -38.17632 | 0.5198759    | 39096  | 7520256
+all          | latest_9103  | -36.05648 | 0.5172164    | 38896  | 7520256
+ordinary     | hybrid_9101  | -20.06105 | 1.739502     | 38475  | 2211840
+ordinary     | hybrid_9102  | -19.74463 | 1.767352     | 39091  | 2211840
+ordinary     | hybrid_9103  | -19.99063 | 1.751031     | 38730  | 2211840
+ordinary     | hybrid0_9101 | -20.06105 | 1.739502     | 38475  | 2211840
+ordinary     | hybrid0_9102 | -19.74463 | 1.767352     | 39091  | 2211840
+ordinary     | hybrid0_9103 | -19.99063 | 1.751031     | 38730  | 2211840
+ordinary     | latest_9101  | -20.06105 | 1.739502     | 38475  | 2211840
+ordinary     | latest_9102  | -19.74463 | 1.767352     | 39091  | 2211840
+ordinary     | latest_9103  | -19.99063 | 1.751031     | 38730  | 2211840
+high_all     | hybrid_9101  | -32.71028 | 0.0009042245 | 20     | 2211840
+high_all     | hybrid_9102  | -32.84500 | 0.0009042245 | 20     | 2211840
+high_all     | hybrid_9103  | -32.76880 | 0.001130281  | 25     | 2211840
+high_all     | hybrid0_9101 | -32.71028 | 0.0009042245 | 20     | 2211840
+high_all     | hybrid0_9102 | -32.84500 | 0.0009042245 | 20     | 2211840
+high_all     | hybrid0_9103 | -32.76880 | 0.001130281  | 25     | 2211840
+high_all     | latest_9101  | -55.96469 | 0            | 0      | 2211840
+high_all     | latest_9102  | -56.68707 | 0            | 0      | 2211840
+high_all     | latest_9103  | -51.31278 | 0.002124928  | 47     | 2211840
+weak_warm100 | hybrid_9101  | -28.70813 | 0.002712674  | 24     | 884736 
+weak_warm100 | hybrid_9102  | -28.75387 | 0.002712674  | 24     | 884736 
+weak_warm100 | hybrid_9103  | -28.69995 | 0.003390842  | 30     | 884736 
+weak_warm100 | hybrid0_9101 | -28.70813 | 0.002712674  | 24     | 884736 
+weak_warm100 | hybrid0_9102 | -28.75387 | 0.002712674  | 24     | 884736 
+weak_warm100 | hybrid0_9103 | -28.69995 | 0.003390842  | 30     | 884736 
+weak_warm100 | latest_9101  | -49.65466 | 0            | 0      | 884736 
+weak_warm100 | latest_9102  | -51.46062 | 0            | 0      | 884736 
+weak_warm100 | latest_9103  | -38.02495 | 0.005312319  | 47     | 884736 
+
+CONDITION-SPECIFIC LOSSES
+Pointwise harm intervals are descriptive. Full cell lists are saved in completion.json.
+Contrast              | NMSE worse | NMSE harm CI | BER worse | BER harm CI | Worst NMSE cell        | Gain dB 
+----------------------+------------+--------------+-----------+-------------+------------------------+---------
+hybrid_vs_latest      | 72         | 70           | 10        | 0           | random3to7_rsr20_snr60 | -38.1234
+hybrid_vs_compact     | 69         | 66           | 38        | 12          | random3to7_rsr20_snr60 | -34.4259
+hybrid_vs_adaptive40  | 80         | 74           | 14        | 0           | L4_rsr20_snr60         | -36.2295
+hybrid_vs_global40    | 75         | 58           | 1         | 0           | random3to7_rsr20_snr60 | -38.0934
+hybrid_vs_classical40 | 51         | 50           | 2         | 0           | L4_rsr20_snr60         | -36.9912
+hybrid_vs_em100       | 57         | 48           | 3         | 0           | random3to7_rsr20_snr60 | -34.4259
+hybrid_vs_optshrink   | 75         | 62           | 14        | 0           | random3to7_rsr12_snr60 | -34.9103
+hybrid_vs_noem        | 0          | 0            | 0         | 0           | L2_rsr5_snr0           | +0      
+
+COMPLETE PIPELINE RUNTIME
+Acceptance uses the literal 10.74 ms whole-grid pooled batch-one p90 in BOTH final windows. Weak-region and conditional p90s are descriptive. These are host-specific observed quantiles, not hard per-call deadlines. A family pools individual fit calls rather than adding runtimes into an ensemble.
+Pipeline                        | W1 p90 ms | W2 p90 ms | W1 weak p90 | W2 weak p90 | Cap 
+--------------------------------+-----------+-----------+-------------+-------------+-----
+Hybrid                          | 4.6020    | 4.5795    | 2.7472      | 2.7546      | PASS
+Same hybrid, zero additional EM | 4.6079    | 4.5901    | 2.7520      | 2.7656      | PASS
+Frozen latest estimator         | 14.8130   | 14.8411   | 15.0328     | 15.0731     | FAIL
+Adaptive start + EM40           | 9.1897    | 9.2015    | 8.8187      | 8.8757      | PASS
+Global schedule + EM40          | 7.2109    | 7.2111    | 6.8262      | 6.8977      | PASS
+Classical start + EM40          | 7.2600    | 7.2650    | 6.8447      | 6.8775      | PASS
+Direct EM100                    | 8.8847    | 8.9200    | 8.8024      | 8.8187      | PASS
+Compact sparse                  | 9.6730    | 9.7292    | 8.8035      | 8.8271      | PASS
+OptShrink                       | 80.8712   | 78.6457   | 81.3931     | 79.0780     | FAIL
+Pipeline                        | W1 condition overruns; worst   | W2 condition overruns; worst    
+--------------------------------+--------------------------------+---------------------------------
+Hybrid                          | 0/51; 5.6062 ms (rsr20_snr5)   | 0/51; 5.7373 ms (rsr20_snr15)   
+Same hybrid, zero additional EM | 0/51; 5.7392 ms (rsr20_snr5)   | 0/51; 8.6344 ms (rsr12_snr27.5) 
+Frozen latest estimator         | 6/51; 18.9125 ms (rsr5_snr50)  | 6/51; 16.0271 ms (rsr5_snr40)   
+Adaptive start + EM40           | 2/51; 11.0461 ms (rsr20_snr5)  | 1/51; 11.0616 ms (rsr20_snr15)  
+Global schedule + EM40          | 0/51; 8.7001 ms (rsr20_snr5)   | 0/51; 9.0227 ms (rsr12_snr27.5) 
+Classical start + EM40          | 0/51; 8.0744 ms (rsr5_snr10)   | 0/51; 10.1380 ms (rsr12_snr27.5)
+Direct EM100                    | 0/51; 10.4442 ms (rsr20_snr5)  | 0/51; 9.7083 ms (rsr5_snr0)     
+Compact sparse                  | 2/51; 11.4194 ms (rsr12_snr5)  | 1/51; 11.0146 ms (rsr12_snr27.5)
+OptShrink                       | 48/51; 93.6668 ms (rsr5_snr10) | 48/51; 84.6815 ms (rsr5_snr50)  
+
+INTERPRETATION AND VERIFICATION
+The primary NMSE is an equal-cell mean of dB error-to-energy ratios. The pooled linear ratio is computed separately for each fit and then averaged arithmetically across fits; its dB value is the log of that mean. It weights errors and channel energy differently from the primary mean-cell dB measure. The grid has 108 of 153 conditions above 20 dB although the inherited training ends at 20 dB; neither weighting is a deployment-weighted guarantee.
+There are 128 channels per reference/path setting, 1,152 physical anchors reused across 17 SNR values, and 384 local-index clusters for the 20,000 paired bootstrap draws. Indices are shared across reference, SNR, estimator and training fit within each path regime. Uncertainty is conditional on the fixed weights, selected policy and grid.
+All methods use the same independent magnitude-domain data: each channel transmits all 64 joint unit-power Gray-QPSK vectors once. The detector enumerates those 64 hypotheses using the exact Rician likelihood. N=32, K=3 and P=30; reference and noise variance are known.
+Zero observed errors and collapsed empirical intervals do not prove zero population BER, equivalence or population noninferiority. Bit counts are not independent channel trials.
+The additional EM count is a finite continuation, not a guarantee of a converged optimum. The learned global schedule lacks an observation-conditioned controller but retains scale normalization. These comparisons do not cover every classical estimator.
+Routing still has boundaries: the start changes above 30 dB; the nearest-bin strong-reference filter changes at 31.25 dB. In the separate exploratory B-proposal arm, a ten-update tail also starts across that strong-reference boundary, and the weak-reference tail changes from zero to 40 updates across 38.75 dB. These B tails are absent from the confirmed zero-tail hybrid. The earlier strong-reference filter-off jump around 40 dB remains repaired: c=4, beta=1 filtering continues from 37.5 dB upward. This gridded test does not prove continuity between sampled conditions or robustness to variance mismatch.
+Selection, prediction, raw/final summary, timing and BER audits all passed. The report does not edit the paper or make a publication or novelty claim.
+
+Artifacts: nmse_summary.json, raw_start_summary.json, ber/summary.json, timing_window1.json, timing_window2.json, audit/*.json and ber/audit.json.
+Figures: hybrid_nmse.png, hybrid_gains.png, hybrid_runtime.png, raw_start_nmse.png, ber/ber.png.
+Policy SHA256: dd32419911ba706a9e14c517ea4d735723f29a2189c24bbc66875f9a2c3f38dc

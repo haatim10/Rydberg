@@ -1,0 +1,365 @@
+{
+  "version": 1,
+  "name": "Learned-initialized exact-EM transition repair with path-stratified heldout guard",
+  "development_seed": 2026101921,
+  "test_seed": 2026101922,
+  "data_seed": 2026101923,
+  "timing_seed": 2026101924,
+  "smoke_seed": 2026101920,
+  "N": 32,
+  "K": 3,
+  "generated_P": 39,
+  "context_P": 30,
+  "heldout_P": 9,
+  "deployment_P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "development_cases_per_reference_regime": 96,
+  "test_cases_per_reference_regime": 128,
+  "model_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "menu": [
+    "original",
+    "warm5",
+    "warm20",
+    "warm100",
+    "spectral100"
+  ],
+  "cost_tie_order": [
+    "original",
+    "warm5",
+    "warm20",
+    "spectral100",
+    "warm100"
+  ],
+  "cost_tie_order_interpretation": "Fixed preference/complexity order, not measured speed.",
+  "old_bypass_policy": {
+    "5": 35.0,
+    "12": 30.0,
+    "20": 30.0
+  },
+  "model": "Same three frozen context30 checkpoints. No neural training or checkpoint reselection. Exact gamma1 EM continuation starts at learned output with no spectral reset; spectral100 remains separatecandidate.",
+  "candidate_design": "Small exploratory prior-DEVELOPMENT likelihood screen supported warm5/20/100 and did not support adding dual-start100. Exploratory outputs are candidate-design evidence only; no old test truth was used for new choices.",
+  "deployment": "Nominal receiver10log10(K/suppliedvariance) and knownreferencepower choose nearest declaredSNR/reference bins, tieslowerbin. Atactualproxy<=20+1e-10 force original. One shared choice perSNR/reference acrossthreefits and allpathregimes. No runtime truepathcount input.",
+  "data": "Fresh39-column coupled observations. Development exports observable arrays only;30fit and9heldout. Test/timing usefirst30columns. Anchor10dB retainsG/S/B/standardizednoise acrossSNR. Acrossreference draws differ but pathcountvector shares localindex; jointbootstrap preserves that association.",
+  "masks": "Torchseed2026101925+100*regime_index+reference_index defines fixed96case30/9 masks, shared acrossSNR and everycandidate. Initialization/features/updates see onlycontext30.",
+  "repair_guard": {
+    "samples": 4000,
+    "seed": 2026101927,
+    "rule": "For eachpathregime generate4000 multinomial96count vectors once, shared acrossall51SNR/reference decisions and allcandidates. Compute pairedheldoutNLLdelta versusoriginal, average3fits peranchor first. Candidate admissible onlyif95thpercentileofbootstrapmean<=0 in EACH3regimes. Original alwaysadmissible; forceoriginal through20. Neverrelaxconstraint.",
+    "selection": "Among admissible candidates choose minimum equalpath/case/fit meanheldoutNLL. Exactties use declaredfixedpreferenceorder, not measuredspeed. Keep fullpercase losses, candidate tables andbootstrapweights.",
+    "caveat": "Empirical development admissibility, not a population noninferiority guarantee after adaptive selection; the fresh test is decisive."
+  },
+  "calibration": {
+    "local_index": 100,
+    "snrs": [
+      0.0,
+      5.0,
+      10.0,
+      15.0,
+      20.0,
+      22.5,
+      25.0,
+      27.5,
+      30.0,
+      32.5,
+      35.0,
+      37.5,
+      40.0,
+      42.5,
+      45.0,
+      50.0,
+      60.0
+    ],
+    "rsrs": [
+      5.0,
+      12.0,
+      20.0
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "repeats": 3,
+    "sequence": "Freeze repairchoices first; afterallotherCPUjobsidle, measureactualselectedrepair plusall16 compact candidates overfull153conditiongrid. Pooledthreefitrepairp90 definescap. Candidatep90<=cap iseligible; allinitialization/lookup/conversions included, parameters preloaded."
+  },
+  "compact": {
+    "grid": {
+      "d128_i8_o12_f0.03": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.03
+      },
+      "d128_i8_o12_f0.1": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.1
+      },
+      "d128_i8_o12_f0.3": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "d128_i8_o12_f1": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 1.0
+      },
+      "d128_i8_o12_f3": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 3.0
+      },
+      "d256_i8_o12_f0.03": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.03
+      },
+      "d256_i8_o12_f0.1": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.1
+      },
+      "d256_i8_o12_f0.3": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "d256_i8_o12_f1": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 1.0
+      },
+      "d256_i8_o12_f3": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 3.0
+      },
+      "d256_i2_o40_f0.03": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.03
+      },
+      "d256_i2_o40_f0.1": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "d256_i2_o40_f0.3": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "d256_i2_o40_f1": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 1.0
+      },
+      "d256_i2_o40_f3": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 3.0
+      },
+      "em100": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      }
+    },
+    "selection": "Same fresh30fit9heldout banks, independently perSNR/reference; balancedpath meanNLL amonglatencyeligiblecompactcandidates. No newtest tuning. Limited preregisteredcompactfamily, not globalbest."
+  },
+  "baselines": "Frozenold35/30/30 EMbypass; optimizeddirectEM100; frozenOptShrink; previousstudycompacttable; newlylatencymatchedcompact; fixedfullsparse100x25. Frozenextrapolationcontrols explicitlylabeled.",
+  "freeze": "Freeze scientificsources/checkpoints beforefreshdevelopment. Freeze repairchoices beforecalibration; calibration beforecompactchoice. Bind BERprotocol/source and allchoice/loss hashes beforeanytestanchor.",
+  "methods": [
+    "original_9101",
+    "original_9102",
+    "original_9103",
+    "old_bypass_9101",
+    "old_bypass_9102",
+    "old_bypass_9103",
+    "repair_9101",
+    "repair_9102",
+    "repair_9103",
+    "em100",
+    "optshrink",
+    "prior_compact",
+    "compact_sparse",
+    "prior_sparse_full"
+  ],
+  "groups": {
+    "original_mean": [
+      "original_9101",
+      "original_9102",
+      "original_9103"
+    ],
+    "old_bypass_mean": [
+      "old_bypass_9101",
+      "old_bypass_9102",
+      "old_bypass_9103"
+    ],
+    "repair_mean": [
+      "repair_9101",
+      "repair_9102",
+      "repair_9103"
+    ]
+  },
+  "contrasts": {
+    "repair_vs_old": [
+      "old_bypass_mean",
+      "repair_mean"
+    ],
+    "repair_vs_original": [
+      "original_mean",
+      "repair_mean"
+    ],
+    "repair_vs_em100": [
+      "em100",
+      "repair_mean"
+    ],
+    "repair_vs_compact": [
+      "compact_sparse",
+      "repair_mean"
+    ]
+  },
+  "primary": "RSR5 andSNR32.5,35,37.5,40,42.5,45:18cells. Repair vsoldbypass andvsoriginal; NMSEandBER cooutcomes =>4primaryoutcomes. Othercontrasts descriptive.",
+  "success_review": "Report targetaggregate and each of3pathsubgroups, everyadversecell andtails, allgridoutcomes. No success declaration basedonlyonhighSNRaverage. Ordinary<=20 mustremainbitwiseidentical.",
+  "bootstrap": {
+    "samples": 20000,
+    "seed": 2026101929,
+    "unit": "Multinomial128caseweights perregime sharedacrossreference/SNR/method/fit",
+    "scope": "Conditionalfixedfits/policies. Pointwise95 plusBonferroni4-outcome individual98.75% intervals fordeclaredprimarycontrasts. Per-cell andsubgroupintervals descriptive."
+  },
+  "sensitivity": {
+    "cells": "All3regimes;RSR5 at35/40/45 andRSR12/20 at32.5; eachsuppliedvarianceoffset-3/0/+3 =>45conditions",
+    "scope": "Samefresh128anchors, unchangedmeasurements, samepolicies. Original,oldbypass,repair,directEM100,freshcompact. Diagnosticonly, noBER/no retuning."
+  },
+  "final_timing": {
+    "local_index": 200,
+    "snrs": [
+      0.0,
+      5.0,
+      10.0,
+      15.0,
+      20.0,
+      22.5,
+      25.0,
+      27.5,
+      30.0,
+      32.5,
+      35.0,
+      37.5,
+      40.0,
+      42.5,
+      45.0,
+      50.0,
+      60.0
+    ],
+    "rsrs": [
+      5.0,
+      12.0,
+      20.0
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "repeats": 3,
+    "scope": "Freshisolatedfull153grid, everymethod. Report actualpolicylookup/fullinference, regional/branchpooledmedian/p90 andeverycapovershoot; no reselection."
+  },
+  "source_hashes": {
+    "tcom_transition_repair_20261019/study.py": "447864fb74490eb235cdaf6a63fae7fb877dba0c03e40856838f554bb5f7a6bb",
+    "tcom_transition_repair_20261019/inference.py": "8192249bdc18e885669c56af95d131640fe2583e82edd8c051087e380b2031f3",
+    "tcom_transition_repair_20261019/sensitivity.py": "308f059d89c5c93f37dac9ef32ba8afce77a8958f94da38f0b52db1b3f960409",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_retrained_bypass_20261018/study.py": "44bd45c1dcbedf89c5d61b8f7577e5b03e47a540344b52a99862ff7904369f78"
+  },
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c"
+  },
+  "prior_protocol_sha256": "a5211831fe49855680d4840e7fe9f829ddac7efbf5fbf279201e1d28766d7ec5",
+  "prior_policy_sha256": "1d5fd733346c715a48d8c15c6d12e2e0f6dfde4864816165f4b351be098f1cb6",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "frozen_unix": 1792417979.5575528
+}

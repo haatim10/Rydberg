@@ -1,0 +1,173 @@
+{
+  "version": 1,
+  "name": "Validation-selected optimized sparse Rician EM under runtime budgets",
+  "development_seed": 2026101741,
+  "test_seed": 2026101742,
+  "data_seed": 2026101743,
+  "timing_seed": 2026101744,
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "RSR": 12.0,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "development_cases_per_cell": 12,
+  "test_cases_per_cell": 64,
+  "dictionary_sizes": [
+    64,
+    128,
+    256
+  ],
+  "inner_steps": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    25
+  ],
+  "outer_steps": [
+    2,
+    4,
+    8,
+    12,
+    20,
+    40,
+    80,
+    100
+  ],
+  "factors": [
+    0.03,
+    0.1,
+    0.3,
+    1.0,
+    3.0
+  ],
+  "zero_penalty_exact_em": true,
+  "requested_thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "numerical_backend": "NumPy/SciPy Apple Accelerate; environment requests one thread; threadpoolctl unavailable. Torch threads/interops=1 and SciPy FFT workers=1.",
+  "algorithm": "Accelerated monotone FISTA inner solver; inner1/2 use equivalent first FISTA iterates; all transforms fixed before timing. Positive lambda=factor*sqrt(v*P_fit*log(D)). Lambda0 uses exact unconstrained EM.",
+  "eligibility": "Batch-one isolated CPU p90 timing; all30pilots and initialization included. Each positive-penalty structural family measured at factors.03and3, conservative maximump90 used for all factors in family. Zero-penaltyEM timed separately.",
+  "calibration": {
+    "snrs": [
+      0.0,
+      10.0,
+      20.0
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "local_indices": [
+      0
+    ],
+    "repeats": 3,
+    "warmup_calls_per_probe": 1,
+    "randomized_order_seed": 20261017440,
+    "probe_factors": [
+      0.03,
+      3.0
+    ]
+  },
+  "caps": "Firstcap is pooled p90 of three original learned models on same calibration cases; others fixed10/20/50ms. If families unavailable report no candidate rather than silently exceedcap.",
+  "selection": "For each observedSNR only, equal average heldoutRicianNLL over12worlds per each ofthree pathregimes. Fixedrandom21/9split. Fitting initialization/features/updates seeonly21pilots. Tiebreak lower familytiming thenfewerouter,inner,D,factor. No truechannel or actualpathcount selects configuration.",
+  "masks": "seed20261017410+int(SNR); same masks for all candidates at eachSNR",
+  "trajectory_sharing": "Prefix reuse only within fixedD,inner,factor; all eligible outerbudgets saved from one trajectory. Identical mathematics to separate runs.",
+  "test": "Freeze all selected controls and source/checkpoint hashes before generating960fresh testworlds. Refit on all30pilots. Same observations across every method.",
+  "baselines": [
+    "three original learned fits",
+    "EM100",
+    "frozen offlineOptShrink",
+    "fast_full(.3,D128,inner25,outer100) diagnostic, outside capselection"
+  ],
+  "final_timing": {
+    "seed": 2026101744,
+    "local_indices": [
+      100,
+      101
+    ],
+    "snrs": [
+      0.0,
+      5.0,
+      10.0,
+      15.0,
+      20.0
+    ],
+    "regimes": [
+      [
+        "L2",
+        2
+      ],
+      [
+        "L4",
+        4
+      ],
+      [
+        "random3to7",
+        null
+      ]
+    ],
+    "repeats": 3,
+    "policy": "Fresh timingcases, isolated batch1; report per-method/perSNR median,p90 and capovershoot without reselection."
+  },
+  "uncertainty": "Conditional paired whole-channel bootstrap; fixed checkpoints and validation selections. Seedmodels averaged as scores, never ensembled. Sharedpathdraws acrossSNRdo not become independent training replications.",
+  "source_hashes": {
+    "tcom_runtime_bypass_20261017/runtime_study.py": "bc6a3e4c0b3b42b2c25f54cd13c7bdddf8fe25f0e21116782dd90a3ecc46f9bc",
+    "tcom_runtime_bypass_20261017/sparse_fast.py": "ddc40216f4f23c1d4a2eaae7813b12f87dbd2c9645ef5e2cddaf82480e83ae37"
+  },
+  "frozen_original_inputs": {
+    "hashes": {
+      "results/sahure_expansion/checkpoints/seed_9101/em_adaptive_best.pt": "b664708d4b04dd68be7d503199163f42d027aa7a2afc5b110a70e2474dee9b12",
+      "results/sahure_expansion/checkpoints/seed_9102/em_adaptive_best.pt": "afe564f3714b536574f53fb1de56446f16a753dc57b0caf99547f0ad78305648",
+      "results/sahure_expansion/checkpoints/seed_9103/em_adaptive_best.pt": "2f78fd5c2f7c7eca82a9a6e7d017b6722e4ebb55074bedeac670ff670c3f8525",
+      "results/fair_optshrink/frozen_selection.json": "6b27549161697b226927244ea1e203a212e7a86bf4ac4489018f314f7f31b9a1",
+      "sahure/model.py": "c6a3d53d8adae23cc2c0b1309bedd21ebd7760194359256192897bdd19aaface",
+      "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+      "sahure_expansion/data.py": "c1c806b53f0318cb0f86b61eba898b37204675e1ed8921bff1a35c6f798366e2",
+      "fair_optshrink/estimator.py": "387c41e72979dc636de955f0f1724e161fc4ef030ad5d50b11a5ab715e1038a1",
+      "hybrid_optshrink/model.py": "2314dcba9fb46d68ac3bc513e3736dfdbe64c5ee93bdf235524d6e6984ba8b39",
+      "rydberg_sim/monte_carlo.py": "222ea7bf124672a73343ec0b9b8dd0b8fda624329a69eb8b1d92f55a17743b82",
+      "rydberg_sim/rng.py": "ca3f1787e87c61db0650677d476d9a9542ed6e9397d431aed0b76ef651ffb6ed"
+    },
+    "python": "3.12.5",
+    "numpy": "2.4.6",
+    "torch": "2.13.0",
+    "threads": 1,
+    "generator_policy": "Independent operating point RNG keys include SNR and RSR; path-regime trial offsets prevent overlap; high-SNR study may explicitly couple worlds by rescaling a fixed anchor noise realization."
+  },
+  "frozen_unix": 1792241876.859972
+}

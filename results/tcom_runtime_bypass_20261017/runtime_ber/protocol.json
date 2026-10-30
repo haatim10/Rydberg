@@ -1,0 +1,56 @@
+{
+  "study": "runtime-matched sparse versus learned estimate-then-detect BER",
+  "version": 1,
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "RSR_dB": 12,
+  "SNR_dB": [
+    0,
+    5,
+    10,
+    15,
+    20
+  ],
+  "path_regimes": [
+    "L2",
+    "L4",
+    "random3to7"
+  ],
+  "independent_worlds_per_cell": 64,
+  "pilot_world_seed": 2026101742,
+  "data_seed": 2026101743,
+  "data_seed_rule": "SeedSequence([2026101743, cell_index, local_world_index])",
+  "independent_QPSK_vectors_per_world": 256,
+  "modulation": "unit-power Gray QPSK; two bits per user symbol",
+  "expected_source_methods": [
+    "learned_9101",
+    "learned_9102",
+    "learned_9103",
+    "sparse_matched",
+    "sparse_10ms",
+    "sparse_20ms",
+    "sparse_50ms",
+    "em100",
+    "optshrink",
+    "fast_full"
+  ],
+  "additional_method": "perfect_csi",
+  "nominal_caps_ms": {
+    "sparse_matched": 5.459667,
+    "sparse_10ms": 10.0,
+    "sparse_20ms": 20.0,
+    "sparse_50ms": 50.0
+  },
+  "selection_sha256": "7fad8b63b794e17f2e3db4f1ffce5804a33c581d57e04a7b7e45f6a458773c10",
+  "source_hashes": {
+    "tcom_runtime_bypass_20261017/runtime_ber.py": "1d9503aedeb0b69210586f177aa897d40b034c40c7cfbfa0d2e49e665ac71ad4",
+    "tcom_followups_20261017/ber_detector.py": "e785ec8ab53fd1e6377f98f6605e24e18e7f17edad110efeaaa1f7b6ff6ba18c"
+  },
+  "observation_policy": "All saved channel estimates use identical pilot data. All detectors use identical new data magnitudes, known reference, variance, and 64 joint QPSK hypotheses.",
+  "inference": "No unknown data symbol or true channel is used to fit or select any channel estimate; true CSI is an explicitly labeled reference detector only.",
+  "aggregation": "Three frozen neural fits evaluated separately; learned_mean averages BER, never channels or predictions.",
+  "confidence": "95% paired coupled-block percentile bootstrap; 4000 resamples with seed2026101794. Within each path regime the same local-world indices are resampled across every SNR and method, preserving possible dependence from shared random path-count draws. Regimes are resampled independently. Training fits remain fixed.",
+  "timing": "This module must remain idle during isolated latency calibration; no speed claim is based on its observed wall time.",
+  "sparse_budget_note": "Nominal budget labels refer to the separately frozen runtime study; sparse_matched uses its learned-latency matching rule. These are not hard real-time guarantees."
+}

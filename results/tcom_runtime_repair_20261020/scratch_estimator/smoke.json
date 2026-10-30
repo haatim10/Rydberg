@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "smoke_seed": 2026102000,
+  "conditions": [
+    [
+      0.0,
+      5.0,
+      2
+    ],
+    [
+      10.0,
+      12.0,
+      4
+    ],
+    [
+      20.0,
+      20.0,
+      null
+    ],
+    [
+      40.0,
+      5.0,
+      null
+    ],
+    [
+      60.0,
+      12.0,
+      2
+    ]
+  ],
+  "worlds_per_condition": 2,
+  "models": 3,
+  "dtype": "float64/complex128",
+  "stages": 10,
+  "weights_and_algorithm_unchanged": true,
+  "maximum_errors": {
+    "solve": {
+      "g": 4.189529226675416e-15,
+      "beta": 2.220446049250313e-16,
+      "tau": 3.197442310920451e-14,
+      "correction": 8.326672684688674e-16,
+      "nll": 4.656612873077393e-10,
+      "scalar_batch": 0.0
+    },
+    "svd": {
+      "g": 1.6855291734181314e-14,
+      "beta": 2.220446049250313e-16,
+      "tau": 2.842170943040401e-14,
+      "correction": 1.7763568394002505e-15,
+      "nll": 9.022187441587448e-10,
+      "scalar_batch": 0.0
+    }
+  },
+  "source_sha256": "04af1eef01fabc6d80a1eed604ef2b3578e4cae97763eb969ab97ac034e06e92",
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c"
+  }
+}
