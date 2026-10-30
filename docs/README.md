@@ -15,4 +15,4 @@ work without changing its numerical results or rewriting old protocols.
 | [Archive inventory](archive_20261030/README.md) | Exactly what is uploaded and kept local |
 
 Earlier documents in this directory remain historical records. For the complete
-current archive, use the [codex branch](https://github.com/haatim10/Rydberg/tree/codex).
+current archive, use the [`archive/complete` branch](https://github.com/haatim10/Rydberg/tree/archive/complete).

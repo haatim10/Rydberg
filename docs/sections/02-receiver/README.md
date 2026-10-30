@@ -2,7 +2,7 @@
 
 The current complete receiver is implemented in `tcom_reliability_20261021/`.
 It builds on earlier frozen modules rather than copying their code into a new
-directory. Those dependencies are included in this branch and in `codex`.
+directory. Those dependencies are included in this branch and in `archive/complete`.
 
 ## Receiver operation
 
