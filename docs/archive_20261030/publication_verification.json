@@ -24,5 +24,33 @@
     "Existing scientific records were verified unchanged; navigation files are intentionally new or updated.",
     "Historical full-data experiment audits were preserved, not rerun.",
     "Remote publication is verified separately after pushing branches."
-  ]
+  ],
+  "isolated_inference_smoke_check": {
+    "passed": true,
+    "source": "committed files exported to an isolated directory",
+    "full_receiver_cases": [
+      {
+        "snr_db": 5,
+        "rsr_db": 12,
+        "finite": true
+      },
+      {
+        "snr_db": 35,
+        "rsr_db": 5,
+        "finite": true
+      },
+      {
+        "snr_db": 45,
+        "rsr_db": 12,
+        "finite": true
+      }
+    ],
+    "urformer_selected_checkpoint_load_and_forward": true,
+    "benchmark_or_training_run": false
+  },
+  "git_tree_inventory": {
+    "included_research_files_in_git": 9115,
+    "local_only_files_accidentally_tracked": 0,
+    "missing_included_files": 0
+  }
 }
