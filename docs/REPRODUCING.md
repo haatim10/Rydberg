@@ -7,7 +7,7 @@ git clone --branch codex https://github.com/haatim10/Rydberg.git
 cd Rydberg
 ```
 
-Topic branches are cumulative checkpoints. Use `codex` when you need all studies,
+Topic branches are cumulative checkpoints. Use `archive/complete` when you need all studies,
 their shared dependencies and the latest paper in one checkout.
 
 ## Environment
