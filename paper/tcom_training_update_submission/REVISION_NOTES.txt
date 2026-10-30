@@ -1,0 +1,90 @@
+COMBINED TCOM TRAINING UPDATE - 15 OCTOBER 2026
+
+The two unpublished studies form one journal manuscript. The original
+188-parameter estimator remains the main learned method. The paper asks
+when structural filtering helps and what accuracy-cost trade-off a small
+self-supervised controller can provide. It does not claim that this
+estimator is always more accurate than OptShrink.
+
+WHAT THIS UPDATE ADDS
+- The full matched all-pilot comparison: 8,192 fresh physical worlds,
+  including 8,064 primary and 128 separately reported stress worlds.
+  Three matched seeds use 16,384 training examples and 20 epochs each.
+- Final-epoch sensitivity results, kept separate from the primary
+  validation-selected checkpoint comparison.
+- A separate one-seed 50/50 mixed-training screen on 4,096 fresh worlds,
+  including 4,032 primary cases. Its failed screening criteria are retained.
+- A separate one-seed selector screen on 4,224 fresh physical worlds,
+  including 4,032 primary cases. The same worlds are reused with correct
+  and +/-3 dB supplied noise variances; this is not three independent sets.
+- Simple-English explanations of the accuracy/failure trade-off and the
+  remaining sensitivity to wrong noise inputs. Negative follow-ups are
+  not promoted as successful improvements or new contributions.
+- Generated tables, a training comparison figure and compact evidence
+  records. Earlier protocols and their results remain separately labelled.
+
+LATEST MATCHED TRAINING COMPARISON
+Primary metric: equal-weight average of per-condition dB NMSE; lower is
+better. Severe error means channel NMSE above 1, not communication outage.
+All values below come from the same 8,064 primary worlds:
+
+Method                         NMSE (dB)    Severe rate     CPU (ms)
+Original estimator              -13.6843        2.819%        4.808
+All-pilot training              -13.9616        4.473%        4.811
+Offline-tuned OptShrink          -13.1684        4.043%       15.658
+Per-block rank-selected OptShrink -14.1321       6.758%      108.078
+
+All-pilot training improves the average by 0.2773 dB over the original,
+but increases severe errors. It remains 0.1705 dB behind per-block
+rank-selected OptShrink on that average. Final-epoch all-pilot versus
+original improvement is 0.2423 dB. The architecture and inference cost are
+unchanged; training noise, pilot geometry and objective change together.
+The main method is not replaced based on this trade-off.
+
+SMALL DEVELOPMENT FOLLOW-UPS
+Mixed training: 0.1520 dB better average than the original in its own fresh
+bank, with severe errors 3.745% versus 2.902%. It reduces the all-pilot
+severe rate of 4.762%, but does not meet all screening criteria. Its runtime
+is 5.008 ms versus 4.980 ms for the original in that timing run.
+
+Selector: observation-only validation selects the constant original-model
+policy. It gives zero accuracy improvement, with only small dispatch
+overhead. This does not prove that every possible selector would fail.
+The 21/9 held-out-pilot selection criterion may favour the original recipe.
+
+On the selector screen's 4,032 primary worlds, original/all-pilot severe
+rates are 2.803%/4.861% with correct variance, 11.111%/14.509% when supplied
+variance is 3 dB too low, and 3.398%/5.432% when it is 3 dB too high.
+Actual observations and physical noise are unchanged across these arms.
+These are development stress tests, not proof of calibration robustness.
+
+WHAT REMAINS FROM THE EARLIER COMPACT STUDY
+That separate 4,096-world comparison found 1.967 dB average improvement
+over the tested 148-parameter NA-ALISTA-inspired adaptation. It is not a
+reproduction of published NA-ALISTA, nor proof that a larger search or
+longer training would not improve the comparator. Its results are not
+pooled with the newer training comparison.
+
+CLAIMS AND LIMITS
+- The contribution is a specific self-supervised controller for spatial
+  filtering within the Rician channel update, plus measured operating
+  limits. Hankel filtering and compact adaptive unfolding are not new by
+  themselves. No first-ever, universal superiority or optimality claim.
+- Timing comparisons are measured CPU implementation results, including
+  initialization and per-block rank selection/refitting where applicable.
+  They exclude offline training/tuning and are not hardware guarantees.
+- Three training seeds share one dataset. Conditional paired intervals do
+  not establish generalization across independent training populations.
+- The mixed and selector screens use one seed and are exploratory. Their
+  test banks are not untouched confirmation data for a revised method.
+- No full-estimator convergence or shrinkage-optimality guarantee.
+- Weak references, nearly noiseless observations and wrong noise inputs
+  remain limitations. No hardware, atomic-dynamics or 2D-array validation.
+- The all-pilot study changes several training factors together. It does
+  not isolate pilot count alone or remove the known-noise assumption.
+- No matched reproduction of published URformer or full LRHD/HVaF/LRPR.
+
+AUTHOR ACTIONS STILL REQUIRED
+Approve the paper and author information; provide a real permanent public
+code/data destination; check current venue and disclosure requirements.
+The manuscript has not been submitted. Previous versions are preserved.

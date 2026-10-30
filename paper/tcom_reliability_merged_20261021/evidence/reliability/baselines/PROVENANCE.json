@@ -1,0 +1,97 @@
+{
+  "description": "Baseline evidence copies for the merged manuscript; original experiments remain unchanged.",
+  "copies": {
+    "filter_continuation_policy.json": {
+      "source": "results/tcom_filter_continuation_20261019/policy.json",
+      "sha256": "96bda1a6179d6ddc2a903215a4f44cb39c23ff55ee8e778b330af4b6986966cc",
+      "bytes": 116868,
+      "copy": "byte-for-byte"
+    },
+    "filter_continuation_protocol.json": {
+      "source": "results/tcom_filter_continuation_20261019/protocol.json",
+      "sha256": "3d9730c4f23d7519ff55b2639383f7c46df6ac9410170c8113239c61a723fd96",
+      "bytes": 9605,
+      "copy": "byte-for-byte"
+    },
+    "filter_continuation_calibration.json": {
+      "source": "results/tcom_filter_continuation_20261019/calibration.json",
+      "sha256": "3cc3f71d787777030b8d05d3acc24ad2f8424cdb7b6c7054f1a8539c0dd652a8",
+      "bytes": 1665440,
+      "copy": "byte-for-byte"
+    },
+    "dual_guard_policy.json": {
+      "source": "results/tcom_dual_guard_20261019/policy.json",
+      "sha256": "f5945f47d0da7d98e1bcf28d774dd5e8c4df8d9963fd1eedd7b4bd515887077d",
+      "bytes": 394641,
+      "copy": "byte-for-byte"
+    },
+    "classical_selection.json": {
+      "source": "results/tcom_start_ablation_20261020/classical_selection.json",
+      "sha256": "7710019835521a0b853b1a102cb1a58a62e548ec2c6f6eee0b8bddd20fce0f43",
+      "bytes": 109261,
+      "copy": "byte-for-byte"
+    },
+    "start_ablation_protocol.json": {
+      "source": "results/tcom_start_ablation_20261020/protocol.json",
+      "sha256": "a5379b60f3e6d3a6a33cf61f4357a33f092bd9a8a4c897142681c050e733e269",
+      "bytes": 12097,
+      "copy": "byte-for-byte"
+    },
+    "start_budget_policy.json": {
+      "source": "results/tcom_start_budget_20261020/policy.json",
+      "sha256": "1879f793286f9b380b8dac42d55957a274777b6c7928cc381390466c79f0704a",
+      "bytes": 1159,
+      "copy": "byte-for-byte"
+    },
+    "start_budget_protocol.json": {
+      "source": "results/tcom_start_budget_20261020/protocol.json",
+      "sha256": "f65bf5473d946a5b63b744b542871a61d0de1feb5e58db9f72b6c1ae4119cd9d",
+      "bytes": 12763,
+      "copy": "byte-for-byte"
+    },
+    "native_runtime_policy.json": {
+      "source": "results/tcom_runtime_repair_20261020/policy.json",
+      "sha256": "48b5b44de306e42ab39f73ee07df30b582b49739a501aac784abc43ebe07f3a0",
+      "bytes": 44769,
+      "copy": "byte-for-byte"
+    },
+    "native_runtime_protocol.json": {
+      "source": "results/tcom_runtime_repair_20261020/protocol.json",
+      "sha256": "fdecfdbd36f315a01a741911fbf42b9644eeb76ff7095121c6e9f3c815305fbd",
+      "bytes": 8125,
+      "copy": "byte-for-byte"
+    }
+  },
+  "derived": {
+    "policy_summary.json": {
+      "sha256": "2847efa6b5091107a7ea9de7669bebe4b28bba8cdef8995852434fe79b6bd0f8",
+      "description": "Reporting-only expansion of copied immutable policies; no fitting or inference rerun."
+    },
+    "README.txt": {
+      "sha256": "1561fef21a55b1401ad3f274aacd2b5eb0ed0d8bfd03cb4aeb0d34369a71c3fa",
+      "description": "Reporting guide; distinguishes original selection records from current inference."
+    }
+  },
+  "implementation_source_hashes": {
+    "tcom_runtime_bypass_20261017/sparse_fast.py": "ddc40216f4f23c1d4a2eaae7813b12f87dbd2c9645ef5e2cddaf82480e83ae37",
+    "tcom_filter_continuation_20261019/study.py": "1ce4cffa709b881508de362c7cd2aca95ba3ca8a3dba0de63f77b474ef6d0d77",
+    "tcom_incumbent_guard_20261019/inference.py": "0cef3a0dc8a9f1ffa066e08896afc0d69f3a311b9ad729618ec9b760b78ab1eb",
+    "tcom_incumbent_guard_20261019/shrink.py": "f72debd9763e4a57532f635c0120fa9eaf516f94e0e360853e1155fee483ec6b",
+    "tcom_runtime_repair_20261020/inference.py": "b90d476fcf7ac1f493b1f947e0de0ccec93e18628205a8251c12827491d4ae0a",
+    "tcom_runtime_repair_20261020/native.py": "7a60c4ba92259b27332382e14240b425e155576dc8a8df48b8470745cb976d77",
+    "tcom_start_ablation_20261020/starts.py": "2391e8379f5d726891207e46fa278ddfa4664d270f4cc4c916f9a2a204de3e00",
+    "tcom_start_budget_20261020/study.py": "58105b2f472e343225e28e6a50699db0ce7301289f0ffd9cc7f0e82cfd242847"
+  },
+  "verified": {
+    "all_copies_byte_identical": true,
+    "filter_policy_protocol_and_calibration_hashes_match": true,
+    "native_policy_preserves_all_51_repair_and_compact_records": true,
+    "common40_policy_classical_config_matches_original_selection": true,
+    "classical_is_minimum_of_30_raw_start_validation_scores": true,
+    "compact_bins": 51,
+    "compact_counts": {
+      "penalized": 34,
+      "direct_em100": 17
+    }
+  }
+}

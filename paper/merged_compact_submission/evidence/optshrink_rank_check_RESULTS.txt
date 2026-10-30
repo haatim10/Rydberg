@@ -1,0 +1,43 @@
+FINAL ONLINE-RANK OPTSHRINK COMPARISON
+
+4096 new paired worlds;126 primary conditions plus2 separate stress conditions.
+No new neural training. Rank chosen from21/9 observed pilot split; final refit uses all30.
+All rank-search costs counted; original and preceding studies unchanged.
+
+PRIMARY MACRO NMSE (lower better) / MEAN END-TO-END TIME
+rank_loop: -14.154 dB / 108.695 ms
+rank_final: -13.723 dB / 13.963 ms
+rank_joint: -14.096 dB / 114.170 ms
+opt_selected: -13.196 dB / 15.759 ms
+opt_loop: -13.151 dB / 15.680 ms
+opt_final: -12.863 dB / 6.225 ms
+opt_old: -12.041 dB / 6.383 ms
+em100: -9.958 dB / 13.149 ms
+hs_one: -13.059 dB / 99.877 ms
+learned: -13.647 dB / 4.962 ms
+
+LEARNED GAINS (positive favours learning), adjusted95% macro intervals
+rank_joint: -0.449 dB, [-0.5692819538513942, -0.3575586292267892]; worst-cell harm 4.478 dB
+rank_loop: -0.507 dB, [-0.5624942327862177, -0.4369252064815283]; worst-cell harm 5.495 dB
+rank_final: -0.076 dB, [-0.2262140814149183, 0.02519920408691279]; worst-cell harm 3.445 dB
+
+THRESHOLD EXCEEDANCE .5 /1 /2
+rank_loop: 19.519% / 6.870% / 0.223%
+rank_final: 19.370% / 4.737% / 0.248%
+rank_joint: 19.221% / 5.779% / 0.298%
+opt_selected: 18.973% / 4.067% / 0.000%
+opt_loop: 18.750% / 5.779% / 0.000%
+opt_final: 18.973% / 4.018% / 0.000%
+opt_old: 19.023% / 7.564% / 0.198%
+em100: 30.630% / 23.264% / 14.955%
+hs_one: 24.504% / 15.476% / 5.208%
+learned: 19.552% / 3.075% / 0.000%
+
+STRESS CELLS (not in primary average)
+weak_reference: learned -7.787, rank_joint -10.101, opt_selected -11.498, em100 -6.261
+nearly_noiseless: learned -6.835, rank_joint -70.134, opt_selected -67.618, em100 -66.212
+
+Audit and independent statistic recalculation passed. Full details:summary.json.
+Shared rank across users; offline-frozen blending/iteration budgets, not unrestricted per-case optimization.
+Same3 original checkpoints, one shared training dataset; intervals conditional on models and validation settings.
+Fresh follow-up test bank; do not pool with older studies. No publication or universal superiority guarantee.

@@ -1,0 +1,142 @@
+RESPONSE TO THE PAPER 1 REVIEW
+Prepared for the author, 8 October 2026. Nothing has been sent to the reviewer.
+Status: supporting experiments completed; main and budget audits passed.
+The following describes prepared revisions, not an already integrated PDF.
+
+Thank you for the review. The additional comparisons support a more precise
+conclusion: the usefulness of Hankel processing depends on both the channel
+and the chosen structural operation. Smooth shrinkage can outperform hard
+rank truncation. We therefore narrow the conclusions about HS-GS instead of
+claiming that its observed boundary applies to all Hankel methods.
+
+The new main campaign contains 12,000 condition-trial evaluations from 4,800
+base worlds; split fractions and mismatch strengths share those base worlds.
+It passed the independent completeness, provenance, pairing and numerical
+replay audit. The 2,800 RSR worlds are reused from a separate audited campaign,
+and the 10,400 EM-only replays reuse existing Paper 1 worlds. Neither is added
+to the fresh-world count. A separate budget check uses 300 new worlds; serial
+timing uses 20 worlds. The original Paper 1 results remain unchanged.
+
+1. Stronger structured comparisons and shrinkage
+
+We added exact-Rician gradient descent with hard Hankel processing, empirical
+smooth shrinkage inside EM-GS, unstructured Rician gradient descent and Xu's
+one-dimensional linearized least-squares estimator. All receive the same exact
+magnitude observations; iterative methods share spectral initialization.
+Each structured method chooses its own parameter from the held-out residual
+and then refits all pilots, using 25 candidate and 100 final updates.
+
+Smooth shrinkage improves on HS-GS in five of six tested cells by 0.623--1.413
+dB, with pointwise 95% intervals above zero. The sixth difference is 0.005 dB
+[-0.180,0.191], which does not establish equivalence. At L=14/SNR=0 dB, HS-GS
+loses 0.147 dB against EM-GS, whereas smooth shrinkage gains 1.266 dB. Thus,
+the hard-HS failure region is not a universal limit of Hankel information.
+
+This is an empirical smooth rule, not OptShrink or a nuclear-norm estimator.
+The projected-gradient control adapts the Rician model to our per-user Hankel
+lift; it is not a reproduction of Xu's physical two-dimensional projection.
+We clarify that hard truncation leaves retained observed singular values
+unchanged and does not correct their noise-induced bias.
+
+2. Reference strength
+
+At N=32, K=3, P=30 and SNR=5 dB, we reanalyse 400 paired trials at each RSR
+of 0,5,10,12,15,20,25 dB. Only classical EM-GS/HS-GS results are used.
+Ratio-of-sums gains range from 1.83 to 2.51 dB, all with positive pointwise
+95% intervals. At RSR=0, the gain is 1.83 dB [1.40,2.26]. Both methods still
+suffer with the weak reference: EM/HS NMSE is -6.19/-8.01 dB there, versus
+-10.73/-12.93 dB at RSR=12. No monotonic or universal RSR claim is made.
+
+3. Held-out fraction, pilot overhead and runtime
+
+The final fit uses all pilots; the temporary split does not permanently discard
+pilots or require additional transmissions. It reduces each candidate's fitting
+data and adds repeated computation. We tested 10%,20%,30%,40% at P=10,30 and
+SNR=0,10 dB, sharing worlds across fractions. The best point estimate changes
+with the setting. At P10/SNR10, 40% is worse than 30% by 0.461 dB
+[0.176,0.744]. At P30/SNR10, 10% is worse by 0.602 dB [0.383,0.832]. Larger
+validation sets tend to select smaller ranks. We do not claim 30% is optimal.
+
+Separate serial timing gives median totals of 348.5 ms for HS-GS, 346.5 ms
+for Rician GD plus Hankel, and 200.8 ms for smooth shrinkage. Median selection
+shares are 76.0%,75.9%,56.4%. These are 20 CPU worlds at N32/P30/L7/SNR5,
+with one requested thread. Shrinkage searches seven factors versus 16 ranks;
+this is not an equal-search-budget speed comparison. Machine, fixed method
+order and implementation limit the timing claim.
+
+4. Observable effective rank
+
+We replayed EM-GS on 10,400 existing worlds. Every reproduced EM error equals
+its stored value in this implementation. Measuring rank before HS processing
+avoids a correlation imposed by the projection itself. At N32/P30, estimated-
+versus-true rank Spearman correlation rises from 0.202 [0.100,0.297] at -5 dB
+to 0.914 [0.890,0.931] at 20 dB.
+
+Noise raises the proxy: at 5 dB its mean is 0.577 versus a true mean of 0.244,
+while the paired-median gain is 2.544 dB. These rank means average users
+within trials; the original plotted rho uses operating-point medians. This
+comparison of averages does not test a per-trial cutoff. Within fixed 5 dB
+SNR bands across complexity, proxy--gain correlation ranges from -0.098
+[-0.183,-0.012] to -0.797 [-0.836,-0.752]. Whole-trial bootstrap intervals
+preserve the pairing. The proxy has conditional value, but requires calibration
+before serving as a rank-selection rule. Normalized true path count is also
+reported as an evaluation-only comparator.
+
+5. Mild model mismatch
+
+The position-error study uses Gaussian element offsets with standard deviations
+up to 0.02 wavelengths; the realized offsets are not bounded by that value.
+Paths, pilots and noise are paired, the reference is calibrated, and the actual
+perturbed channel is the target. At L=3, HS gain falls from 4.955 to 3.917 dB. At L=12,
+it falls from 0.264 to 0.050 dB; the final interval [-0.029,0.125] does not
+establish a positive benefit. The paired losses of gain are 1.038 dB
+[0.898,1.183] and 0.213 dB [0.139,0.287], respectively. These stress levels
+are not measured hardware tolerances. Near-field propagation, mutual coupling,
+correlated noise and an uncalibrated reference remain outside this test.
+
+A separate reused +/-3 dB assumed-variance check changes EM and HS NMSE over
+0.040 and 0.043 dB, respectively, at one reference setting. Variance sensitivity
+is not evidence about correlated noise or spatial mismatch.
+
+6. Hankelization and fallback
+
+The revised algorithm box states that the lift is per user column, while one
+scalar rank is selected jointly and shared across users. No stacked/mosaic
+lift or shared-angle model is assumed. Full-capacity selection gives the paired
+EM-GS estimate exactly. It is an available fallback, not a per-trial no-harm
+guarantee. Finite Cadzow sweeps need not end at exact rank r after averaging.
+
+7. CCRB appendix
+
+The prepared appendix gives the real coordinate ordering, gains/angles,
+channel Jacobian, orthonormal tangent basis, Fisher projection and plotted
+normalization. Gains and angles are local channel parameters; noise variance
+and the reference remain known. Unknown calibration is not added as a nuisance
+parameter. The CRLB/CCRB are local unbiased references, and their gap is not a
+guaranteed attainable gain for the biased, rank-selected estimators.
+
+8. Update budget
+
+The separate 300-world check continues the same five iterative methods from
+100 to 300 updates with selected parameters fixed. Every cell-level NMSE point
+change is below 0.06 dB in magnitude. Some estimates still change at 300 updates,
+and lower likelihood loss does not guarantee lower channel error. This supports
+limited observed budget sensitivity, not equivalence or global convergence.
+
+9. Scope and remaining work
+
+Related-work fragments acknowledge classical structured low-rank recovery,
+spectral compressed sensing, MRI Hankel models and OptShrink. We do not claim
+a new general recovery principle, universal rho threshold, or superiority to
+all structured estimators. OptShrink itself, nuclear-norm recovery, tensor or
+shared-user models, and AIC/MDL/SURE selectors were not tested.
+
+The next step is to integrate the fragments into the exact TeX source of
+ThesisProj-7.pdf and compile the full paper. We recommend retaining the main
+performance/array and matched effective-rank figures, adding the structured-
+baseline comparison and a compact position-error figure, and summarizing the
+RSR, split and proxy findings briefly in the main text. Full sensitivity plots,
+proxy strata and budget/timing details can go in supplementary material; the
+CCRB derivation belongs in an appendix. Additional methods and broader mismatch
+families remain optional extensions outside this completed revision. No message
+has been sent to the professor or reviewer.

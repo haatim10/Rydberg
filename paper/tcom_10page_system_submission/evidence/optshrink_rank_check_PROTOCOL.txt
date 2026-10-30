@@ -1,0 +1,65 @@
+FINAL OBSERVATION-BASED OPTSHRINK RANK-SELECTION COMPARISON
+
+Question: does the original188-parameter estimator's trade-off survive an
+OptShrink comparator that selects a rank from each world's measurements?
+This is a baseline check, not a proposed new selector or universal optimum.
+All original sources, models, experiments and the preceding fair comparison
+remain frozen. No new neural training and no access to true channel labels.
+
+Freeze this protocol before generating new data. Inherit the same known-noise,
+known-reference exact Rician model: N32 K3 P30, spectral initialization, complex
+variance convention, PyTorch CPU float64 and one thread. All methods use the
+same30 observation columns; no additional pilots. Original learned seeds
+9101/9102/9103 are all retained, not ensembled or test-selected.
+
+Rank selection: use the first21 pilots to fit all shared ranks1..15 plus exact
+no-filter. Score each on the remaining9 with Rician likelihood. Select the
+lowest score, then restart and refit all30 pilots. Each user's channel is
+filtered separately but the chosen scalar rank is shared across users, as
+in the historical hard-rank comparator. True path count is never supplied.
+The mixing strength and iteration budget come from the previously frozen
+population-matched validation lookup for known noise/reference level.
+Separate in-loop and final-only searches are reported. A joint selector
+compares both sets of held-out scores and refits the winner. All search costs
+are counted. It does not select a different iteration budget or mixing factor
+for each test case; this limitation must remain explicit.
+
+Comparators on the new observations: joint, loop and final rank selection;
+previous population-tuned selected/loop/final OptShrink; original narrow-bank
+OptShrink; ordinary EM100; one-sweep HS-Rician; three frozen learned models.
+No held-out pilot can influence candidate initialization or candidate updates.
+After selection all methods have access to the same30 pilot observations.
+
+New data: two independent banks,16 cases in each of126 primary cells and two
+separate stress cells,4,096 distinct worlds. The primary grid is seven SNRs
+-10:5:20, reference5/12/20dB, six path regimes (random3..7 and2/4/8/12/16).
+Stress cells: SNR5 reference0 random3..7, and SNR60 reference12 random3..7.
+Master seeds202610610001 and202610710001 plus100per cell. Timing202610810001,
+benchmark202610510001, bootstrap202610910001. No old test bank is relabelled as
+fresh. Results from the two studies must not be pooled to change a headline.
+
+Primary reporting: equal mean of126 per-cell dB ratio-of-sums NMSEs, average
+over the three learned seeds; pooled and mean-case linear error separately.
+Also give per-cell, per-SNR, per-reference and per-path errors, worst-cell harm,
+full error distributions and fixedNMSE thresholds .5/1/2. Stress not in average.
+Paired bootstrap resamples complete worlds within bank and cell and keeps
+methods/users/seeds paired. Use Bonferroni-adjusted95% macro intervals for
+the three learned-versus-online-rank comparisons,4,000 replicates. Intervals
+condition on the trained models and old validation tuning; they do not measure
+training-dataset diversity. Cell intervals, if given, are only pointwise.
+No success threshold can change after viewing these data. This comparison
+tests the accuracy/cost claim; it does not certify novelty or publication.
+
+Time batch1 on one independent case per128conditions, warmup plus three
+random-order repetitions. Count both searches for joint selection even when
+one result is rejected; include refit and initialization. Exclude model/file
+loading. Experimental execution may reuse candidates across reported arms
+but standalone reported timings may not share that computation.
+
+Required verification: independent NumPy rank-score/selection/refit checks;
+exact bypass; held-out isolation; same rank/iteration/refit definitions;
+source and checkpoint hashes; freeze-before-generation; regenerate all data;
+replay representative predictions; independent headline recalculation.
+Run under a lock with atomic cell saves and deterministic resume. Abort on
+numerical failures, never drop cases. Two-hour active-compute cap with saved
+partial results if reached. Benchmark on this Mac before quoting runtime.

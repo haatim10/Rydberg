@@ -1,0 +1,30 @@
+At the original threshold $e_i/d_i>1$, the seven-SNR reduction in
+failure rate versus in-loop OptShrink is
+4.13
+percentage points, with paired interval
+$[3.051,5.283]$.
+At $-10$~dB alone the interval is
+$[21.354,36.979]$
+percentage points. Learned seed-specific rates there are
+5.47\%, 5.47\% and 7.81\%, versus 35.16\% for OptShrink.
+
+\begin{table}[!t]
+\caption{Post-hoc error-threshold sensitivity on the stronger bank.
+Rates average seven SNR cells; positive differences favor learning.}
+\label{tab:tails}\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}rrrr@{}}\toprule
+NMSE & Learned & In-loop & OptShrink minus learned\\
+threshold & (\%) & OptShrink (\%) & 95\% interval (points)\\\midrule
+$0.5$ & 17.00 & 15.85 & $[-1.935,-0.409]$\\
+$1$ & 0.89 & 5.02 & $[3.051,5.283]$\\
+$2$ & 0.00 & 0.00 & ---\\
+\bottomrule\end{tabular}
+\end{table}
+The conclusion depends on the error threshold (Table~\ref{tab:tails}).
+At threshold 0.5, OptShrink has fewer exceedances; at threshold 2,
+neither method has any observed exceedance. Zero observed events do not
+establish zero population risk. These exploratory, pointwise intervals
+retain paired worlds and fixed models and are not adjusted for multiple
+thresholds. Learning therefore does not dominate the whole error
+distribution. The original severe-error definition and primary NMSE
+metric are unchanged.

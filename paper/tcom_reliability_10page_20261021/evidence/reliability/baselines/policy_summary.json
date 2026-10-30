@@ -1,0 +1,799 @@
+{
+  "description": "Reporting-only expansion of copied immutable policies; no fitting or inference rerun.",
+  "source_policy_sha256": "96bda1a6179d6ddc2a903215a4f44cb39c23ff55ee8e778b330af4b6986966cc",
+  "full_repair_base_policy_sha256": "f5945f47d0da7d98e1bcf28d774dd5e8c4df8d9963fd1eedd7b4bd515887077d",
+  "compact_counts": {
+    "penalized": 34,
+    "direct_em100": 17
+  },
+  "compact_candidate_grid": {
+    "d128_i8_o12_f0.03": {
+      "dictionary_size": 128,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 0.03
+    },
+    "d128_i8_o12_f0.1": {
+      "dictionary_size": 128,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 0.1
+    },
+    "d128_i8_o12_f0.3": {
+      "dictionary_size": 128,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 0.3
+    },
+    "d128_i8_o12_f1": {
+      "dictionary_size": 128,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 1.0
+    },
+    "d128_i8_o12_f3": {
+      "dictionary_size": 128,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 3.0
+    },
+    "d256_i8_o12_f0.03": {
+      "dictionary_size": 256,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 0.03
+    },
+    "d256_i8_o12_f0.1": {
+      "dictionary_size": 256,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 0.1
+    },
+    "d256_i8_o12_f0.3": {
+      "dictionary_size": 256,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 0.3
+    },
+    "d256_i8_o12_f1": {
+      "dictionary_size": 256,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 1.0
+    },
+    "d256_i8_o12_f3": {
+      "dictionary_size": 256,
+      "inner_steps": 8,
+      "iterations": 12,
+      "factor": 3.0
+    },
+    "d256_i2_o40_f0.03": {
+      "dictionary_size": 256,
+      "inner_steps": 2,
+      "iterations": 40,
+      "factor": 0.03
+    },
+    "d256_i2_o40_f0.1": {
+      "dictionary_size": 256,
+      "inner_steps": 2,
+      "iterations": 40,
+      "factor": 0.1
+    },
+    "d256_i2_o40_f0.3": {
+      "dictionary_size": 256,
+      "inner_steps": 2,
+      "iterations": 40,
+      "factor": 0.3
+    },
+    "d256_i2_o40_f1": {
+      "dictionary_size": 256,
+      "inner_steps": 2,
+      "iterations": 40,
+      "factor": 1.0
+    },
+    "d256_i2_o40_f3": {
+      "dictionary_size": 256,
+      "inner_steps": 2,
+      "iterations": 40,
+      "factor": 3.0
+    },
+    "em100": {
+      "dictionary_size": 128,
+      "inner_steps": 1,
+      "iterations": 100,
+      "factor": 0.0
+    }
+  },
+  "compact_historical_selection": "Refresh10changed bins using384observables perregime and minimum eligible heldout NLL. Preserve other41 latestcompact bins. Latest frozen compact also reported.",
+  "compact_calibration_cap_ms": 10.743966200000001,
+  "compact_calibration_eligible": [
+    "d128_i8_o12_f0.03",
+    "d128_i8_o12_f0.1",
+    "d128_i8_o12_f0.3",
+    "d128_i8_o12_f1",
+    "d128_i8_o12_f3",
+    "d256_i8_o12_f0.03",
+    "d256_i8_o12_f0.1",
+    "d256_i8_o12_f0.3",
+    "d256_i8_o12_f1",
+    "d256_i8_o12_f3",
+    "d256_i2_o40_f0.03",
+    "d256_i2_o40_f0.1",
+    "d256_i2_o40_f0.3",
+    "d256_i2_o40_f1",
+    "d256_i2_o40_f3",
+    "em100"
+  ],
+  "classical_config": {
+    "kind": "noise",
+    "c": 1.0,
+    "beta": 1.0
+  },
+  "classical_selected_index": 20,
+  "classical_selected_raw_start_nll": 3.3889789688497336,
+  "rows": [
+    {
+      "reference_db": 5.0,
+      "snr_db": 0.0,
+      "compact_candidate": "d256_i2_o40_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 5.0,
+      "compact_candidate": "d256_i2_o40_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 10.0,
+      "compact_candidate": "d256_i2_o40_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 15.0,
+      "compact_candidate": "d256_i2_o40_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 20.0,
+      "compact_candidate": "d256_i2_o40_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 22.5,
+      "compact_candidate": "d256_i2_o40_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 25.0,
+      "compact_candidate": "d256_i2_o40_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 27.5,
+      "compact_candidate": "d256_i2_o40_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 30.0,
+      "compact_candidate": "d256_i2_o40_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 32.5,
+      "compact_candidate": "d256_i2_o40_f1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 1.0
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 35.0,
+      "compact_candidate": "d256_i2_o40_f1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 1.0
+      },
+      "full_repair_choice": "warm5",
+      "full_repair_base": "warm5"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 37.5,
+      "compact_candidate": "d256_i2_o40_f1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 1.0
+      },
+      "full_repair_choice": "warm100",
+      "full_repair_base": "warm100"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 40.0,
+      "compact_candidate": "d256_i2_o40_f1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 1.0
+      },
+      "full_repair_choice": "warm100",
+      "full_repair_base": "warm100"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 42.5,
+      "compact_candidate": "d256_i2_o40_f3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 3.0
+      },
+      "full_repair_choice": "warm100",
+      "full_repair_base": "warm100"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 45.0,
+      "compact_candidate": "d256_i2_o40_f3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 3.0
+      },
+      "full_repair_choice": "warm100",
+      "full_repair_base": "warm100"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 50.0,
+      "compact_candidate": "d256_i2_o40_f3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 3.0
+      },
+      "full_repair_choice": "warm100",
+      "full_repair_base": "warm100"
+    },
+    {
+      "reference_db": 5.0,
+      "snr_db": 60.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "warm100",
+      "full_repair_base": "warm100"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 0.0,
+      "compact_candidate": "d256_i8_o12_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 5.0,
+      "compact_candidate": "d256_i8_o12_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 10.0,
+      "compact_candidate": "d256_i8_o12_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 15.0,
+      "compact_candidate": "d128_i8_o12_f0.3",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 20.0,
+      "compact_candidate": "d256_i2_o40_f0.1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 22.5,
+      "compact_candidate": "d256_i2_o40_f0.1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 25.0,
+      "compact_candidate": "d256_i2_o40_f0.1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 27.5,
+      "compact_candidate": "d256_i2_o40_f0.03",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.03
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 30.0,
+      "compact_candidate": "d256_i2_o40_f0.03",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.03
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 32.5,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c2_beta1",
+      "full_repair_base": "warm2"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 35.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c2_beta1",
+      "full_repair_base": "warm5"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 37.5,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 40.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 42.5,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 45.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 50.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 12.0,
+      "snr_db": 60.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 0.0,
+      "compact_candidate": "d256_i8_o12_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 5.0,
+      "compact_candidate": "d256_i8_o12_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 10.0,
+      "compact_candidate": "d256_i8_o12_f0.3",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 15.0,
+      "compact_candidate": "d128_i8_o12_f0.3",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 20.0,
+      "compact_candidate": "d256_i2_o40_f0.1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 22.5,
+      "compact_candidate": "d256_i2_o40_f0.1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 25.0,
+      "compact_candidate": "d256_i2_o40_f0.1",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 27.5,
+      "compact_candidate": "d256_i2_o40_f0.03",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.03
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 30.0,
+      "compact_candidate": "d256_i2_o40_f0.03",
+      "compact_config": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.03
+      },
+      "full_repair_choice": "original",
+      "full_repair_base": "original"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 32.5,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c2_beta1",
+      "full_repair_base": "warm3"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 35.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 37.5,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 40.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 42.5,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 45.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 50.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    },
+    {
+      "reference_db": 20.0,
+      "snr_db": 60.0,
+      "compact_candidate": "em100",
+      "compact_config": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      },
+      "full_repair_choice": "shrink_c4_beta1",
+      "full_repair_base": "spectral100"
+    }
+  ]
+}

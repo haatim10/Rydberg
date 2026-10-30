@@ -1,0 +1,46 @@
+ORIGINAL188 VERSUS POPULATION-TUNED OPTSHRINK
+
+Completed:4096 paired fresh test worlds;126 primary conditions and2 separate diagnostics.
+Three frozen original models. OptShrink selected on the same2048 validation observations and pilot masks.
+No new neural training. No true channel or path count supplied to any selector.
+Main error: equal mean of126 per-cell dB NMSEs; lower is better.
+
+PRIMARY ERROR / END-TO-END MEAN CPU TIME
+  opt_selected: -13.028 dB; 15.610 ms
+  opt_loop: -13.000 dB; 15.569 ms
+  opt_final: -12.827 dB; 6.159 ms
+  opt_budget5: -9.816 dB; 2.467 ms
+  opt_budget10: -12.336 dB; 4.556 ms
+  opt_budget20: -12.926 dB; 8.726 ms
+  opt_budget50: -12.941 dB; 21.199 ms
+  opt_budget100: -12.951 dB; 41.880 ms
+  opt_old: -11.880 dB; 6.306 ms
+  em100: -9.922 dB; 13.084 ms
+  hs_one: -12.996 dB; 98.915 ms
+  learned: -13.565 dB; 4.901 ms
+
+LEARNED GAINS: positive favours learning (three-comparison adjusted95% macro intervals)
+  vs opt_selected: 0.537 dB; CI [0.44999598205384556, 0.6947836619229327]; worst-cell deterioration 3.117 dB
+  vs opt_loop: 0.565 dB; CI [0.4771954555881344, 0.7228051403067383]; worst-cell deterioration 3.117 dB
+  vs opt_final: 0.738 dB; CI [0.6214878335890485, 0.9249637803823573]; worst-cell deterioration 3.686 dB
+
+PREDECLARED THRESHOLD RATES: .5 /1 /2; not communication outage
+  opt_selected: 19.122% / 4.340% / 0.000%
+  opt_loop: 18.676% / 5.308% / 0.000%
+  opt_final: 19.097% / 4.266% / 0.000%
+  opt_budget5: 19.469% / 3.522% / 0.000%
+  opt_budget10: 19.296% / 4.365% / 0.000%
+  opt_budget20: 19.221% / 5.357% / 0.000%
+  opt_budget50: 19.420% / 5.828% / 0.000%
+  opt_budget100: 19.444% / 6.002% / 0.000%
+  opt_old: 18.973% / 6.944% / 0.273%
+  em100: 30.382% / 23.586% / 14.707%
+  hs_one: 24.479% / 15.228% / 4.365%
+  learned: 19.544% / 3.034% / 0.000%
+
+Predeclared .3dB accuracy screen passed: True
+A passed screen is not publication acceptance or verified novelty. Do not redefine a failure retrospectively.
+Inspect the full error distributions and fixed-budget curves before discussing a conditional trade-off.
+The two test banks do not measure independent retraining variability. Stress cells are not pooled into primary accuracy.
+Numerical replay/input audit passed. Previous experiments and manuscript unchanged.
+Full per-cell/per-seed/bank statistics, intervals and timings: summary.json. Raw errors: all_errors.npz.

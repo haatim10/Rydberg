@@ -1,0 +1,21 @@
+\begin{table*}[!t]
+\centering
+\caption{Results in three SNR ranges on the same final test data.}
+\label{tab:reliability-regions}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llrrrrr}
+\toprule
+Region & Metric & Proposed & \shortstack{Previous\\hybrid} & Full repair & Sparse/EM & Algebraic20 \\
+\midrule
+Ordinary (45) & dB & -20.242 & -20.242 & -20.242 & -18.964 & -15.470 \\
+ & BER (\%) & 1.776440 & 1.776440 & 1.776440 & 1.662191 & 2.841254 \\
+Weak target (24) & dB & -48.644 & -45.411 & -43.893 & -25.607 & -48.457 \\
+ & BER (\%) & 0.000000 & 0.000000 & 0.000480 & 0.001441 & 0.000000 \\
+High SNR (45) & dB & -56.744 & -56.512 & -54.638 & -44.052 & -56.754 \\
+ & BER (\%) & 0.000000 & 0.000000 & 0.000196 & 0.000633 & 0.000000 \\
+\bottomrule
+\end{tabular}
+\par\vspace{2pt}
+\begin{minipage}{0.98\textwidth}\footnotesize Ordinary: SNR $\leq20$~dB, all references. Weak target: RSR 5~dB and SNR $>30$~dB. High SNR: SNR $\geq40$~dB, all references. These ranges overlap; their comparisons are descriptive. Zero BER means no observed bit errors, not proof of zero true error. The first three methods give exactly the same estimates in the ordinary range.\end{minipage}
+\end{table*}

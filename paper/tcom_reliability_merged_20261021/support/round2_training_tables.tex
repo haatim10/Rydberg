@@ -1,0 +1,36 @@
+\begin{table*}[!t]
+\caption{Separately trained controls: all 56 conditions, equal-weight dB average}
+\centering\small\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lrrrrrrr@{}}\toprule
+Variant & Parameters & Selected & Final & Gain & Worst-cell & Severe & Time\\
+ & & NMSE (dB) & NMSE (dB) & (dB) & gain (dB) & (\%) & (ms)\\\midrule
+Ten stages / width 16 & 188 & -12.390 & -12.297 & 0.000 & 0.000 & 10.28 & 8.04\\
+Five stages & 183 & -10.413 & -10.413 & -1.977 & -9.540 & 6.48 & 4.25\\
+Twenty stages & 198 & -12.571 & -12.571 & 0.181 & -1.586 & 13.46 & 15.60\\
+Width 8 & 100 & -11.658 & -11.658 & -0.731 & -3.070 & 14.14 & 8.02\\
+Width 32 & 364 & -12.454 & -12.454 & 0.065 & -0.970 & 4.91 & 8.04\\
+Two experts & 374 & -12.413 & -12.385 & 0.023 & -0.931 & 8.31 & 8.55\\
+Curriculum & 188 & -12.596 & -12.634 & 0.206 & -2.353 & 6.84 & 8.03\\
+\bottomrule\end{tabular}
+\parbox{\textwidth}{\footnotesize All rows use dataset zero, three initialization seeds, 4,096 training cases and 12 epochs.
+Gain is relative to ten stages/width 16; positive favors the variant.
+Severe rates and gains use selected checkpoints. Time is individual-model mean inference time, not an ensemble time.
+This protocol differs from the original study.}
+\end{table*}
+\begin{table*}[!t]
+\caption{Initialization variability and conditional gains in the reduced-budget study}
+\centering\small\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lrrrrr@{}}\toprule
+Variant & Selected seed scores (dB) & Selected epochs & Gain interval (dB) & RSR 0 gain & Two-path gain\\\midrule
+Ten stages / width 16 & -12.391, -12.509, -12.269 & 12, 12, 11 & --- & 0.000 & 0.000\\
+Five stages & -10.779, -10.906, -9.554 & 12, 12, 12 & $[-2.137,-1.849]$ & -1.500 & -1.943\\
+Twenty stages & -12.382, -12.579, -12.751 & 12, 12, 12 & $[0.062,0.401]$ & 1.547 & 0.075\\
+Width 8 & -11.906, -11.288, -11.781 & 12, 12, 12 & $[-0.779,-0.710]$ & -0.158 & -0.696\\
+Width 32 & -12.546, -12.659, -12.158 & 12, 12, 12 & $[0.050,0.087]$ & 0.115 & 0.286\\
+Two experts & -12.532, -12.478, -12.228 & 11, 12, 12 & $[0.014,0.035]$ & 0.100 & 0.179\\
+Curriculum & -12.676, -12.903, -12.209 & 11, 12, 12 & $[0.153,0.292]$ & 0.255 & 0.117\\
+\bottomrule\end{tabular}
+\parbox{\textwidth}{\footnotesize Initialization seeds are 9201, 9202 and 9203 in order.
+Intervals are unadjusted conditional 95\% paired-case intervals, not intervals over training datasets or initialization seeds.
+Subgroup gains average all matching conditions; they do not imply improvement in every matching cell.}
+\end{table*}

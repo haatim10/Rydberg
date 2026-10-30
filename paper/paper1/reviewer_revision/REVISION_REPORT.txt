@@ -1,0 +1,199 @@
+PAPER 1 REVISION REPORT
+8 October 2026. Prepared for the author; nothing has been sent to the reviewer.
+Status: main experiment and budget-check audits passed; serial timing complete.
+
+The reviewer response now has stronger evidence, but the new results require
+a narrower conclusion. HS-GS is useful in many tested conditions; it is not
+the best tested structural method. Smooth shrinkage beats hard-rank HS-GS
+in five of six baseline cells, including a complex channel where HS-GS hurts.
+The original paper should therefore describe when its particular hard-rank
+procedure helps, rather than a universal limit of Hankel priors.
+
+COUNTS AND PROVENANCE
+
+- Original verified Paper 1: 27,300 paired trials, unchanged.
+- RSR supplement: 2,800 existing worlds from a separate audited campaign,
+  seven conditions with 400 trials each. Only classical predictions are used.
+  The +/-3 dB assumed-variance checks reuse the RSR=12 worlds.
+- Practical-rank diagnostic: 10,400 EM-only replays of existing Paper 1 worlds.
+  These reproduce stored errors; they are not new independent data.
+- Main revision: 12,000 condition-trial evaluations in 30 cells, drawn from
+  4,800 base worlds. Fractions and mismatch strengths share those worlds.
+- Update-budget check: 300 new worlds, six cells with 50 each; 100 and 300
+  updates are points on the same trajectory, not separate independent trials.
+- Serial timing: 20 worlds, each evaluated by six methods once. This is a
+  runtime measurement and is not added to the accuracy sample count.
+
+The main audit passed source fingerprints, complete counts, pairing, reported
+point estimates and predeclared replay checks. All 10,400 historical EM replays
+also reproduce their saved errors exactly in this environment. Original code,
+figures and data were preserved. No new machine-learning model was trained.
+
+STRUCTURED COMPARISONS
+
+Settings: N32/K3/P30/RSR12; L=3,7,14 and SNR=0,10 dB; 400 paired trials/cell.
+All estimators use the same exact magnitude observations. Iterative methods
+share spectral initialization and 100 final updates. Each structural method
+chooses its own rank or threshold with 25 context updates, held-out amplitude
+residual and an all-pilot final refit. Four structural sweeps are used.
+
+Gain is ratio-of-sums NMSE improvement; positive values favor the named method.
+
+L  SNR   HS/EM   GD+Hankel/EM  Shrinkage/EM  Shrinkage/HS [95% interval]
+3    0   4.442       4.376        5.357        0.914 [0.716,1.108]
+3   10   5.438       5.155        5.443        0.005 [-0.180,0.191]
+7    0   1.369       1.423        2.751        1.382 [1.260,1.511]
+7   10   1.836       1.615        2.459        0.623 [0.479,0.746]
+14   0  -0.147       0.024        1.266        1.413 [1.307,1.523]
+14  10   0.143       0.074        0.916        0.773 [0.664,0.878]
+
+Smooth shrinkage has a positive paired interval over HS in five cells; the
+remaining interval includes zero and does not establish equivalence. At L14,
+SNR0, hard HS is worse than EM, but shrinkage still provides a useful gain.
+This is the main change to the paper's interpretation. It does not invalidate
+the original hard-HS numbers; it limits how widely they can be generalized.
+The new shrinkage comparator has not been verified across every old array,
+RSR or alternative-channel experiment.
+
+The unstructured Rician gradient method is close to EM at this budget; adding
+Hankel processing generally reproduces the sparsity-related pattern. Xu's
+linearized LS comparison is less accurate than EM at all six points, especially
+at SNR10, where its NMSE is approximately 3.90--4.14 dB worse. It is a named
+linearized comparison on exact observations, not Xu's two-dimensional method.
+
+HELD-OUT FRACTION
+
+Below are HS gains over EM for each fraction, on shared base worlds:
+
+P   SNR     10%      20%      30%      40%
+10    0    3.467    3.912    3.987    4.113
+10   10    2.630    2.930    2.723    2.262
+30    0    2.000    2.273    2.260    2.160
+30   10    1.791    2.257    2.393    2.459
+
+The best point estimate changes with P and SNR. Many differences have intervals
+that include zero. At P10/SNR10, 40% is worse than 30% by 0.461 dB
+[0.176,0.744]; at P30/SNR10, 10% is worse by 0.602 dB [0.383,0.832]. The mean
+selected rank decreases as the held-out fraction increases in all four settings.
+For example, at P10/SNR0 it falls from 3.750 to 1.948. Fallback is rare in this
+study, ranging from 0% to 1.5%. All final estimates refit all pilots. The results
+support reporting sensitivity, not replacing 30% with a universally best split.
+
+SPATIAL MISMATCH
+
+Gaussian element-position error has standard deviation 0,0.005,0.01,0.02
+wavelengths. These values do not bound the realized Gaussian offsets.
+Settings are N32/P30/SNR5/RSR12 with L3 or L12. Paths, pilots,
+reference calibration and noise are paired across strengths. The error target
+is the actual perturbed channel, without realized-power renormalization.
+
+Position standard deviation    HS gain, L3       HS gain, L12
+0                             4.955            0.264
+0.005                         4.895            0.253
+0.010                         4.659            0.166
+0.020                         3.917            0.050
+
+At the largest tested standard deviation, gain drops by 1.038 dB [0.898,1.183] for L3 and
+0.213 dB [0.139,0.287] for L12, using paired differences from zero error.
+L3 retains a clear gain; L12's remaining 0.050 dB has interval [-0.029,0.125].
+The latter does not establish a positive benefit. These declared stress levels
+are not measured hardware tolerances. Calibrated reference, far-field model
+and independent noise remain assumptions; broader mismatch was not tested.
+
+RSR AND OBSERVABLE-RANK ADDITIONS
+
+The reused classical RSR gains span 1.827--2.512 dB and stay positive, with
+pointwise intervals above zero. Weak reference still worsens both absolute
+NMSEs. At RSR0, EM/HS NMSE is -6.19/-8.01 dB versus -10.73/-12.93 dB at RSR12.
+This is a reference-strength check at N32/SNR5, not universal robustness.
+
+The raw EM rank proxy becomes more informative at higher SNR, but is noise-
+biased. At N32/P30, proxy-to-truth correlation is 0.202 [0.100,0.297] at -5 dB
+and 0.914 [0.890,0.931] at 20 dB. At 5 dB its mean is 0.577 versus true 0.244,
+while HS paired-median gain is 2.544 dB. Rank means, gain medians and original
+operating-point rho medians are distinct summaries. This is not a per-trial
+threshold test. A receiver rule would require calibration and fresh validation.
+Normalized true path count remains a useful evaluation-only comparator.
+
+At assumed-noise offsets -3/0/+3 dB, absolute EM and HS NMSE span 0.040 and
+0.043 dB in the reused reference design. This does not test correlated noise.
+
+BUDGET AND SERIAL TIMING
+
+Continuing five iterative methods from 100 to 300 updates changes each cell's
+NMSE point estimate by less than 0.06 dB in magnitude; the largest change is
+0.051 dB. Selected parameters are fixed after 25 candidate updates. This is
+limited budget sensitivity, not a claim of equivalence, optimum performance
+or complete numerical convergence. Some trajectories still change at 300.
+
+Serial CPU timings at N32/K3/P30/L7/SNR5/RSR12, 20 worlds, requested one thread:
+
+Method                    Median total ms   Median selection share
+HS-GS                          348.5               76.0%
+Rician GD + Hankel              346.5               75.9%
+EM-GS + smooth shrinkage        200.8               56.4%
+EM-GS                            9.94               0%
+Rician GD                       10.01               0%
+Xu 1D linearized LS               0.65               0%
+
+Total time includes selection and final-fit initialization, but excludes data
+generation. Shrinkage searches seven threshold factors versus 16 hard ranks;
+the timing is not an equal-search-budget comparison. Methods ran serially in
+fixed disclosed order, with no discarded warmup world. These are measurements
+of one implementation and machine, not portable complexity constants. Parallel
+Monte Carlo workload times are not used as latency benchmarks.
+
+REVIEWER-ISSUE MAP AND REMAINING WORK
+
+Per-user construction and common scalar rank: 01_estimator.tex.
+Temporary split, full refit and fallback limits: 02_rank_selection.tex.
+CCRB parameterization and nuisance assumptions: 03_ccrb_body.tex and
+04_ccrb_appendix.tex. Bounds remain local unbiased references.
+Classical low-rank/shrinkage context: 05_related_work.tex and
+09_bibliography_addition.tex.
+Rho aggregation and scope: 06_effective_rank_scope.tex, 11_observable_rank.tex
+and 12_normalized_path_control.tex.
+Bound-gap and placement qualifications: 07_bound_gap_interpretation.tex and
+08_placement_scope.tex.
+Reference strength: 10_rsr_results.tex.
+Update-budget sensitivity: 13_iteration_budget.tex.
+New baseline/split/mismatch results: 14_structured_comparisons.tex,
+15_heldout_fraction.tex and 16_position_mismatch.tex.
+Separate serial runtime: 17_serial_timing.tex.
+Narrower conclusion and updated limitations: 18_conclusion_scope.tex and
+19_limitations_update.tex. Optional qualitative abstract: 20_abstract.tex.
+These fragments still need integration into the exact current manuscript.
+
+The main numerical sources are results/p1_revision/campaign/analysis/summary.json
+and campaign/audit.json, reused/rsr_and_noise_summary.json,
+reused/proxy_summary.json, budget_check/analysis/summary.json and audit.json,
+and serial_timing/summary.json. The raw arrays, source snapshots, seeds and
+trial identifiers remain available for reproduction. Intervals are pointwise
+95% paired-bootstrap intervals, not simultaneous guarantees.
+
+Publication assessment: this is a stronger empirical paper, provided the
+contribution is narrowed honestly. Smooth shrinkage's success prevents claims
+that hard HS is best or that its failure boundary applies to all Hankel priors.
+It does not establish a new universally superior shrinkage estimator either.
+OptShrink itself, nuclear-norm methods, tensor/shared-user models, AIC/MDL/SURE
+selectors, and further mismatch families remain optional untested extensions.
+
+The immediate next step is to integrate the fragments into the exact TeX source
+of ThesisProj-7.pdf, with consistent counts, captions and conclusions, then
+compile and inspect the full manuscript. Only revision fragments are available
+here; a different historical TeX file was not silently substituted.
+
+Recommended figure allocation:
+- Main paper: retain the original performance/array figure and matched
+  effective-rank figure. Add the new structured-baseline comparison and a
+  compact position-error figure, because they materially qualify the claims.
+- Main text: include short RSR, held-out-fraction and observable-rank summaries
+  and one compact runtime table, with pointers to the full supporting evidence.
+- Supplement: full RSR and held-out-fraction plots, proxy correlations and
+  strata, complete update-budget table and detailed runtime protocol.
+- Appendix: the complete CCRB derivation; use a cited supplementary appendix
+  only if the venue's format requires it.
+
+Do not add every available plot to the main paper. The stronger narrative is
+the conditional benefit and limits of this structural operation. No acceptance
+or top-tier novelty guarantee follows from a successful simulation audit.

@@ -1,0 +1,90 @@
+MERGED PAPER FOLLOW-UP: DEVELOPMENT RESULTS
+
+This is a bounded, one-training-seed pilot, not final confirmation.
+No claim of verified novelty or published-URformer reproduction.
+All previous studies and the manuscript were left unchanged.
+
+A. Stronger classical controls and filter-release screen
+Decision: stop_expansion_of_simple_release
+Lower NMSE is better; positive comparative gain means the first method helps.
+  opt_frozen: -14.530 dB
+  observed_stop: -14.498 dB
+  observed_em: -10.681 dB
+  observed_release: -14.449 dB
+  fixed_release: -14.530 dB
+  em100: -10.374 dB
+  hard_one_sweep: -13.438 dB
+  old_compact_9101: -14.444 dB
+  old_compact_9102: -14.171 dB
+  old_compact_9103: -14.404 dB
+  observed_release_vs_observed_stop: gain -0.050 dB; pointwise CI [-0.13967651599851064, 0.0]; worst primary deterioration 0.299 dB
+  observed_release_vs_fixed_release: gain -0.081 dB; pointwise CI [-0.17662129030271773, -0.01914286486577486]; worst primary deterioration 0.375 dB
+  observed_stop_vs_opt_frozen: gain -0.031 dB; pointwise CI [-0.05383997505343019, -0.008673749534152625]; worst primary deterioration 0.076 dB
+
+B. Matched learned comparison (same data, masks, order and NLL selection)
+Compact: 188 parameters. Exact-EM Transformer: 1,585,920 parameters.
+The Transformer keeps the exact Bessel ratio and is not published URformer.
+Both received 4096 worlds x 12 epochs; neither is claimed fully trained.
+  compact_best: -14.325 dB
+  compact_latest: -14.325 dB
+  em_transformer_best: -9.726 dB
+  em_transformer_latest: -9.639 dB
+  opt_frozen: -14.289 dB
+  em100: -10.116 dB
+  compact_best_vs_em_transformer_best: gain 4.599 dB; pointwise CI [4.403483104202655, 4.796812396867438]
+  compact_best_vs_opt_frozen: gain 0.036 dB; pointwise CI [-0.09549703792961604, 0.17570394301962422]
+  compact: selected epoch 12/12, training+validation 190.5 s
+  em_transformer: selected epoch 11/12, training+validation 99.5 s
+The Transformer is worse than EM100 on this primary average. This pilot
+does not establish a strong learned benchmark or a win over published
+URformer. A bounded training adequacy check is still required before a
+publication claim about compact versus large learned estimators.
+The compact model is still improving at its final epoch; convergence is
+not demonstrated. Its small mean advantage over OptShrink has a paired
+interval crossing zero, so no average-accuracy superiority is established.
+
+Per-cell NMSE (no pooling of the two independent banks):
+A: cell | opt_frozen | observed_stop | fixed_release | observed_release | em100
+snr_-10 | -0.312 | -0.236 | -0.312 | 0.063 | 5.277
+snr_-5 | -4.550 | -4.504 | -4.550 | -4.504 | 0.512
+snr_+0 | -9.365 | -9.362 | -9.365 | -9.362 | -5.174
+snr_+5 | -14.108 | -14.070 | -14.108 | -14.021 | -10.386
+snr_+10 | -19.409 | -19.393 | -19.409 | -19.393 | -15.944
+snr_+15 | -24.389 | -24.401 | -24.389 | -24.401 | -20.938
+snr_+20 | -29.574 | -29.523 | -29.574 | -29.523 | -25.966
+weak_reference | -4.423 | -7.909 | -4.423 | -7.750 | -6.025
+two_paths | -16.497 | -16.378 | -16.497 | -16.378 | -11.037
+nearly_noiseless | -58.054 | -69.344 | -58.054 | -69.344 | -65.840
+rich_16 | -6.752 | -6.805 | -6.752 | -10.716 | -10.400
+B: cell | compact_best | em_transformer_best | opt_frozen | em100
+snr_-10 | -0.874 | 4.740 | -0.254 | 5.710
+snr_-5 | -4.303 | -0.236 | -4.294 | 0.582
+snr_+0 | -8.949 | -5.582 | -9.537 | -5.138
+snr_+5 | -13.934 | -10.609 | -13.911 | -10.534
+snr_+10 | -18.908 | -15.114 | -18.786 | -15.470
+snr_+15 | -24.474 | -19.626 | -24.007 | -20.472
+snr_+20 | -28.832 | -21.657 | -29.237 | -25.487
+weak_reference | -6.227 | -4.072 | -5.428 | -5.963
+two_paths | -15.265 | -10.854 | -16.320 | -10.701
+nearly_noiseless | -10.373 | -26.291 | -56.541 | -66.138
+rich_16 | -12.069 | -10.751 | -6.784 | -10.671
+
+Limits and next decision
+A smaller validation NLL is not a channel-error guarantee. All-pilot refit
+changes the fit; context and refit outcomes are in summary.json.
+Timing includes online selection/refit, but mixes NumPy/SciPy and PyTorch.
+These are single-pass development timings, not a dedicated repeated timing benchmark.
+The stopping control computes to 100 updates before selecting an output;
+its chosen iteration count is not its total processing cost.
+32 worlds/cell cannot establish rare-event safety. Intervals are conditional
+on fitted models, pointwise, and not corrected for all comparisons.
+Nearly noiseless SNR60 is an out-of-distribution stress test, not hardware.
+A failed screen stays failed; do not enlarge or tune it to pass.
+A successful matched comparison would close a baseline gap, not by itself
+establish novelty. Read NOVELTY.txt before choosing the next mechanism.
+Independent confirmation has not been launched.
+
+Verification: 704 distinct screen worlds, source/input hashes checked,
+every observation and truth regenerated exactly, matched training masks
+and orders checked, selected validation scores and nine predictions replayed.
+Full metrics, thresholds, timings and schedules: summary.json.

@@ -1,0 +1,96 @@
+FAIR COMPARISON: ORIGINAL 188-PARAMETER ESTIMATOR AND POPULATION-TUNED OPTSHRINK
+
+Purpose
+Test whether the original compact smooth-filter estimator has a useful
+accuracy/distribution/cost trade-off after the classical comparator receives
+the same validation population. This is NOT another hybrid or neural training
+run, a new algorithm, a promise of novelty, or a test against globally optimal
+OptShrink. Previous inspected test banks are development evidence only.
+
+Frozen learned arm
+Keep all three originally selected EM/adaptive/10-stage/188-parameter models
+(seeds 9101/9102/9103). No retraining, replacement, ensemble, seed selection or
+test-guided setting changes. Report every seed and their metric average.
+The three initializations share one training dataset; fresh test banks do not
+make them independently trained dataset replicates.
+
+Common model and information
+N32 K3 P30; Z=|GS+B+W|, exact Rician updates, known constant reference and total
+complex noise variance. Same spectral start, double precision, PyTorch CPU,
+one thread. No channel labels, path count, true rank, true per-case SNR or test
+error enter any estimator or OptShrink tuning. All methods see the same noisy
+measurements. Online rank search uses 21 pilots and nine held-out pilots, then
+refits on all30; all work is included and no extra observations are generated.
+
+Validation fairness
+Use EXACTLY the original 2,048 validation observations, 126 condition IDs and
+random21/9 pilot masks (seed2026092203). No validation truth file is read.
+Conditions are seven SNRs -10:5:20, three reference strengths5/12/20dB, and six
+path regimes: random per-user3..7 and fixed2/4/8/12/16. Match the original equal
+per-condition validation weighting, not its half-random training frequency.
+Stratum IDs may balance OFFLINE validation but cannot select settings online.
+
+OptShrink grid
+Rank1..15, blending .25/.5/.75/1, plus no-filter; budgets5/10/20/50/100;
+in-loop and final-only placements. All candidates use the same held-out Rician
+likelihood as the learned model's validation criterion. Average first within
+each of the six path regimes, then across them. Freeze one lookup per known
+noise/reference pair (21 pairs). Do not use a path-family lookup at inference.
+Noise lookup uses nominal expected signal powerK=3, not realized true channel
+energy; reference lookup uses supplied B. Off-grid diagnostic cases use nearest
+known noise/reference grid point, with no retuning.
+Save separately selected loop/final methods, a validation-selected placement,
+and the best placement/rank/blending at each fixed iteration budget. Include
+old narrow-population OptShrink, EM100, and historical one-sweep HS-Rician.
+Report all comparators; do not choose the test winner as the primary baseline.
+
+Independent final observations
+Only after all choices and input/source/checkpoint hashes are frozen, generate
+two independent test banks. Each contains16 worlds in each of the126 primary
+cells plus16 worlds in each of two diagnostics (weak reference at SNR5/RSR0;
+nearly noiseless at SNR60/RSR12, both random3..7paths):4,096 paired worlds total.
+Each world redraws channels, pilot matrices and noise. Test-bank seeds are
+202610210001 and202610310001; per-cell offsets100. Diagnostics are outside the
+primary average. They must not motivate post-freeze tuning.
+This is a bounded fair-comparison study, not hardware validation, proof of
+population reliability, or a multi-training-dataset publication confirmation.
+
+Reporting and decision
+Primary accuracy: equal average of126 cell dB ratio-of-sums NMSE values,
+computed for each frozen learned seed then averaged. Also retain both bank
+results, per-SNR/reference/path summaries, conventional pooled mean-linear
+NMSE, per-case mean-linear NMSE, seed spread, and all individual cells.
+Report full empirical error-distribution arrays and a fixed .5/1/2 threshold
+table. A lower frequency at one threshold is not stochastic dominance or a
+communications outage result. No post-hoc threshold becomes the headline.
+All methods are selected for predictive likelihood, not failure probability;
+a later reliability-optimized comparison would need a separately frozen
+protocol giving classical and learned methods that objective explicitly.
+Paired bootstrap: resample worlds within each bank/cell, keep methods/users/
+learned seeds paired. Pool equally sized banks within cells for primary NMSE.
+Intervals condition on fitted models and validation/tuning. Three primary
+contrasts (learned vs selected/loop/final) use Bonferroni simultaneous95% macro
+intervals; per-cell and other intervals remain labelled descriptive/pointwise.
+An accuracy signal requires >=.3dB macro gain vs the validation-selected
+OptShrink and a positive adjusted interval; report worst-cell harm regardless.
+This is a screen, not a publication criterion or proof of novelty. A failure
+must not be recast as a speed/reliability success without independent evidence.
+The fixed-budget accuracy/cost curves are declared now, not invented after
+an accuracy failure. Their budgets are update counts, not equal runtimes.
+Time all methods separately on128 independent timing worlds, one per cell,
+three randomized-order repeats, warmup, batch1; include initialization, lookup,
+selection and refit, exclude only loading/I/O. Also give offline tuning/training
+costs separately. No model-loading time or hardware generalization claim.
+
+Verification and limits
+Check PyTorch versus independent NumPy/SciPy OptShrink and HS outputs, numerical
+guards, no-filter=EM, context-only initialization, mean-of-strata selection,
+lookup independence from channel labels, original checkpoint counts/hashes,
+deterministic regenerated inputs, frozen-before-test chronology and replay.
+Save per-world complex estimates, IDs, errors, all candidate validation scores,
+settings, timing and source hashes. Resume exact completed units under a lock;
+abort on numerical errors, source changes or hash mismatch, never skip cases.
+Limit this first invocation campaign to two hours cumulative active computation;
+save partial work and request further direction if exhausted. Benchmark first.
+No changes to older experiments, manuscript, dashboard, cancelled projects or
+synced sources. No automatic larger experiment after completion.

@@ -1,0 +1,309 @@
+{
+  "version": 1,
+  "name": "Continuous noise-scaled Hankel filtering beyond the former high-SNR cutoff",
+  "smoke_seed": 2026101950,
+  "development_seed": 2026101951,
+  "test_seed": 2026101952,
+  "data_seed": 2026101953,
+  "timing_seed": 2026101954,
+  "holdout_seed": 2026101955,
+  "N": 32,
+  "K": 3,
+  "context_P": 30,
+  "heldout_P": 9,
+  "deployment_P": 30,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "model_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "development_target_count": 384,
+  "test_cases_per_reference_regime": 128,
+  "routing": "Copy latest incumbent table; change only strong-reference40/42.5/45/50/60 bins to shrink_c4_beta1. Nearest-bin boundary38.75 now uses same spectralEM100 plus filter on both sides. No new finite-SNR off switch. Actual variance controls shrinkage.",
+  "model": "One inherited fixed recipe, no candidate search or neural retraining. All123 other grid cells exactly preserve latest incumbent, including earlier18transition cells and51weak-reference cells. Three model fits are not independent evidence; high branch is fit independent.",
+  "shrink": "Per-user tau=4*sqrt(2*sigma2*diag((S S^H)^-1)*17); singular map s^3/(s^2+tau^2). Heuristic scale, no covariance or globally monotone NMSE claim. Strictly positive supplied variance.",
+  "data": "Independent context30 and additional heldout9 pilots. Development exports no channel truth. Coupled channel, pilots and standardized noise over all declared SNRs.",
+  "repair_guard": {
+    "samples": 4000,
+    "seed": 2026101957,
+    "rule": "Single fixed extension versus latest incumbent; all30 regime/reference/SNR paired observable raw channel-risk upper95 bounds must be<=0. One global accept/reject. Failure stops before test; no per-bin switch or test-driven retuning.",
+    "caveat": "Individual development bounds, not simultaneous guarantees of NMSE/BER noninferiority."
+  },
+  "calibration": {
+    "local_index": 100,
+    "repeats": 3,
+    "grid": "153conditions selected3fits and16compact candidates; actual batch-one full path, preloaded oneCPUthread.",
+    "cap": "Pooled selected-repair p90; not a conditionwise cap."
+  },
+  "compact": {
+    "grid": {
+      "d128_i8_o12_f0.03": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.03
+      },
+      "d128_i8_o12_f0.1": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.1
+      },
+      "d128_i8_o12_f0.3": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "d128_i8_o12_f1": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 1.0
+      },
+      "d128_i8_o12_f3": {
+        "dictionary_size": 128,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 3.0
+      },
+      "d256_i8_o12_f0.03": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.03
+      },
+      "d256_i8_o12_f0.1": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.1
+      },
+      "d256_i8_o12_f0.3": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 0.3
+      },
+      "d256_i8_o12_f1": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 1.0
+      },
+      "d256_i8_o12_f3": {
+        "dictionary_size": 256,
+        "inner_steps": 8,
+        "iterations": 12,
+        "factor": 3.0
+      },
+      "d256_i2_o40_f0.03": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.03
+      },
+      "d256_i2_o40_f0.1": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.1
+      },
+      "d256_i2_o40_f0.3": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 0.3
+      },
+      "d256_i2_o40_f1": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 1.0
+      },
+      "d256_i2_o40_f3": {
+        "dictionary_size": 256,
+        "inner_steps": 2,
+        "iterations": 40,
+        "factor": 3.0
+      },
+      "em100": {
+        "dictionary_size": 128,
+        "inner_steps": 1,
+        "iterations": 100,
+        "factor": 0.0
+      }
+    },
+    "selection": "Refresh10changed bins using384observables perregime and minimum eligible heldout NLL. Preserve other41 latestcompact bins. Latest frozen compact also reported."
+  },
+  "methods": [
+    "original_9101",
+    "original_9102",
+    "original_9103",
+    "old_bypass_9101",
+    "old_bypass_9102",
+    "old_bypass_9103",
+    "prior_repair_9101",
+    "prior_repair_9102",
+    "prior_repair_9103",
+    "current_repair_9101",
+    "current_repair_9102",
+    "current_repair_9103",
+    "repair_9101",
+    "repair_9102",
+    "repair_9103",
+    "em100",
+    "optshrink",
+    "prior_compact",
+    "compact_sparse",
+    "prior_sparse_full"
+  ],
+  "groups": {
+    "original_mean": [
+      "original_9101",
+      "original_9102",
+      "original_9103"
+    ],
+    "old_bypass_mean": [
+      "old_bypass_9101",
+      "old_bypass_9102",
+      "old_bypass_9103"
+    ],
+    "prior_repair_mean": [
+      "prior_repair_9101",
+      "prior_repair_9102",
+      "prior_repair_9103"
+    ],
+    "current_repair_mean": [
+      "current_repair_9101",
+      "current_repair_9102",
+      "current_repair_9103"
+    ],
+    "repair_mean": [
+      "repair_9101",
+      "repair_9102",
+      "repair_9103"
+    ]
+  },
+  "contrasts": {
+    "repair_vs_current": [
+      "current_repair_mean",
+      "repair_mean"
+    ],
+    "repair_vs_old": [
+      "old_bypass_mean",
+      "repair_mean"
+    ],
+    "repair_vs_prior": [
+      "prior_repair_mean",
+      "repair_mean"
+    ],
+    "repair_vs_original": [
+      "original_mean",
+      "repair_mean"
+    ],
+    "repair_vs_em100": [
+      "em100",
+      "repair_mean"
+    ],
+    "repair_vs_compact": [
+      "compact_sparse",
+      "repair_mean"
+    ]
+  },
+  "primary": "30strong-reference cells40 through60: versus latest incumbent and matched compact; NMSE/BER form four outcomes.",
+  "bootstrap": {
+    "samples": 20000,
+    "seed": 2026101959,
+    "unit": "128local-index clusters perregime shared across reference/SNR/method/fit",
+    "multiplicity": "Bonferroni4; primary quantiles.05/8 and1-.05/8; others descriptive95."
+  },
+  "boundary": {
+    "additional_snrs": [
+      38.0,
+      38.5,
+      38.75,
+      39.0,
+      39.5,
+      40.5,
+      41.0,
+      41.5,
+      42.0
+    ],
+    "cells": 54,
+    "comparisons": "Same128fresh anchors, allmethods; NMSEdiagnostic only, separately weighted. Explicit38.75\u00b1epsilon preflight. Report37.5to40 and all adjacentsteps; no monotonicity guarantee."
+  },
+  "final_timing": {
+    "local_index": 200,
+    "repeats": 3,
+    "methods": 20,
+    "conditions": 153,
+    "calls": 9180,
+    "scope": "Actualfullpaths randomizedmethodorder, isolatedoneCPUthread; noreselection."
+  },
+  "freeze": "Scientific sources and checkpoints before development; global extension acceptance before calibration; final compact and BER bindings before fresh test.",
+  "source_hashes": {
+    "tcom_filter_continuation_20261019/study.py": "1ce4cffa709b881508de362c7cd2aca95ba3ca8a3dba0de63f77b474ef6d0d77",
+    "tcom_incumbent_guard_20261019/inference.py": "0cef3a0dc8a9f1ffa066e08896afc0d69f3a311b9ad729618ec9b760b78ab1eb",
+    "tcom_incumbent_guard_20261019/risk.py": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1",
+    "tcom_incumbent_guard_20261019/risk_data.py": "5a8474b3f87abea086c7999e7ca5ef8fbbab0b0fd57b58188db365ac85e07101",
+    "tcom_incumbent_guard_20261019/shrink.py": "f72debd9763e4a57532f635c0120fa9eaf516f94e0e360853e1155fee483ec6b",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_filter_continuation_20261019/analysis.py": "4d3826c0304f441723bd1630b74703199cad4ced507d33d847ebaf97abf9d6fa"
+  },
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c"
+  },
+  "previous_protocol_sha256": "3c48c8aa739eb96f7c2415eef5805ad83fe454f80aa1b0e8c9da2769af693abb",
+  "current_protocol_sha256": "72d955cad2f3b3a4a7857be9ac9d09beb971a5f205bc22a235537ac3eee4fdfe",
+  "previous_repair_policy_sha256": "d02db7d685622c25e5dfa435587d95deee0faed6c1331079912f2765914ebb69",
+  "current_repair_policy_sha256": "e81d56321e2a63a7c0386becc59e794ffa946315bd4fed5b38057961c35fce0a",
+  "previous_compact_policy_sha256": "e81d56321e2a63a7c0386becc59e794ffa946315bd4fed5b38057961c35fce0a",
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  },
+  "frozen_unix": 1792437649.361143
+}

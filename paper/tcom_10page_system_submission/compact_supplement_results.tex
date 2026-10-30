@@ -1,0 +1,89 @@
+\subsection{Full Compact-Control Results}
+
+\input{compact_table.tex}
+
+\begin{table}[!t]
+\caption{188-parameter gains: positive favors the spectral/state controller. Three predeclared comparisons with Bonferroni-adjusted paired intervals. Worst-cell harm is descriptive, not an upper confidence bound.}
+\label{tab:compact-contrasts}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Comparator & Gain (dB) & 95\% interval & Worst harm\\
+\midrule
+Learned steps only & +3.919 & [+3.789, +4.001] & 2.735\\
+Global filtering & +1.835 & [+1.805, +1.871] & 0.580\\
+Recurrent control & +1.967 & [+1.932, +2.006] & 0.176\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[!t]
+\caption{Different error summaries on the same primary worlds. Pooled NMSE pools linear errors before taking dB and is not the primary score. Threshold rates are percentages.}
+\label{tab:compact-tails}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Method & Pooled (dB) & $>.5$ & $>1$ & $>2$\\
+\midrule
+Learned steps only & -1.651 & 29.99 & 22.84 & 14.24\\
+Global filtering & -2.438 & 27.98 & 19.56 & 12.52\\
+Spectral/state controller & -6.664 & 19.43 & 3.10 & 0.00\\
+Recurrent control & -2.396 & 28.04 & 19.78 & 12.62\\
+OptShrink, offline & -6.564 & 19.12 & 4.46 & 0.00\\
+OptShrink, block rank & -6.228 & 19.27 & 6.77 & 0.27\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[!t]
+\caption{Separate stress tests, 32 paired worlds each. Weak reference: SNR 5/RSR 0 dB. Nearly noiseless: SNR 60/RSR 12 dB. Neither enters selection or the primary average.}
+\label{tab:compact-stress}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrr@{}}\toprule
+Method & Weak reference & Nearly noiseless\\
+\midrule
+Learned steps only & -4.065 & -44.417\\
+Global filtering & -6.505 & -30.975\\
+Spectral/state controller & -6.842 & -6.321\\
+Recurrent control & -5.623 & -20.101\\
+OptShrink, offline & -10.823 & -67.701\\
+OptShrink, block rank & -12.625 & -70.336\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[!t]
+\caption{Primary scores by training initialization. These seeds share the same training data and do not represent independent training populations.}
+\label{tab:compact-seeds}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Method & 9101 & 9102 & 9103\\
+\midrule
+Learned steps only & -9.770 & -9.774 & -9.774\\
+Global filtering & -11.852 & -11.853 & -11.865\\
+Spectral/state controller & -13.784 & -13.449 & -13.843\\
+Recurrent control & -11.707 & -11.740 & -11.728\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[!t]
+\caption{Recurrent training records. Time includes validation and parallel-worker contention; it is not an isolated-device training benchmark.}
+\label{tab:compact-training}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}rrrr@{}}\toprule
+Seed & Selected epoch & Held-out NLL & Minutes\\
+\midrule
+9101 & 20 & 3.43585 & 17.37\\
+9102 & 19 & 3.43353 & 17.09\\
+9103 & 20 & 3.43426 & 17.34\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+The audit regenerated all 4,096 test worlds, replayed 3,072 representative neural predictions and independently replayed 64 classical predictions in NumPy. Maximum absolute replay difference was $4.40e-13$. Headline scores were also recomputed with scalar loops. These numerical checks do not establish statistical optimality or global recovery.
+
+\begin{figure*}[!t]\centering\includegraphics[width=\textwidth]{compact_comparison.pdf}\caption{Fresh compact-control comparison. Left: each SNR point averages 18 reference/path cells. Right: primary accuracy and measured serial inference time. These descriptive summaries do not imply cellwise confidence guarantees.}\label{fig:compact}\end{figure*}

@@ -1,0 +1,419 @@
+\documentclass[journal]{IEEEtran}
+\usepackage{amsmath,amssymb,graphicx,booktabs,array,cite,url}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{figures/}}
+\newcommand{\Hank}{\mathcal H}
+\newcommand{\CN}{\mathcal{CN}}
+\newcommand{\R}{\mathbb R}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\tr}{tr}
+\begin{document}
+\title{Supplement to: Channel Estimation for Rydberg Receivers Using Learned Hankel Filtering}
+\author{Abdullah~Haatim}
+\maketitle
+\begin{abstract}
+This supplement explains what the measurements can determine, the cost
+and limits of the filter, and the tests added in response to review. The
+original trained models and main-study results are unchanged. New small
+tests are exploratory: they do not establish a new robustness guarantee
+or replace the original confidence intervals.
+\end{abstract}
+
+\section{Local Recovery and Reference Calibration}
+For one array element, let $g,s_p\in\mathbb C^K$, with
+$\mu_p=g^Ts_p+b_p$ and noiseless amplitude $a_p=|\mu_p|$.
+Use real coordinates $x=[\operatorname{Re}g^T,\operatorname{Im}g^T]^T$.
+When every $\mu_p\ne0$, differentiation gives
+\begin{align}
+ da_p&=\operatorname{Re}\{\mu_p^*s_p^T dg/|\mu_p|\},\\
+ A_p&=[\operatorname{Re}c_p^T,-\operatorname{Im}c_p^T],\qquad
+ c_p=\mu_p^*s_p/|\mu_p|.
+\end{align}
+Here $A\in\R^{P\times2K}$ is the real amplitude Jacobian.
+
+\textit{Local statement.} If $\rank A=2K$, the noiseless amplitude map
+is one-to-one in a sufficiently small neighborhood of this $g$.
+To see this, choose $2K$ independent rows. Their square Jacobian is
+invertible, so the inverse-function theorem supplies a local inverse for
+that measurement subset. The remaining measurements cannot remove this
+local injectivity. This is not a global uniqueness theorem: distant
+channels may give the same measurements. A rank-deficient Jacobian also
+does not, by itself, rule out all forms of nonlinear local injectivity.
+
+For small perturbations at a full-rank point, least-squares inversion has
+first-order sensitivity bounded by $1/\sigma_{\min}(A)$.
+Thus $P\ge2K$ is necessary for regular full-rank local recovery of an
+unrestricted row. It is not sufficient. Full row rank of $S$ permits
+the EM linear solve but does not ensure full rank of $A$. These are
+standard local arguments in an affine phase-retrieval setting, not a new
+identifiability theorem~\cite{gao2018}. Sparse channel constraints require their own
+parameterization and Jacobian; a path-count condition is not derived here.
+
+\subsection{Rician Information}
+For known complex variance $v>0$ and $a>0$, the amplitude score is
+\begin{equation}
+ h(z,a,v)=-2a/v+(2z/v)I_1(2za/v)/I_0(2za/v).
+\end{equation}
+Define $w(a,v)=\mathbb E[h(Z,a,v)^2]$, with expectation under the
+Rician observation law. For independent pilots the real Fisher matrix is
+\begin{equation}
+ J=A^T\diag\{w(a_p,v)\}_{p=1}^P A.
+\end{equation}
+Each magnitude observation contributes an outer product of rank at most one, not a
+full-rank complex information block. For finite $v>0$ and nonzero
+amplitudes these weights are positive. At a zero field the regular
+amplitude-coordinate derivation is not used; first-order information
+about the Cartesian mean vanishes. When the assumptions hold, the
+rank and conditioning of $J$ give a local diagnostic. Neither a small
+bound nor a well-conditioned matrix at the true channel guarantees that
+an iterative estimator reaches the correct solution.
+
+\subsection{What a Reference Does and Does Not Fix}
+With $B=0$, $g$ and $e^{j\phi}g$ have identical amplitudes for every
+$\phi$. The Jacobian has the phase direction $jg$ in its null space for
+nonzero $g$. A nonzero known reference can remove that symmetry, but
+arbitrary reference and pilot patterns still require a rank check. For
+example, if $b_p=c^Ts_p$ for some fixed $c$, then
+$g'=e^{j\phi}(g+c)-c$ produces the same amplitudes. This can occur
+with a full-row-rank pilot matrix and a nonzero reference.
+RSR $0$~dB in our experiments means a nonzero reference equal in expected
+power to one user; it is not the absent-reference case.
+
+There is a separate calibration ambiguity. If the estimator assumes
+$B'=e^{j\phi}B$, then $G'=e^{j\phi}G$ gives
+\begin{equation}
+ |G'S+B'|=|e^{j\phi}(GS+B)|=|GS+B|.
+\end{equation}
+The likelihood therefore cannot identify a constant reference-phase error
+from these observations alone. With error measured in the original
+reference frame, even this otherwise exact rotated estimate has NMSE
+$|e^{j\phi}-1|^2=4\sin^2(\phi/2)$. At $10^\circ$ this is about
+$0.0304$ ($-15.2$~dB). This is an illustrative exact-fit ambiguity, not
+a lower bound on every biased estimator. A smaller withheld loss cannot
+certify correct absolute phase or recover an unknown reference phase.
+Time-varying phase errors generally cannot be absorbed into one constant
+channel rotation. A separate static calibration diagnostic estimates a
+shared positive amplitude multiplier and noise variance under stated
+assumptions. It cannot remove this unknown-phase ambiguity.
+
+\section{Filter Properties and Computation}
+Let $H=U\diag(\sigma_i)V^H\in\mathbb C^{m\times q}$, $m\ge q$, and
+\begin{equation}
+ F_\tau(H)=H-\tau^2H(H^HH+\tau^2I)^{-1},\qquad\tau>0.
+\end{equation}
+Its singular values are $f_\tau(\sigma)=\sigma^3/(\sigma^2+\tau^2)$.
+Thus $0\le f_\tau(\sigma)\le\sigma$ and
+\begin{equation}
+ \|F_\tau(H)\|_F\le\|H\|_F,\qquad
+ \|F_\tau(H)-H\|_F\le\sqrt q\,\tau/2.
+\end{equation}
+The second inequality follows because
+$\sigma-f_\tau(\sigma)=\sigma\tau^2/(\sigma^2+\tau^2)\le\tau/2$.
+
+For a channel vector, let $d_i$ count its occurrences in the Hankel
+matrix and define $\|g\|_D^2=\sum_i d_i|g_i|^2=\|\Hank(g)\|_F^2$.
+Antidiagonal averaging followed by lifting is the orthogonal projection
+onto Hankel matrices in Frobenius norm. Therefore for fixed realized
+$\eta\in[0,1]$ and $\tau>0$,
+\begin{align}
+ g^+&=(1-\eta)g+\eta\Hank^\dagger F_\tau(\Hank(g)),\\
+ \|g^+\|_D&\le\|g\|_D,\qquad
+ \|g^+-g\|_D\le\eta\sqrt q\,\tau/2.
+\end{align}
+This bounds the size of one correction, not its error relative to the
+unknown true channel. It does not prove a contraction between two
+different inputs, particularly when the controller changes $\eta$ and
+$\tau$ with the input. It also does not prove convergence of the full
+estimator. For fixed $H$, $\tau\to0$ gives $F_\tau(H)\to H$ and
+$\tau\to\infty$ gives zero. No low-noise limit is asserted because
+the learned threshold need not vanish with noise.
+
+The matrix-solve shrinker is smooth for $\tau>0$, including repeated
+singular values. However, the controller also uses ordered largest and
+tail singular values. These features need not be differentiable at every
+singular-value tie. Finite-gradient numerical checks do not establish
+global differentiability of the whole network.
+
+\subsection{Why the Rician Measurement Update Is an EM Step}
+Let the unobserved complex field be $Y=GS+B+W$ and write each entry as
+$Y_{np}=Z_{np}e^{j\Phi_{np}}$. The receiver observes $Z$, not the phase
+$\Phi$. For a current predicted field $M$, the conditional phase density is
+\begin{equation}
+ p(\phi\mid z,M)=\frac{\exp\{\kappa\cos(\phi-\arg M)\}}
+ {2\pi I_0(\kappa)},\qquad \kappa=2z|M|/v.
+\end{equation}
+This is a von Mises distribution. Its first circular moment gives
+\begin{equation}
+ Q=\mathbb E[Y\mid Z,M]=Z\frac{I_1(\kappa)}{I_0(\kappa)}e^{j\arg M}.
+\end{equation}
+At $M=0$, the phase is uniform and $Q=0$. These are conditional complex
+fields, not estimates of the mean magnitude. Since $|Y|^2=Z^2$ when $Z$
+is fixed, expanding $\mathbb E[\|Y-GS-B\|_F^2\mid Z,M]$ leaves
+$\|GS+B-Q\|_F^2$ plus terms independent of the candidate $G$.
+Least squares therefore gives $(Q-B)S^H(SS^H)^{-1}$. This derivation uses
+independent proper complex Gaussian noise and a supplied positive variance;
+it does not use a strong-reference or high-SNR approximation.
+
+\subsection{Relaxed EM Is Not the Same as the Full Stage}
+For fixed posterior field $Q$ and supplied variance $v>0$, the negative
+EM surrogate, up to constants, is
+$\Psi(G)=\|GS+B-Q\|_F^2/v$. Its minimizer is $G_{\rm EM}$ when $S$
+has full row rank. The normal equations give
+\begin{equation}
+ \Psi(G)-\Psi(G_{\rm EM})=\|(G-G_{\rm EM})S\|_F^2/v.
+\end{equation}
+For $G_\gamma=G+\gamma(G_{\rm EM}-G)$, the surrogate decrease is
+\begin{equation}
+ \Psi(G)-\Psi(G_\gamma)=\gamma(2-\gamma)
+ \|(G-G_{\rm EM})S\|_F^2/v\ge0
+\end{equation}
+for $0\le\gamma\le2$. Thus even an over-relaxed step within this
+interval is a generalized EM step for this quadratic M-step, in exact
+arithmetic. The supplied-model likelihood is nondecreasing. This result
+does not extend automatically to the subsequent Hankel correction, nor
+does it guarantee channel-error reduction, global recovery or convergence
+of the complete learned estimator. The secondary GD core is not covered
+by this particular argument.
+
+\subsection{Operation Counts}
+For $S\in\mathbb C^{K\times P}$ and $G\in\mathbb C^{N\times K}$,
+forming $SS^H$ costs $O(K^2P)$. Spectral initialization forms $N$
+weighted $(K+1)$-dimensional Gram matrices and eigendecompositions,
+costing $O(NP(K+1)^2+N(K+1)^3)$. These are per observation case,
+not per stage. The inverse-trace noise proxy adds $O(K^3)$ once.
+
+\begin{table}[!t]
+\caption{Leading work per stage, excluding initialization}
+\centering\small
+\begin{tabular}{@{}p{.47\columnwidth}p{.46\columnwidth}@{}}\toprule
+Operation & Leading order\\\midrule
+Predicted fields and EM products & $O(NKP)$\\
+EM solve, current implementation & $O(NK^2+K^3)$\\
+Spectral controller features & $O(Kmq^2)$\\
+Smooth matrix filter & $O(Kmq^2+Kq^3)$\\
+Antidiagonal averaging & $O(Kmq)$\\
+Small controller & $O(K\cdot178)$\\\bottomrule
+\end{tabular}
+\end{table}
+Here $q=\lceil N/2\rceil$, $m=N-q+1$. Caching the pilot-Gram
+factorization could remove repeated $K^3$ factorizations, but the quoted
+timings use the existing implementation. The filter avoids differentiating
+hard rank truncation; it does not remove the SVD needed for controller
+features. At large $N$, both dense spectral features and the dense solve
+scale cubically. A small parameter count is not a small operation count.
+
+For HS-GS, with $R=q$ candidate ranks, $T_s=25$ selection updates,
+$T_f=100$ refit updates and $C=4$ sweeps, the dominant repeated work is
+of order
+\begin{equation}
+ (RT_s+T_f)\,[NKP+NK^2+K^3+C Kmq^2].
+\end{equation}
+Selection uses fewer pilot columns and has additional scoring and
+initialization work. This expression is a work estimate, not an exact
+FLOP count or a prediction of the measured speedup. Bessel functions,
+library choices, memory traffic and batching also matter. At $N=32$,
+HS-GS uses 400 selection and 100 refit updates, compared with ten learned
+stages. Accuracy at those different budgets, not equal iteration count,
+is the reported comparison.
+
+\section{Existing Dimension Tests and Controller Inputs}
+\begin{table}[!t]
+\caption{All original main-study comparators, unchanged}
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Method & NMSE & Time & Severe\\
+ & (dB) & (ms) & (\%)\\\midrule
+\csname @@input\endcsname baseline_rows.tex
+\bottomrule\end{tabular}
+\parbox{\columnwidth}{\footnotesize Accuracy averages seven primary SNR cells.
+Time is the original batch-one median at SNR 5~dB, RSR 12~dB.
+These are not the new OptShrink comparison's data or timing sample.}
+\end{table}
+The original study already contains one-factor-at-a-time tests, with 400
+cases per condition and weights fixed. Except for the changed quantity,
+the reference condition is $N=32,K=3,P=30$, SNR 5~dB and RSR 12~dB.
+The pilot sweep's smallest value is ten for three users, not six.
+It does not test the boundary $P=2K$.
+The alternative channels use four clusters of ten rays within
+$\pm5^\circ$, ten equal-power paths, or ten paths with geometrically
+decreasing powers. They match base-channel energy and are tested only at
+SNR 5~dB and RSR 12~dB. These alternatives are simulation populations,
+not measured scattering distributions.
+
+\begin{table}[!t]
+\caption{Original transfer results: gain over HS-GS in dB}
+\centering\small
+\begin{tabular}{@{}lrr@{}}\toprule
+Changed quantity & Gain & Pointwise 95\% interval\\\midrule
+$N=8$ & $-0.106$ & $[-0.286,0.077]$\\
+$N=16$ & $1.223$ & $[1.086,1.361]$\\
+$N=64$ & $0.165$ & $[0.024,0.307]$\\
+$K=2$ & $0.078$ & $[-0.073,0.228]$\\
+$K=4$ & $1.529$ & $[1.415,1.639]$\\
+$P=10$ & $2.334$ & $[2.136,2.531]$\\
+$P=20$ & $1.427$ & $[1.273,1.577]$\\
+Noise input $-3$~dB & $1.226$ & $[1.095,1.359]$\\
+Noise input $+3$~dB & $1.050$ & $[0.901,1.193]$\\\bottomrule
+\end{tabular}
+\end{table}
+
+The full controller receives a spectrum summary, residual/noise proxies
+and size/stage information. A large spectral tail can reflect either noise
+or real paths; residuals can reflect noise, a wrong channel, or a wrong
+receiver model. The features provide context but no unambiguous failure
+detector. No sign constraint makes the threshold monotone in SNR, RSR or
+path count. The threshold and mixing can compensate for each other, so
+we inspect the actual relative channel correction as well as both outputs.
+
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{fig5_features.pdf}
+\caption{Original smaller-budget input ablation, unchanged. Full inputs help
+the average but fail the declared 0.25~dB protection condition. These are
+separate models trained with 4,096 cases, 12 epochs and three seeds; they
+are not replacements for the main 16,384-case models.}
+\end{figure*}
+
+\subsection{Original Follow-up Comparisons}
+The earlier follow-up trains 15 models and evaluates two fresh sets,
+each with seven SNR settings and two difficult settings of 200 cases.
+The six primary comparisons adjust for multiple testing within each set.
+The two new-data adaptive runs use independently generated training data,
+one fixed training seed per dataset. They are distinct from the three
+main seeds sharing one dataset and from the new reviewer diagnostics.
+
+\begin{table}[!t]
+\caption{Original follow-up average gains in dB, unchanged}
+\centering\small
+\begin{tabular}{@{}p{.68\columnwidth}rr@{}}\toprule
+Comparison & Set 1 & Set 2\\\midrule
+New-data adaptive vs. global & 2.252 & 2.185\\
+New-data adaptive vs. no filtering & 4.250 & 4.191\\
+New-data adaptive vs. HS-GS & 1.939 & 1.837\\
+Original adaptive vs. supervised & 1.015 & 1.012\\
+Original adaptive vs. final-only & 0.697 & 0.694\\
+Fixed-open mix vs. original adaptive & 0.064 & 0.066\\\bottomrule
+\end{tabular}
+\end{table}
+The supervised recipe holds architecture, input pilots and training
+budget fixed but trains on channel targets with mean linear NMSE.
+Selecting its checkpoint by withheld likelihood reduces the gap to
+approximately 0.73~dB; pooling linear errors across SNRs reduces it to
+about 0.36~dB. It wins in some cases, including two paths. Its transfer
+from 21 to 30 pilots was less consistent in validation replay. This
+comparison does not establish a general benefit of withholding labels.
+The final-only comparison retrains that alternative and its separate
+timing sample gives 4.65 versus 2.05~ms; those values do not replace the
+main timing table. Fixing mixing at one retains all 188 stored parameters
+and worsens two of three seeds on two-path cases, despite its small
+average gain.
+
+\section{Additional Reviewer Diagnostics}
+\input{review_diagnostics.tex}
+
+\input{round2_results.tex}
+
+\input{round2_training.tex}
+
+\section{Related Structural and Sparse Methods}
+OptShrink estimates singular-value weights from the observed noise
+spectrum~\cite{nadakuditi2014}. LRHD combines that principle with
+repeated Hankel projection~\cite{yin2021}; neither our first one-pass
+diagnostic nor the new EM/OptShrink adaptation reproduces full LRHD. In both
+cases the starting problem is noisy matrix denoising, not recovery from
+affine magnitudes. The noise on a Hankel matrix formed from an iterated
+channel estimate need not meet asymptotic independent-entry assumptions.
+Neither those guarantees nor universal optimality are asserted here.
+
+Structured alternating least squares reconstructs low-rank matrices from
+linear measurements, including Hankel structure~\cite{zachariah2012}.
+HSGD addresses partially observed Hankel matrices with sparse gross
+corruptions~\cite{cai2023}. Their losses, observations and guarantees
+cannot be transferred unchanged to our nonlinear Rician model. They
+remain important alternative constructions, not irrelevant methods.
+
+Noncoherent compressive channel estimation combines phase retrieval and
+sparse reconstruction using a designed sensing cascade~\cite{rasekh2018}.
+GP-bandit beam training uses adaptive near-field beams, Rician-debiased
+pseudo-amplitudes and sparse phase retrieval~\cite{wang2026}; it has no
+known additive reference. Partially coherent matching pursuit retains
+complex observations with a shared unknown phase within each
+packet~\cite{yi2024}. That information is absent from our magnitude-only
+inputs. A fair benchmark must adapt these methods to the same observation
+and pilot budget rather than importing their published scores.
+
+The multi-shot Rydberg study~\cite{atapattu2026} concerns signal-presence
+detection with Rician shots. It motivates accounting for observation
+statistics and shot budgets, but supplies neither channel-estimation
+results nor a heavy-tailed noise model for this experiment.
+
+\section{What Is Still Not Tested}
+\textit{Depth.} The new 5/10/20-stage comparison uses separately trained
+models, unlike the original prefix diagnostic. It has a fixed small
+training budget, not an exhaustive search or a convergence test. An
+optimal depth for larger datasets or other channel populations is not known.
+
+\textit{Noise and hardware.} The original model has independent complex
+Gaussian noise before magnitude extraction. Incorrect variance inputs
+do not test non-Gaussian noise. Finite shot count alone does not imply
+heavy-tailed noise, and no cited detection model establishes that
+assumption for this receiver. Optical readout, atomic dynamics and
+hardware data remain untested. A Rician loss is not automatically matched
+to an alternative optical or multi-shot measurement statistic.
+
+\textit{Structure.} Cubic shrinkage is one design choice, not a proved
+optimal denoiser. The new in-loop comparison covers one OptShrink-based
+reconstruction. Full LRHD, structured ALS and robust Hankel completion
+would require their own adapted measurement models and independently
+selected settings. Existing hard,
+global, adaptive and no-filtering controls do not exhaust these choices.
+An angle-domain sparse phase-retrieval method is also a relevant missing
+comparison, particularly for two-path channels. No superiority over those
+methods, or over published URformer, is claimed.
+
+\textit{Training.} Two-path and RSR 5~dB cases already occur in the original
+training; RSR 0~dB does not. The new smaller study includes RSR 0~dB,
+and its curriculum has mixed results. No safety-critical protection
+guarantee follows from average gains. The original pointwise
+intervals condition on fixed models and shared training data; the
+fresh-data follow-up is limited and does not estimate broad
+training-population uncertainty.
+
+\textit{Array geometry.} A two-dimensional array may suggest multilevel
+or block-Hankel structure, but its lifting dimensions, normalization,
+computational cost and training transfer must be defined anew. No 2D
+array result is reported.
+
+\section{Initialization and Numerical Record}
+For array element $n$, form $C_n\in\mathbb C^{P\times(K+1)}$ with rows
+$[s_p^T,b_{np}]$. Let $u_n$ be the dominant eigenvector of
+$C_n^H\diag(z_n)C_n$ and set
+\begin{equation}
+ c_n=\frac{\sum_p z_{np}|(C_nu_n)_p|}{\sum_p|(C_nu_n)_p|^2}.
+\end{equation}
+The first $K$ components of $c_nu_n\exp[-j\arg(u_{n,K+1})]$ initialize
+the channel row. Only the 21 input pilots enter this calculation during
+training. The withheld columns do not enter the initial estimate.
+
+The original 43 focused tests cover likelihood and derivative checks,
+noise scaling, finite gradients, repeated singular values, pilot-split
+isolation, single/double precision agreement and deterministic recovery.
+The submission audit recalculated 1,120 main, 702 follow-up and 432
+input-study result files. Three primary checkpoints replayed eight saved
+observations exactly; 24 input-study checkpoint replays were also checked.
+This is not a replay of every historical experiment or an independent
+hardware validation.
+
+One finite-input SVD failure occurred in the original classical HS-GS
+test at $N=64$. The same matrix was recomputed with SciPy's alternative
+SVD driver; relative reconstruction error was below $3\times10^{-15}$.
+The trial was retained with unchanged inputs and iteration budget.
+Original software versions were Python 3.12, NumPy 2.4.6, SciPy 1.17.1
+and PyTorch 2.13.0. The expanded release includes saved inputs, truth
+for evaluation, predictions, selected/final checkpoints, training histories,
+settings, source hashes and figure scripts for the reported studies.
+The separate Overleaf archive contains manuscript files, not experimental
+data. No GPU agreement or hardware measurement is claimed.
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

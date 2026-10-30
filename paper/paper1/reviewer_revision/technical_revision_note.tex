@@ -1,0 +1,432 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=24mm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+\newcommand{\appendices}{\appendix}
+\title{Paper 1: Technical Revision Fragments}
+\author{Review copy for Abdullah Haatim}
+\date{7 October 2026}
+\begin{document}
+\maketitle
+\noindent This note previews insertable revisions for \textit{ThesisProj-7.pdf}.
+It is not the full manuscript and introduces no new experimental results.
+The exact insertion map and source qualification are in the accompanying
+\texttt{README.txt}. The section numbering below belongs to this preview.
+\section{Related-work insertion}
+
+% Insert in the Introduction immediately before "We propose a
+% Hankel-structured extension of EM-GS...". Keep the existing introduction.
+
+Low-rank Hankel modeling and Cadzow processing are established tools
+\cite{cadzow1988,markovsky2008}. Related uses of structured low-rank
+matrices include spectral compressed sensing and MRI reconstruction
+\cite{chen2014emac,jin2016aloha,haldar2014loraks}. Our contribution is not
+a new general low-rank recovery principle. We study how a simple spatial
+Hankel correction behaves inside a magnitude-only Rydberg channel
+estimator, including conditions where it gives little benefit or causes
+harm. The Hankel matrix is formed along each user's array dimension.
+This construction differs from a rank constraint on a two-dimensional
+channel slice, as considered in~\cite{xu2025}.
+
+Hard truncation gives a best rank-limited approximation to its input
+matrix in the Frobenius norm. It need not give the best estimate of the
+underlying clean channel. Singular-value shrinkage methods such as
+OptShrink address this distinction~\cite{nadakuditi2014optshrink}. Their
+matrix-noise assumptions require care here: Hankel lifting repeats
+entries, and the error entering the structural step comes from an
+iterative channel estimate. We therefore do not assume that a shrinkage
+rule is optimal for this problem simply because it is optimal under a
+different denoising model.
+
+
+\section{Replacement estimator text}
+
+% Replace all of Section III-B, "The Estimator".
+\subsection{The Estimator}
+\label{sec:revised-estimator}
+
+HS-GS uses the same measurement update and spectral initialization as
+EM-GS. It then applies the Hankel step separately to each user column
+$\mathbf g_k$. We do not stack different users or pilot measurements into
+one Hankel matrix, and we do not assume that users share arrival angles.
+
+At iteration $t$, the measurement update is
+\begin{align}
+\mathbf M^{(t)}&=\mathbf G^{(t)}\mathbf S+\mathbf B,\\
+\boldsymbol\kappa^{(t)}&=
+  2\mathbf Z\odot|\mathbf M^{(t)}|/\sigma^2,\\
+\mathbf Y^{(t)}&=\mathbf Z\odot R(\boldsymbol\kappa^{(t)})
+  \odot e^{\jmath\arg\mathbf M^{(t)}},\\
+\widetilde{\mathbf G}^{(t+1)}(\mathbf S\mathbf S^H)
+  &=(\mathbf Y^{(t)}-\mathbf B)\mathbf S^H,
+\label{eq:revision-em-update}
+\end{align}
+where $R(x)=I_1(x)/I_0(x)$ and all nonlinear operations are elementwise.
+The last equation is solved as a linear system. The pilot matrix for each
+fit is assumed to have full row rank. Scaled Bessel functions are used to
+evaluate the ratio stably; the contribution to $\mathbf Y^{(t)}$ is zero
+when the corresponding entry of $\mathbf M^{(t)}$ is zero.
+
+For a channel vector of length $N$, we use
+\begin{equation}
+p=\left\lfloor\frac{N-1}{2}\right\rfloor,
+\qquad
+[\mathcal H_p(\mathbf g)]_{a+1,b+1}=g[a+b+1],
+\end{equation}
+with $0\leq a<N-p$ and $0\leq b\leq p$. This gives an
+$(N-p)\times(p+1)$ matrix and the exact capacity
+$r_{\max}=\lceil N/2\rceil$.
+
+One Cadzow sweep is
+\begin{equation}
+\mathcal P_r(\mathbf g)=
+\mathcal H_p^\dagger\!\left(\Pi_r(\mathcal H_p(\mathbf g))\right).
+\label{eq:revision-cadzow}
+\end{equation}
+Here $\Pi_r$ keeps the $r$ largest singular values and sets the others to
+zero. It does not change the retained singular values. The operation
+$\mathcal H_p^\dagger$ averages the entries on each antidiagonal to recover
+the channel vector. We apply four sweeps to every column of
+$\widetilde{\mathbf G}^{(t+1)}$ before the next measurement update.
+
+This is a finite sequence of structural corrections. After antidiagonal
+averaging, the Hankel matrix formed again from the output can have rank
+greater than $r$. Low Hankel rank also does not impose every physical
+constraint in the geometric channel model. A small rank can remove useful
+channel components, while a large rank may leave much of the estimation
+error unchanged.
+
+% Replace all of Section III-C, "Choosing the Hankel Rank".
+\subsection{Choosing the Hankel Rank}
+\label{sec:revised-rank-selection}
+
+We choose the rank from the available pilots without using the true path
+count. The last $P_B=\max\{1,\operatorname{round}(0.3P)\}$ pilot columns
+form the validation set $B$. The remaining columns form the fitting set
+$A$. For example, with $P=30$, we use 21 columns to fit each candidate and
+nine columns to compare the candidates.
+
+For every $r\in\{1,\ldots,r_{\max}\}$, we run the estimator on set $A$
+and obtain $\widehat{\mathbf G}^{(r)}_A$. Its initialization also uses only
+set $A$. We then select
+\begin{equation}
+\widehat r=\operatorname*{arg\,min}_{1\leq r\leq r_{\max}}
+\left\|\mathbf Z_B-
+ \left|\widehat{\mathbf G}^{(r)}_A\mathbf S_B+\mathbf B_B\right|
+\right\|_F^2.
+\label{eq:revision-rank-selection}
+\end{equation}
+The score sums the squared magnitude residuals over all receive elements
+and validation columns. If scores are exactly tied, we select the smallest
+rank. One scalar rank is shared by all user columns; the Hankel operations
+on those columns remain separate.
+
+After choosing the rank, we restart the estimator from an initialization
+computed using all $P$ pilots and fit the final estimate using all of them.
+Thus, the validation split does not permanently discard 30\% of the pilots
+or require additional pilot transmissions. Its costs are the repeated
+candidate fits and the smaller fitting set used during rank selection.
+
+If $\widehat r=r_{\max}$, the structural step is bypassed. With the same
+initialization and update count, the final estimate then equals the paired
+EM-GS estimate exactly. This fallback does not guarantee that a smaller
+selected rank improves the unknown channel error in every trial.
+
+\begin{center}
+\fbox{\begin{minipage}{0.91\columnwidth}
+\small
+\textbf{HS-GS procedure}\par
+\textit{Inputs:} $\mathbf Z,\mathbf S,\mathbf B,\sigma^2$; candidate and
+final update counts $T_{\rm sel},T$; four Cadzow sweeps per application.
+\begin{enumerate}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\item Form fitting set $A$ and validation set $B$ from the pilot columns.
+\item For each candidate rank, initialize from $A$ and perform
+$T_{\rm sel}$ measurement updates, each followed by four per-user Cadzow
+sweeps. Bypass these sweeps at $r_{\max}$.
+\item Select $\widehat r$ using \eqref{eq:revision-rank-selection}.
+\item Reinitialize using all pilots. Perform $T$ measurement updates with
+the selected structural processing and return the final channel estimate.
+\end{enumerate}
+\end{minipage}}
+\end{center}
+
+
+\section{Replacement bound text}
+
+% Replace all of Section IV-B, "Constrained Cramer--Rao Bound".
+\subsection{Constrained Cram\'er--Rao Bound}
+\label{sec:revised-ccrb}
+
+The ordinary CRLB treats the real and imaginary parts of each channel
+coefficient as separate unknowns. The geometric CCRB also uses the fact
+that these coefficients are generated by a common set of paths. It is
+\begin{equation}
+\mathbf C_{\rm geom}
+=\mathbf U(\mathbf U^T\mathbf J\mathbf U)^{-1}\mathbf U^T,
+\label{eq:revision-ccrb}
+\end{equation}
+where $\mathbf J$ is the Fisher information matrix in real channel
+coordinates. The columns of $\mathbf U$ form an orthonormal basis for the
+local changes in the channel allowed by the geometric model
+\cite{gorman1990,stoica1998}. Appendix~\ref{app:revision-ccrb} gives the
+parameter ordering, derivatives and numerical calculation.
+
+The bound is evaluated at the true channel and its path configuration.
+The path gains and spatial frequencies are still unknown coordinates in
+the calculation; they are not supplied to the estimator. The known
+quantities are the pilots, reference field and noise variance. The true
+model order is used only to define this ideal geometric reference.
+
+We plot the trace of each bound with the same channel-energy normalization
+as the NMSE. The gap between the two references shows the potential value
+of the geometric information under their local unbiasedness assumptions.
+It does not prove that the gap is achievable by HS-GS or another practical
+estimator. EM-GS and HS-GS are not assumed to be unbiased, so neither curve
+is treated as an absolute lower limit on their measured NMSE.
+
+
+\section{Short scope clarifications}
+\subsection{Effective-rank aggregation}
+
+% Insert in Section V-E, "Effective Rank", immediately after the definition
+% of rho and before "The value rho can be understood as the fraction...".
+
+We calculate this quantity separately for each user column. At an
+operating point, the reported $\rho$ is the median over the user columns
+and channel realizations. When resampling trials, we keep all users from
+the same realization together. The values shown here are calculated from
+the true noiseless channels and are used to explain the simulation results;
+they are not inputs to rank selection.
+
+
+\subsection{Interpretation of the existing bound gaps}
+
+% In Section V-B, replace the two paragraphs starting "The geometric CCRB
+% is approximately..." and "HS-GS uses part of this structure...".
+% Keep the numerical values and the following unbiasedness caveat.
+
+The geometric CCRB is approximately $6.95$--$7.06$~dB below the ordinary
+CRLB. It includes the local geometric multipath structure, while the
+ordinary CRLB treats the channel coefficients as separate unknowns.
+HS-GS improves on EM-GS but remains $4.37$--$4.85$~dB above the geometric
+reference. These gaps describe the two reference curves and the measured
+estimator performance under this model. They do not establish how much
+further improvement a practical estimator can achieve.
+
+
+\subsection{Existing projection-placement comparison}
+
+% Insert at the end of the first paragraph of Section V-G,
+% "Projection Placement and Computation", after the sentence mentioning
+% 300 paired trials and four Cadzow sweeps.
+
+The common rank is selected using the interleaved candidates. Thus, this
+comparison measures placement at a shared selected rank; it does not tune
+each variant separately. The four sweeps are used at each structural
+application, so interleaving and final-only processing have different
+total computational costs.
+
+% Insert after the conclusion and before the bibliography.
+% If the manuscript already starts its appendices elsewhere, omit the next line.
+\appendices
+\section{Real-Coordinate Fisher Information and Geometric CCRB}
+\label{app:revision-ccrb}
+
+\subsection{Channel coordinates and measurement information}
+
+For receive element $n$, define
+\begin{equation}
+\mathbf x_n=
+ [\Re G_{n1},\ldots,\Re G_{nK},
+  \Im G_{n1},\ldots,\Im G_{nK}]^T.
+\end{equation}
+The full real vector is
+$\mathbf x=[\mathbf x_1^T,\ldots,\mathbf x_N^T]^T\in\mathbb R^{2NK}$.
+This ordering gives
+$\|\widehat{\mathbf x}-\mathbf x\|_2^2
+=\|\widehat{\mathbf G}-\mathbf G\|_F^2$.
+We condition on the known $\mathbf S$, $\mathbf B$ and $\sigma^2$.
+The noise convention is $\mathbb E|W_{np}|^2=\sigma^2$, so each real
+component has variance $\sigma^2/2$.
+
+Write $\mu_{np}=(\mathbf G\mathbf S+\mathbf B)_{np}$ and
+$a_{np}=|\mu_{np}|$. For $z\geq0$, the amplitude density is
+\begin{equation}
+p(z\mid a)=\frac{2z}{\sigma^2}
+ \exp\!\left(-\frac{z^2+a^2}{\sigma^2}\right)
+ I_0\!\left(\frac{2za}{\sigma^2}\right).
+\end{equation}
+With $R(u)=I_1(u)/I_0(u)$, its amplitude score is
+\begin{equation}
+\frac{\partial\log p(z\mid a)}{\partial a}
+=\frac{2}{\sigma^2}
+ \left[zR\!\left(\frac{2za}{\sigma^2}\right)-a\right].
+\end{equation}
+Using $\mathbb E[zR(2za/\sigma^2)]=a$, the scalar information is
+\begin{align}
+\mathcal I_a(a)
+&=\frac{4}{\sigma^4}
+ \left[\mathbb E\!\left\{z^2R^2\!\left(\frac{2za}{\sigma^2}\right)\right\}
+ -a^2\right],
+\label{eq:revision-scalar-information}\\
+\beta(a)&=\mathcal I_a(a)/4.
+\end{align}
+
+For $\mu_{np}\ne0$, put
+\begin{equation}
+\mathbf c_{np}=e^{-\jmath\arg\mu_{np}}\mathbf S_{:,p},
+\qquad
+\mathbf v_{np}=
+\begin{bmatrix}\Re\mathbf c_{np}\\-\Im\mathbf c_{np}\end{bmatrix}.
+\end{equation}
+Here $\mathbf v_{np}=\partial a_{np}/\partial\mathbf x_n$.
+Independence of the measurement noises gives
+\begin{align}
+\mathbf J_n&=\sum_{p=1}^{P}
+  \mathcal I_a(a_{np})\mathbf v_{np}\mathbf v_{np}^T,\\
+\mathbf J&=\operatorname{blkdiag}
+ (\mathbf J_1,\ldots,\mathbf J_N).
+\label{eq:revision-real-fisher}
+\end{align}
+Each nonzero measurement term has rank one in real coordinates. At
+$\mu_{np}=0$, the contribution is defined by its continuous zero limit;
+an arbitrary choice of phase supplies no information.
+
+\subsection{Geometric tangent space}
+
+For each user $k$ and path $\ell$, take the real parameters
+$(\psi_{\ell,k},\Re\alpha_{\ell,k},\Im\alpha_{\ell,k})$.
+Collect them in $\boldsymbol\eta$ and set
+$\mathbf D=\partial\mathbf x/\partial\boldsymbol\eta$.
+Writing $v_n(\psi)=e^{-\jmath(n-1)\psi}$, the complex derivatives for
+one path are
+\begin{align}
+\frac{\partial g_k[n]}{\partial\psi_{\ell,k}}
+ &=-\jmath(n-1)\alpha_{\ell,k}v_n(\psi_{\ell,k}),\\
+\frac{\partial g_k[n]}{\partial\Re\alpha_{\ell,k}}
+ &=v_n(\psi_{\ell,k}),\\
+\frac{\partial g_k[n]}{\partial\Im\alpha_{\ell,k}}
+ &=\jmath v_n(\psi_{\ell,k}).
+\end{align}
+Their real and imaginary parts fill the corresponding entries of
+$\mathbf x_n$; entries belonging to other users are zero. Using spatial
+frequency $\psi$ follows the channel generator directly and avoids a
+coordinate singularity from $\psi=\pi\sin\theta$ at endfire.
+
+Take a thin SVD $\mathbf D=\mathbf U_D\boldsymbol\Sigma_D\mathbf V_D^T$.
+The implementation retains the columns of $\mathbf U_D$ whose singular
+values exceed $10^{-9}$ times the largest singular value. These columns
+form $\mathbf U$, an orthonormal basis for the numerically resolved range
+of $\mathbf D$. This construction avoids inverting a redundant physical
+parameterization when $\mathbf D$ is not full column rank.
+
+For locally unbiased estimation along this tangent space,
+\begin{equation}
+\mathbf C_{\rm geom}
+=\mathbf U(\mathbf U^T\mathbf J\mathbf U)^{-1}\mathbf U^T.
+\end{equation}
+The gains and spatial frequencies are varied jointly in $\mathbf D$;
+neither is held fixed as known side information. This calculation includes
+no unknown reference-field, calibration or noise-variance parameters.
+Adding such nuisance parameters would require the corresponding enlarged
+information matrix. The true path counts and parameter point specify the
+local reference, rather than inputs available to HS-GS.
+
+The displayed inverses require positive definite information on the
+relevant space. A singular restricted matrix indicates an unresolved
+local direction and is not replaced by a regularized finite bound.
+The known reference can remove phase ambiguity, but its presence alone
+does not guarantee identifiability for every pilot design. Coincident or
+zero-gain paths can also invalidate a regular local parameterization.
+The stated numerical rank tolerance must therefore accompany the results.
+
+\subsection{Numerical evaluation and normalization}
+
+For trial $i$, the two scalar reference errors are
+\begin{align}
+b_{{\rm unc},i}&=\sum_{n=1}^{N}\operatorname{tr}(\mathbf J_{n,i}^{-1}),\\
+b_{{\rm geom},i}&=
+ \operatorname{tr}\!\left[(\mathbf U_i^T\mathbf J_i\mathbf U_i)^{-1}\right].
+\end{align}
+The second identity uses $\mathbf U_i^T\mathbf U_i=\mathbf I$.
+For either reference, the plotted value is
+\begin{equation}
+10\log_{10}
+ \frac{\sum_i b_i}{\sum_i\|\mathbf G_i\|_F^2}.
+\label{eq:revision-bound-normalization}
+\end{equation}
+The same channel realizations and energy denominators are used for the
+estimator curves. This is a ratio of sums, not an average of trial-wise
+dB values.
+
+The scalar expectation is evaluated with scaled Bessel functions and
+quadrature over $[\max(0,a-8\sigma),a+8\sigma]$, where
+$\sigma=\sqrt{\sigma^2}$. The quadrature uses absolute tolerance
+$10^{-14}$ and relative tolerance $10^{-12}$, splitting at $a$ when it
+lies inside the integration window. At each main-figure SNR, 800 equally
+spaced amplitude nodes cover $0.99a_{\min}$ to $1.01a_{\max}$ over that
+SNR's worlds. Piecewise cubic Hermite interpolation supplies the scalar
+weights at the measurement amplitudes. The implementation checks 200
+sampled amplitudes against direct quadrature and requires maximum relative
+error below $10^{-4}$. The tangent derivatives are checked by finite
+differences. It also checks that the constrained trace is positive and
+no larger than the unconstrained trace, and records the condition number
+of the restricted information matrix. No diagonal ridge is added.
+
+
+\begin{thebibliography}{9}
+
+\bibitem{xu2025}B.~Xu, J.~Zhang, Z.~Chen, B.~Cheng, Z.~Liu, Y.-C.~Wu, and B.~Ai,
+``Channel estimation for Rydberg atomic receivers,''
+\emph{IEEE Wireless Commun. Lett.},
+vol.~14, no.~9, pp.~2957--2961, 2025.
+
+\bibitem{chen2014emac}Y.~Chen and Y.~Chi,
+``Robust spectral compressed sensing via structured matrix completion,''
+\emph{IEEE Trans. Inf. Theory},
+vol.~60, no.~10, pp.~6576--6601, 2014.
+
+\bibitem{jin2016aloha}K.~H.~Jin, D.~Lee, and J.~C.~Ye,
+``A general framework for compressed sensing and parallel MRI using annihilating filter based low-rank Hankel matrix,''
+\emph{IEEE Trans. Comput. Imag.},
+vol.~2, no.~4, pp.~480--495, 2016.
+
+\bibitem{haldar2014loraks}J.~P.~Haldar,
+``Low-rank modeling of local $k$-space neighborhoods (LORAKS) for constrained MRI,''
+\emph{IEEE Trans. Med. Imag.},
+vol.~33, no.~3, pp.~668--681, 2014.
+
+\bibitem{cadzow1988}J.~A.~Cadzow,
+``Signal enhancement---a composite property mapping algorithm,''
+\emph{IEEE Trans. Acoust., Speech, Signal Process.},
+vol.~36, no.~1, pp.~49--62, 1988.
+
+\bibitem{markovsky2008}I.~Markovsky,
+``Structured low-rank approximation and its applications,''
+\emph{Automatica},
+vol.~44, no.~4, pp.~891--909, 2008.
+
+\bibitem{gorman1990}J.~D.~Gorman and A.~O.~Hero,
+``Lower bounds for parametric estimation with constraints,''
+\emph{IEEE Trans. Inf. Theory},
+vol.~36, no.~6, pp.~1285--1301, 1990.
+
+\bibitem{stoica1998}P.~Stoica and B.~C.~Ng,
+``On the Cram\'er--Rao bound under parametric constraints,''
+\emph{IEEE Signal Process. Lett.},
+vol.~5, no.~7, pp.~177--179, 1998.
+
+% Add this entry inside the existing thebibliography environment.
+% The DOI identifies the IEEE publication. This uses no unverified page range.
+\bibitem{nadakuditi2014optshrink}
+R.~R.~Nadakuditi,
+``OptShrink: An algorithm for improved low-rank signal matrix denoising by
+optimal, data-driven singular value shrinkage,''
+\emph{IEEE Trans. Inf. Theory}, 2014,
+doi: 10.1109/TIT.2014.2311661.
+
+
+\end{thebibliography}
+\end{document}

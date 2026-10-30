@@ -1,0 +1,55 @@
+% Replace all of Section III-C, "Choosing the Hankel Rank".
+\subsection{Choosing the Hankel Rank}
+\label{sec:revised-rank-selection}
+
+We choose the rank from the available pilots without using the true path
+count. The last $P_B=\max\{1,\operatorname{round}(0.3P)\}$ pilot columns
+form the validation set $B$. The remaining columns form the fitting set
+$A$. For example, with $P=30$, we use 21 columns to fit each candidate and
+nine columns to compare the candidates.
+
+For every $r\in\{1,\ldots,r_{\max}\}$, we run the estimator on set $A$
+and obtain $\widehat{\mathbf G}^{(r)}_A$. Its initialization also uses only
+set $A$. We then select
+\begin{equation}
+\widehat r=\operatorname*{arg\,min}_{1\leq r\leq r_{\max}}
+\left\|\mathbf Z_B-
+ \left|\widehat{\mathbf G}^{(r)}_A\mathbf S_B+\mathbf B_B\right|
+\right\|_F^2.
+\label{eq:revision-rank-selection}
+\end{equation}
+The score sums the squared magnitude residuals over all receive elements
+and validation columns. If scores are exactly tied, we select the smallest
+rank. One scalar rank is shared by all user columns; the Hankel operations
+on those columns remain separate.
+
+After choosing the rank, we restart the estimator from an initialization
+computed using all $P$ pilots and fit the final estimate using all of them.
+Thus, the validation split does not permanently discard 30\% of the pilots
+or require additional pilot transmissions. Its costs are the repeated
+candidate fits and the smaller fitting set used during rank selection.
+
+If $\widehat r=r_{\max}$, the structural step is bypassed. With the same
+initialization and update count, the final estimate then equals the paired
+EM-GS estimate exactly. This fallback does not guarantee that a smaller
+selected rank improves the unknown channel error in every trial.
+
+\begin{center}
+\fbox{\begin{minipage}{0.91\columnwidth}
+\small
+\textbf{HS-GS procedure}\par
+\textit{Inputs:} $\mathbf Z,\mathbf S,\mathbf B,\sigma^2$; candidate and
+final update counts $T_{\rm sel},T$; four Cadzow sweeps per application.
+\begin{enumerate}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\item Form fitting set $A$ and validation set $B$ from the pilot columns.
+\item For each candidate rank, initialize from $A$ and perform
+$T_{\rm sel}$ measurement updates, each followed by four per-user Cadzow
+sweeps. Bypass these sweeps at $r_{\max}$.
+\item Select $\widehat r$ using \eqref{eq:revision-rank-selection}.
+\item Reinitialize using all pilots. Perform $T$ measurement updates with
+the selected structural processing and return the final channel estimate.
+\end{enumerate}
+\end{minipage}}
+\end{center}

@@ -1,0 +1,19 @@
+\begin{table*}[!t]
+\caption{Broad comparisons on separate fresh banks. Study A tests offline tuning; Study B adds online rank selection on a new bank. Each study has 4,032 primary worlds and 64 excluded stress worlds. Lower NMSE is better. Times use the same PyTorch CPU backend and include selection/refitting. Learned metrics average three frozen models, not an ensemble.}
+\label{tab:broad}\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Method & A: NMSE (dB) & Time (ms) & B: NMSE (dB) & Time (ms)\\
+\midrule
+Compact estimator (188 weights) & -13.565 & 4.90 & -13.647 & 4.96\\
+Offline OptShrink, selected placement & -13.028 & 15.61 & -13.196 & 15.76\\
+Offline OptShrink, in-loop & -13.000 & 15.57 & -13.151 & 15.68\\
+Offline OptShrink, final-only & -12.827 & 6.16 & -12.863 & 6.23\\
+Online rank + placement selection & --- & --- & -14.096 & 114.17\\
+Online rank, in-loop & --- & --- & -14.154 & 108.70\\
+Online rank, final-only & --- & --- & -13.723 & 13.96\\
+HS-Rician, one sweep & -12.996 & 98.91 & -13.059 & 99.88\\
+EM-GS, 100 updates & -9.922 & 13.08 & -9.958 & 13.15\\
+\bottomrule
+\end{tabular}
+\end{table*}

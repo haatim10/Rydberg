@@ -1,0 +1,49 @@
+\subsection{What Changes When OptShrink Selects Rank Online?}
+Study B uses 4,096 further fresh worlds. The compact estimator reaches
+$-13.647$~dB on the primary average. Online in-loop OptShrink reaches
+$-14.154$~dB, improving on learning by 0.507~dB, with adjusted 95\%
+interval $[0.437,0.562]$~dB. Joint rank-and-placement selection reaches
+$-14.096$~dB and improves on learning by 0.449~dB, with interval
+$[0.358,0.569]$~dB. Final-only rank selection reaches $-13.723$~dB;
+its 0.076~dB point advantage has interval $[-0.025,0.226]$~dB.
+That interval establishes neither superiority nor equivalence.
+
+The in-loop selector is therefore the strongest tested method on
+this primary accuracy measure. The joint selector was declared in
+advance and is reported even though searching more choices did not
+give the lowest test error. Rician prediction loss on nine withheld
+pilots is not a channel-error guarantee, and restarting on all pilots
+changes the fitted estimate. We do not identify either effect as the
+sole cause of the observed ranking.
+
+The cost is substantial in this implementation: mean times are
+108.70~ms for online in-loop selection, 114.17~ms for joint selection,
+13.96~ms for final-only selection and 4.96~ms for the compact model.
+All candidate fitting and all-pilot refitting are included. Inference
+is about 22 times faster for the learned model than for online in-loop
+selection under this single-thread, batch-one test. This ratio does
+not include amortized training cost and is not a prediction for other
+devices, batch sizes or optimized implementations.
+
+Learning has fewer primary errors above NMSE one: 3.08\%, compared
+with 6.87\% for online in-loop and 5.78\% for joint selection. At
+threshold 0.5, learning has 19.55\% exceedances, compared with
+19.52\% and 19.22\%, respectively. Thus the primary accuracy winner
+and the winner at one severe-error threshold differ. Neither
+method's settings were selected to minimize that error frequency,
+and these observations are not communication-outage probabilities.
+
+Pooling linear errors across primary worlds also favors learning:
+its pooled NMSE is $-6.683$~dB versus $-6.217$~dB for online in-loop
+selection. This descriptive difference does not replace the declared
+average-cell-dB result. The former is more influenced by large errors;
+the latter gives each operating cell equal weight in dB.
+
+The limits remain large. The compact model's worst primary-cell loss
+to the in-loop selector is 5.495~dB. Joint selection also beats it in
+the weak-reference stress case ($-10.101$ versus $-7.787$~dB) and
+the nearly noiseless case ($-70.134$ versus $-6.835$~dB). These
+failures remain outside the primary average but inside the report.
+The final result supports a measured accuracy--cost trade-off; it
+does not support the claim that our estimator beats tuned OptShrink
+once observation-based rank selection is allowed.

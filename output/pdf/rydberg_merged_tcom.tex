@@ -1,0 +1,368 @@
+\documentclass[10pt,journal,letterpaper]{IEEEtran}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,graphicx,booktabs,array,cite,url}
+\usepackage[hidelinks]{hyperref}
+\graphicspath{{figures/}}
+\interdisplaylinepenalty=2500
+\newcommand{\CN}{\mathcal{CN}}
+\newcommand{\HH}{\mathcal{H}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\sigmoid}{sigmoid}
+\DeclareMathOperator{\softplus}{softplus}
+\DeclareMathOperator{\median}{median}
+\hyphenation{Ryd-berg mea-sure-ments}
+\begin{document}
+\title{Classical and Self-Supervised Hankel Filtering for Magnitude-Only Rydberg Channel Estimation}
+\author{Abdullah~Haatim\thanks{A. Haatim is with the Department of Electrical and Electronics Engineering, Birla Institute of Technology and Science, Pilani, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
+\maketitle
+\begin{abstract}
+Rydberg atomic receivers can estimate wireless channels from signal magnitudes measured in the presence of a known reference. The spatial structure of a channel can help this estimation, but applying too much structure can remove useful signal components. This paper studies both classical and learned ways to control Hankel filtering under the same nonlinear observation model. We first examine when hard rank constraints help and how rank selection, array size and repeated projection affect their benefit. We then develop a small estimator that learns smooth filtering from withheld pilot measurements, without true-channel training targets. Paired simulations show that learning reduces error and processing time relative to the original rank-search method. However, a stronger classical shrinkage method has slightly lower average error and similar processing time, while the learned estimator makes fewer severe errors in the tested noise mixture. Weak references, few-path channels and signals far outside the training range expose important limits. These results establish a measured trade-off between structural bias, estimation error and computation, rather than a uniformly best estimator.
+\end{abstract}
+\begin{IEEEkeywords}
+Channel estimation, Hankel matrices, magnitude measurements, Rydberg receivers, self-supervised learning.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{R}{ydberg} atomic receivers sense radio-frequency electric fields through highly excited atoms. Array models make it possible to study multiuser communication with these receivers~\cite{cui2025,gong2025mag}. In the magnitude-only setting considered here, the received signal combines with a known reference before its amplitude is measured. Estimating the complex channel is then a nonlinear inverse problem. The reference provides phase information indirectly, but noise, pilot design and initialization still affect recovery.
+
+A geometric channel also has structure across the array. A small number of propagation paths produces a sum of spatial exponentials, whose Hankel lift has low rank. This observation suggests inserting a structural step into a measurement-fitting algorithm. The practical questions are how strongly to filter, how often to apply the filter, and whether choosing its settings costs more than the resulting accuracy gain justifies.
+
+This paper addresses these questions in one framework. We first study Hankel-structured expectation-maximization Gerchberg--Saxton estimation (HS-GS), which selects a hard rank using withheld pilots. We then replace per-channel rank search with a compact learned controller. The controller chooses smooth filtering and mixing strengths from the measurements and the current estimate. It is trained by predicting withheld observations, without true-channel targets. Both estimators retain the exact Rician observation model.
+
+The main contribution is a connected evaluation of structural estimation and learned structural control for this receiver model. First, we relate the benefit and harm of hard-rank processing to array capacity, effective rank and projection settings. Second, we provide a 188-parameter self-supervised estimator with explicit measurement updates, observable inputs and a differentiable Hankel filter. Third, paired comparisons with globally learned filtering and in-loop OptShrink separate the value of learning from the value of using a stronger classical filter. These comparisons show a trade-off: the learned estimator improves over the original rank-search baseline, but does not beat the strongest tested classical shrinker on average dB error. Its lower frequency of severe errors is a distinct finding.
+
+\subsection{Relation to Existing Methods}
+EM-GS already exploits the referenced magnitude model in atomic MIMO reception~\cite{cui2025}. Xu et al.\ study channel estimation using a strong-reference linearization~\cite{xu2025}; our experiments keep exact magnitude observations. URformer already unfolds phase retrieval for Rydberg receivers~\cite{xiao2026}. Thus neither the observation model nor unfolding alone is a new contribution. Spatial methods such as Quantum-MUSIC also show the relevance of array structure to quantum wireless sensing~\cite{kim2025quantummusic}.
+
+Alternating rank and structure projections are established~\cite{cadzow1988}, as are low-rank Hankel recovery~\cite{chen2014emac,yin2021}, structured alternating least squares~\cite{zachariah2012} and data-driven singular-value shrinkage~\cite{nadakuditi2014}. Learned Hankel reconstruction~\cite{huang2021}, self-supervision through withheld measurements~\cite{yaman2020,luo2023}, and Rician-likelihood training~\cite{parker2023} also have precedents. Self-supervised denoising has been studied for Rydberg sensor signals~\cite{liu2026}. Our narrower contribution is to learn a small spatial correction within exact referenced-magnitude channel estimation and assess its value against these structural alternatives. We do not claim the first use of any of these ingredients or superiority over published URformer, for which a matched comparison is not available here.
+
+\section{Observation Model and Available Information}
+\label{sec:model}
+An array with $N$ elements receives $P$ pilots from $K$ users. Its observations are
+\begin{equation}
+ Z=|GS+B+W|,\qquad W_{np}\sim\CN(0,v),
+ \label{eq:model}
+\end{equation}
+where $G\in\mathbb C^{N\times K}$ is the unknown channel, $S\in\mathbb C^{K\times P}$ contains known pilots, and $B$ is a known reference field. Magnitudes act entrywise. Noise samples are independent, with total complex variance $v$ and variance $v/2$ in each real component. Receiver conversion gain is absorbed into the scaling. This effective measurement model does not simulate atomic dynamics or optical readout.
+
+For a half-wavelength uniform linear array, each user channel is
+\begin{equation}
+ g_{nk}=\sum_{\ell=1}^{L_k}\alpha_{\ell k}e^{-j\pi n\sin\theta_{\ell k}},
+ \qquad n=0,\ldots,N-1.
+ \label{eq:channel}
+\end{equation}
+Unless specified otherwise, $\alpha_{\ell k}\sim\CN(0,1/L_k)$ and angles are independent and uniform on $(-\pi/2,\pi/2)$. Pilots follow $\CN(0,1)$. The simulated reference is a broadside field with constant waveform and zero phase,
+\begin{equation}
+ B_{np}=10^{\mathrm{RSR}/20},\qquad v=K10^{-\mathrm{SNR}/10}.
+\end{equation}
+SNR is relative to aggregate user power, whereas RSR is relative to one user's power. At $K=3$, RSR 12~dB corresponds to 7.23~dB relative to total signal power. Channels have unit expected power per user; individual realizations are not rescaled to identical energy. Reference calibration and noise variance are assumed known in the main comparisons.
+
+\subsection{Rician Likelihood and Local Identifiability}
+For $a=|\mu|$, a single observation has density
+\begin{equation}
+ p(z\mid a,v)=\frac{2z}{v}e^{-(z^2+a^2)/v}I_0(2za/v),\quad z\ge0.
+\end{equation}
+With fixed $v$, a stable negative log-likelihood, up to observation-only terms, is
+\begin{equation}
+ \ell(z,\mu,v)=\frac{(z-|\mu|)^2}{v}-\log I_{0e}(2z|\mu|/v),
+ \label{eq:loss}
+\end{equation}
+where $I_{0e}(x)=e^{-x}I_0(x)$ for $x\ge0$. Scaled Bessel functions avoid overflow at large arguments. If variance is estimated, the omitted $\log v$ term must be restored.
+
+For one array row, let $\mu_p=g^Ts_p+b_p$ and $x=[\operatorname{Re}g^T,\operatorname{Im}g^T]^T$. Where $\mu_p\ne0$, the real Jacobian of its noiseless magnitudes has row
+\begin{equation}
+ A_p=[\operatorname{Re}c_p^T,-\operatorname{Im}c_p^T],\qquad
+ c_p=\mu_p^*s_p/|\mu_p|.
+ \label{eq:jacobian}
+\end{equation}
+If $A$ has rank $2K$, a nonsingular square sub-Jacobian and the inverse function theorem give local recovery. Therefore $P\ge2K$ is necessary for this regular full-rank condition, but is not sufficient. A small minimum singular value means that recovery can still be unstable. This is a local statement for an unrestricted channel row, not a global or sparse-channel recovery guarantee~\cite{gao2018}.
+
+With $B=0$, a common phase rotation of $g$ leaves its magnitudes unchanged. A known nonzero reference can break this ambiguity, but need not do so for every pilot/reference design. For example, if $b_p=c^Ts_p$, then rotating $g+c$ leaves the observations unchanged. Unknown common reference phase also permits simultaneous rotation of channel and reference. The known-reference assumption is therefore substantive, not just a normalization.
+
+\subsection{Information References}
+For independent measurements, the real Fisher information is
+\begin{align}
+ J&=A^T\diag(w_p)A,\nonumber\\
+ w_p&=\mathbb E\!\left[\left(-\frac{2a_p}{v}+\frac{2Z_p}{v}
+ \frac{I_1(2Z_pa_p/v)}{I_0(2Z_pa_p/v)}\right)^2\right].
+ \label{eq:fisher}
+\end{align}
+The full channel information combines array rows in the corresponding real-coordinate ordering. One amplitude observation contributes an outer product and hence at most one information direction. Several different pilots and the known reference are needed to distinguish the complex channel coordinates.
+
+Where the information matrices are nonsingular, the unconstrained reference is $J^{-1}$. The geometric constrained Cram\'er--Rao bound (CCRB) is~\cite{stoica1998}
+\begin{equation}
+ C_{\rm geom}=U(U^TJU)^{-1}U^T.
+ \label{eq:ccrb}
+\end{equation}
+Here $U$ is an orthonormal basis for the channel manifold's real tangent space at the true path configuration. It is constructed from derivatives with respect to real and imaginary path gains and spatial frequencies. With $\omega=\pi\sin\theta$, the complex derivative columns are $e^{-jn\omega}$, $je^{-jn\omega}$ and $-jn\alpha e^{-jn\omega}$. Stacking their real and imaginary parts defines the tangent space; gains and frequencies remain unknown parameters. The true model order is used only for this ideal reference.
+
+We normalize the summed traces by the same summed channel energy used for NMSE. The gap between the two bounds describes the value of geometric information under local unbiasedness assumptions. It is not guaranteed attainable improvement. Our estimators can be biased, so these curves are not absolute lower limits on their measured NMSE.
+
+\section{Classical Hankel Estimation}
+\label{sec:classical}
+\subsection{A Common Rician Measurement Update}
+Let $M=GS+B$ and $\kappa=2Z|M|/v$. The conditional complex field and EM update are
+\begin{align}
+ Q&=Z\odot\frac{I_1(\kappa)}{I_0(\kappa)}\odot\frac{M}{|M|},\\
+ G_{\rm EM}&=(Q-B)S^H(SS^H)^{-1}.
+ \label{eq:em}
+\end{align}
+All ratios in the first line act entrywise. At $M=0$, the continuous limit is zero; no substantial amplitude floor changes the likelihood. Linear solves evaluate the second line, requiring full row rank of the fitting pilot matrix.
+
+For $\mathcal L(G)=\sum_{np}\ell(Z_{np},[GS+B]_{np},v)$, its Wirtinger derivative is
+\begin{align}
+ D&=\frac{\partial\mathcal L}{\partial G^*}=\frac{(M-Q)S^H}{v},\nonumber\\
+ G_{\rm EM}&=G-vD(SS^H)^{-1}.
+ \label{eq:gradient}
+\end{align}
+Thus EM is an exact preconditioned gradient update for this likelihood. The corresponding packed real gradient is $2D$. This distinction fixes the factor of two when comparing gradient descent and EM-based unfolding.
+
+All iterative comparisons start from spectral initialization. For row $n$, form $C_n$ with rows $[s_p^T,b_{np}]$, let $u_n$ be the leading eigenvector of $C_n^H\diag(z_n)C_n$, and set
+\begin{equation}
+ c_n=\frac{\sum_p z_{np}|(C_nu_n)_p|}{\sum_p|(C_nu_n)_p|^2}.
+\end{equation}
+The first $K$ entries of $c_nu_ne^{-j\arg(u_{n,K+1})}$ initialize the channel row. Whenever pilots are withheld, initialization uses only the fitting subset. This rule is necessary to avoid leaking validation observations into an estimate.
+
+\subsection{Lifting, Projection and Rank Selection}
+For $g\in\mathbb C^N$, let $q=\lceil N/2\rceil$, $m=N-q+1$, and define
+\begin{equation}
+ [\HH(g)]_{ij}=g_{i+j},\quad 0\le i<m,\quad0\le j<q.
+\end{equation}
+A channel with distinct spatial frequencies has Hankel rank at most $\min(L,m,q)$, with equality for nonzero gains and nondegenerate factors. The maximum rank is $q$. The inverse operation $\HH^\dagger$ averages entries on each antidiagonal, so $\HH^\dagger\HH(g)=g$.
+
+A hard-rank sweep lifts each user column, retains the largest $r$ singular components, and averages antidiagonals. HS-GS applies $Q_s$ such sweeps after each EM update. A finite number of these alternating steps does not guarantee a final relifted matrix of rank exactly $r$. We call them Cadzow sweeps rather than an exact projection onto the intersection of constraints.
+
+The baseline uses the first 70\% of pilot columns for fitting and the remaining 30\% for selection. For each shared user rank $r\in\{1,\ldots,q\}$, it fits the context pilots for $T_{\rm sel}$ updates and scores the held-out squared amplitude residual. The selected rank minimizes that score. The final estimate restarts from all pilots and runs $T$ updates. Unless stated otherwise, $T/T_{\rm sel}=100/25$ and $Q_s=4$. Rank $q$ explicitly bypasses structural processing, recovering the paired EM-GS estimate with the same initialization and updates. The option to bypass does not guarantee that the selector chooses it whenever filtering is harmful.
+
+To distinguish selection rules, we use \emph{HS-amplitude} for this original baseline and \emph{HS-Rician} when the candidate score is the held-out loss in~\eqref{eq:loss}. Both search settings separately for each test realization; all final fits use every pilot. The shared scalar rank is a computational choice, not a claim that users have equal path counts.
+
+\subsection{Smooth and Data-Driven Classical Controls}
+Hard truncation is only one use of structure. A smooth control replaces each singular value by
+\begin{equation}
+ \widehat\sigma_i=\frac{\sigma_i^3}{\sigma_i^2+\tau^2}.
+ \label{eq:shrink}
+\end{equation}
+Its classical version selects a multiplier from $\{0,0.05,0.1,0.2,0.4,0.8,1.6\}$ using held-out amplitude error, with $\tau$ equal to that multiplier times the current RMS singular value. The scale is recomputed each sweep. Zero bypasses filtering. Candidate and final update budgets match HS-amplitude. This is an empirical filter, not OptShrink.
+
+Our stronger control instead uses OptShrink weights~\cite{nadakuditi2014} inside the same Rician EM iterations. For candidate rank $r<q$, let $s_{r+1},\ldots,s_q$ be the discarded singular values and, for $d\in\{m,q\}$, define
+\begin{align}
+ \phi_d(z)&=\frac{1}{d-r}\left[\sum_{j=r+1}^{q}\frac{z}{z^2-s_j^2}+\frac{d-q}{z}\right],\\
+ \mathcal D(z)&=\phi_m(z)\phi_q(z),\nonumber\\
+ \widehat s_i&=-2\mathcal D(s_i)/\mathcal D'(s_i),\quad i\le r.
+\end{align}
+Other weights are zero. The implementation rescales the spectrum and sets weights at unresolved poles to zero. After antidiagonal averaging, a mixing factor blends the result with the EM update. Hankel lifting and nonlinear reconstruction create dependent errors; the original matrix-denoising optimality guarantees are not asserted for this adaptation.
+
+OptShrink settings are chosen offline on independent development observations, separately by known noise level. The search includes ranks 1--15, mixing factors $0.25,0.5,1$, iteration budgets $10,20,50,100$, and a no-filter option. Each candidate fits 21 pilots and is scored on nine withheld pilots using Rician likelihood. Settings are frozen before test generation. A final-only variant is tuned separately using the same grid. Inference uses all pilots and a noise-level lookup, without per-channel rank search. This distinction matters when comparing computation with HS-GS.
+
+\section{Self-Supervised Structural Control}
+\label{sec:learned}
+The learned estimator performs ten stages. Each stage fits the observations and then applies one smooth Hankel correction. The same small controller is shared across users and stages. Its interface takes only $(Z,S,B,v)$; true channels and path counts are evaluation data, not estimator inputs.
+
+\subsection{Two Measurement Cores}
+The primary core relaxes the EM update:
+\begin{equation}
+ G_{\rm dc}=G+\gamma_t(G_{\rm EM}-G),\quad
+ \gamma_t=2\sigmoid(a_t),.
+\end{equation}
+The secondary core uses $G_{\rm dc}=G-2\eta_tD$, with
+\begin{equation}
+ \eta_t=\gamma_t\frac{v}{2\|S\|_2^2}.
+\end{equation}
+Both initialize $\gamma_t=1$ and learn ten scalar update parameters. This comparison changes update geometry while retaining the exact likelihood. Validation likelihood selects the primary core before examining test channel errors.
+
+\subsection{Observable Controller and Structural Step}
+For each $H_k=\HH(g_{{\rm dc},k})$, let $s_H=\|H_k\|_F/\sqrt q$ and $p_i=\sigma_i/\sum_j\sigma_j$. An 8--16--2 network with SiLU activation produces outputs $(u,w)$. Its inputs are
+\begin{align}
+ f_1&=\exp(-\textstyle\sum_i p_i\log p_i)/q,\quad f_2=p_1,\nonumber\\
+ f_3&=\textstyle\sum_{i=q-\lceil q/2\rceil+1}^q p_i,\label{eq:features}\\
+ f_4&=\log\!\left(1+\frac{\operatorname{mean}[(Z-|G_{\rm dc}S+B|)^2]}{v}\right),\nonumber\\
+ f_{5,k}&=\log\!\left(1+\frac{v\tr[(SS^H)^{-1}]}{K\widehat p_k}\right),\nonumber
+\end{align}
+where $\widehat p_k=\|g_{{\rm dc},k}\|_2^2/N$, together with $P/(2K)$, $\log q$, and $(t+1)/10$. The residual mean is over all fitting observations; $t=0,\ldots,9$. Positive denominator guards handle zero scales. These features describe the current spectrum, residual, noise, pilot support, size and stage. During training, $P$ here is the context-pilot count.
+
+The outputs set
+\begin{align}
+ \tau&=s_H[0.001+\softplus(u)],\quad \beta=\sigmoid(w),\\
+ F_\tau(H)&=H-\tau^2H(H^HH+\tau^2I)^{-1},\label{eq:solve}\\
+ g_k^{t+1}&=g_{{\rm dc},k}+\beta_{t,k}
+       [\HH^\dagger F_{\tau_{t,k}}(H_k)-g_{{\rm dc},k}].
+\end{align}
+Equation~\eqref{eq:solve} implements~\eqref{eq:shrink}; the matrix is normalized by $s_H$ before the solve for numerical stability. Reconstruction gradients pass through this solve, without an identity approximation to the backward pass. Spectral features still require singular values. Threshold and gate start at approximately $0.1s_H$ and 0.1. The network has 178 parameters; adding ten update parameters gives 188.
+
+The gate and threshold can compensate for each other. Neither is an estimated rank or a guarantee of safe filtering. To measure actual intervention, we also record
+\begin{equation}
+ c_{t,k}=\frac{\|g_k^{t+1}-g_{{\rm dc},k}\|_2}{\|g_{{\rm dc},k}\|_2+\epsilon}.
+\end{equation}
+In the trained models, the gate is often near one: adaptation mainly changes the shrinkage strength rather than learning a reliable on/off rule.
+
+\subsection{Training and Deployment}
+Each training realization randomly assigns 21 of 30 pilot columns to a context set $A$ and nine to a held-out set $V$. Only context observations enter initialization, features and the ten updates. Training minimizes
+\begin{equation}
+ \mathcal L_{\rm hold}=\frac{1}{N|V|}\sum_{n,p\in V}
+ \ell\big(Z_{np},[\widehat G_A S_V+B_V]_{np},v\big).
+\end{equation}
+Masks are resampled each epoch. Independent validation cases use fixed masks; checkpoints are selected by equally weighted condition means of this held-out likelihood. True channels are not used for the loss or checkpoint selection. At deployment, weights stay fixed and all available pilots enter the estimator. There is no per-channel training or rank search. Held-out likelihood remains a prediction criterion, not a guarantee of minimum channel NMSE.
+
+\subsection{What the Updates Guarantee}
+For fixed $\tau$, the singular-value multiplier in~\eqref{eq:shrink} lies between zero and one, so $\|F_\tau(H)\|_F\le\|H\|_F$. Also,
+\begin{equation}
+ \|F_\tau(H)-H\|_F\le\sqrt q\,\tau/2,
+\end{equation}
+since $\sigma\tau^2/(\sigma^2+\tau^2)\le\tau/2$. Let $D_H$ be diagonal with antidiagonal multiplicities, so $\|g\|_{D_H}=\|\HH(g)\|_F$. Averaging is an orthogonal projection in the lifted space. Therefore the gated step does not increase this weighted channel norm, and its weighted correction is bounded by $\beta\sqrt q\tau/2$. These statements bound an individual output; they do not prove contraction between different inputs or reduced error relative to the true channel.
+
+The EM surrogate is $\|Q-B-GS\|_F^2/v$. Its normal equations imply that relaxation reduces it by
+\begin{equation}
+ \gamma_t(2-\gamma_t)\|(G-G_{\rm EM})S\|_F^2/v\ge0
+\end{equation}
+for $0\le\gamma_t\le2$. Subsequent structural filtering need not decrease either the surrogate or the likelihood. No convergence or low-noise consistency guarantee follows for the full learned estimator; in particular, its threshold need not vanish as measurement noise vanishes.
+
+\section{Experimental Design}
+\label{sec:experiments}
+The evidence consists of separate, internally paired studies. We retain their different settings rather than pool them into one apparent experiment. Unless a fixed path count is specified, $L_k$ is independently uniform on $\{3,4,5,6,7\}$. All estimators within a trial share the channel, pilots, reference and noise. The main settings are in Table~\ref{tab:settings}. The classical geometric generator rejects circular frequency separation below $10^{-10}$, steering-matrix singular-value ratio below $10^{-8}$, and pilot singular-value ratio below $10^{-8}$. These numerical checks condition the sampled distributions.
+
+\begin{table*}[!t]
+\caption{Settings for the principal comparisons. $K=3$ throughout; HS budgets are final/candidate updates.}
+\label{tab:settings}\centering\footnotesize
+\begin{tabular}{@{}p{1.13in}p{1.33in}p{1.27in}p{0.90in}p{1.16in}@{}}\toprule
+Study & Array/pilots; RSR & SNR or complexity & Paired trials & Structural settings\\\midrule
+Classical main/array & $N=8,16,32$; $P=10,30$; 12 dB & $-5,0,5,10,15,20$ dB & 400/cell & HS: 100/25, four sweeps\\
+Effective rank & $N=16,32,64$; $P=20$; 10 dB & Random SNR $[-10,20]$ dB & 300--400/cell & HS: 100/25, four sweeps\\
+Classical filter comparison & $N=32$; $P=30$; 12 dB & $L=3,7,14$; SNR 0,10 dB & 400/cell & Hard/smooth: 100/25, four sweeps\\
+Sweep sensitivity & $N=32$; $P=30$; 12 dB & $L=3,7,14$; SNR 0,10 dB & 100/cell, fresh & 1,2,4,8 sweeps; own selection\\
+Learned main study & $N=32$; $P=30$; 12 dB & Seven SNRs from $-10$ to 20 dB & 400/cell & Ten stages; HS-amplitude control\\
+Stronger shrinkage study & $N=32$; $P=30$; 12 dB & Seven SNRs and two stress cells & 128/cell, fresh & Frozen models; tuned OptShrink\\\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Learning Settings and Controls}
+Training uses 16,384 cases and validation uses 2,048. SNR takes seven equally spaced values from $-10$ to 20~dB; training RSR is 5, 12 or 20~dB. Half the cases independently sample three to seven paths per user. The other half use a common count drawn from $\{2,4,8,12,16\}$. Validation equally weights 126 SNR/RSR/path-setting combinations. Adam uses learning rate $10^{-3}$, batch size 32 and 20 epochs. Training is single precision; evaluation and mathematical checks are double precision.
+
+For each measurement core, we train no filtering (ten learned steps), globally learned filtering (one threshold and gate per stage, 30 parameters total), and the adaptive controller. Three seeds per choice give 18 models. The three seeds are 9101, 9102 and 9103. They change initialization, batch order and masks while sharing training cases. The main campaign took 3.67 hours with overlapping workers, excluding data preparation and preflight; this is not serial training time.
+
+The full learned evaluation has 32 conditions with 400 paired cases each. Two noise-input conditions reuse observations, giving 12,000 distinct worlds rather than 12,800 independent worlds. The stronger OptShrink comparison uses a separate development set of 224 worlds and 1,152 fresh test worlds. Neither study's error totals nor timing samples are pooled with the other. The learned models remain frozen in the stronger comparison.
+
+\subsection{Error, Uncertainty and Timing}
+For method $m$ and trial $i$, define $e_{m,i}=\|\widehat G_{m,i}-G_i\|_F^2$ and $d_i=\|G_i\|_F^2$. We use
+\begin{align}
+ E_m&=10\log_{10}\frac{\sum_i e_{m,i}}{\sum_i d_i},\label{eq:nmse}\\
+ \Delta_{\rm med}(a,b)&=\median_i\left[10\log_{10}(e_{a,i}/e_{b,i})\right].
+\end{align}
+The curve gain $E_a-E_b$ is a ratio-of-sums gain and need not equal the paired median. Positive gain favors method $b$. Learned summaries average per-seed dB scores and then condition scores equally. A severe error means $e_{m,i}/d_i>1$; it is not a communication outage probability.
+
+Pointwise 95\% intervals use 4,000 paired whole-world bootstrap resamples, retaining all users and method outputs together. Learned intervals condition on saved models; variation across seeds is reported separately and does not create additional independent test worlds. Pooled random-SNR medians depend on the declared SNR distribution. There is no blanket claim of superiority from a pooled average.
+
+CPU timing uses one Apple M2 thread, batch size one and double precision, including initialization, feature extraction, structural steps and rank search where used. Learned code uses PyTorch; classical code uses NumPy/SciPy. Offline tuning and training are separate. Comparisons describe these implementations rather than device-independent speed ratios.
+
+\section{Results}
+\subsection{When Hard Hankel Structure Helps}
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{classical_array.pdf}
+\caption{Classical study. (a) NMSE and information references at $N=32$, $P=30$ and RSR 12~dB. (b) HS-amplitude gain versus array size for two pilot counts. The baseline uses four Cadzow sweeps. Panel (b) averages six SNR summaries; solid lines show paired medians and dashed lines show ratio-of-sums gains.}
+\label{fig:classical}
+\end{figure*}
+At $N=32$, $P=30$ and RSR 12~dB, the paired-median HS-amplitude gain over EM-GS ranges from 2.54 to 2.97~dB across six SNRs, with mean 2.70~dB. The vertical NMSE gaps are 2.38--2.90~dB (Fig.~\ref{fig:classical}). Projection is active in all 2,400 trials. At SNR 5~dB and above, EM-GS is within 0.108~dB of the Rician CRLB. The geometric CCRB is 6.95--7.06~dB below that reference, while HS-amplitude remains 4.37--4.85~dB above it. The curves do not establish efficiency or attainable headroom for these biased estimators.
+
+The benefit grows with array size. Averaging two pilot counts and six SNRs, the paired-median gains are 0.236, 1.044 and 3.264~dB at $N=8,16,32$. Corresponding ratio-of-sums gains are $-0.095$, 0.866 and 2.938~dB. The EM-GS average changes by only 0.120~dB. A larger array provides more spatial samples of the same path structure, whereas the unrestricted baseline also acquires more unknown coefficients. At $N=8$, the maximum Hankel rank is only four, and projection is bypassed in 42.94\% of trials. A small positive median alongside a negative total-error gain shows why both aggregation rules must be identified.
+
+\subsection{Effective Rank and Structural Bias}
+Path count alone does not describe how many components are important. For singular values of the true noiseless user Hankel matrix, define~\cite{royvetterli2007}
+\begin{equation}
+ r_{\rm eff}=\exp(-\textstyle\sum_i p_i\log p_i),\qquad
+ \rho=r_{\rm eff}/q.
+\end{equation}
+For example, a spectrum dominated by two values can have lower effective rank than a spectrum with four similar values, even if both have algebraic rank four. We report the median $\rho$ over users and worlds in a cell. This true-channel diagnostic is not supplied to either estimator.
+
+\begin{figure}[!t]
+\centering\includegraphics[width=\columnwidth]{effective_rank.pdf}
+\caption{Paired-median gain of the four-sweep HS-amplitude baseline against true-channel normalized effective rank. All three arrays use $P=20$, RSR 10~dB and the same random-SNR distribution. Bars are pointwise paired-bootstrap intervals. This is a diagnostic trend, not an observable switching threshold.}
+\label{fig:rank}
+\end{figure}
+
+Matched tests use $P=20$, RSR 10~dB and SNR uniform on a millidecibel grid over $[-10,20]$~dB. Path counts are $\{2,4,7,9,14\}$ for $N=16$, even counts 2--16 for $N=32$, and $\{8,14,29,38,48\}$ for $N=64$. As $\rho$ increases, the gain of the tested hard-rank estimator generally falls (Fig.~\ref{fig:rank}). At $N=32$, $\rho=0.536$ gives median gain 0.141~dB with interval $[0.090,0.211]$~dB. Thus the region near one-half of capacity marks a small benefit in this experiment, not a universal threshold.
+
+At $N=16$, $L=14$ and $\rho=0.732$, forcing rank seven gives median gain $-0.154$~dB, with interval $[-0.201,-0.111]$~dB. Adaptive selection has pooled median zero for these channels, but does not protect each trial. In a separate $N=32$, $L=14$, SNR 0~dB comparison, HS-amplitude is worse than EM-GS in 47.75\% of 400 trials. Conversely, selecting below the algebraic rank need not be harmful: at $L=7$ and SNR 0~dB, 78.75\% select below seven, but only 8.75\% of all trials are worse than EM-GS. Suppressing weak paths can help in noise.
+
+\subsection{Filter Strength and Placement Matter}
+The six-cell classical filter comparison uses $L=3,7,14$ and SNR 0,10~dB, with 400 paired trials per cell. The smooth classical filter improves ratio-of-sums error over four-sweep HS-amplitude by 0.914, 1.382 and 1.413~dB at SNR 0~dB, and by 0.005, 0.623 and 0.773~dB at SNR 10~dB. The interval for the 0.005~dB result includes zero. This already shows that a gain over hard truncation need not require learning.
+
+A fresh sweep study uses 100 worlds in each of the same six cells, with separate rank or threshold selection for one, two, four and eight sweeps. One-sweep hard processing improves over four sweeps in every tested cell, by 0.275--0.652~dB, with pointwise intervals above zero. More sweeps improve neither estimation nor computation automatically. These tests are separate from the learned comparison; the learned gain over the original four-sweep baseline is not evidence that it beats every hard-rank configuration.
+
+Interleaving is also different from filtering once at the end. With the same four sweeps per application and a shared selected rank, interleaving gains 0.204~dB, with interval $[0.169,0.242]$~dB, averaged over six per-SNR medians on 300 paired trials per SNR. With one sweep per application, the corresponding gain is 0.239~dB, with interval $[0.204,0.282]$~dB. These comparisons hold the rank fixed using interleaved four-sweep candidates; they do not match total computation or separately tune every placement.
+
+\subsection{Learning Versus Simple Learned Controls}
+\begin{table}[!t]
+\caption{Learned main study: seven-SNR averages and separate SNR 5~dB median timing. Lower NMSE is better.}
+\label{tab:learned}\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Method & NMSE (dB) & Time (ms) & Severe (\%)\\\midrule
+Adaptive EM (188 weights) & $-14.42$ & 8.24 & 0.45\\
+EM, learned steps only & $-10.41$ & 2.98 & 22.11\\
+EM, global filtering & $-12.43$ & 5.61 & 19.19\\
+Adaptive gradient core & $-14.59$ & 8.00 & 0.85\\
+HS-amplitude, four sweeps & $-12.74$ & 525.62 & 14.25\\
+EM-GS, 100 updates & $-10.28$ & 17.01 & 23.57\\
+Rician gradient, hard Hankel & $-11.06$ & 47.39 & 20.93\\\bottomrule
+\end{tabular}
+\end{table}
+The adaptive EM estimator improves over learned step sizes alone and globally learned filtering (Table~\ref{tab:learned}). Its mean gain over HS-amplitude is 1.675~dB, with interval $[1.618,1.730]$~dB; seed-specific gains range from 1.533 to 1.787~dB. At SNR 20~dB the gain is only 0.139~dB, with interval $[-0.017,0.294]$~dB. The gradient core has slightly better test NMSE, but EM remains the primary model because validation likelihood selected it before test evaluation. The hard-Hankel gradient control uses development-selected rank ten and one sweep per update.
+
+The original timing uses 100 cases and three repeats at SNR 5~dB. Adaptive EM takes median 8.24~ms versus 525.62~ms for HS-amplitude. The roughly 64-fold ratio includes full per-channel rank selection and applies only to that comparator. It does not demonstrate that learning is faster than an offline-tuned classical filter.
+
+\subsection{Comparison With In-Loop OptShrink}
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{optshrink.pdf}
+\caption{Stronger classical comparison on fresh worlds: 128 paired trials per SNR, with frozen learned models. Right: learned gain over the in-loop OptShrink control, positive when learning lowers error. Intervals condition on the saved models and are pointwise. This study uses HS-Rician, not HS-amplitude.}
+\label{fig:opt}
+\end{figure*}
+\begin{table}[!t]
+\caption{Fresh stronger-baseline study: seven-SNR average.}
+\label{tab:strong}\centering\footnotesize
+\begin{tabular}{@{}lrr@{}}\toprule
+Method & NMSE (dB) & Severe (\%)\\\midrule
+HS-Rician, four sweeps & $-12.890$ & 13.06\\
+Final-only OptShrink & $-14.374$ & 3.79\\
+In-loop OptShrink & $-14.462$ & 5.02\\
+Adaptive EM, frozen & $-14.319$ & 0.89\\\bottomrule
+\end{tabular}
+\end{table}
+The stronger classical control reverses the average-error ranking. In-loop OptShrink has 0.143~dB lower average NMSE than adaptive EM, with paired interval $[0.086,0.198]$~dB (Table~\ref{tab:strong}). The learned method gains 0.723~dB at SNR $-10$~dB but loses 0.796~dB at 20~dB (Fig.~\ref{fig:opt}). Selected OptShrink uses ten iterations through SNR 10~dB and twenty at 15 and 20~dB.
+
+The learned method has fewer severe errors: 0.89\% versus 5.02\% averaged over the seven SNRs. All occur at $-10$~dB in this sample, where rates are 6.25\% and 35.16\%. Mean per-case linear NMSE favors learning, 0.197 versus 0.215, but this is a different aggregation and does not reverse the primary average-dB result. Reporting both explains the average-error versus failure-frequency trade-off without changing the primary metric after observing results.
+
+In this study's separate timing sample of 24 fresh SNR 5~dB worlds with three repeats, mean times are 5.67~ms for adaptive EM and 6.20~ms for in-loop OptShrink. Final-only OptShrink takes 3.99~ms and HS-Rician 356.65~ms. These measurements include initialization and noise-based setting lookup; learned time is for one model, averaged over three trained models, not ensemble inference. The strong control therefore removes the large speed advantage seen against per-channel rank search.
+
+\subsection{Operating Limits and Additional Checks}
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{learned_limits.pdf}
+\caption{Limits in the original learned study at SNR 5~dB. (a) Reference strength for three-to-seven-path channels. (b) Fixed path counts at RSR 12~dB. Gains compare adaptive EM with four-sweep HS-amplitude. Bars are conditional pointwise paired intervals; tested path counts overlap training.}
+\label{fig:limits}
+\end{figure*}
+Against HS-amplitude, learning loses 1.617~dB at RSR 0~dB, 1.104~dB for two paths and 0.203~dB for three paths (Fig.~\ref{fig:limits}). These losses prevent a claim that the controller reliably identifies every channel on which filtering helps. The stronger study also finds no universal winner. At RSR 0~dB, selected OptShrink reaches $-5.026$~dB versus $-7.069$~dB for learning, but longer 50- and 100-update OptShrink runs reach $-8.790$ and $-8.981$~dB. Transferring a noise-dependent stopping rule can fail when reference strength changes. At two paths, HS-Rician reaches $-17.833$~dB, learning $-16.814$~dB and selected OptShrink $-16.407$~dB.
+
+Input-removal tests train on 4,096 cases for 12 epochs with three seeds and evaluate two fresh banks totaling 2,304 worlds. Full inputs improve average error over spectrum-only, noise/residual-only and size/stage-only controllers. However, they lose 0.39--0.40~dB to noise/residual-only inputs at SNR 5~dB and 0.82--0.93~dB on two-path cases. Both information groups can help the average without improving every condition. A separately trained final-only learned filter is about 0.70~dB worse on its follow-up study's declared average; that experiment has its own training and test data and does not replace the classical shared-rank placement comparison.
+
+Frozen-model dimension tests cover $N\in\{8,16,32,64\}$, $K\in\{2,3,4\}$ and $P\in\{10,20,30\}$ one factor at a time. The gain interval at $N=8$ includes zero. A smaller fresh pilot-count study, with 32 worlds per cell, extends to $P=6=2K$. At SNR 5~dB, learned NMSE is $-2.197$~dB with six pilots and $-14.332$~dB with thirty. Full local Jacobian rank in sampled nonzero-reference cases does not ensure useful finite-noise accuracy.
+
+Array mismatch also affects structural benefit. In a separate classical check at $N=32$, $P=30$, SNR 5~dB and RSR 12~dB, independent Gaussian element-position errors increase in standard deviation from zero to $0.02\lambda$. The reference remains calibrated and error is measured against the perturbed channel. HS-amplitude gain drops from 4.955 to 3.917~dB for three paths, and from 0.264 to 0.050~dB for twelve paths; the latter interval includes zero. These are model-mismatch simulations, not hardware measurements.
+
+A nearly noiseless check is especially instructive. At SNR 60~dB, outside the training range, and RSR 12~dB, the learned model reaches $-6.647$~dB versus $-65.715$~dB for EM-GS with 100 updates on 32 worlds. Disabling only filtering gives $-44.020$~dB; starting the full learned model at the true channel still gives $-6.653$~dB. These post-hoc diagnostics show that filtering itself can spoil an accurate estimate. They do not define a validated switching policy.
+
+\section{Discussion and Conclusion}
+The two parts of the study lead to the same practical lesson: structural processing must be assessed against the error it removes, the bias it introduces and the work required to choose it. Low effective rank helps explain hard-projection gains, but effective rank is not an observed receiver input here. A rank-selection bypass, a learned gate and norm-nonincreasing filtering each fall short of a per-trial protection guarantee.
+
+The learned method is most relevant when repeated estimation near a known operating population can reuse offline training. Its gain over global filtering supports measurement-conditioned control on the declared average. It does not establish that a neural network is necessary: offline-tuned in-loop OptShrink is competitive in time and slightly better in average dB error. The lower severe-error frequency of learning remains useful evidence, conditional on the tested SNR mixture and trained models.
+
+For $m=N-q+1$, one adaptive stage costs $O(NKP+NK^2+K^3+Kmq^2+Kq^3)$ in the present implementation. Features still require an SVD, and reconstruction requires a dense solve. HS-GS repeats structural operations across candidate ranks and updates. A smaller parameter count alone is therefore not evidence of lower computational cost. Nor does applying the structure more often necessarily help: both the sweep study and the separately tuned final-only OptShrink control argue against that assumption.
+
+The scope remains simulation-based estimation under an effective magnitude model with calibrated reference. The main confidence intervals exclude training-dataset uncertainty. Additional independent-data replications are limited, and the one-sweep hard baseline has not been evaluated on the fresh OptShrink test worlds. There is no matched claim against URformer or angle-domain sparse phase retrieval, no global recovery or full-estimator convergence theorem, and no hardware validation. Weak references, unknown phase drift, two-dimensional arrays and operation far outside training require further work.
+
+We have presented classical and self-supervised Hankel estimation within a common Rician framework. Hard structure helps when the channel leaves enough unused Hankel capacity, but rank selection and repeated projection can introduce avoidable error. A small controller can learn useful smooth filtering without channel targets and avoid per-channel search. Against a stronger classical shrinker, its contribution is a measured error--failure trade-off rather than uniform superiority. This distinction is necessary when deciding whether learned processing is worthwhile for magnitude-only Rydberg reception.
+
+\section*{Acknowledgment}
+OpenAI Codex assisted with consolidating and editing the manuscript text, organizing the existing numerical results and preparing the LaTeX source. No new simulation results were generated during this consolidation.
+
+\IEEEtriggeratref{12}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

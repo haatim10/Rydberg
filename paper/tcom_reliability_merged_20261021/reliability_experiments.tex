@@ -1,0 +1,46 @@
+\section{Experimental Design}
+\label{sec:protocol}
+\subsection{Historical Evidence and the Final Comparison}
+We keep distinct studies separate. The classical array study uses $K=3$, $N=8,16,32$, $P=10,30$, RSR 12~dB, six SNRs from $-5$ to 20~dB and 400 paired worlds per cell. Unless fixed, user path counts are independently uniform on 3--7. It rejects circular spatial-frequency separation below $10^{-10}$, steering-matrix singular-value ratio below $10^{-8}$ and pilot singular-value ratio below $10^{-8}$. Effective-rank studies use $N=16,32,64$, $P=20$, RSR 10~dB and 300--400 worlds per cell with SNR uniform on $[-10,20]$~dB. The smooth/hard-filter comparison uses $N=32$, $P=30$, RSR 12~dB, $L=3,7,14$ and SNR 0 and 10~dB, with 400 worlds per cell. These screened classical samples and their information references are not pooled with the final receiver results.
+
+The final comparison fixes $N=32$, $K=3$, $P=30$ and crosses three references $\{5,12,20\}$~dB, three path regimes (two paths per user, four paths per user, or independent 3--7 paths) and 17 SNRs:
+\begin{equation*}
+ \begin{gathered}
+ \{0,5,10,15,20,22.5,25,27.5,30,32.5,\\
+ 35,37.5,40,42.5,45,50,60\}\ \mathrm{dB}.
+ \end{gathered}
+\end{equation*}
+Each reference/path block contains 128 independently generated physical channel/pilot/noise anchors, with its own random-number domain. The same separation and singular-value screens apply to these channels and fitting pilots. Within a block, the same anchor is reused across SNR through noise scaling. There are 153 conditions, 19,584 condition cases and 1,152 physical anchors, not 19,584 independent channels. Methods and the three fixed trained fits share observations. Paths, fitting pilots and noise are independently redrawn across anchors. True channels score final errors but never enter receiver decisions.
+
+\subsection{Development, Confirmation and Frozen Decisions}
+The incumbent hybrid, learned weights and all baselines were fixed before this experiment. Its inherited selective-EM table came from an exploratory earlier proposal whose independent confirmation had failed. It remains an explicitly identified comparator; the new experiment does not retrospectively validate those earlier tail choices.
+
+The new recovery rule was chosen from 12 predeclared combinations: antenna-mean or antenna-maximum residual, threshold $2,4,8$, and 10 or 20 fallback EM updates. A separate runtime calibration screened complete rules against 10~ms p90 both over the grid and in the weak-reference target region. All 12 passed. Forced-fallback timings were recorded separately. The incumbent was always admissible.
+
+Development bank A and confirmation bank C each contain 256 independent anchors in each of the three path regimes at reference 5~dB, shared across the eight SNRs above 30~dB. Each development channel has 30 fitting pilots, nine independent held-out Gaussian pilots and 64 known joint-QPSK probe vectors with separate noise. The extra observations and symbol labels are available only offline. No true-channel targets or errors select the rule.
+
+On A, a candidate must improve mean held-out Rician loss by more than $10^{-12}$ and not increase empirical probe bit errors in each path regime. Among eligible rules, the smallest equally weighted held-out loss wins. Fixed ties favor the incumbent, then fewer triggers, fewer EM steps, larger threshold and mean before maximum. Only that rule is tested on C: a positive one-sided 95\% bootstrap lower bound on pooled held-out-loss improvement and empirical BER nonincrease in every regime are required. No runner-up is tried if C fails. The selected maximum-residual/threshold-2/EM20 rule passes, with lower bound 0.1987. Both methods have zero observed C-probe errors; that is not formal BER noninferiority evidence. The policy and source/checkpoint hashes were frozen before generating the final test bank.
+
+\subsection{Matched Baselines and Communication Evaluation}
+The final table includes the prior hybrid, the earlier full repaired adaptive receiver, and adaptive, global and classical structured starts with the same 40 extra EM steps and final-filter table. Each start contains ten measurement/structure stages; zero \emph{extra} EM does not mean zero estimation iterations. The classical start uses fixed unit EM relaxation and an offline-selected smooth-filter threshold and mixing. Direct EM100 uses the shared spectral initializer. All receive the same 30 fitting pilots, reference and variance.
+
+The compact sparse/EM baseline is an angle-domain Rician-likelihood adaptation with frozen reference/SNR selection. Of its 51 lookup bins, 34 use penalized sparse configurations with dictionary size 128 or 256 and 17 choose the zero-penalty direct-EM100 branch. It is not a sparse method at every operating point. The standalone algebraic-plus-EM20 method uses the initializer and invalid-solve rule in Section~\ref{sec:receiver}. Baseline calibration and all policy entries are retained in the supplement and evidence archive. OptShrink was omitted prospectively from this budget-focused final test because earlier measured p90 was approximately 79--81~ms. Historical OptShrink comparisons remain separate; none is presented as a fresh measurement in the final table. A matched implementation of published URformer is not included.
+
+For BER, every estimate enters the same joint magnitude-domain detector:
+\begin{equation}
+ \widehat x=\arg\min_{x\in\mathcal Q^K}\sum_n
+ \ell(z_n^{\rm d},\widehat g_n^Tx+b_n,v),
+\end{equation}
+where $\mathcal Q$ is unit-energy QPSK. Each channel transmits all 64 joint symbol vectors once, with independent data noise, giving 384 bits per condition case and 7,520,256 bits per trained fit over the grid. Data observations are identical across estimators and are unavailable to channel inference. Perfect-CSI detection is a diagnostic reference, not a deployable estimator. Data-noise draws remain coupled across SNR within each physical anchor.
+
+\subsection{Metrics, Dependence and Runtime}
+Let $e_{a,i}=\|\widehat G_{a,i}-G_i\|_F^2$ and $d_i=\|G_i\|_F^2$. Cell NMSE is
+\begin{equation}
+ E_a=10\log_{10}\frac{\sum_i e_{a,i}}{\sum_i d_i}.
+ \label{eq:nmse}
+\end{equation}
+The primary score averages cell dB values equally and then averages the three fits' scores, not their predictions. Pooled linear NMSE instead divides total error by total channel energy across the grid for each fit and averages those ratios. These weight conditions differently and can reverse rankings. BER averages fit-specific total bit-error rates. We also retain case tails, maximum errors and concentration by physical anchor. The grid contains 108 conditions above 20~dB; it is not weighted by a deployment distribution.
+
+Twenty thousand paired bootstrap draws independently resample the 128 anchors within each of nine reference/path blocks. A sampled index is shared across SNR, methods and fits within its block. Two whole-grid contrasts, versus the prior hybrid and the full repair, across NMSE and BER form four predeclared outcomes with Bonferroni-adjusted 95\% familywise intervals. Regional, other-baseline and individual-cell intervals are descriptive. Intervals condition on the frozen models, policies, training population and test grid. Zero observed errors or collapsed empirical intervals do not establish zero population BER or equivalence.
+
+Two isolated timing windows measure complete batch-one inference on one CPU thread, in double precision, with randomized interleaving of all 19 individual methods/fits. Each window has 27 independent physical anchors (three per reference/path block), reused across SNR to form 459 condition cases and 8,721 calls. The first follows policy freeze and precedes fresh testing; the second follows all accuracy jobs. Initialization, conversions, features, solves, continuation, final filtering, residual checks and accepted or rejected fallback work are included. We exclude offline training/tuning, model loading, preloaded shape constants, observation generation and BER decoding. The optimized numerical kernels use NumPy/SciPy with PyTorch interfaces; historical all-PyTorch times are not substituted. Both whole-grid and target-region p90 must be at most the predeclared 10.74~ms software-processing target in both windows. This is a host-specific percentile target, not a per-symbol hardware deadline. Neither window is rerun to obtain a pass.

@@ -1,0 +1,168 @@
+\documentclass[10pt,journal,letterpaper]{IEEEtran}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,graphicx,booktabs,array,cite,url}
+\renewcommand{\ttdefault}{cmtt}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Channel Estimation for Rydberg Arrays With Learned Filtering and Recovery Checks},pdfauthor={Abdullah Haatim}}
+\graphicspath{{figures/}}
+\interdisplaylinepenalty=2500
+\newcommand{\CN}{\mathcal{CN}}
+\newcommand{\HH}{\mathcal{H}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\sigmoid}{sigmoid}
+\DeclareMathOperator{\softplus}{softplus}
+\DeclareMathOperator{\median}{median}
+\hyphenation{Ryd-berg mea-sure-ments}
+\begin{document}
+\title{Channel Estimation for Rydberg Arrays With Learned Filtering and Recovery Checks}
+\author{Abdullah~Haatim\thanks{A. Haatim is with the Department of Electrical and Electronics Engineering, Birla Institute of Technology and Science, Pilani, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
+\maketitle
+\begin{abstract}
+Rydberg array receivers can measure signal magnitude without directly measuring the complex signal. Estimating the channel from these measurements is difficult. Filtering across antennas can reduce noise, but too much filtering removes useful channel information. We develop a receiver that combines exact Rician expectation--maximization (EM) updates with a small network that controls smooth Hankel filtering. The network learns from withheld pilot measurements and needs no true-channel training targets. At high signal-to-noise ratio, the receiver uses a fixed trained schedule. For weak references, if its estimate fits the observations poorly, it tries an algebraic starting estimate followed by short EM refinement. It accepts this result only when the measurement likelihood improves. The new recovery rule is checked on independent data before a final comparison over 153 settings and 1,152 independent channels. It improves normalized mean squared error (NMSE), averaged equally across settings, by 0.507 dB over the previous receiver and by 3.232 dB in the weak-reference target range, with unchanged observed bit error rate. Its slower-run 90th-percentile time is 7.254 ms. Sparse estimation still has better overall bit error rate and pooled channel error. These results show the benefits and limits of combining learned and classical estimation.
+\end{abstract}
+\begin{IEEEkeywords}
+Channel estimation, Hankel matrices, phase retrieval, Rydberg receivers, self-supervised learning.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{R}{ydberg} atomic receivers use highly excited atoms to sense radio-frequency fields~\cite{gong2025mag}. Arrays of these receivers can serve several users~\cite{cui2025}. We study an array that measures the magnitude of the received field after adding a known reference signal. It must recover a complex channel from these magnitudes. The known pilots and reference help, but the estimation problem is still nonlinear.
+
+A channel with a few propagation paths has useful structure across antennas. A Hankel matrix collects this structure by arranging overlapping channel samples into columns. Its rank is small when only a few spatial patterns are present. Removing small singular values can reduce noise. It can also remove weak paths. Choosing the filter strength separately for every received block can be costly.
+
+Our receiver uses a small network to choose the filtering strength from the current measurements and estimate. It keeps the exact Rician measurement update. The network learns by predicting pilot measurements that were withheld from its input, so it does not need the true channel. At high signal-to-noise ratio (SNR), the receiver uses a fixed trained schedule and selected extra EM updates. A separate check can try a different, algebraic starting estimate when the first result fits the data poorly.
+
+The paper makes three contributions. First, it gives a compact controller for smooth spatial filtering, trained without channel labels. Second, it combines this controller with a fixed schedule and a recovery check that uses only available observations. Third, it explains the limits of the component updates and compares channel error, bit error rate (BER) and full processing time on shared test data. Earlier structure studies explain when filtering helps; the final test measures the complete receiver. The contribution is this specific design and analysis. EM, Hankel filtering and algebraic phase retrieval are established ideas.
+
+\subsection{Related Work}
+Cui et al.\ use EM-based Gerchberg--Saxton (EM-GS) for atomic-MIMO detection~\cite{cui2025}. We use this update for known-pilot channel estimation. Unlike strong-reference approximations~\cite{xu2025}, we retain the exact magnitude model. URformer also unfolds Rydberg phase retrieval~\cite{xiao2026}. It replaces the Bessel-function update with a learned module and trains against true-channel error. We retain that exact update and learn spatial filtering from withheld observations. We do not claim an accuracy advantage over URformer, which is not reproduced here. Quantum-MUSIC methods address direction estimation and outliers~\cite{kim2025quantummusic,banerjee2026robust}.
+
+Classical structure methods include Cadzow filtering~\cite{cadzow1988}, Hankel recovery and denoising~\cite{chen2014emac,yin2021,zachariah2012}, and OptShrink~\cite{nadakuditi2014}. Other related priors include low-rank phase retrieval and Vandermonde models~\cite{liu2018lrpr,ying2018hvaf}. Their original guarantees do not directly cover the noise produced by our nonlinear updates. Our OptShrink control is an adapted filter, not a reproduction of every such method.
+
+Small learned updates already appear in C-TISTA, ALISTA, OAMP-Net2 and NA-ALISTA~\cite{takabe2020ctista,liu2019alista,he2020oamp,behrens2021naalista}. Learned Hankel recovery~\cite{huang2021}, training from withheld measurements~\cite{yaman2020,luo2023}, Rician-loss learning~\cite{parker2023} and Rydberg denoising~\cite{liu2026} are also precedents. Affine phase retrieval and intensity lifting support the algebraic recovery idea~\cite{gao2018,candes2013phaselift,li2020affinelift}. Our distinction is how these tools are combined for the stated receiver and tested under a common time budget.
+
+\section{Signal Model}
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{system_model.pdf}
+\caption{Receiver model. $K$ users send known pilots to $N$ elements of a half-wavelength linear array. A known reference combines with the received field before magnitude measurement. The drawing shows the physical setup; the experiments model the resulting magnitudes, not the atomic dynamics or optical readout.}
+\label{fig:system}
+\end{figure*}
+The array in Fig.~\ref{fig:system} receives $P$ pilots from $K$ users:
+\begin{equation}
+ Z=|GS+B+W|,\qquad W_{np}\sim\CN(0,v).
+ \label{eq:model}
+\end{equation}
+Here $G\in\mathbb C^{N\times K}$ is the unknown channel, $S\in\mathbb C^{K\times P}$ contains the known pilots, and $B$ is the known reference. Magnitude acts on each entry. The noise samples are independent, with variance $v/2$ in each real component. Receiver gain is included in the signal scale.
+
+For a half-wavelength linear array, user $k$ has channel
+\begin{equation}
+ g_{nk}=\sum_{\ell=1}^{L_k}\alpha_{\ell k}e^{-j\pi n\sin\theta_{\ell k}},
+ \quad n=0,\ldots,N-1.
+ \label{eq:channel}
+\end{equation}
+We draw $\alpha_{\ell k}\sim\CN(0,1/L_k)$ and angles uniformly on $(-\pi/2,\pi/2)$. Each user has expected channel power one; individual channels are not rescaled to equal energy. Pilots follow $\CN(0,1)$. The repeated reference and noise variance are
+\begin{equation}
+ B_{np}=10^{\mathrm{RSR}/20},\qquad v=K10^{-\mathrm{SNR}/10}.
+\end{equation}
+SNR uses the total user power. The reference-to-signal ratio (RSR) uses one user's power. Every estimator receives the correct reference and noise variance.
+
+\subsection{How We Score a Channel Estimate}
+For fixed variance, the Rician negative log-likelihood can be written, after removing terms independent of the channel, as
+\begin{equation}
+ \ell(z,\mu,v)=\frac{(z-|\mu|)^2}{v}-\log I_{0e}(2z|\mu|/v),
+ \label{eq:loss}
+\end{equation}
+where $\mu=g^Ts+b$ and $I_{0e}(x)=e^{-x}I_0(x)$ is a scaled Bessel function. A lower loss means that the estimate better explains the noisy observations. Scaled functions avoid numerical overflow. If variance is also estimated, the omitted $\log v$ term must be restored.
+
+A reference can reveal channel phase, but only with a suitable pilot/reference design. Without a reference, rotating the whole channel leaves every magnitude unchanged. An unknown reference phase also prevents recovery of absolute channel phase. For an unrestricted channel row, a full-rank real magnitude Jacobian gives local recovery and requires at least $P\ge2K$ pilots~\cite{gao2018}. This does not prove unique recovery over all possible channels. The supplement gives the Jacobian and Rician information calculation. The Cram\'er--Rao curves used later describe local limits under unbiasedness assumptions~\cite{stoica1998}; they are not absolute error bounds for our biased filters.
+
+\section{Measurement Updates and Spatial Filtering}
+\subsection{Exact EM Update}
+EM alternates between estimating the missing complex field and updating the channel. For $M=GS+B$ and $\kappa=2Z|M|/v$, these steps are
+\begin{align}
+ Q&=Z\odot\frac{I_1(\kappa)}{I_0(\kappa)}\odot\frac{M}{|M|},\nonumber\\
+ G_{\rm EM}&=(Q-B)S^H(SS^H)^{-1}.
+ \label{eq:em}
+\end{align}
+The products and ratios in the first line act entry by entry, with value zero at $M=0$. The second line uses a linear solve and requires a full-row-rank pilot matrix. This is also a likelihood-gradient step scaled by the pilot Gram matrix $SS^H$.
+
+The learned and direct-EM methods use the same spectral starting estimate. It comes from the leading eigenvector of a pilot/reference matrix weighted by the measured magnitudes. Only fitting pilots enter this step. The algebraic recovery method in Section~\ref{sec:receiver} provides a different starting point. Exact initialization formulas are in the supplement.
+
+\subsection{Hard and Smooth Hankel Filters}
+Let $q=\lceil N/2\rceil$, $m=N-q+1$, and define
+\begin{equation}
+ [\HH(g)]_{ij}=g_{i+j},\quad 0\le i<m,\quad0\le j<q.
+\end{equation}
+A channel with $L$ distinct spatial frequencies has Hankel rank at most $\min(L,m,q)$. The inverse map $\HH^\dagger$ averages entries on each antidiagonal. A hard filter keeps the largest $r$ singular components, then averages these entries. Repeating this operation gives Cadzow filtering.
+
+Our classical Hankel-structured GS (HS-GS) control filters after each EM update. It selects a shared user rank using 70\% of the pilots for fitting and 30\% for validation, then restarts on all pilots. The default budgets are 25 updates per candidate, 100 final updates and four filtering sweeps per update. Rank $q$ allows filtering to be skipped. We call squared-amplitude-error selection HS-amplitude and Rician-loss selection HS-Rician.
+
+A smooth filter instead changes each singular value by
+\begin{equation}
+ \widehat\sigma_i=\frac{\sigma_i^3}{\sigma_i^2+\tau^2}.
+ \label{eq:shrink}
+\end{equation}
+Larger $\tau$ removes more of the smaller components; $\tau=0$ leaves them unchanged. A classical control selects $\tau$ from a small validation grid. OptShrink uses weights estimated from the remaining spectrum~\cite{nadakuditi2014}. We test offline-selected and per-block rank-selected versions in the earlier studies. Their complete searches, costs and numerical rules are given in the supplement.
+
+\section{A Small Network That Chooses the Filter}
+\subsection{Ten Estimation Stages}
+Each learned start has ten stages. Stage $t$ first takes a relaxed EM step:
+\begin{equation}
+ G_{\rm dc}=G+\gamma_t(G_{\rm EM}-G),\qquad
+ \gamma_t=2\sigmoid(a_t).
+\end{equation}
+The ten learned $a_t$ begin at $\gamma_t=1$. For user $k$, set $H_k=\HH(g_{{\rm dc},k})$, $s_H=\|H_k\|_F/\sqrt q$, and $p_i=\sigma_i/\sum_j\sigma_j$. A shared network with layer sizes 8--16--2 and SiLU activation receives
+\begin{align}
+ f_1&=\exp(-\textstyle\sum_i p_i\log p_i)/q,\quad f_2=p_1,\nonumber\\
+ f_3&=\textstyle\sum_{i=q-\lceil q/2\rceil+1}^q p_i,\nonumber\\
+ f_4&=\log\!\left(1+\operatorname{mean}[(Z-|G_{\rm dc}S+B|)^2]/v\right),\nonumber\\
+ f_{5,k}&=\log\!\left(1+v\tr[(SS^H)^{-1}]/(K\widehat p_k)\right),
+ \label{eq:features}
+\end{align}
+and $P/(2K)$, $\log q$, $(t+1)/10$, where $\widehat p_k=\|g_{{\rm dc},k}\|_2^2/N$. In plain terms, these inputs describe the spread of singular values, the measurement mismatch, the noise level, pilot support, array size and stage number. None uses the true channel or path count.
+
+The two network outputs $(u,w)$ give
+\begin{equation}
+ \tau=s_H[0.001+\softplus(u)],\qquad\beta=\sigmoid(w).
+\end{equation}
+The parameter $\tau$ sets how strongly the singular values shrink. The parameter $\beta$ sets how much of that filtered result is used:
+\begin{align}
+ F_\tau(H)&=H-\tau^2H(H^HH+\tau^2I)^{-1},\label{eq:solve}\\
+ g_k^{t+1}&=g_{{\rm dc},k}+\beta_{t,k}
+ [\HH^\dagger F_{\tau_{t,k}}(H_k)-g_{{\rm dc},k}].
+\end{align}
+Thus $\beta$ near zero keeps the EM result, while $\beta$ near one uses the full filter correction. The solve implements~\eqref{eq:shrink}; training differentiates through it. The network has 178 parameters, and the ten EM step sizes give 188 in total. The inputs still require singular values. Neither $\tau$ nor $\beta$ is a physical path-count estimate.
+
+\subsection{Training Without Knowing the True Channel}
+Each training example contains 39 simulated pilot observations. A changing random split gives 30 input columns $A$ and nine withheld columns $V$. They have independent measurement noise; the pilot matrix is screened jointly before splitting. The network sees only $A$, produces $\widehat G_A$, and is trained to predict $V$ through
+\begin{equation}
+ \mathcal L_{\rm hold}=\frac{1}{N|V|}\sum_{n,p\in V}
+ \ell\big(Z_{np},[\widehat G_A S_V+B_V]_{np},v\big).
+\end{equation}
+An adjustment to $\tau$ or $\beta$ is rewarded when it lowers this prediction loss. The computer sends that loss backward through the ten stages to update the network weights. The true channel is never the training target. At use time, all 30 available pilots enter the estimate, and the network weights stay fixed.
+
+Training uses 16,384 examples, 2,048 separate validation examples, 20 epochs, batch size 32 and Adam learning rate $10^{-3}$. Half the examples have independent 3--7 paths per user; the rest use shared path counts $2,4,8,12,16$. Seven SNRs from $-10$ to 20~dB and three reference levels define 126 validation groups. The checkpoint with the lowest equally weighted withheld loss is selected, including the untrained checkpoint. Three training runs use the same data population. Training uses single precision; final testing uses double precision.
+
+A fixed trained schedule learns only a step size, threshold and mixing value for each stage: 30 parameters. Its values do not change with the input, apart from the stated signal-scale normalization. It uses the same data, splits and training budget as the adaptive network. The complete receiver stores one model of each kind, for 218 neural parameters. Earlier 21-input-pilot and alternative-training studies remain separate in the supplement.
+
+\subsection{What the Update Bounds Mean}
+For fixed $\tau$, the smooth filter satisfies
+\begin{equation}
+ \|F_\tau(H)\|_F\le\|H\|_F,\qquad
+ \|F_\tau(H)-H\|_F\le\sqrt q\,\tau/2.
+ \label{eq:bound}
+\end{equation}
+The second inequality follows by maximizing $\sigma\tau^2/(\sigma^2+\tau^2)$. After antidiagonal averaging, the correction has a corresponding bound scaled by $\beta$. This limits how much the filter changes the estimate; it does not prove that channel error decreases. Relaxed EM also decreases its quadratic fitting objective for $0\le\gamma_t\le2$, but the later filter can undo that decrease. Full-estimator convergence and guaranteed BER improvement do not follow. The supplement gives the proofs and numerical details.
+
+\input{reliability_method.tex}
+\input{reliability_experiments.tex}
+\section{Results}
+\input{classical_results_retained.tex}
+\input{reliability_results.tex}
+\input{reliability_conclusion.tex}
+\section*{Acknowledgment}
+OpenAI's ChatGPT/Codex assisted with writing, experiment-code development and figure scripts. The author is responsible for checking the content and final submission.
+\IEEEtriggeratref{20}
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

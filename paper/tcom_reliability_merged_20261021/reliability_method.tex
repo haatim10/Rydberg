@@ -1,0 +1,59 @@
+\section{A Receiver With Observable Recovery Checks}
+\label{sec:receiver}
+The adaptive controller is useful at ordinary SNR but is not an adequate complete receiver over the extended operating range. We therefore freeze a hybrid that combines the two matched-context trained starts with classical refinement and an alternative initialization. All routing uses measurements, the supplied reference and variance, and stored constants. Neither the channel, its path count, its error nor test BER is an inference input.
+
+\subsection{Regime Routing and Noise-Scaled Final Filtering}
+Define nominal proxies $s=10\log_{10}(K/v)$ and $r=10\log_{10}\operatorname{mean}|B|^2$. They equal the generator's SNR and RSR under the stated normalization; they are not estimates of instantaneous channel power. For $s\le20$~dB, the receiver returns the matched-context adaptive output without extra EM or a final filter. It also uses the adaptive start through 30~dB; above 30~dB it uses the global schedule. The global schedule is trained, although its stage parameters are fixed after training. Only one start is evaluated for each block. A paired deployed fit stores $188+30=218$ neural parameters, in addition to the discrete policy and numerical constants.
+
+Above 20~dB, a frozen reference/SNR table selects $T\in\{0,10,20,40\}$ exact EM continuation updates and a final multiplier $c\in\{0,2,4\}$. Continuation starts from the trained estimate, without spectral reinitialization. Let $V_S=(SS^H)^{-1}$. The final userwise filter uses
+\begin{equation}
+ \tau_k=c\sqrt{2v\operatorname{Re}[V_S]_{kk}\max(m,q)},\qquad \beta=1,
+ \label{eq:finaltau}
+\end{equation}
+with $c=0$ denoting a bypass. This is a heuristic noise scale, not the covariance of a nonlinear channel estimate. Reference and SNR lookup use the nearest declared grid values, choosing the lower bin at an exact tie. A mismatch between the continuously selected model family and the table's family gives zero extra EM. The supplement gives every table entry and numerical boundary tolerance.
+
+The strong-reference final filter remains active across 40~dB, avoiding the earlier imposed filter-removal jump. This does not make the entire receiver continuous: the model crossover and other table boundaries remain. Let $G_0$ denote the complete output of this frozen prior hybrid, including any continuation and final filtering.
+
+\subsection{A Residual Check Without Channel Truth}
+The new check is restricted to the nearest-reference 5~dB bin and continuous $s>30$~dB. Compute
+\begin{equation}
+ R_n=\frac{2}{Pv}\sum_p\bigl(Z_{np}-|[G_0S+B]_{np}|\bigr)^2.
+ \label{eq:gate}
+\end{equation}
+The selected rule triggers when $\max_nR_n>2$. It examines the largest antenna residual because a poor row estimate can be diluted in an array average. The factor two reflects the high-SNR amplitude-noise scale; the maximum of fitted residuals is not a calibrated statistical test or a failure probability. When the condition is ineligible or the threshold is not crossed, the output is exactly $G_0$.
+
+\subsection{An Algebraic Alternative to the Shared Spectral Start}
+All trained and direct-EM starts in this comparison share a spectral initialization and can inherit its unfavorable solutions. For a triggered case, exploit the repeated nonzero reference $B_{np}=b_n$. Set $c_n=g_n/b_n$ and
+\begin{equation}
+ y_{np}=\frac{Z_{np}^2-v}{|b_n|^2}-1.
+\end{equation}
+Since $\mathbb E|\mu+W|^2=|\mu|^2+v$,
+\begin{equation}
+ \mathbb E[y_{np}\mid G,S,B]
+ =2\operatorname{Re}(c_n^Ts_p)+|c_n^Ts_p|^2.
+ \label{eq:intensity}
+\end{equation}
+For $K=3$, construct a real $P\times15$ design $D$ containing six linear columns $2\operatorname{Re}s_i,-2\operatorname{Im}s_i$, three diagonal columns $|s_i|^2$, and six off-diagonal columns
+\begin{equation}
+ 2\operatorname{Re}(s_i s_j^*),\quad
+ -2\operatorname{Im}(s_i s_j^*),\qquad i<j.
+\end{equation}
+The nine quadratic coefficients are unrestricted Hermitian nuisance parameters. One SVD least-squares solve $D^\dagger Y$ shares the $N$ antenna right-hand sides. The first six coefficients recover $\operatorname{Re}c_n,\operatorname{Im}c_n$, after which $g_n=b_nc_n$. This is an affine-intensity regression construction related to established lifting methods~\cite{gao2018,candes2013phaselift,li2020affinelift}; we do not claim that reference-assisted linearization or algebraic phase retrieval is new.
+
+\textit{Full-rank property.} If $v=0$, the reference repeats and is nonzero, and $D$ has column rank 15, the linear coefficients recover the true channel exactly. Indeed, expansion of $|c_n^Ts_p|^2$ gives an exact solution of $D\xi_n=y_n$; full column rank makes that solution unique. With the correct positive variance subtracted, the unfiltered least-squares estimate is conditionally unbiased by linearity of $D^\dagger$. Neither statement applies to the subsequent nonlinear refinement or selection as an unbiasedness guarantee.
+
+The implementation requires rank 15, condition number at most $10^8$, and finite coefficients. It treats a failed solve as invalid. Constant-modulus fitting pilots make the three diagonal columns collinear and give rank at most 13. Thus the implemented fallback is rejected for QPSK fitting pilots; the current evidence concerns Gaussian fitting pilots. This restriction belongs to this redundant nuisance parameterization and rank rule, not to affine recovery in general.
+
+\subsection{Refinement and Likelihood Acceptance}
+A valid algebraic estimate receives 20 exact EM updates and the same final-filter rule as $G_0$. Denote it by $G_{\rm fb}$, and let $\overline{\mathcal L}$ be the average of~\eqref{eq:loss} over fitting observations. The receiver returns
+\begin{equation}
+ \widehat G=\begin{cases}
+ G_{\rm fb},&\overline{\mathcal L}(G_{\rm fb})<
+ \overline{\mathcal L}(G_0)-10^{-12},\\
+ G_0,&\text{otherwise},
+ \end{cases}
+ \label{eq:accept}
+\end{equation}
+only after a trigger and a valid finite fallback. Invalid solves retain $G_0$. Acceptance replaces the complete channel estimate, not isolated rows. By construction, this wrapper never increases fitting loss relative to its computed incumbent. It does not guarantee lower channel error, BER or out-of-sample loss. This elementary comparison property is distinct from convergence of the complete receiver.
+
+The receiver is evaluated in the following order: compute one trained start, perform its selected continuation and final filter, check eligibility and residuals, optionally compute and refine the algebraic alternative, then apply~\eqref{eq:accept}. All of this work is timed. There are no additional online pilots, true-channel decisions or online weight updates. A separate algebraic-plus-EM20 control measures the value of the classical alternative on its own; its invalid-solve branch uses spectral initialization plus 20 EM updates rather than retaining $G_0$.

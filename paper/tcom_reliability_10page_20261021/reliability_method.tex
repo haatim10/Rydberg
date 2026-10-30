@@ -1,0 +1,53 @@
+\section{Choosing the Start and Checking the Result}
+\label{sec:receiver}
+The receiver uses the adaptive model at ordinary SNR and a fixed trained schedule at higher SNR. It can then try a separate recovery step. All choices use the measured pilots, known reference, supplied noise variance and stored settings. They never use the true channel or test error.
+
+\subsection{Learned and Fixed Schedules}
+Define $s=10\log_{10}(K/v)$ and $r=10\log_{10}\operatorname{mean}|B|^2$. Under our normalization these equal the nominal SNR and RSR. They do not estimate the power of an individual channel. The adaptive model is used through 30~dB; the fixed schedule is used above 30~dB. Only one model is run for each block.
+
+At $s\le20$~dB, the adaptive output is returned directly. Above 20~dB, a stored reference/SNR table selects 0, 10, 20 or 40 extra EM updates and a final noise-based filter. This filter uses $\beta=1$ and
+\begin{equation}
+ \tau_k=c\sqrt{2v\operatorname{Re}[(SS^H)^{-1}]_{kk}\max(m,q)},
+ \label{eq:finaltau}
+\end{equation}
+where $c\in\{0,2,4\}$ and $c=0$ skips the filter. This is a chosen noise scale, not an exact error covariance. The table uses the nearest tested reference and SNR, with lower values at a tie. All entries, boundary tolerances and off-grid rules are in the supplement.
+
+The strong-reference filter stays active above 40~dB. Removing it at that point caused an earlier jump in error. Other changes between table entries remain. Let $G_0$ be the complete estimate after the chosen model, extra EM and final filter.
+
+\subsection{When to Try Another Starting Estimate}
+The added recovery check applies only to the nearest-reference 5~dB range and $s>30$~dB. It measures the mismatch at each antenna:
+\begin{equation}
+ R_n=\frac{2}{Pv}\sum_p\bigl(Z_{np}-|[G_0S+B]_{np}|\bigr)^2.
+ \label{eq:gate}
+\end{equation}
+If $\max_nR_n>2$, the receiver tries an algebraic starting estimate. The maximum helps detect one poorly fitted antenna that an average might hide. This residual is a useful check, not a probability that the channel is wrong. If the check does not apply or does not trigger, the result stays exactly $G_0$.
+
+For a repeated, nonzero reference $B_{np}=b_n$, set $c_n=g_n/b_n$ and
+\begin{equation}
+ y_{np}=\frac{Z_{np}^2-v}{|b_n|^2}-1.
+\end{equation}
+Subtracting the known noise power gives
+\begin{equation}
+ \mathbb E[y_{np}\mid G,S,B]
+ =2\operatorname{Re}(c_n^Ts_p)+|c_n^Ts_p|^2.
+ \label{eq:intensity}
+\end{equation}
+For $K=3$, this is linear in 15 real coefficients: six channel components and nine extra coefficients for the quadratic terms. The real $P\times15$ design matrix $D$ has columns
+\begin{equation}
+ 2\operatorname{Re}s_i,\;-2\operatorname{Im}s_i,\;|s_i|^2,\;
+ 2\operatorname{Re}(s_is_j^*),\;-2\operatorname{Im}(s_is_j^*)
+\end{equation}
+for each user $i$ and pair $i<j$. One least-squares solve serves all antennas. The six linear coefficients recover $c_n$ and then $g_n=b_nc_n$. The quadratic coefficients are fitted freely; the solve does not force them to equal products of the recovered channel.
+
+If $D$ has full column rank, the noiseless equations give the exact channel. With correct noise subtraction, this unfiltered linear estimate is conditionally unbiased. These statements do not extend to the later nonlinear steps. The implementation checks rank 15, condition number at most $10^8$ and finite values. Constant-magnitude pilots make three design columns identical up to scale, so this rank check rejects QPSK fitting pilots. Our experiments use Gaussian fitting pilots. The supplement gives the proof, noise variance and this design limitation.
+
+\subsection{Refinement and Acceptance}
+A valid algebraic estimate receives 20 exact EM updates and the same final filter as $G_0$. Call the result $G_{\rm alt}$. It replaces $G_0$ only if its average fitting loss satisfies
+\begin{equation}
+ \overline{\mathcal L}(G_{\rm alt})<
+ \overline{\mathcal L}(G_0)-10^{-12}.
+ \label{eq:accept}
+\end{equation}
+An invalid solve or a rejected alternative leaves $G_0$ unchanged. The whole channel is replaced together. This rule prevents an increase in computed fitting loss. It cannot guarantee lower channel error or BER.
+
+The complete order is: run the selected model, apply its extra EM and final filter, check the residual, optionally compute the alternative, then compare losses. All steps count toward runtime. No extra online pilots or online weight training are used. The separate algebraic-plus-EM20 baseline tries the algebraic start everywhere; if that solve is invalid, it uses the spectral start plus 20 EM steps.

@@ -1,0 +1,55 @@
+TEN-PAGE COMBINED REVISION - 12 OCTOBER 2026
+
+The two unpublished studies now form one journal manuscript, not two
+letters. The narrative is: diagnose structural filtering, define a compact
+controller, and measure its conditional accuracy-cost trade-off.
+
+MAIN CHANGES
+- Restored the original receiver system diagram as Figure 1 with a generic
+  'Channel estimator' label and consistent K-by-P pilot dimensions.
+  Original physical drawing is unchanged elsewhere. Its caption explicitly
+  distinguishes schematic optical hardware from the effective simulation.
+  The main remains ten pages with normal font and margins; no results cut.
+- Simple English, qualitative abstract, background/motivation/contributions
+  introduction; no forward section roadmap or research-draft banner.
+- Classical array-size and effective-rank evidence is retained with its
+  exact model, information references and biased-estimator qualifications.
+- The exact Rician update, spectral initialization, numerical guards,
+  188-parameter controller and withheld-pilot training remain in the main.
+- The primary learned comparison is now the completed, audited compact
+  study: 4,032 primary and 64 separate stress worlds, with matched methods.
+- The 148-parameter NA-ALISTA-inspired adaptation is described precisely,
+  not presented as a reproduction. Its equal 20-epoch budget and continuing
+  late validation improvement limit conclusions about stronger training.
+- Online-rank OptShrink's accuracy advantage remains visible in the main
+  table, discussion and conclusion. Its measured cost includes rank search
+  and refitting. Offline training/tuning costs are not included in timings.
+- Weak-reference and near-noiseless failures remain in the main table.
+- Older detailed protocols, ablations and negative follow-ups are retained
+  separately in the supplement rather than pooled or silently discarded.
+- Four compact-estimator references were added; HVaF publication metadata
+  and the Xu channel-estimation DOI were corrected. EM-GS detection versus
+  known-pilot channel-estimation attribution was clarified.
+
+ACTUAL FINAL PRIMARY FINDINGS
+Ours: -13.692 dB; recurrent: -11.725 dB; offline OptShrink: -13.204 dB;
+online-rank OptShrink: -14.144 dB. Ours gains 1.967 dB over recurrence
+(adjusted paired 95% interval [1.932,2.006]). Classical differences here
+are descriptive: +0.488 dB over offline, -0.452 dB versus online rank.
+Mean one-thread PyTorch CPU times: 4.87,4.15,15.81,110.56 ms, respectively.
+The contribution is a specific self-supervised controller and measured
+operating limits, not first compact unfolding, new shrinkage optimality,
+published NA-ALISTA superiority or universal OptShrink superiority.
+
+STILL UNRESOLVED
+- No full-estimator convergence/stability or cubic-shrinkage optimality.
+- No hardware, optical/atomic-dynamics or 2D-array validation.
+- Known reference/noise in main tests; limited simulation mismatch checks.
+- Training with 21 input pilots versus deployment with all 30 is disclosed,
+  not isolated by matched retraining.
+- Shared training data and fixed models limit the uncertainty assessment.
+- No strong matched published URformer or full LRHD/HVaF/LRPR reproduction.
+- Author approval and a real permanent public code/data destination remain.
+
+Earlier versions and frozen studies were preserved. The separate supplement
+is supporting material for this one paper. This package has not been submitted.

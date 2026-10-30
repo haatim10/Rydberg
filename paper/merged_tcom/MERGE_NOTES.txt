@@ -1,0 +1,110 @@
+HISTORICAL MERGE NOTES -- BEFORE ONLINE-REVIEW CORRECTIONS
+
+This document records the initial merge, not the current release. The current
+README.txt and ONLINE_REVIEW_RESPONSE.txt supersede the page counts, omitted
+checks, one-sweep gap, acknowledgment and no-new-computation statements below.
+The separate original manuscripts and frozen experiment files remain intact.
+
+WHAT CHANGED
+
+One question now connects the two papers: when and how should Hankel structure
+be applied to referenced magnitude-only channel estimation, and does learning
+add value over properly tuned classical processing?
+
+The repeated introductions, observation models, Rician derivations and Hankel
+explanations are combined. P1's classical findings motivate the learned method.
+P2's self-supervised training and stronger negative controls complete the story.
+The abstract stays qualitative. No uniform-superiority, first-of-its-kind,
+state-of-the-art, convergence or hardware-performance claim is added.
+The unpublished companion-paper citation is removed because its relevant
+content is now part of this manuscript.
+
+Sections I-II: unified scope, prior work, effective receiver/channel model,
+local information and the geometric reference. The key local recovery and
+CCRB qualifications remain. The tangent construction is given in the main text.
+
+Section III: exact EM and gradient relation, context-only spectral initializer,
+hard Hankel processing, rank selection, empirical smooth filtering and the
+stronger OptShrink adaptation. Distinct names identify HS-amplitude (P1 and
+original P2) and HS-Rician (fresh P2 stronger-baseline study).
+
+Section IV: both learned cores, all eight observable inputs, exact parameter
+count, matrix-solve shrinkage, self-supervised masking and validation, and
+limited mathematical properties. Important P2 supplement details are brought
+into the main manuscript rather than left essential to an external supplement.
+
+Sections V-VI: separate campaign settings, paired aggregation definitions,
+classical array/effective-rank results, harmful projection and sweep sensitivity,
+learned ablations, the fresh stronger classical comparison, weak-reference and
+few-path losses, position mismatch, tight-pilot and nearly noiseless failures.
+There is no summed headline trial count that would double-count reused worlds.
+The original 64-fold speed ratio is limited to the original rank-search control.
+The stronger control has comparable measured time, not that speed ratio.
+
+Section VII: scoped interpretation, actual computational cost, limitations and
+one conclusion. The key claim is a measured accuracy/failure/computation trade-off.
+
+RETAINED FIGURES
+1. P1 main NMSE/bounds and array-size plot, unchanged data.
+   The original file has no uncertainty bands/error bars. Its caption is fixed.
+2. P1 matched effective-rank trend, redrawn at column size from saved summaries.
+   Includes the existing paired intervals; no fitting or new sampling.
+3. P2 fresh in-loop OptShrink comparison, including learned losses at high SNR.
+4. P2 weak-reference and few-path limits against the original HS baseline.
+
+OMITTED FROM THE MAIN TEXT TO KEEP A COHERENT TEN-PAGE PAPER
+Repeated receiver cartoons, repeated main SNR plots, full historical trial-count
+narration, standalone runtime plots, every split-fraction/rank-proxy plot,
+alternative-channel numerical tables, and most exploratory network-width,
+expert, curriculum and static-calibration experiments. These are not deleted
+from either original manuscript or the scientific archives. The merge does not
+claim their findings are new main results or that omitted tests establish safety.
+The main paper does not depend on submitting an oversized supplement outside
+TCOM's page allowance. A supplementary file would require its own venue check.
+
+IMPORTANT REMAINING SCIENTIFIC LIMITS
+1. One-sweep hard processing improves P1's original four-sweep baseline, but
+   has not been evaluated on the fresh 1,152-world P2 OptShrink test set.
+   The merged manuscript states this and does not claim superiority over all HS
+   choices. A targeted, predeclared paired comparison is the most useful next
+   numerical addition if a stronger superiority claim is desired.
+2. No matched URformer or angle-domain sparse phase-retrieval benchmark exists
+   in these combined experiments. The paper does not claim to beat them.
+3. In-loop OptShrink has 0.143 dB lower primary average NMSE; the learned model
+   has fewer severe errors. These are different performance criteria. The
+   negative result must remain visible.
+4. All evidence is simulation-based with an effective receiver model. Learned
+   intervals condition on fixed models; weak reference, very low noise and
+   calibration uncertainty are not resolved by this merge.
+5. Combining papers improves the argument and breadth, not novelty by itself.
+   The existing ingredients are acknowledged as established. TCOM's judgment
+   of significance and novelty remains an editorial/reviewer decision.
+
+AUTHOR CHECKS BEFORE ACTUAL SUBMISSION
+Verify the author list, affiliation, contact details and coauthor approval.
+Confirm whether either component has been submitted, rejected or published;
+prepare any applicable overlap/prior-submission disclosures. The current draft
+assumes these are unpublished component drafts and does not invent publication
+history. Do not submit overlapping manuscripts simultaneously.
+The acknowledgment records this merge's substantive Codex writing assistance.
+Review it against the full history of AI use and IEEE's current disclosure rule;
+additional assistance from earlier work may need to be described as well.
+The literature entries are inherited from the reviewed manuscripts; preprints
+are labelled. Check for newly published versions before submission.
+Prepare the code/data availability destination using the retained archives;
+this manuscript does not invent a public repository release or a DOI.
+
+LOCAL SOURCE / EVIDENCE MAP (paths relative to repository root)
+P1 text: paper/paper1/full_revision/haatim_hsgs_revised.tex
+P2 text: paper/paper2_selfsupervised/review_round2/paper2_revised.tex
+P2 details: paper/paper2_selfsupervised/review_round2/paper2_supplement.tex
+P2 fresh comparison: paper/paper2_selfsupervised/review_round2/round2_results.tex
+P1 original summaries: codex_verification/publication/verification_results.json
+P1 additional tests: results/p1_followup/analysis/summary.json
+P2 stronger tests: results/paper2_optshrink_loop/summary.json
+P2 geometry diagnostics: results/paper2_review_round2/geometry/summary.json
+Code: codex_verification/, p1_revision/, p1_followup/, sahure/,
+      paper2_optshrink_loop/, paper2_review_round2/
+Earlier P1 evidence package: output/pdf/paper1_followup_evidence.zip
+Full P2 archive: output/pdf/paper2_round2_full_reproducibility.zip (about 1.9 GB)
+The Overleaf ZIP contains manuscript dependencies, not this full scientific archive.

@@ -1,0 +1,23 @@
+% Insert in the Introduction immediately before "We propose a
+% Hankel-structured extension of EM-GS...". Keep the existing introduction.
+
+Low-rank Hankel modeling and Cadzow processing are established tools
+\cite{cadzow1988,markovsky2008}. Related uses of structured low-rank
+matrices include spectral compressed sensing and MRI reconstruction
+\cite{chen2014emac,jin2016aloha,haldar2014loraks}. Our contribution is not
+a new general low-rank recovery principle. We study how a simple spatial
+Hankel correction behaves inside a magnitude-only Rydberg channel
+estimator, including conditions where it gives little benefit or causes
+harm. The Hankel matrix is formed along each user's array dimension.
+This construction differs from a rank constraint on a two-dimensional
+channel slice, as considered in~\cite{xu2025}.
+
+Hard truncation gives a best rank-limited approximation to its input
+matrix in the Frobenius norm. It need not give the best estimate of the
+underlying clean channel. Singular-value shrinkage methods such as
+OptShrink address this distinction~\cite{nadakuditi2014optshrink}. Their
+matrix-noise assumptions require care here: Hankel lifting repeats
+entries, and the error entering the structural step comes from an
+iterative channel estimate. We therefore do not assume that a shrinkage
+rule is optimal for this problem simply because it is optimal under a
+different denoising model.

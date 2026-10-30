@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "master_seed": 20261014031001,
+  "cases_per_cell": 64,
+  "cells": [
+    {
+      "N": 32,
+      "K": 3,
+      "P": 30,
+      "snr": -5.0,
+      "rsr": 0.0,
+      "L": null,
+      "channel": "ula"
+    },
+    {
+      "N": 32,
+      "K": 3,
+      "P": 30,
+      "snr": -5.0,
+      "rsr": 5.0,
+      "L": null,
+      "channel": "ula"
+    },
+    {
+      "N": 32,
+      "K": 3,
+      "P": 30,
+      "snr": -5.0,
+      "rsr": 12.0,
+      "L": null,
+      "channel": "ula"
+    },
+    {
+      "N": 32,
+      "K": 3,
+      "P": 30,
+      "snr": 5.0,
+      "rsr": 0.0,
+      "L": null,
+      "channel": "ula"
+    },
+    {
+      "N": 32,
+      "K": 3,
+      "P": 30,
+      "snr": 5.0,
+      "rsr": 5.0,
+      "L": null,
+      "channel": "ula"
+    },
+    {
+      "N": 32,
+      "K": 3,
+      "P": 30,
+      "snr": 5.0,
+      "rsr": 12.0,
+      "L": null,
+      "channel": "ula"
+    },
+    {
+      "N": 32,
+      "K": 3,
+      "P": 30,
+      "snr": 15.0,
+      "rsr": 0.0,
+      "L": null,
+      "channel": "ula"
+    },
+    {
+      "N": 32,
+      "K": 3,
+      "P": 30,
+      "snr": 15.0,
+      "rsr": 5.0,
+      "L": null,
+      "channel": "ula"
+    },
+    {
+      "N": 32,
+      "K": 3,
+      "P": 30,
+      "snr": 15.0,
+      "rsr": 12.0,
+      "L": null,
+      "channel": "ula"
+    }
+  ],
+  "training_seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "checkpoints": {
+    "9101": {
+      "path": "results/sahure_expansion/checkpoints/seed_9101/em_adaptive_best.pt",
+      "sha256": "b664708d4b04dd68be7d503199163f42d027aa7a2afc5b110a70e2474dee9b12"
+    },
+    "9102": {
+      "path": "results/sahure_expansion/checkpoints/seed_9102/em_adaptive_best.pt",
+      "sha256": "afe564f3714b536574f53fb1de56446f16a753dc57b0caf99547f0ad78305648"
+    },
+    "9103": {
+      "path": "results/sahure_expansion/checkpoints/seed_9103/em_adaptive_best.pt",
+      "sha256": "2f78fd5c2f7c7eca82a9a6e7d017b6722e4ebb55074bedeac670ff670c3f8525"
+    }
+  },
+  "sources": {
+    "/Users/haatim/.codex/.chatgpt-projects/g-p-6aa7dfe2b65c8191b548f107c7ddcd75/tmp/Rydberg/rician_pilot_screen/phase_check.py": "f9ec5215cf357f98d365aea2feb263c998ed4e73e3c26695c0f71302615388b7",
+    "sahure/model.py": "c6a3d53d8adae23cc2c0b1309bedd21ebd7760194359256192897bdd19aaface",
+    "sahure/math.py": "1f467e79d9e1eac986db54c17773775583c8485f91a3943f88b0a9c702fef2ed",
+    "sahure/train.py": "bedef81896e71b57162367debb25fdd29625afc6ab44929bb1ebc9464884b04e",
+    "sahure_expansion/data.py": "c1c806b53f0318cb0f86b61eba898b37204675e1ed8921bff1a35c6f798366e2",
+    "fair_optshrink/estimator.py": "387c41e72979dc636de955f0f1724e161fc4ef030ad5d50b11a5ab715e1038a1",
+    "rydberg_sim/rng.py": "ca3f1787e87c61db0650677d476d9a9542ed6e9397d431aed0b76ef651ffb6ed",
+    "rydberg_sim/track_b_drivers.py": "0ceea99d9fe2cb4868332ea3580bbf4941ee3bb337190025fffa0d8bf7945427",
+    "rydberg_sim/monte_carlo.py": "222ea7bf124672a73343ec0b9b8dd0b8fda624329a69eb8b1d92f55a17743b82"
+  },
+  "geometry": "N32 K3 P30, independent random path counts 3..7 per user",
+  "backend": "PyTorch CPU one thread float64/complex128",
+  "purpose": "diagnostic only: truth-based global and antenna-row phase alignment",
+  "metrics": [
+    "raw",
+    "oracle_global_phase",
+    "oracle_row_phase"
+  ],
+  "uncertainty": "three fits share test cases; they are not independent channels"
+}

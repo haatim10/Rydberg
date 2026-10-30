@@ -1,0 +1,38 @@
+\section{Additional Implementation Details}
+These details support the shorter main paper. They preserve the initialization, older baseline searches and numerical settings. They do not introduce new experiments.
+
+\subsection{Shared Spectral Starting Estimate}
+The learned and direct-EM starts use the following spectral initialization. The algebraic recovery start is different. For row $n$, form $C_n$ with rows $[s_p^T,b_{np}]$ and take the leading eigenvector $u_n$ of $C_n^H\diag(z_n)C_n$. Set
+\begin{equation}
+ c_n=\frac{\sum_p z_{np}|(C_nu_n)_p|}{\sum_p|(C_nu_n)_p|^2}.
+\end{equation}
+The first $K$ entries of $c_nu_ne^{-j\arg(u_{n,K+1})}$ initialize the channel row. When observations are withheld, only the fitting subset enters initialization. Otherwise the estimator would contain information from its validation observations.
+
+
+\subsection{Earlier OptShrink Comparisons}
+OptShrink instead estimates retained weights from the discarded spectrum~\cite{nadakuditi2014}. For singular values $s_1\ge\cdots\ge s_q$ and candidate rank $r<q$, define
+\begin{align}
+ \phi_d(z)&=\frac{1}{d-r}\left[\sum_{j=r+1}^{q}\frac{z}{z^2-s_j^2}+\frac{d-q}{z}\right],\nonumber\\
+ \mathcal D(z)&=\phi_m(z)\phi_q(z),\quad
+ \widehat s_i=-2\mathcal D(s_i)/\mathcal D'(s_i),\ i\le r.
+\end{align}
+Other weights are zero. We rescale the spectrum, guard unresolved poles, average antidiagonals and mix the result with the measurement update. The adaptation is applied either after every update or once at the end.
+
+In the historical OptShrink study, the broad offline search uses the original learned estimator's 2,048 validation observations and the same 21/9 masks. It covers both placements, ranks 1--15 plus no filtering, mixing factors $0.25,0.5,0.75,1$, and update budgets $5,10,20,50,100$: 610 combinations. Rician validation loss is averaged equally over six path regimes. Settings are frozen for each of 21 noise/reference pairs before testing. Path labels balance offline selection; they are not inference inputs. Off-grid stress tests use the nearest lookup without retuning.
+
+A stronger in-loop control selects rank for each received block. It keeps the lookup's mixing and iteration budget, fits ranks 1--15 plus bypass to 21 pilots, scores nine held-out pilots with Rician loss, and restarts on all 30. All search and refitting time counts. This is not an unrestricted search over user-specific ranks, mixing factors and stopping times. It uses no extra pilot observations, but pays computation to use the current block rather than only offline averages.
+
+
+\subsection{Numerical Rules}
+For reproducibility, channel power and singular-value sum are floored at $10^{-12}$, and squared Hankel RMS scale at $10^{-24}$. Pilot-Gram systems use direct solves without an added ridge. PyTorch implementations use scaled Bessel functions and a series for $\kappa^2<10^{-4}$. OptShrink zeros weights at relative squared spectral gaps at most $10^{-13}$. These are fixed numerical rules, not tuned extra physical assumptions. Positive threshold makes the reconstruction solve smooth, although ordered spectral features need not be differentiable at every tie.
+
+
+\subsection{Earlier Classical Test Settings}
+We keep distinct studies separate. The classical array study uses $K=3$, $N=8,16,32$, $P=10,30$, RSR 12~dB, six SNRs from $-5$ to 20~dB and 400 paired worlds per cell. Unless fixed, user path counts are independently uniform on 3--7. It rejects circular spatial-frequency separation below $10^{-10}$, steering-matrix singular-value ratio below $10^{-8}$ and pilot singular-value ratio below $10^{-8}$. Effective-rank studies use $N=16,32,64$, $P=20$, RSR 10~dB and 300--400 worlds per cell with SNR uniform on $[-10,20]$~dB. The smooth/hard-filter comparison uses $N=32$, $P=30$, RSR 12~dB, $L=3,7,14$ and SNR 0 and 10~dB, with 400 worlds per cell. These screened classical samples and their information references are not pooled with the final receiver results.
+
+
+\subsection{Complete Timing Procedure and Operation Counts}
+Two isolated timing windows measure complete batch-one inference on one CPU thread, in double precision, with randomized interleaving of all 19 individual methods/fits. Each window has 27 independent physical anchors (three per reference/path block), reused across SNR to form 459 condition cases and 8,721 calls. The first follows policy freeze and precedes fresh testing; the second follows all accuracy jobs. Initialization, conversions, features, solves, continuation, final filtering, residual checks and accepted or rejected fallback work are included. We exclude offline training/tuning, model loading, preloaded shape constants, observation generation and BER decoding. The optimized numerical kernels use NumPy/SciPy with PyTorch interfaces; historical all-PyTorch times are not substituted. Both whole-grid and target-region p90 must be at most the predeclared 10.74~ms software-processing target in both windows. This is a host-specific percentile target, not a per-symbol hardware deadline. Neither window is rerun to obtain a pass.
+
+An adaptive stage costs $O(NKP+NK^2+K^3+Kmq^2+Kq^3)$ in the dense implementation. The global schedule avoids adaptive feature/controller evaluation but still uses measurement updates and structural solves. With $d=K^2+2K$, the algebraic branch requires a real design solve of order $O(Pd^2+d^3+NPd)$, followed by its EM continuation; here $d=15$. Neural parameter count alone does not capture either online latency or offline data/calibration cost. The complete paired fit stores 218 neural parameters, plus policy entries, and uses extra held-out observations and known symbols during offline policy development.
+

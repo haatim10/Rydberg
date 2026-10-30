@@ -1,0 +1,49 @@
+SMALL RICIAN ALL-PILOT TRAINING SCREEN — 14 OCTOBER 2026
+
+Exploratory mechanism screen, not publication confirmation. Preserve every
+historical source, dataset, checkpoint and manuscript. No new architecture,
+no OptShrink retuning, no phase-repair algorithm in this first screen.
+
+Three arms: existing 21/9 pilot-holdout loss; all30-pilot re-corruption with
+fixed alpha=.5; all30-pilot re-corruption with fixed alpha=1. For eta~CN(0,v),
+input=|Z+alpha*eta| has variance v(1+alpha²); independent target conditional
+on true channel is |Z-eta/alpha| with variance v(1+alpha^-2). The model uses
+INPUT variance and the loss TARGET variance. S/B unchanged. Fresh synthetic
+noise each epoch; augmentations of one observation are not new channels.
+Known independent circular field-noise variance is an explicit assumption.
+
+All arms: unchanged188-parameter AdaptiveHankelEstimator, exact Rician EM,
+10stages, float32 training, Adam .001, batch32,10epochs, seeds10401/10402.
+Same initial parameters and epoch-wise data orders per seed.2304 shared
+fresh training blocks,384 validation blocks. N32,K3,P30; equal6cells:
+SNR{-5,5,15}, RSR{5,12}, random3..7paths. No channel truth saved for training
+or validation. Data master seeds20261014101001/20261014102001 respectively.
+
+Primary comparison: FINAL fixed10-epoch checkpoints at ORIGINAL noise using
+all30pilots, avoiding method-specific checkpoint objectives. Secondary:
+checkpoints chosen by identical fixed21/9 held-out validation Rician NLL,
+including epoch0; this selection uses fewer input pilots and is reported
+separately because it may favor the holdout training method. Never compare
+raw training NLL across arms as an accuracy measure (variances differ).
+
+Fresh test generated ONLY after all checkpoints are frozen:
+master20261014103001,64worlds/cell,6primary cells plus weak reference
+(SNR5,RSR0) and low-noise(SNR40,RSR12) stress cells:512worlds total.
+Primary: equal-cell dB ratio-of-summed-squared-error/channel-power,
+then equal mean over2trainingseeds. Also per-cell/seed error, pooled NMSE,
+severe-error rate NMSE>1, selected-checkpoint results, and inference timing.
+Evaluate each final model also on fixed augmented inputs at alpha .5/1 to
+show the noise-level shift; these are diagnostic, not the primary metric.
+Report paired-seed differences; two seeds and one training population do
+not support a definitive significance/generalization or novelty claim.
+
+Save source/data/selection hashes, data-order hashes, complete-epoch
+checkpoints and optimizer state. An interrupted epoch restarts deterministically.
+Single locked sequential queue; no duplicate launches. Max2h per invocation,
+check every batch; ordinary interruption retains complete epochs.
+Failure stops the queue; do not replace gradients or change the protocol.
+
+Separate Idea3 diagnostic uses old frozen models and fresh worlds, never
+training truth. Oracle global/row-phase alignment is evaluation-only and
+NOT a receiver-available gain; its purpose is to locate error mechanisms.
+Its seeds and checkpoint hashes are recorded in its own phase/ outputs.

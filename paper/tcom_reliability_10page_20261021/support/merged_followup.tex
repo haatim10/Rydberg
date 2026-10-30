@@ -1,0 +1,120 @@
+\section{Historical: Matched One-Sweep Baseline and Tail-Error Audit}
+This post-review follow-up uses the already inspected 1,152-world
+OptShrink bank: 128 worlds in each of seven primary SNR cells and two
+stress cells. It generates no new channels and trains no new model.
+The protocol is frozen before running the added comparator, not before
+the historical bank was inspected. It must not be described as a new
+blinded confirmation. The seven primary cells contain 896 distinct worlds.
+
+The one-sweep HS-Rician estimator fits every rank 1--16 on the first
+21 pilots for 25 EM updates, scores Rician likelihood on the other nine,
+then refits the selected rank with 100 updates and all 30 pilots.
+Each candidate and refit uses one Cadzow sweep. The sweep count is the
+only changed setting relative to the saved HS-Rician baseline; the new
+one-sweep candidates select their own ranks. Rank 16 bypasses filtering.
+No true channel is an estimator input. Learned checkpoints, OptShrink
+settings, initialization and observation budgets remain unchanged.
+
+\begin{table*}[!t]
+\caption{Matched saved-bank results, lower dB NMSE is better. Stress cells
+are excluded from the seven-SNR macro-average. Learned values average
+three fixed-model dB scores, not ensemble estimates.}
+\centering\small\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}lrrrrr@{}}\toprule
+Cell & HS, one sweep & HS, four sweeps & In-loop OptShrink & Final OptShrink & Learned\\\midrule
+SNR -10 & 1.808 & 1.850 & -0.461 & -0.650 & -1.184\\
+SNR -5 & -2.731 & -2.401 & -4.445 & -4.316 & -4.138\\
+SNR +0 & -8.010 & -7.558 & -9.384 & -9.333 & -9.088\\
+SNR +5 & -13.335 & -12.896 & -14.320 & -14.018 & -14.114\\
+SNR +10 & -18.746 & -18.306 & -19.417 & -19.306 & -19.394\\
+SNR +15 & -23.561 & -22.803 & -24.088 & -23.985 & -23.991\\
+SNR +20 & -28.625 & -28.118 & -29.118 & -29.010 & -28.322\\
+RSR 0 dB & -9.045 & -8.307 & -5.026 & -6.613 & -7.069\\
+Two paths & -17.958 & -17.833 & -16.406 & -16.592 & -16.814\\
+\midrule Seven-SNR mean & -13.314 & -12.890 & -14.462 & -14.374 & -14.319\\\bottomrule\end{tabular}\end{table*}
+The added one-sweep HS-Rician control reaches $-13.314$~dB,
+improving on four sweeps by 0.424~dB. Learning retains a
+1.004~dB average gain, with paired interval
+$[0.922,1.088]$~dB. This closes the
+one-versus-four-sweep gap on the same bank, not the comparison to every
+possible hard-rank method. In the separate weak-reference and two-path
+cells, one sweep instead beats learning by
+1.976 and
+1.144~dB.
+
+At the original threshold $e_i/d_i>1$, the seven-SNR reduction in
+failure rate versus in-loop OptShrink is
+4.13
+percentage points, with paired interval
+$[3.051,5.283]$.
+At $-10$~dB alone the interval is
+$[21.354,36.979]$
+percentage points. Learned seed-specific rates there are
+5.47\%, 5.47\% and 7.81\%, versus 35.16\% for OptShrink.
+
+\begin{table}[!t]
+\caption{Post-hoc error-threshold sensitivity on the stronger bank.
+Rates average seven SNR cells; positive differences favor learning.}
+\label{tab:supp_tails}\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}rrrr@{}}\toprule
+NMSE & Learned & In-loop & OptShrink minus learned\\
+threshold & (\%) & OptShrink (\%) & 95\% interval (points)\\\midrule
+$0.5$ & 17.00 & 15.85 & $[-1.935,-0.409]$\\
+$1$ & 0.89 & 5.02 & $[3.051,5.283]$\\
+$2$ & 0.00 & 0.00 & ---\\
+\bottomrule\end{tabular}
+\end{table}
+The conclusion depends on the error threshold (Table~\ref{tab:supp_tails}).
+At threshold 0.5, OptShrink has fewer exceedances; at threshold 2,
+neither method has any observed exceedance. Zero observed events do not
+establish zero population risk. These exploratory, pointwise intervals
+retain paired worlds and fixed models and are not adjusted for multiple
+thresholds. Learning therefore does not dominate the whole error
+distribution. The original severe-error definition and primary NMSE
+metric are unchanged.
+
+The post-review timing run measures all five methods together on the
+same independent 24-world SNR 5~dB timing bank, with three repetitions.
+Mean times are 5.16~ms for one adaptive model,
+averaged across three trained models, 5.68~ms
+for in-loop OptShrink, 3.87~ms for final-only
+OptShrink, and 119.08/358.07~ms
+for one-/four-sweep HS-Rician. Initialization and setting selection or
+lookup are included; model loading and file I/O are excluded. These are
+new paired timing measurements, not averages with the earlier timing run.
+Backend differences remain. Learning avoids the hard method's per-case
+search, but has no large speed advantage over offline-tuned OptShrink.
+
+\subsection{What the Uncertainty Includes}
+The new audit uses 4,000 bootstrap draws, resampling 128 whole worlds
+within each cell. A draw keeps all paired methods and learned seed
+outputs together. NMSE first sums errors and channel energies within
+each cell, converts their ratio to dB, averages fixed-model scores,
+and then equally averages the seven cells. Failure rates instead count
+per-world error/energy ratios above the stated threshold and average
+fixed-model rates. Training seeds are not independent test observations.
+The intervals are pointwise, conditional on the saved models and
+exploratory. Thresholds 0.5 and 2 were added for sensitivity analysis;
+the original threshold 1 was not selected to maximize a new contrast.
+No risk dominance or safety-critical guarantee is inferred. A degenerate
+empirical bootstrap when there are no events is not evidence of known
+zero event probability; such intervals are omitted from the table.
+
+\subsection{Verification and Numerical Scope}
+The run checks original source and checkpoint hashes, saved observations
+and truth hashes, and all 1,152 trial identities. It recomputes the old
+prediction errors from channel arrays, rather than copying headline
+statistics. Four-sweep replay agrees exactly with the existing solver;
+full-rank bypass is exactly equal for one and four sweeps. Each added
+prediction retains its channel, selected rank, all candidate scores,
+trial ID and processing time. A run lock prevents duplicate writers,
+and completed cases are reused on resume. Earlier result files are not
+overwritten. The accompanying evidence archive contains this follow-up's
+protocol, code, source hashes, predictions and aggregate outputs. The
+large original observation/checkpoint bank is retained in the separate
+Paper 2 reproduction archive. These checks validate the recorded
+computation, not external replication or hardware performance.
+
+The rest of this supplement retains the earlier learned-study evidence.
+Statements about its original timing samples, baselines and data counts
+refer to those separately labelled protocols, not the new follow-up.

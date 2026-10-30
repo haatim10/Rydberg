@@ -1,0 +1,41 @@
+% Append to Section V-G, "Projection Placement and Computation", after
+% the existing timing discussion. Do not replace the older timing numbers.
+
+We also time the six classical methods from
+Section~\ref{sec:revision-structured-comparisons} in a separate serial
+experiment. This uses the vectorized comparator implementation,
+$N=32$, $K=3$, $P=30$, $L=7$, SNR $=5$~dB and RSR $=12$~dB.
+Table~\ref{tab:revision-serial} reports medians over 20 fresh worlds with
+single-thread CPU execution and double precision. The iterative methods
+use 100 final updates, 25 updates per candidate and four structural
+sweeps. Timings include initialization, parameter selection where needed,
+and the final fit, but exclude channel and observation generation.
+
+\begin{table}[!t]
+\caption{Serial runtime of the classical comparator implementations.}
+\label{tab:revision-serial}
+\centering
+\footnotesize
+\begin{tabular}{lr}
+\toprule
+Method & Median total time (ms)\\
+\midrule
+EM-GS & 9.943\\
+HS-GS & 348.536\\
+Rician GD & 10.015\\
+Rician GD + Hankel & 346.500\\
+EM-GS + smooth filtering & 200.799\\
+Xu 1D linearized LS & 0.647\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The methods are timed in a fixed order for each world: HS-GS,
+Rician--Hankel, smooth filtering, EM-GS, Rician GD and linearized LS.
+No warm-up worlds are discarded. The median selection share is 76.0\%
+for HS-GS and 56.4\% for smooth filtering; the latter searches seven
+threshold factors rather than 16 ranks. These are measured costs for one
+implementation, machine and operating point.
+They are separate from the earlier production-code placement timings at
+$P=20$ and RSR $=10$~dB, so a difference between the two timing studies
+must not be interpreted as an algorithmic speedup.

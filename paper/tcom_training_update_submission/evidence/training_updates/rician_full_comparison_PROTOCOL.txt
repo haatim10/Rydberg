@@ -1,0 +1,68 @@
+FULL-BUDGET ALL-PILOT TRAINING COMPARISON — 14 OCTOBER 2026
+
+Question: does alpha1 all-pilot Rician re-corruption retain its small-screen
+gain when matched to our original full-budget188-parameter estimator,
+and how does it compare with the strongest previously tuned OptShrink?
+Alpha1 chosen from the completed small development screen; no alpha search
+here. No new architecture or change to the filtering rule. Do not modify
+historical sources/data/checkpoints, cancelled projects or the manuscript.
+
+Train only3new all-pilot models from scratch: seeds9101/9102/9103,20epochs,
+16384same observation-only training blocks,2048same validation blocks,
+Adam.001,batch32,10EMstages,188parameters,float32CPU. Match historical
+initialization seeds and epoch-specific data orders. For each epoch draw
+eta~CN(0,v), seed+10000+epoch, input|Z+eta| and target|Z-eta|. Input and
+target variance BOTH2v. The forward/loss interfaces never receive channel
+truth. Fresh corruption per epoch is augmentation, not new channels.
+
+Reuse the historical full-budget holdout models, both validation-selected
+and final20epoch. Verify original training configuration and source/data
+hashes; replay a baseline epoch before the run to test reproducibility.
+The original training uses21context/9heldout pilots. All-pilot uses30/30
+artificially noisier views. Match example/update budgets, not FLOPs or
+training-noise distributions. This is a training-recipe comparison, not
+a causal claim about only pilot geometry. Full-budget does not mean converged.
+
+Primary checkpoints for BOTHlearned methods: smallest equal126-stratum
+fixed21/9heldout validation Rician NLL, including epoch0. This preserves
+the historical selection rule, which can favor the holdout training recipe.
+Report final20epoch vsfinal20epoch as a separately labelled sensitivity
+analysis. The smaller prior screen used finalepoch as its primary; do not
+silently treat those selection protocols as identical.
+
+Classical comparisons: both offline-tuned OptShrink and strongest per-block
+in-loop rank-selecting OptShrink. Reuse frozen validation-only choices in
+results/fair_optshrink/frozen_selection.json. Rank-loop searches0..15 using
+the first21pilots and scores9withheld, then refits using all30. Include all
+search/refit cost; no true-rank information, no new OptShrink tuning.
+
+Freeze every selected/final model before generating two fresh test banks:
+20261014211001 and20261014221001.32cases/cell/bank,126primarycells plus
+weak-referenceRSR0/SNR5 and nearly-noiselessSNR60/RSR12:8192worlds total.
+PrimaryN32,K3,P30; SNR-10..20by5,RSR5/12/20; random3..7per-userpaths or
+fixed2/4/8/12/16. Same channel,pilots,reference and noise across methods.
+No post-test tuning or merging with previous inspected test banks.
+
+Primary metric: equal average126cell dB ratio-of-summed channel error to
+summed channel power, then equal average over3learned seeds. Two predeclared
+contrasts: allpilot_best vs holdout_best; allpilot_best vs rank_loopOptShrink.
+4000paired within-bank/cell resamples, Bonferroni-adjusted95percent intervals
+for these TWOmacro comparisons. Preserve shared cases across methods and
+seeds; report seed and bank variability separately. Intervals condition on
+one shared training dataset and fitted models, not population/training-data
+uncertainty. Report all cells and worst-cell losses, severeNMSE>1 frequency,
+pooled-linear NMSE, fixed-final-checkpoint sensitivity, bothOpt baselines.
+No universal-superiority or publication/novelty conclusion from an average.
+
+Inference timing: PyTorchCPU1thread float64,batch1,3randomized repeats,
+one independent world per condition. Count initialization/features/updates/
+ranksearch/refit. Exclude fileIO/loading. Training costs separately.
+
+Checks: exact Rician view tests; baseline replay; finite losses/gradients;
+completeepoch optimizer resume; historical hash preservation; all60newepoch
+histories; source/data/model hashes; all8192pairedIDs; selected checkpoint
+minimum validation score; representative model/classical replay; independent
+headline recomputation.3one-threadworkers; locked resumable campaign with
+perseedlocks,completeepoch/percell checkpoints,4hour safety cap. Do not
+restart numeric failures with changed settings. No dashboard or manuscript
+changes in this experiment.

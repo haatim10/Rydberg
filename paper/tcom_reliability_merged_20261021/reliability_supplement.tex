@@ -1,0 +1,116 @@
+\section{Final Receiver: Stored Components and Exact Policy}
+The current receiver uses the matched-30-context adaptive and global fits for seeds 9101, 9102 and 9103. One paired inference fit stores 218 neural parameters; reported fit means average metrics and do not ensemble channels. Its observation inputs are $Z,S,B,v$, with $N=32$, $K=3$, $P=30$ in the final experiment. The complete policy and checkpoint/source hashes are supplied in \texttt{evidence/reliability/source/policy.json} and the protocol record. True channel, path count and test error are not routing inputs.
+
+Let $s=10\log_{10}(K/v)$ and $r=10\log_{10}\operatorname{mean}|B|^2$. Reference keys are nearest to 5, 12 and 20~dB; SNR keys are nearest to the declared 17-point grid. Exact ties select the lower key. A tolerance of $10^{-10}$~dB is used at the continuous boundaries. The adaptive start is used for $s\le30+10^{-10}$, the global schedule above it. At $s\le20+10^{-10}$, return the raw adaptive output exactly. Elsewhere use Table~\ref{tab:final-policy}. If the family's lookup record disagrees with continuous model routing, extra EM is set to zero. It is a deterministic off-grid rule, not interpolation or a guarantee of smooth performance.
+
+\begin{table*}[!t]
+\centering\small
+\caption{Frozen prior-hybrid table inherited by the final receiver. Entries are extra EM updates and final noise-scale multiplier $c$. Ref denotes nearest-reference key. EM starts from the chosen trained output. At SNR at most 20~dB both continuation and final filtering are bypassed.}
+\label{tab:final-policy}
+\begin{tabular}{@{}lrrrrrr@{}}\toprule
+SNR key (dB)&$T$, ref 5&$T$, ref 12&$T$, ref 20&$c$, ref 5&$c$, ref 12&$c$, ref 20\\\midrule
+0--30&0&0&0&0&0&0\\
+32.5&0&10&10&0&2&2\\
+35&0&10&40&0&2&4\\
+37.5&0&20&40&0&4&4\\
+40, 42.5, 45&40&20&40&0&4&4\\
+50, 60&40&40&40&0&4&4\\\bottomrule
+\end{tabular}
+\end{table*}
+
+The final filter applies the same smooth Hankel map as the trained stages with $\beta=1$ and
+\begin{equation}
+ \tau_k=c\sqrt{2v\operatorname{Re}[(SS^H)^{-1}]_{kk}\max(m,q)}.
+\end{equation}
+For $c=0$, it returns its input exactly. Positive $c$ gives a decreasing threshold as supplied noise decreases; it is a heuristic scale, not a theorem about the noise covariance after EM. Maintaining this filter above 40~dB removed an earlier artificial switch-off, while other piecewise transitions remain.
+
+Only cases in the nearest-reference 5~dB bin with $s>30+10^{-10}$ enter the new diagnostic. The complete incumbent $G_0$ is computed first. The maximum antenna residual
+\begin{equation}
+ \max_n\frac{2}{Pv}\sum_p[Z_{np}-|[G_0S+B]_{np}|]^2
+\end{equation}
+exceeding 2 triggers one algebraic start, 20 exact EM updates and the same final-filter rule. The complete fallback replaces the incumbent only if finite and its average fitting Rician negative log-likelihood is smaller by more than $10^{-12}$. Failed solves, no triggers and rejected alternatives return the incumbent bitwise. The standalone algebraic-start-plus-EM20 baseline instead applies the algebraic start on every condition and uses spectral-plus-EM20 when that solve is invalid.
+
+\section{Intensity Regression: Coefficients, Noise and Scope}
+For repeated $b_n\ne0$, define $c_n=g_n/b_n$ and $y_{np}=(Z_{np}^2-v)/|b_n|^2-1$. The expansion is
+\begin{align}
+ \mathbb E[y_{np}]={}&2\operatorname{Re}\sum_i c_{ni}s_{ip}
+ +\sum_i|c_{ni}|^2|s_{ip}|^2\nonumber\\
+ &+2\operatorname{Re}\sum_{i<j}c_{ni}c_{nj}^*s_{ip}s_{jp}^*.
+\end{align}
+All expectations here condition on $G,S,B$. The corresponding real coefficients are the real/imaginary components of $c_n$, its three squared magnitudes and the real/imaginary components of each pair product. The signs of the imaginary columns are negative because $\operatorname{Re}(ab)=\operatorname{Re}a\operatorname{Re}b-\operatorname{Im}a\operatorname{Im}b$. There are $d=2K+K^2=15$ columns for three users. The real least-squares solution treats the quadratic coefficients as nuisance variables; it does not enforce their consistency with a rank-one outer product.
+
+Writing $y_n=D\xi_n+\epsilon_n$ gives $\mathbb E\epsilon_n=0$ and
+\begin{equation}
+ \operatorname{var}(\epsilon_{np})=
+ \frac{2v|g_n^Ts_p+b_n|^2+v^2}{|b_n|^4}.
+\end{equation}
+Independent field noise makes this conditional covariance diagonal over pilots. If $D$ has full column rank, $\widehat\xi_n=(D^TD)^{-1}D^Ty_n$ is conditionally unbiased and has covariance
+\begin{equation}
+ (D^TD)^{-1}D^T\operatorname{cov}(\epsilon_n)D(D^TD)^{-1}.
+\end{equation}
+These formulas explain sensitivity to conditioning and noise/reference scale. The ordinary least-squares solve is not asserted to be minimum variance. At $v=0$, $\epsilon_n=0$ and full rank recovers $c_n$ exactly. In floating-point tests, the independent noiseless algebraic reconstruction errors were of order $10^{-15}$.
+
+The implementation uses SVD least squares, checks rank 15 and condition number at most $10^8$, and rejects nonfinite coefficients or a reference that does not repeat exactly. With constant-modulus pilots, each diagonal design column is a constant vector, so three such columns span at most one dimension and rank is at most 13. The current validity rule then rejects. A reduced parameterization could remove this redundancy, but is not implemented or tested here. Extra offline known QPSK probes and online QPSK data must not be confused with the Gaussian fitting pilots. Neither unbiasedness of the unselected initializer nor noiseless exactness extends automatically to the refined, filtered, selected receiver.
+
+\section{Training, Offline Selection and Independent Confirmation}
+The final adaptive and global models train on the same 39-observation blocks, using 30 fitting observations and 9 held out. Training/validation block counts are 16,384/2,048, batch size 32, epochs 20 and Adam learning rate 0.001. The validation score equally averages 126 SNR/reference/path strata. All three fit seeds share this data population; model fits and data-population replications are different uncertainties. The older 21-context and re-corruption experiments retained later in this supplement are separate recipes.
+
+Each new policy bank A/C has 768 independent physical anchors (256 in each of three path regimes), reference 5~dB and eight coupled SNRs above 30~dB. It supplies 30 context observations, 9 independent held-out Gaussian observations and 64 known-symbol probes per channel. Ground-truth channels are used by the simulator but are not exported to development selection. The 12 rules cross two residual summaries, thresholds 2/4/8 and tails 10/20. All pass the separate complete-pipeline calibration cap of 10~ms p90; 144 forced-fallback calls separately exercise longer branches.
+
+Selection requires positive held-out-loss gain and empirical probe-error nonincrease in every path regime. The incumbent is always admissible, and tie rules are fixed. The chosen maximum/2/20 rule triggers on 27.848\% of A cases and 27.837\% of C cases, averaging fits. C's one-sided 95\% lower loss-gain bound is 0.198729; its descriptive two-sided 95\% interval is [0.195729, 0.370585]. Both methods have zero observed probe errors in each regime. Only the selected rule is confirmed; no substitute is searched on C or the final test. This confirms the incremental wrapper under the protocol, not every earlier inherited EM-tail decision.
+
+The current fresh test uses 1,152 independent anchors in nine reference/path blocks and 19,584 coupled SNR condition cases. Data BER uses 7,520,256 bits per fit. The bootstrap shares within-block indices over SNR, methods and fits and draws independently across blocks. The four whole-grid outcome intervals are multiplicity adjusted; regional and per-cell intervals remain descriptive. The evidence archive preserves all raw counts and per-fit summaries available in the compact source records.
+
+\section{Exact Baseline Definitions and Frozen Selection}
+\label{sec:baseline-reproduction}
+The directory \path{evidence/reliability/baselines/} contains byte-for-byte copies of the inherited baseline policies and their selection records. \path{PROVENANCE.json} gives each original repository path, SHA-256 digest and copy size, plus the implementation-source hashes. \path{policy_summary.json} expands all 51 reference/SNR entries into the compact configuration and the full-repair base/filter combination. This is a reporting transformation of frozen records, not a new selection. Baseline parameters were not reoptimized on the final reliability development or test banks.
+
+\subsection{Classical Structured Start and Common-40 Controls}
+The classical start uses the same spectral initializer as the learned starts, followed by ten exact EM updates with unit relaxation. Each update is followed by smooth Hankel filtering and mixing. Its single global configuration was selected from 30 choices: relative thresholds $\{0.01,0.03,0.1,0.3,1\}$ or noise multipliers $\{0.5,1,2,4,8\}$, each crossed with mixing $\{0.1,0.5,1\}$. Relative thresholds multiply the current Hankel RMS; noise thresholds use the formula in the final-filter section. The criterion is the minimum raw-start held-out Rician loss, averaged equally over the 126 strata of the same 2,048 validation blocks and fixed 30/9 split used for the learned checkpoint selection. No extra EM continuation or post-start final filter enters this selection score. Evaluation uses double precision on the stored single-precision observations.
+
+The selected start has noise multiplier $c=1$ and mixing $\beta=1$ at every stage. The complete classical-start-plus-EM40 control then adds 40 unfiltered exact EM updates and the final-filter table in Table~\ref{tab:final-policy}. The adaptive-start-plus-EM40 and global-schedule-plus-EM40 controls use the corresponding trained start with these same 40 updates and final filter, including at ordinary SNR; they do not use the hybrid's ordinary-SNR bypass. \path{classical_selection.json} retains all 30 candidate scores and their 126 stratum scores. The copied start-ablation protocol records this selection; the start-budget protocol/policy records the subsequent common-40 comparison. Selection on raw-start likelihood does not guarantee an optimal configuration for the final refined pipeline or for NMSE.
+
+\subsection{Compact Sparse/EM Control}
+Let $A_D$ have entries $[A_D]_{nj}=N^{-1/2}\exp[-\mathrm{i}n(-\pi+2\pi j/D)]$, with $n=0,\ldots,N-1$ and $j=0,\ldots,D-1$, and write $G=A_DX$. The penalized control uses a finite-iteration solver for
+\begin{equation}
+ \begin{gathered}
+ \frac{v}{2}\sum_{n,p}\ell(Z_{np},[A_DXS+B]_{np},v)
+ +\lambda\sum_{j,k}|X_{jk}|,\\
+ \lambda=f\sqrt{vP\log D}.
+ \end{gathered}
+\end{equation}
+It initializes $G$ spectrally and $X=(N/D)A_D^HG$, computes the exact Rician posterior field at each outer step, and performs the declared number of monotone-restarted FISTA inner updates on the penalized quadratic surrogate. The step size is $[(D/N)\lambda_{\max}(SS^H)]^{-1}$. Coefficients carry between outer steps; finite inner iteration counts are not exact penalized M-step solves. FFT products implement this uniformly spaced spatial-frequency dictionary. The zero-penalty option directly performs 100 unregularized EM updates and does not run a redundant sparse solve.
+
+The compact menu contains three $(D,\hbox{inner},\hbox{outer})$ structures, $(128,8,12)$, $(256,8,12)$ and $(256,2,40)$, each with $f\in\{0.03,0.1,0.3,1,3\}$, plus direct EM100. At the last sparse refresh, all 16 passed the historical complete-pipeline calibration cap of 10.7439662~ms, defined by the contemporaneous full-repair pooled p90. Only the ten bins at references 12/20~dB and SNR 40/42.5/45/50/60~dB were refreshed: 384 development anchors per path regime supplied 30 fitting and nine independently drawn held-out pilots. Minimum equally weighted held-out Rician loss selected the configuration; exact score ties used calibration p90 then candidate name. The other 41 bins retained the preceding frozen policy. These historical eligibility times are not substituted for the final experiment's fresh latency measurements, and this compact menu is not a globally optimized classical accuracy--time frontier.
+
+\path{filter_continuation_policy.json} includes every compact configuration and the last refresh's candidate scores; its copied protocol and calibration preserve the menu, bank hashes and timing evidence. The final table has 34 penalized entries and 17 direct-EM100 entries. Nearest-reference/SNR lookup chooses the lower bin at a tie; there is no online rank search or validation split. All 30 deployment pilots are used to estimate the channel.
+
+\subsection{Earlier Full Repaired Receiver}
+The full-repair comparator uses the matched-context adaptive start, not the global schedule. At reference 5~dB it returns that start through SNR 32.5~dB, adds five exact EM updates at 35~dB, and adds 100 from 37.5~dB upward. At reference 12~dB it returns the adaptive start through 30~dB; at 32.5/35~dB it adds 2/5 EM updates and final filtering with $c=2$; from 37.5~dB upward it uses spectral EM100 followed by $c=4$ filtering. At reference 20~dB it returns the adaptive start through 30~dB, adds 3 EM updates and $c=2$ filtering at 32.5~dB, and uses spectral EM100 with $c=4$ from 35~dB upward. Final mixing is one, and all thresholds use the supplied variance. These are grid-key descriptions; off-grid inputs use the same nearest-bin rule. The copied filter-continuation policy stores the outer repair choices, while \path{dual_guard_policy.json} identifies the base beneath each final shrink operation. The native-runtime policy/protocol verifies that numerical optimization preserved these choices and the compact table. Neither baseline acquires the final receiver's algebraic recovery check.
+
+\section{Final Effects, Adverse Conditions and Timing}
+\input{reliability_evidence_tables.tex}
+The final primary and regional tables are in the main manuscript. Here the extended effects retain fit dependence and adverse comparisons. No condition-mean NMSE or BER worsens against the prior hybrid in this bank. Against the full repair, 32 NMSE means are worse, with 8 pointwise intervals excluding zero; these are not simultaneous discoveries after correction over 153 cells. The worst loss, 0.700957~dB, is at two paths, reference 20~dB, SNR 32.5~dB, outside the new gate. Compact sparse/EM remains better for aggregate BER and pooled linear NMSE. Zero target-region bit errors do not prove equivalence or exclude rare failures.
+
+Each timing window contains 27 independent physical anchors reused across SNR, giving 459 condition cases and 8,721 calls. Every raw/family quantile, ordering and pass flag was independently checked. The second window is slower for the baselines as well as the receiver. All three receiver fits pass the full-grid and target p90 requirements in both windows, and none of the 51 reference/SNR-bin p90 values exceeds 10.74~ms. Individual timing is different: one of 1,377 receiver calls in window 2 took 22.275833~ms. It was fit 9103, random 3--7 paths, reference 12~dB, SNR 45~dB, anchor index 600, with its gate false. The measurement does not establish a cause. No timing window was rerun to pass.
+
+\section{Development Sequence and Interpretation}
+The following sequence records what motivated the final design. Scores from its different banks are not a common leaderboard. Detailed report paths and hashes are in \texttt{historical\_report\_index.json} inside the evidence folder.
+\begin{enumerate}
+\item \emph{Runtime-matched sparse comparison.} An angle-domain Rician-likelihood baseline was adapted and selected under a processing budget, strengthening the classical comparator. Its final frozen form includes a direct-EM option.
+\item \emph{Pilot-matched retraining and short EM.} Comparing 30 versus 21 context pilots on paired 39-observation blocks gives 0.219~dB NMSE gain and 0.01758 percentage-point BER reduction on that separate test, with adjusted intervals [0.205, 0.233]~dB and [0.01303, 0.02245] percentage points. All selected ordinary-SNR extra tails are zero; fixed 1/2/5-step continuations harm the tested adaptive estimate. The study supports matching training inputs, not a generic claim that more EM helps.
+\item \emph{Retrained high-SNR bypass.} A broad high-SNR gain still leaves eight adverse conditions, with worst loss 16.415~dB. A single coarse bypass is insufficient near weak-reference transitions.
+\item \emph{Weak-reference transition and incumbent-preserving repairs.} Subsequent transition, incumbent and dual-guard studies reduce specific failures but reveal regressions against earlier versions. They are development evidence for candidate generation and acceptance logic, not proof of a uniformly better filter. The first transition repair improves its weak 18-condition region by 16.208~dB but still has 10 whole-grid NMSE losses and misses its target-region p90 cap at 11.258~ms.
+\item \emph{Filter continuation above 40~dB.} Keeping the strong-reference noise-scaled filter active changes 30 strong/high conditions while preserving 123 others. Its separate mean shifts from $-53.364$ to $-58.557$~dB with zero observed target BER in both. This diagnoses an artificial filter-removal jump.
+\item \emph{Native runtime repair.} Numerical-kernel optimization preserves the same formulas, with recorded coefficient discrepancy at most $6.66\times10^{-14}$ in its parity checks. It is an implementation improvement, not a new estimator-accuracy result.
+\item \emph{Matched starts and common continuation.} Adaptive, global and classical structured starts were compared with common EM/filtering. In the common 40-tail comparison, adaptive starts lose 0.696~dB to the global schedule on mean NMSE, while improving BER by 0.005984 percentage points. Forced 40-step refinement loses 4.808~dB in ordinary-SNR adaptive performance. This motivates preserving the ordinary branch and using different high-SNR effort.
+\item \emph{Hybrid routing and selective tails.} The zero-tail hybrid underperforms the full repair. It was retained after independent confirmation rejected all proposed nonzero tails. Exploratory nonzero-tail proposals improve that hybrid, but all 21 earlier C confirmation decisions reject the proposed changes. The final reliability experiment explicitly adopts that frozen exploratory prior as its incumbent; its new confirmation does not erase these failures.
+\item \emph{Current reliability wrapper.} A new, independently calibrated residual gate and different initializer are confirmed before the fresh final test. Only this current experiment supplies the main manuscript's final nine-method comparison and timing verdict.
+\end{enumerate}
+
+\section{Evidence Integrity and Reproduction Scope}
+The source bundle includes compact final protocols, policy, source/checkpoint hashes, all-method summaries, adverse-cell lists, timing records, five audits, figure values and 163 independently checked numerical table entries. It excludes the large raw NPZ banks and neural checkpoint binaries. Compilation requires only the included figures, bibliography and TeX sources. Regenerating simulations requires the original code/data environment or a future complete public release; no archive DOI has been invented.
+
+The final selection audit reconstructed development observations and decisions before test generation. Independent base and fallback prediction replays match exactly. The test audit replays 2,448 standalone predictions, independently rebuilds 9,216 gate/fit cases and verifies ordinary output preservation. The BER audit independently checks 6,120 decodes, 306 data reconstructions and 915 exact prediction/count reuses. The summary audit checks the nine-block dependence, all 18 scopes and adjusted intervals; independent bootstrap arithmetic differs by at most $2.13\times10^{-14}$. The timing audit checks 17,442 complete calls. A development-probe reconstruction check uses explicit $10^{-13}$ tolerances for independent floating-point arithmetic, with maximum difference $8.88\times10^{-16}$; exact production-preservation checks remain exact.
+
+Frozen study files and checkpoints were not edited for this manuscript. Manuscript figures and tables are reporting-only transformations of verified evidence. Current final policies were not chosen from fresh test errors. Earlier development choices and known limitations are retained rather than relabelled as independent confirmation.

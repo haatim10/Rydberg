@@ -1,0 +1,442 @@
+{
+  "name": "Adaptive, nonadaptive learned and classical structured starts with common refinement",
+  "N": 32,
+  "K": 3,
+  "P": 30,
+  "test_cases_per_reference_regime": 128,
+  "snrs": [
+    0.0,
+    5.0,
+    10.0,
+    15.0,
+    20.0,
+    22.5,
+    25.0,
+    27.5,
+    30.0,
+    32.5,
+    35.0,
+    37.5,
+    40.0,
+    42.5,
+    45.0,
+    50.0,
+    60.0
+  ],
+  "rsrs": [
+    5.0,
+    12.0,
+    20.0
+  ],
+  "regimes": [
+    [
+      "L2",
+      2
+    ],
+    [
+      "L4",
+      4
+    ],
+    [
+      "random3to7",
+      null
+    ]
+  ],
+  "seeds": [
+    9101,
+    9102,
+    9103
+  ],
+  "test_seed": 2026102012,
+  "data_seed": 2026102013,
+  "timing_seed": 2026102014,
+  "holdout_seed": 2026102015,
+  "bootstrap_seed": 2026102019,
+  "names": [
+    "adaptive_9101",
+    "adaptive_9102",
+    "adaptive_9103",
+    "global_9101",
+    "global_9102",
+    "global_9103",
+    "classical",
+    "spectral",
+    "em10",
+    "budget_adaptive_9101",
+    "budget_adaptive_9102",
+    "budget_adaptive_9103",
+    "budget_global_9101",
+    "budget_global_9102",
+    "budget_global_9103",
+    "budget_classical",
+    "budget_spectral",
+    "budget_em10",
+    "latest_9101",
+    "latest_9102",
+    "latest_9103",
+    "em100",
+    "compact_sparse",
+    "optshrink"
+  ],
+  "raw_names": [
+    "adaptive_9101",
+    "adaptive_9102",
+    "adaptive_9103",
+    "global_9101",
+    "global_9102",
+    "global_9103",
+    "classical",
+    "spectral",
+    "em10"
+  ],
+  "groups": {
+    "adaptive_mean": [
+      "adaptive_9101",
+      "adaptive_9102",
+      "adaptive_9103"
+    ],
+    "global_mean": [
+      "global_9101",
+      "global_9102",
+      "global_9103"
+    ],
+    "latest_mean": [
+      "latest_9101",
+      "latest_9102",
+      "latest_9103"
+    ],
+    "budget_adaptive_mean": [
+      "budget_adaptive_9101",
+      "budget_adaptive_9102",
+      "budget_adaptive_9103"
+    ],
+    "budget_global_mean": [
+      "budget_global_9101",
+      "budget_global_9102",
+      "budget_global_9103"
+    ]
+  },
+  "contrasts": {
+    "adaptive_vs_global": [
+      "global_mean",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_classical": [
+      "classical",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_spectral": [
+      "spectral",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_em10": [
+      "em10",
+      "adaptive_mean"
+    ],
+    "budget_adaptive_vs_global": [
+      "budget_global_mean",
+      "budget_adaptive_mean"
+    ],
+    "budget_adaptive_vs_classical": [
+      "budget_classical",
+      "budget_adaptive_mean"
+    ],
+    "adaptive_vs_latest": [
+      "latest_mean",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_compact": [
+      "compact_sparse",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_em100": [
+      "em100",
+      "adaptive_mean"
+    ],
+    "adaptive_vs_optshrink": [
+      "optshrink",
+      "adaptive_mean"
+    ],
+    "budget_adaptive_vs_adaptive": [
+      "adaptive_mean",
+      "budget_adaptive_mean"
+    ]
+  },
+  "primary": {
+    "contrasts": [
+      "adaptive_vs_global",
+      "adaptive_vs_classical"
+    ],
+    "regions": [
+      "all"
+    ],
+    "outcomes": [
+      "NMSE",
+      "BER"
+    ],
+    "adjustment": "Bonferroni4, 20,000 paired channel-index bootstrap draws"
+  },
+  "main": {
+    "start": "Every start is used everywhere; no spectral bypass",
+    "continuation_steps": 40,
+    "final_filter": "Same inherited observable reference/noise filter rule for all starts",
+    "raw_start_scores": "Descriptive NMSE, before common continuation and final filtering"
+  },
+  "fixed_control": "Thirty parameters trained on identical immutable context30 data/masks/orders/updates/heldout-NLL selection; no input-dependent control. Relative tau retains amplitude normalization.",
+  "classical": {
+    "grid": [
+      {
+        "kind": "relative",
+        "relative_tau": 0.01,
+        "beta": 0.1
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.01,
+        "beta": 0.5
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.01,
+        "beta": 1.0
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.03,
+        "beta": 0.1
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.03,
+        "beta": 0.5
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.03,
+        "beta": 1.0
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.1,
+        "beta": 0.1
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.1,
+        "beta": 0.5
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.1,
+        "beta": 1.0
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.3,
+        "beta": 0.1
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.3,
+        "beta": 0.5
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 0.3,
+        "beta": 1.0
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 1.0,
+        "beta": 0.1
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 1.0,
+        "beta": 0.5
+      },
+      {
+        "kind": "relative",
+        "relative_tau": 1.0,
+        "beta": 1.0
+      },
+      {
+        "kind": "noise",
+        "c": 0.5,
+        "beta": 0.1
+      },
+      {
+        "kind": "noise",
+        "c": 0.5,
+        "beta": 0.5
+      },
+      {
+        "kind": "noise",
+        "c": 0.5,
+        "beta": 1.0
+      },
+      {
+        "kind": "noise",
+        "c": 1.0,
+        "beta": 0.1
+      },
+      {
+        "kind": "noise",
+        "c": 1.0,
+        "beta": 0.5
+      },
+      {
+        "kind": "noise",
+        "c": 1.0,
+        "beta": 1.0
+      },
+      {
+        "kind": "noise",
+        "c": 2.0,
+        "beta": 0.1
+      },
+      {
+        "kind": "noise",
+        "c": 2.0,
+        "beta": 0.5
+      },
+      {
+        "kind": "noise",
+        "c": 2.0,
+        "beta": 1.0
+      },
+      {
+        "kind": "noise",
+        "c": 4.0,
+        "beta": 0.1
+      },
+      {
+        "kind": "noise",
+        "c": 4.0,
+        "beta": 0.5
+      },
+      {
+        "kind": "noise",
+        "c": 4.0,
+        "beta": 1.0
+      },
+      {
+        "kind": "noise",
+        "c": 8.0,
+        "beta": 0.1
+      },
+      {
+        "kind": "noise",
+        "c": 8.0,
+        "beta": 0.5
+      },
+      {
+        "kind": "noise",
+        "c": 8.0,
+        "beta": 1.0
+      }
+    ],
+    "criterion": "Minimum equal-stratum heldout Rician NLL of raw start on identical 2048 validation bank; one global configuration; all candidates reported; no channel truth"
+  },
+  "budget": {
+    "grid": [
+      40,
+      50,
+      75,
+      100
+    ],
+    "calibration_index": 401,
+    "calibration_cap_ms": 10.0,
+    "rule": "Largest tail count satisfying full-grid and weak-reference warm-region pooled p90 <=10.0 ms in one prespecified calibration sweep; same count across three fits. If none qualify retain40 and flag failure. Timing only; no test accuracy selection.",
+    "interpretation": "Secondary computation-budget experiment; unequal tail counts do not isolate initialization alone. More EM is not guaranteed to improve generalization."
+  },
+  "timing": {
+    "cap_ms": 10.74,
+    "windows": 2,
+    "indices": [
+      [
+        500,
+        501,
+        502
+      ],
+      [
+        600,
+        601,
+        602
+      ]
+    ],
+    "methods": [
+      "adaptive_9101",
+      "adaptive_9102",
+      "adaptive_9103",
+      "global_9101",
+      "global_9102",
+      "global_9103",
+      "classical",
+      "spectral",
+      "em10",
+      "budget_adaptive_9101",
+      "budget_adaptive_9102",
+      "budget_adaptive_9103",
+      "budget_global_9101",
+      "budget_global_9102",
+      "budget_global_9103",
+      "budget_classical",
+      "budget_spectral",
+      "budget_em10",
+      "latest_9101",
+      "latest_9102",
+      "latest_9103",
+      "em100",
+      "compact_sparse",
+      "optshrink"
+    ],
+    "order": "Before accuracy generation, then after all accuracy/BER workers complete",
+    "rule": "No retries until passing; report all methods including overruns; full batch-one calls, single CPU thread, fixed loading excluded",
+    "acceptance": "Both full-grid pooled p90 values <=10.74 ms per reported method family"
+  },
+  "previous_protocol_sha256": "fdecfdbd36f315a01a741911fbf42b9644eeb76ff7095121c6e9f3c815305fbd",
+  "previous_policy_sha256": "96bda1a6179d6ddc2a903215a4f44cb39c23ff55ee8e778b330af4b6986966cc",
+  "training_protocol_sha256": "8f9ed87f7654e0e7749dc759233181a9cbe2b3c7b718788b11c40fc5c54c3151",
+  "training_summary_sha256": "f41f490bfdaf36ca83de9f3ea2524f28aaa161dba142709101a0e1641418be5b",
+  "checks_sha256": "d92b8e8af41187a3bcdc18796a9097e65318d0122b2be87b4bbc4b72fd3ef5c6",
+  "pretest_revision": {
+    "previous_protocol_sha256": "a5379b60f3e6d3a6a33cf61f4357a33f092bd9a8a4c897142681c050e733e269",
+    "previous_policy_sha256": "4f2effc338b47b5661b86860d46a09b20d967b5b8ef502f742f8eaaa72460920",
+    "previous_calibration_sha256": "5f6331cfbdcf731929a5432038c7806b547288896e9939f8a1290103dc959756",
+    "previous_classical_sha256": "7710019835521a0b853b1a102cb1a58a62e548ec2c6f6eee0b8bddd20fce0f43",
+    "reason": "Every100-step pipeline exceeded the timing allowance before any fresh test data were generated. Main refinement reduced uniformly to40; one prespecified40/50/75/100 budget calibration. Previous sources/results preserved; test seeds untouched."
+  },
+  "final_global_parity_sha256": "f65b41107271e6155ddf03495fc1a63acb36327f344aba675388fd3871d9c4a4",
+  "source_hashes": {
+    "tcom_filter_continuation_20261019/analysis.py": "4d3826c0304f441723bd1630b74703199cad4ced507d33d847ebaf97abf9d6fa",
+    "tcom_filter_continuation_20261019/study.py": "1ce4cffa709b881508de362c7cd2aca95ba3ca8a3dba0de63f77b474ef6d0d77",
+    "tcom_incumbent_guard_20261019/inference.py": "0cef3a0dc8a9f1ffa066e08896afc0d69f3a311b9ad729618ec9b760b78ab1eb",
+    "tcom_incumbent_guard_20261019/risk.py": "0e630f0d12ec0ed8b769745f5273d4fdd30d3343f21a270ab58c4a311e6281b1",
+    "tcom_incumbent_guard_20261019/risk_data.py": "5a8474b3f87abea086c7999e7ca5ef8fbbab0b0fd57b58188db365ac85e07101",
+    "tcom_incumbent_guard_20261019/shrink.py": "f72debd9763e4a57532f635c0120fa9eaf516f94e0e360853e1155fee483ec6b",
+    "tcom_pilot_em_20261018/continuation.py": "2633ec0e53172ab9a36c69ee12649b799fc524ed828c40450f6a988e0f791b5f",
+    "tcom_runtime_repair_20261020/analysis.py": "e117a19d3f8e99924f1926afcff6862c7b7a2e03f97751ab368d6c65dc6234db",
+    "tcom_runtime_repair_20261020/execution.py": "dd9bad075a577f833dae8011b0909b9bf8353f2650f742b0ddeb7b1b074f7b57",
+    "tcom_runtime_repair_20261020/inference.py": "b90d476fcf7ac1f493b1f947e0de0ccec93e18628205a8251c12827491d4ae0a",
+    "tcom_runtime_repair_20261020/native.py": "7a60c4ba92259b27332382e14240b425e155576dc8a8df48b8470745cb976d77",
+    "tcom_runtime_repair_20261020/smoke_parity.py": "9df5870dfa613bfa7c10229102f394fe8db7cf80233a0e84ad0954f6eaf46124",
+    "tcom_runtime_repair_20261020/study.py": "d96e769486450b1cf56dc5fcf543bfd982bc9442a3a8d443a74831b8e0a0c031",
+    "tcom_start_ablation_20261020/starts.py": "2391e8379f5d726891207e46fa278ddfa4664d270f4cc4c916f9a2a204de3e00",
+    "tcom_start_ablation_20261020/training.py": "806a805e8adb9d85fd64027c819660ed65dc685677612afcfe470f97345048e1",
+    "tcom_start_budget_20261020/analysis.py": "1e3ff2b37ee63ac9d7f472f1761e9db48a2270aec6b232e08fd79b9e0c2a4c32",
+    "tcom_start_budget_20261020/checks.py": "7a8517fef848bb9c456569f54e9ad695ca52110f505022e38ca314372589d80d",
+    "tcom_start_budget_20261020/execution.py": "fd152c06afcdc124cbbc3659a5a5790fc6e550f0436d4123d0baef2b147fb630",
+    "tcom_start_budget_20261020/study.py": "58105b2f472e343225e28e6a50699db0ce7301289f0ffd9cc7f0e82cfd242847"
+  },
+  "checkpoint_hashes": {
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9101/em_adaptive_best.pt": "e383f56cbb811590068600193f327f978525bb4ba79acea9aba311c079cae87e",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9102/em_adaptive_best.pt": "56fb99e0406e00adb36fc1045257c6d45a9bb18165488beb561d2d63c6f0bc76",
+    "results/tcom_pilot_em_20261018/checkpoints/context30/seed_9103/em_adaptive_best.pt": "e72b92e6e9da9fd6954e5ca6a90783c3f1c58296d9d54e9cbb751866afac8c7c",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9101/em_global_best.pt": "38cd26eb6883c8466abc35b1696bc230b55c67df5ea433bd1ae3df803a7420e5",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9102/em_global_best.pt": "8ba1872c91070d98f747e81bae5e9791b6ea708be7329410089f99f97ebcfffb",
+    "results/tcom_start_ablation_20261020/checkpoints/global/seed_9103/em_global_best.pt": "87e6ede797426f136ea8c5cac0c7b9553ec5be6b25dd75c00620663498329560"
+  },
+  "ber_protocol_sha256": "b5e9b6774743be78b593d2bd67bd6c83c03d3893587335be34d662e8393f1ce3",
+  "frozen_unix": 1792505219.863244
+}

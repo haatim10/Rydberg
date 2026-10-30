@@ -1,0 +1,71 @@
+\subsection{Broad Comparison With the Same Validation Population}
+The broader study (Study A) asks a different question from the earlier RSR 12~dB,
+three-to-seven-path comparison: how well do the frozen methods work
+across the full noise/reference/path grid used for validation? OptShrink
+receives the same validation observations and selection loss as the
+learned estimator, with a larger classical search. No test-channel
+labels select its settings.
+
+\input{latest_table.tex}
+
+The compact estimator reaches $-13.565$~dB, compared with $-13.028$~dB
+for the validation-selected OptShrink placement. The gain is
+0.537~dB, with adjusted 95\% interval $[0.450,0.695]$~dB. It also
+gains 0.565~dB over separately tuned in-loop OptShrink and 0.738~dB
+over final-only OptShrink. Table~\ref{tab:broad} reports all principal
+controls. Every original learned seed has a lower primary average
+than the selected classical control; seed-specific scores range from
+$-13.327$ to $-13.692$~dB. These are three fitted models from one
+training dataset, not three independent training populations.
+
+The benefit is uneven. Learning wins in 79 of 126 cells. Averaging
+over noise and reference levels, it gains 2.190~dB for two paths but
+loses 0.272~dB for sixteen paths. Its worst primary-cell loss is
+3.117~dB, at SNR 20/RSR 20~dB with sixteen paths. These results do
+not erase the earlier few-path losses against different controls.
+They show why the comparator, tuning population and averaging rule
+must be stated together.
+
+Mean processing time is 4.90~ms for the compact estimator, 15.61~ms
+for selected OptShrink and 6.16~ms for final-only OptShrink. A
+separately tuned ten-update OptShrink control takes 4.56~ms and
+reaches $-12.336$~dB. Thus the learned model is not the fastest tested
+choice, but improves accuracy over that similar-cost control. These
+times count inference only; the neural model needs offline training
+and OptShrink needs offline tuning. The complete broad comparison,
+including tuning, testing, timing and audit, took about 71 minutes.
+That is not a separate measurement of tuning cost.
+
+The headline gain also depends on error aggregation. Pooling linear
+errors across all primary worlds before taking dB reduces the gain
+to 0.116~dB. The learned estimator has fewer errors above NMSE one
+(3.03\% versus 4.34\%), but more above 0.5 (19.54\% versus 19.12\%).
+No errors above two occur for these two methods in this sample; this
+does not establish zero risk. In the excluded weak-reference check,
+learning loses 4.063~dB. At SNR 60~dB it reaches $-6.693$~dB, whereas
+selected OptShrink reaches $-66.886$~dB. The broader average supports
+a useful operating-range comparison, not reliable behavior outside it.
+
+\input{rank_results.tex}
+
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{latest_gains.pdf}
+\caption{Learned gain over (a) broad offline-selected OptShrink and
+(b) online in-loop rank selection on a separate fresh bank.
+Positive values favor learning. Each square averages three RSR-specific
+cell dB gains; the random 3--7 row draws path counts independently for
+each user. These descriptive averages are not cellwise confidence
+guarantees. The full individual-cell values are retained in the evidence
+records.}
+\label{fig:broad-gains}
+\end{figure*}
+
+The failed extensions are also relevant. A corrected learned gate around
+OptShrink gains only 0.019~dB over its strong starting baseline and
+loses to retuned classical mixing and a simpler stage-only learned
+rule. Simple stopping/filter-release rules do not improve their
+primary average. A small-budget exact-EM Transformer run is worse
+than EM100 and is not a strong URformer comparison. These separate
+pilots do not support replacing the original compact estimator or
+claiming a new improved OptShrink algorithm. Their results and the
+failed local error-model screen are retained in the supplement.

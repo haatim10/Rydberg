@@ -1,0 +1,81 @@
+REVISION RECORD: FINAL OPTSHRINK COMPARISONS
+
+What changed
+
+Final comparison outcome: online in-loop OptShrink rank selection wins
+the declared average-cell-dB metric by 0.507 dB (adjusted 95% interval
+0.437 to 0.562 dB). The original compact estimator takes 4.96 ms versus
+108.70 ms and has fewer errors above NMSE one (3.08% versus 6.87%).
+It also has lower pooled linear-error NMSE, but that does not replace
+the declared primary metric. The paper now states an accuracy/cost/
+error-distribution trade-off, not superiority over the strongest OptShrink.
+The added experiment and audit completed in 22.18 minutes.
+
+1. OptShrink is now a primary comparator, not only a separate pilot.
+   The paper includes broad offline tuning on the exact original validation
+   observations/masks and a further fresh observation-based rank comparison.
+   Each study has 4,096 new paired worlds and keeps the original three
+   188-parameter checkpoints unchanged. There was no new neural training.
+
+2. The online control searches ranks 1-15 plus no filtering, with in-loop,
+   final-only and joint placement/rank selection. It uses 21 pilots to fit,
+   nine to score Rician likelihood, then refits on all 30. No channel truth
+   or path-count label enters the selector. It inherits mixing strength
+   and iteration count from offline validation; it is not an exhaustive
+   online search over every possible classical setting.
+
+3. The new comparisons use one PyTorch CPU backend, double precision,
+   one thread and batch size one. Reported inference time includes all
+   initialization, search, filtering and refitting. Loading and file access
+   are excluded. Older mixed-backend timing results are labelled separately.
+
+4. Figures and tables now report per-condition gains, declared adjusted
+   average-gain intervals, fixed-budget cost curves, full error distributions,
+   three error thresholds, training-seed variation, individual test-bank
+   results and excluded stress cases. Full individual-cell values remain
+   in the included evidence records. Metric averages are not ensembles.
+
+5. The earlier narrow-population OptShrink win remains in the main paper.
+   The initial hybrid failure, corrected hybrid failure, simple stopping/
+   filter-release failure, small-budget Transformer limitation and failed
+   local error-model screen are retained in the supplement. We did not
+   discard them or turn them retrospectively into positive results.
+
+6. The English is simpler, the abstract is qualitative, and the introduction
+   has a background paragraph, a motivation paragraph and contributions.
+   Methods and assumptions are explained before results. The main paper
+   has no forward section roadmap. Technical definitions needed to reproduce
+   the estimator remain; simplicity is not achieved by removing assumptions.
+
+7. Publication details were updated for deep Hankel reconstruction and
+   Rician-likelihood learning. Existing OptShrink, low-rank Hankel,
+   self-supervised and Rydberg work is acknowledged. A recent robust
+   Quantum-MUSIC preprint is distinguished from our no-outlier model.
+   The paper does not claim a first use of these ingredients.
+
+8. A brief AI-assistance disclosure records substantive drafting, coding
+   and figure-script assistance. The author must check its wording and
+   the target venue's current policy. This is not a claim that final human
+   verification has already taken place.
+
+What the revision does NOT solve
+
+- No convergence or fixed-point/stability theorem for the full alternating
+  estimator. The norm and relaxed-EM statements concern individual steps.
+- No proof that the cubic shrinker is statistically optimal under the
+  dependent Hankel error distribution.
+- No hardware, atomic-dynamics, optical-readout or 2D-array validation.
+- Known noise and reference remain main-model assumptions. Existing
+  mismatch simulations do not establish robustness to unknown drift.
+- Filtering bias remains severe in the nearly noiseless stress test.
+- The 21-input/30-input training/deployment difference is stated but not
+  causally isolated by a matched retraining experiment.
+- The small Transformer pilot is not a strong trained baseline or a
+  reproduction of published URformer. Full LRHD/HVaF/LRPR-VBL comparisons
+  are not claimed.
+- Two fresh test banks do not measure independent retraining uncertainty.
+- Passing an accuracy screen does not prove novelty or guarantee acceptance.
+
+Submission actions remain in README.txt: author approval, venue formatting,
+overlap disclosure for Papers 1/2, public code/data destination, author
+metadata and policy checks. This package has not been submitted anywhere.

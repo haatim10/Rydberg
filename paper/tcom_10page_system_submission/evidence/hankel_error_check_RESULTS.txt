@@ -1,0 +1,81 @@
+HANKEL INPUT ERROR: DEVELOPMENT RESULTS
+
+Decision: stop_expansion_of_current_error_model
+Numerical audit: derivative_step_requires_review. See audit.json; flagged derivatives are not silently accepted.
+24 independent fixed channel/pilot/reference worlds; 256 repeated noise draws
+and 8 separate prediction anchors per world. No network training or new filter.
+Known reference/noise, 32 antennas, 3 users, 30 pilots. Manuscript unchanged.
+
+Main check: full-estimator sensitivity, ordinary spectral initialization.
+Covariance size/shape passed in 6/10 primary groups (required 8).
+Median geometry improvement over equal-trace isotropic control: 48.73% (required 10%).
+Total-error/bias requirement passed in 7/10 groups (required 8).
+Bias fractions use the repeated-noise sample mean; finite-sample-corrected
+values are also preserved in per-world results. They are not exact population bias.
+
+Cell | updates | predicted/observed variance | covariance relative error | bias % | predicted/total MSE
+snr_-10 | 20 | 1.915 | 6.541 | 5.3 | 1.813
+snr_-10 | 100 | 16.484 | 348.999 | 6.7 | 15.387
+snr_+5 | 20 | 1.037 | 0.246 | 0.9 | 1.028
+snr_+5 | 100 | 1.045 | 0.291 | 0.6 | 1.038
+snr_+20 | 20 | 1.005 | 0.150 | 0.6 | 0.999
+snr_+20 | 100 | 1.005 | 0.150 | 0.4 | 1.001
+weak_reference | 20 | 8.820 | 67.160 | 57.0 | 3.793
+weak_reference | 100 | 5.719 | 25.046 | 22.4 | 4.436
+rich_16 | 20 | 1.030 | 0.210 | 0.7 | 1.023
+rich_16 | 100 | 1.031 | 0.234 | 0.6 | 1.025
+
+Separately labelled diagnostics
+At one update with a true-channel start, frozen-update covariance has an
+exact matched-field interpretation. It is not available as an oracle at a receiver.
+Cell | oracle one-step variance ratio | oracle one-step covariance error
+snr_-10 | 1.004 | 0.153
+snr_+5 | 1.001 | 0.148
+snr_+20 | 1.003 | 0.152
+weak_reference | 1.005 | 0.143
+rich_16 | 1.004 | 0.148
+nearly_noiseless | 1.005 | 0.151
+
+Cell | zero-start full-map variance ratio at100 | bias % | SNR60 kept separate
+snr_-10 | 2.801 | 6.7
+snr_+5 | 1.045 | 0.6
+snr_+20 | 1.005 | 0.4
+weak_reference | 3.265 | 19.8
+rich_16 | 1.031 | 0.6
+nearly_noiseless | 1.007 | 0.4
+
+Interpretation
+Missing phase and estimation error are different random quantities.
+The verified total-variance identity separates them; equal power does
+not imply equal directions. Treating one as the other is unjustified.
+The full sensitivity approximation includes repeated use of the same
+observations. It is still local and does not predict systematic bias.
+Predicting covariance is not predicting all channel error or proving
+Gaussian errors, confidence coverage, improved NMSE, or safe filtering.
+Hankel entries share samples. Lifting a 32-sample complex sequence to
+17x16 duplicates information: covariance in the 272-complex-entry space
+has rank at most 32 complex dimensions, not 272 independent entries.
+This study examines unfiltered row-separable EM only. Hankel interleaving
+couples rows and needs its own error-model check; no transfer is assumed.
+Four fixed worlds per condition is a screen, not population confirmation.
+Noise repetitions are not independent channel/pilot replicates.
+
+Files: summary.json for all starts/stages/models and per-world outcomes;
+audit.json for replays and numerical checks; error_model_check.png for the
+two main diagnostics; THEORY.txt and PROTOCOL.txt in hankel_error_check/.
+No novelty, convergence, hardware or improvement claim is established.
+
+Post-screen numerical diagnosis (does not change frozen predictions)
+Two supplementary checks exceeded the original derivative-step tolerance.
+They concern the oracle start at -10 dB and zero start with a weak reference.
+Independent automatic differentiation checks smaller finite-difference steps.
+The largest ordinary-start prediction in each failing condition is also checked.
+Cell | start | original-step error vs autograd | smaller-step error vs autograd
+snr_-10 | oracle | 0.0046238 | 0.0000459
+weak_reference | zero | 0.0017054 | 0.0000170
+snr_-10 | spectral | 0.0001127 | 0.0000011
+weak_reference | spectral | 0.0000226 | 0.0000002
+These are relative Jacobian errors, not channel NMSE.
+The primary failure is not explained by these small derivative errors.
+The original audit flag and failed scientific screen remain recorded.
+See derivative_review.json for exact targets, steps, and source hash.

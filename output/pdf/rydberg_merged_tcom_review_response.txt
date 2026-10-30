@@ -1,0 +1,95 @@
+MERGED PAPER: RESPONSE TO THE ONLINE REVIEW
+
+This record distinguishes completed corrections from unperformed experiments.
+An online assessment is not an editorial decision or external replication.
+
+1. MAIN COMPARISON / ONE-SWEEP HARD BASELINE -- COMPLETED
+Added one-sweep HS-Rician on all 1,152 saved OptShrink test worlds, keeping
+the same observations, initializer, rank grid, pilot split and update budgets.
+Each one-sweep candidate selects its own rank from held-out Rician likelihood.
+Recorded the protocol before this added run, but explicitly acknowledged that
+the old bank was already inspected. No new blinded confirmation is claimed.
+Main Table III, Figure 3, results text and supplement include the comparison.
+Seven-SNR mean: one sweep -13.314 dB, four sweeps -12.890 dB, learned -14.319 dB,
+in-loop OptShrink -14.462 dB. Learning beats one sweep by 1.004 dB, conditional
+paired 95% interval [0.922,1.088]. It loses to one sweep on the two stress cells.
+
+2. SEVERE FAILURES / THRESHOLD DEPENDENCE -- COMPLETED, CLAIM NARROWED
+Recomputed errors from saved predictions and channel truth. Paired whole-world
+bootstrap retains all model seeds together; it does not treat repeated model
+predictions as independent channels. Added intervals and thresholds 0.5 and 2
+as explicitly post-hoc sensitivity checks, retaining original severe NMSE > 1.
+At >1, learned 0.89% vs in-loop OptShrink 5.02% (seven-SNR average); reduction
+4.13 percentage points, 95% interval [3.051,5.283]. At >0.5 the ranking reverses:
+17.00% learned vs 15.85% OptShrink. At >2 neither has events in this sample.
+Abstract, main text and conclusion now reject general tail-risk dominance.
+These are pointwise conditional intervals, not a multiplicity-adjusted guarantee.
+
+3. RUNTIME -- COMPLETED
+Retimed one-/four-sweep HS, in-loop/final OptShrink and all three learned models
+together on 24 independent timing worlds, three repetitions, one CPU thread,
+float64 and batch one. Includes initialization and selection/lookup; excludes
+loading and I/O. Means: learned 5.16 ms, loop OptShrink 5.68 ms, final 3.87 ms,
+one-sweep HS 119.08 ms, four-sweep HS 358.07 ms. These do not pool older timings.
+PyTorch vs NumPy/SciPy remains a limitation. No stage-level profiler, randomized
+SVD or same-backend rewrite was introduced; operation counts remain in supplement.
+
+4. FEATURE, DEPTH, WIDTH, CURRICULUM AND EXPERT QUESTIONS -- RESTORED
+Restored the completed input ablations, separate 25-model/300-epoch training
+study, full selected/final tables and independent-training-data replications in
+the merged supplement, with a concise main-text summary. Results remain tied
+to their own protocols; small-study gains do not replace the primary models.
+No Shapley analysis or causal feature-importance claim has been added.
+
+5. NOISE AND REFERENCE MISMATCH -- RESTORED AND CLARIFIED
+Main text now gives existing constant-phase/ramp and variance-error results.
+Supplement includes amplitude/noise estimation with its 45.05 ms extra cost,
+failed conditions and the assumption that reference phase remains supplied.
+Added the common-phase rotation symmetry explicitly: a free common reference
+phase and channel cannot be jointly identified in absolute phase without
+additional information. Phase alignment with truth is oracle-only.
+These checks are not measured hardware drift and do not revive the cancelled
+adaptive-recalibration research project. No new calibration algorithm was run.
+
+6. SAFETY AND CONVERGENCE -- CLAIMS CORRECTED, NEW GUARANTEE NOT CLAIMED
+Explicitly disallowed NMSE-based stopping at inference because it needs truth.
+Explained that likelihood protection is not channel-error protection. Retained
+the nearly noiseless failure and the limits of EM-surrogate/norm bounds.
+Clarified that smooth reconstruction does not make ordered spectral features
+globally differentiable. No safe bypass, convergence, statistical optimality,
+or low-noise consistency theorem is invented.
+
+7. RELATED WORK -- DISCUSSION EXPANDED; EXPERIMENTAL GAP REMAINS
+Checked primary arXiv records and added LRPR-VBL (1811.01574) and HVaF
+(1809.00750). Distinguished low-rank matrix priors, exponential-signal sample
+completion, Hankel denoising and the referenced Rician observation model.
+The OptShrink adaptation is not called full LRHD. A matched URformer,
+LRPR-VBL/HVaF/full-LRHD or angle-domain sparse comparison was not run.
+No superiority over those methods is claimed. Parameter counts alone cannot
+establish their accuracy/runtime trade-off against the compact controller.
+
+8. TRAIN/TEST PILOT SPLIT -- CLARIFIED; CAUSAL STUDY STILL MISSING
+Made the 21-context-pilot training versus 30-pilot inference distribution shift
+explicit. Retained pilot-count/conditioning checks. These tests do not isolate
+split mismatch from extra measurement information; matched retraining has not
+been conducted. No claim of split-invariant generalization is made.
+
+9. PRESENTATION AND NUMERICAL REPRODUCIBILITY -- COMPLETED
+Simplified abstract and contribution statement; retained qualitative abstract.
+Added fixed numerical guards, Bessel-evaluation rules and solve assumptions.
+Corrected Equation (17) punctuation, narrowed the Table I K=3 caption scope,
+and explained legacy HS-GS plot labels. Restored a labelled companion supplement.
+Interleaving comparisons still explicitly do NOT match total computation.
+Removed the acknowledgment paragraph and retained the sole supplied author.
+Full-project PDFs and Overleaf ZIP are built and checked separately from the
+built-in single-file editor, which cannot load project figure dependencies.
+
+10. OUT OF SCOPE / AUTHOR ACTIONS
+No hardware, 2D/wideband, impulsive-noise/outlier, or joint K/P frontier study
+was added. No new residual-adaptive OptShrink stopping rule was evaluated.
+These are honestly stated limitations, not completed review responses.
+Choose and provide a permanent public code/data destination before submission;
+local evidence packages are not a public release. Check venue rules on the
+supplement, final page limits/charges, overlap with P1/P2 and disclosure of
+substantive AI assistance. Removing the acknowledgment does not remove any
+applicable disclosure obligation. No submission or external upload was made.

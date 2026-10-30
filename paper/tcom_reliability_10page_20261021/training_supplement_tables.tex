@@ -1,0 +1,102 @@
+\begin{table*}[!t]
+\caption{Full-budget study: selected and final-epoch sensitivity, plus separate stress cells. Primary scores use 8,064 worlds; each stress cell has 64 worlds. Weak reference: SNR 5/RSR 0 dB. Nearly noiseless: SNR 60/RSR 12 dB. Stress scores do not enter the primary score.}
+\label{tab:training-full}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrrr@{}}\toprule
+Method & Macro (dB) & Pooled (dB) & Severe (\%) & Weak reference & Nearly noiseless\\
+\midrule
+Original (selected) & -13.684 & -6.650 & 2.82 & -7.244 & -6.949\\
+All-pilot (selected) & -13.962 & -6.711 & 4.47 & -6.903 & -15.240\\
+Original (final) & -13.762 & -6.684 & 3.04 & -7.280 & -6.921\\
+All-pilot (final) & -14.005 & -6.695 & 4.61 & -6.865 & -23.116\\
+OptShrink, block rank & -14.132 & -6.201 & 6.76 & -11.257 & -69.517\\
+OptShrink, offline & -13.168 & -6.568 & 4.04 & -11.866 & -66.684\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[!t]
+\caption{All-pilot gains: positive favors all-pilot training. Two predeclared contrasts, Bonferroni-adjusted conditional 95\% intervals. Worst observed harm is not a confidence bound.}
+\label{tab:training-contrasts}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Comparator & Gain (dB) & 95\% interval & Cell wins & Worst harm\\
+\midrule
+Original (selected) & +0.277 & [+0.263, +0.294] & 106/126 & 0.527\\
+OptShrink, block rank & -0.171 & [-0.221, -0.117] & 72/126 & 3.744\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table}[!t]
+\caption{Full-budget training records. Seeds share one training dataset. All-pilot training times include validation and concurrent-worker contention; they are not isolated-device benchmarks.}
+\label{tab:training-seeds}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}rrrrr@{}}\toprule
+Seed & Original & All-pilot & Best epoch & Minutes\\
+\midrule
+9101 & -13.786 & -13.978 & 16 & 29.05\\
+9102 & -13.446 & -13.938 & 18 & 28.99\\
+9103 & -13.822 & -13.969 & 17 & 29.31\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table*}[!t]
+\caption{Separate one-seed mixed-training screen: 4,032 primary worlds, not the full-budget test bank. Mean-case NMSE is linear. Selected-checkpoint comparisons are primary; final checkpoints are sensitivity checks.}
+\label{tab:training-mixed}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrrr@{}}\toprule
+Method & Macro (dB) & Case mean & Severe (\%) & Time (ms)\\
+\midrule
+Original (selected) & -13.799 & 0.2222 & 2.90 & 4.98\\
+All-pilot (selected) & -13.984 & 0.2200 & 4.76 & 4.96\\
+Mixed (selected) & -13.951 & 0.2163 & 3.75 & 5.01\\
+Original (final) & -13.672 & 0.2224 & 3.00 & 4.98\\
+All-pilot (final) & -14.004 & 0.2209 & 4.96 & 4.96\\
+Mixed (final) & -13.966 & 0.2160 & 3.84 & 5.01\\
+OptShrink, offline & -13.119 & 0.2257 & 4.69 & 16.06\\
+OptShrink, block rank & -14.147 & 0.2454 & 6.70 & 115.20\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[!t]
+\caption{Separate one-seed selector/noise-input screen: the same 4,032 primary worlds at all three supplied-variance offsets. Physical observations and actual noise are unchanged. The selected rule always runs the original model.}
+\label{tab:training-noise}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}rlrrrr@{}}\toprule
+Offset (dB) & Method & Macro (dB) & Case mean & Severe (\%) & Time (ms)\\
+\midrule
++0 & Original (selected) & -13.817 & 0.2228 & 2.80 & 4.88\\
++0 & All-pilot (selected) & -14.033 & 0.2207 & 4.86 & 4.86\\
++0 & Selected rule & -13.817 & 0.2228 & 2.80 & 4.95\\
+-3 & Original (selected) & -13.195 & 0.4064 & 11.11 & 4.85\\
+-3 & All-pilot (selected) & -13.007 & 0.4962 & 14.51 & 4.85\\
+-3 & Selected rule & -13.195 & 0.4064 & 11.11 & 4.94\\
++3 & Original (selected) & -13.228 & 0.2652 & 3.40 & 4.86\\
++3 & All-pilot (selected) & -13.781 & 0.2448 & 5.43 & 4.88\\
++3 & Selected rule & -13.228 & 0.2652 & 3.40 & 4.94\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[!t]
+\caption{Separate phase diagnostic: 64 worlds per cell, averaged across three original fitted models. Both aligned scores use the true channel and are oracle-only, not receiver performance. Last column is the fraction of squared error removed by row-wise alignment.}
+\label{tab:training-phase}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}rrrrrr@{}}\toprule
+SNR & RSR & Raw (dB) & Global oracle & Row oracle & Removed (\%)\\
+\midrule
+-5 & 0 & 0.366 & 0.296 & -2.176 & 44.2\\
+-5 & 5 & -2.184 & -2.263 & -2.932 & 15.8\\
+-5 & 12 & -4.288 & -4.331 & -4.820 & 11.5\\
+5 & 0 & -7.110 & -7.270 & -11.051 & 59.6\\
+5 & 5 & -13.761 & -13.834 & -14.705 & 19.5\\
+5 & 12 & -14.012 & -14.071 & -14.786 & 16.3\\
+15 & 0 & -8.306 & -8.386 & -15.192 & 79.5\\
+15 & 5 & -23.972 & -24.078 & -25.005 & 21.2\\
+15 & 12 & -24.226 & -24.269 & -25.007 & 16.5\\
+\bottomrule
+\end{tabular}
+\end{table*}

@@ -1,0 +1,54 @@
+% Replace all of Section III-B, "The Estimator".
+\subsection{The Estimator}
+\label{sec:revised-estimator}
+
+HS-GS uses the same measurement update and spectral initialization as
+EM-GS. It then applies the Hankel step separately to each user column
+$\mathbf g_k$. We do not stack different users or pilot measurements into
+one Hankel matrix, and we do not assume that users share arrival angles.
+
+At iteration $t$, the measurement update is
+\begin{align}
+\mathbf M^{(t)}&=\mathbf G^{(t)}\mathbf S+\mathbf B,\\
+\boldsymbol\kappa^{(t)}&=
+  2\mathbf Z\odot|\mathbf M^{(t)}|/\sigma^2,\\
+\mathbf Y^{(t)}&=\mathbf Z\odot R(\boldsymbol\kappa^{(t)})
+  \odot e^{\jmath\arg\mathbf M^{(t)}},\\
+\widetilde{\mathbf G}^{(t+1)}(\mathbf S\mathbf S^H)
+  &=(\mathbf Y^{(t)}-\mathbf B)\mathbf S^H,
+\label{eq:revision-em-update}
+\end{align}
+where $R(x)=I_1(x)/I_0(x)$ and all nonlinear operations are elementwise.
+The last equation is solved as a linear system. The pilot matrix for each
+fit is assumed to have full row rank. Scaled Bessel functions are used to
+evaluate the ratio stably; the contribution to $\mathbf Y^{(t)}$ is zero
+when the corresponding entry of $\mathbf M^{(t)}$ is zero.
+
+For a channel vector of length $N$, we use
+\begin{equation}
+p=\left\lfloor\frac{N-1}{2}\right\rfloor,
+\qquad
+[\mathcal H_p(\mathbf g)]_{a+1,b+1}=g[a+b+1],
+\end{equation}
+with $0\leq a<N-p$ and $0\leq b\leq p$. This gives an
+$(N-p)\times(p+1)$ matrix and the exact capacity
+$r_{\max}=\lceil N/2\rceil$.
+
+One Cadzow sweep is
+\begin{equation}
+\mathcal P_r(\mathbf g)=
+\mathcal H_p^\dagger\!\left(\Pi_r(\mathcal H_p(\mathbf g))\right).
+\label{eq:revision-cadzow}
+\end{equation}
+Here $\Pi_r$ keeps the $r$ largest singular values and sets the others to
+zero. It does not change the retained singular values. The operation
+$\mathcal H_p^\dagger$ averages the entries on each antidiagonal to recover
+the channel vector. We apply four sweeps to every column of
+$\widetilde{\mathbf G}^{(t+1)}$ before the next measurement update.
+
+This is a finite sequence of structural corrections. After antidiagonal
+averaging, the Hankel matrix formed again from the output can have rank
+greater than $r$. Low Hankel rank also does not impose every physical
+constraint in the geometric channel model. A small rank can remove useful
+channel components, while a large rank may leave much of the estimation
+error unchanged.

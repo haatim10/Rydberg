@@ -1,0 +1,124 @@
+\section{Separately Trained Depth, Width and Training Controls}
+This reduced-budget study answers the depth and capacity questions using
+new training, not a prefix of the original network. Each dataset contains
+4,096 training and 448 independent validation worlds. Training uses 12
+epochs, batch size 32 and Adam with learning rate 0.001. There are seven
+SNRs from $-10$ to 20~dB, RSR 0, 5, 12 and 20~dB, and either random
+three-to-seven-path or fixed two-path channels. This gives 56 conditions,
+with $N=32,K=3,P=30$. Unlike the original training mixture, this one
+includes RSR 0~dB. Its scores must not be pooled with the original study.
+
+Seven variants share dataset zero and three initialization seeds: the
+ten-stage, width-16 baseline; depths five and twenty; widths eight and
+32; two experts; and curriculum training. The baseline also trains on
+two additional independent datasets with two initialization seeds each,
+giving 25 jobs and 300 completed epochs. Initialization seeds do not
+create independent training populations. Training has no channel targets.
+Validation selects the checkpoint using the equal-condition average of
+withheld Rician likelihood, with a fixed 21/9 pilot split. The final
+epoch is also evaluated, not substituted when its test error is better.
+
+Ordinary variants share example order and pilot masks at each epoch.
+Depth changes the number of learned steps and uses $(t+1)/T$ as its
+stage input. The two-expert model combines two width-16 controller outputs
+with a learned softmax gate driven by the three spectral features. It has
+374 parameters, compared with 364 for width 32. The experts start at
+relative thresholds 0.05 and 0.2 rather than the plain controller's 0.1.
+They do not recover distinct physical channel components. Architecture
+and initialization both change; any gain cannot be attributed to gating
+alone.
+
+The curriculum presents RSR 12/20 examples twice per epoch for six epochs,
+then RSR 0/5 examples twice per epoch for six epochs. Total exposure per
+example matches ordinary training. The repeated visits share that epoch's
+pilot mask, so the number of distinct masks per example differs. This is
+not an isolated test of ordering alone. Neither channel truth nor test
+errors determine this schedule.
+
+After all checkpoints were fixed, 64 fresh worlds per condition were
+generated, giving 3,584 paired test worlds. All 25 selected and 25 final
+models use the same observations, together with EM100 and the previously
+frozen in-loop OptShrink rule. That rule transfers from its earlier
+development mixture; it is not retuned on these new tests. A documented
+test-seed amendment was made before generation to avoid overlap with
+diagnostic seeds. Training and selection were unchanged.
+
+\input{round2_training_tables.tex}
+
+\subsection{Accuracy and Cost}
+The reported macro-average gives each condition and initialization equal
+weight in dB. Five stages are faster, but lose 1.977~dB against ten.
+Twenty gain 0.181~dB while increasing mean time from 8.04 to 15.60~ms.
+Their severe-error rate is also higher: 13.46\% versus 10.28\% in this
+56-condition mixture. The depth comparison is therefore not a simple
+``more is better'' result. Twenty stages improve the RSR 0~dB average
+by 1.547~dB but worsen one low-SNR cell by 1.586~dB. The absolute
+severe-error rates use a broader, weaker-reference mixture than the
+original experiment and are not evidence of a change in its saved results.
+
+Width eight loses 0.731~dB and has almost unchanged processing time:
+matrix operations, not controller size, dominate this implementation.
+Width 32 gains 0.065~dB on average and reduces severe errors, but loses
+0.970~dB in its worst cell. The two-expert gain is only 0.023~dB overall
+and 0.179~dB for two-path cells; width 32 gains 0.286~dB on those cells.
+The experts therefore do not demonstrate a useful advantage over the
+similarly sized plain controller in this check.
+
+The curriculum gains 0.206~dB overall and 0.255~dB at RSR 0~dB, but
+loses 2.353~dB at SNR 20~dB, RSR 5~dB and two paths. It does not solve
+weak-reference or few-path estimation generally. No tested variant
+improves every cell. The original primary estimator is retained; these
+test results are not used to choose a replacement.
+
+Timing uses one CPU thread, double precision and batch size one, includes
+initialization, and repeats 32 shared SNR 5~dB/RSR 12~dB worlds three
+times in shuffled model order. Means average individual-model inference,
+not ensemble inference. This timing batch is separate from the original
+and OptShrink timing batches; cross-batch speed ratios are not claimed.
+The 25-job training invocation took about 103 minutes on the local CPU,
+including data preparation and validation, but excluding fresh testing.
+
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{round2_training.pdf}
+\caption{New reduced-budget training study. Left: selected-model NMSE,
+averaging four reference levels, two path settings and three initializations
+at each SNR. Right: gain over ten stages/width 16 across all 56 conditions.
+Bars are unadjusted conditional 95\% paired-case intervals; they exclude
+training-data and initialization uncertainty.}
+\end{figure*}
+
+\subsection{Variability and Scope}
+The three independent training datasets give baseline two-initialization
+macro-averages of $-12.450$, $-12.124$ and $-12.229$~dB. Their individual
+initialization scores are $(-12.391,-12.509)$, $(-11.824,-12.425)$ and
+$(-12.143,-12.315)$~dB. These few replicates expose variability but do not
+estimate broad population uncertainty reliably. All use the same test
+worlds; repeated predictions are not independent channel realizations.
+
+The paired intervals resample 64 whole cases within each condition 2,000
+times, retaining paired methods and averaging the three fixed-model scores.
+They are exploratory, conditional and unadjusted across six comparisons.
+Small intervals do not remove uncertainty from training or prove an
+architecture optimum. Most selected checkpoints are the final epoch;
+12 epochs do not establish convergence.
+
+The transferred OptShrink rule gives $-12.150$~dB and 12.11\% severe
+errors; EM100 gives $-8.784$~dB and 25.53\%. The new baseline's
+$-12.390$~dB score cannot reverse the earlier controlled OptShrink result:
+both the training mixture and test weighting differ, and the classical
+settings were not developed for this mixture. These are transfer controls,
+not a new claim of tuned-classical superiority.
+
+\subsection{Saved-Result Audit}
+All 25 histories, 300 epochs, 50 checkpoint hashes and 2,912 prediction
+files were checked. The latter comprise 1,400 selected-model, 1,400
+final-model and 112 classical files. Errors, severe-error rates and
+headline averages were recalculated from predictions and truth. Matching
+orders and masks were checked with the stated curriculum exception.
+One world per test condition was regenerated from its seed; selected
+and final models were replayed individually on a saved case. The largest
+replay difference was below $1.2\times10^{-15}$. Seventeen focused tests
+cover the new numerical/training/seed checks and OptShrink implementation.
+The release retains these audit tools and saved observations, not just
+summary scores. This checks the reported computation; it is not external
+replication or real-receiver validation.

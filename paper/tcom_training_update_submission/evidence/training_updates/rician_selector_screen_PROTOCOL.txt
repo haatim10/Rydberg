@@ -1,0 +1,65 @@
+SIMPLE TWO-MODEL NOISE SELECTOR — 15 OCTOBER 2026
+
+This is a practical routing control, not a new estimator or novelty claim.
+No neural training, new pilot observations, mixture search, or manuscript edits.
+Use the frozen validation-selected original and all-pilot models for seed9101.
+Each model has188parameters and10stages. Store376parameters plus one cutoff, but evaluate only
+one188-parameter model per received block. No averaging two predictions.
+
+Receiver input: Z,S,B and supplied noise variance. Nominal SNR is10log10(3/v).
+The constant3 is known expected signal power under K3,c1,beta_k1 normalization,
+not the unknown channel's realized power. This calibration assumption is explicit.
+Route original below a fixed threshold and all-pilot at/above it, with a fixed
+1e-10dB numerical equality tolerance (not a tunable transition band). Constant
+policies are explicit: sentinel+100 always original, sentinel-100 always all-pilot.
+
+Choose the threshold using ONLY the original2048 validation observations,
+fixed21-context/9-withheld split seed2026092203, exact Rician likelihood,
+and equal weighting across126validation strata. Condition IDs balance scores;
+they never enter the online router. Candidates are[-100,-7.5,-2.5,2.5,7.5,12.5,
+17.5,100]dB. Select minimum held-out NLL; numericaltieswithin1e-12 prefer the
+larger threshold/more-original policy. Permit a constant policy to win: do not
+force apparent adaptation. No true channels, error labels, previous test errors,
+or fresh test outcomes select the threshold. CPUfloat64 for development scoring.
+Freeze the rule, model hashes, source hashes and protocol before fresh generation.
+
+Fresh test bank20261015151001:32pairedworlds per132conditions,4224total.
+126primarycells: N32,K3,P30, SNR-10..20step5, RSR5/12/20, random3..7paths
+peruser or fixed2/4/8/12/16. Stress cells, excluded fromprimary: weakreference
+(SNR5,RSR0), nearlynoiseless(SNR60,RSR12), and four additional off-grid cells
+(SNR-2.5/+2.5 crossed withRSR5/12,randompaths). These probe midpoints in the
+usual grid, not every possible selected cutoff. Same physical world for all methods.
+
+For everyworld compare original, all-pilot and selector at supplied-noise offsets
+0,-3,+3dB. Multiply only the provided variance by10^(offset/10), so±3dB is about
+half/double the true variance. Raw Z,S,B, truechannel and actualnoise never change.
+Feed the SAMEperturbed variance to router and chosenestimator and bothcontrols.
+Never route on trueSNR, savedconditionlabels, truechannel or correctnoise when
+the estimator receives wrongnoise. Report routing changes across offsets.
+
+Primary correct-noise metric: equal126cell mean dB ratio of summed squared
+channel errors to summed channel power. Report perSNR meanlinearNMSE, NMSE>1
+frequency, eachcell, stressedcases, selectionfractions, pairedfailure transitions,
+and conditional pairedbootstrap intervals using2000resamples. Reuse resampling
+indices acrossmethods/offsets: three predictions of oneworld are not newworlds.
+One seed and one trainingdataset do not represent full traininguncertainty.
+
+Practical screening at correctnoise: >=0.1dB macro gain over original, severe
+rate <=original+0.002 (0.2percentagepoints), no worse meanpercaseNMSE thanoriginal
+at-10and-5dB, and runtime<=1.05original. These are exploratory tolerances, NOT
+proof of noninferiority or publication success. Wrong-noise outcomes are reported
+separately against the SAMEwrong-noise original/all-pilot baselines, with changes
+from correctnoise also visible. No post-test adjustment or automatic expansion.
+
+Timing: actual single-route inference, both models preloaded, commonPyTorchCPU
+float64 onethread batch1,3randomizedrepeats percell andnoiseoffset. Include routing,
+initialization andall10stages; exclude model-loading, I/O anddevelopmentselection.
+Report totalstorage376parameters; avoid calling the entire deployment188parameters.
+No new OptShrink rerun: this experiment compares the two existing neural recipes
+and their selector. Previous OptShrink timings are contextual, not matched newdata.
+
+Verify untouched models/data/sources, observation-only threshold selection,
+samevariance to route/model, onebranch perworld, explicitconstantpolicies,
+determinism, unchanged observationsacrossnoisebias, finiteoutputs, allpairedIDs,
+representative replay andindependent metric arithmetic. Locked/resumableprocess,
+percelloutputs, onehour safetycap. Stop on numericalfailure without changingrule.

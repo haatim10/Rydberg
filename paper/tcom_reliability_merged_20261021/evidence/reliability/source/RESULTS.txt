@@ -1,0 +1,254 @@
+REFERENCE-AWARE RELIABILITY CHECK: FRESH PAIRED COMPARISON
+
+Independent confirmation status: CONFIRMED.
+The evaluated receiver is the frozen A-selected proposal and C confirmed it.
+Fresh-test outcomes do not change the selected candidate or the confirmation decision. No model has been deployed and no manuscript has been edited.
+Receiver versus prior and versus latest over all 153 conditions are the two primary contrasts. Their NMSE and BER outcomes form four tests with Bonferroni adjustment. Weak-reference, other regional and baseline results are descriptive.
+
+PRIMARY EFFECTS
+Positive values favor the receiver; BER reductions are percentage points.
+Contrast           | NMSE gain dB | Adjusted interval dB | BER reduction pp | Adjusted interval pp
+-------------------+--------------+----------------------+------------------+---------------------
+receiver_vs_prior  | +0.50704     | [0.338212, 0.652016] | +0               | [0, 0]              
+receiver_vs_latest | +0.761777    | [0.231051, 0.878243] | +7.5352e-05      | [0, 0.000265948]    
+
+The receiver improves mean-cell NMSE versus both primary references. Its observed BER equals the prior selective-EM receiver, and the adjusted BER interval versus latest includes zero. Compact sparse remains better under pooled-linear NMSE (0.0086852496 versus 0.0089738425 for the receiver) and aggregate BER (0.489159% versus 0.522496%). The mean-cell NMSE advantage therefore does not imply superiority under every NMSE aggregation or in detection.
+
+SELECTED CHECK AND OPERATIONAL STATUS
+A-selected candidate: {"id": "max_t2_e20", "metric": "max", "tail": 20, "threshold": 2.0}
+C-authorized operational rule: {"id": "max_t2_e20", "metric": "max", "tail": 20, "threshold": 2.0}
+An absent rule means the frozen prior estimator. The receiver column always denotes the A-selected candidate, even when C fails; it must not be relabeled as the operational incumbent.
+The check uses fitted magnitude residuals with known reference and variance. It is a heuristic diagnostic, not a calibrated failure probability. Only the same 30 fitting pilots are available online. The algebraic fallback and any additional EM/filter work are accepted only by the frozen observable likelihood rule.
+The standalone algebraic20 baseline is reported in every accuracy, BER and runtime comparison table. It applies the algebraic start and 20 EM updates independently of the receiver gate; an invalid algebraic solve uses the frozen spectral start with 20 EM updates. Its final filter matches the defined baseline pipeline.
+Pilot-design scope: the current 15-column algebraic least-squares implementation requires sufficiently rich, amplitude-varying fitting pilots; this study uses 30 Gaussian fitting pilots. With constant-modulus/QPSK fitting pilots, the three diagonal nuisance columns are collinear, so rank is at most 13 and the current full-rank-15 validity gate rejects the solve. The gated receiver then retains the prior, while standalone algebraic20 takes its declared spectral-plus-EM20 branch. This is a limitation of this formulation and validity rule, not a general claim that channel recovery with constant-modulus pilots is impossible. The 64 QPSK vectors used here are separate data/probes, not the 30 fitting pilots.
+Development A and independent C use heldout observations and known QPSK probes. C requires a positive pooled weak-target NLL lower bound and empirical probe BER nonincrease in every path regime. This is not a formal BER noninferiority guarantee.
+The prior selective-EM policy is inherited exactly from the earlier exploratory B proposals; those proposals failed their original C confirmation. This experiment does not retroactively confirm that prior study.
+
+ALL (153 conditions)
+Method                          | Mean-cell NMSE dB | Pooled linear | BER %     | Case p95 | Case p99 | Case max
+--------------------------------+-------------------+---------------+-----------+----------+----------+---------
+A-selected reliability receiver | -38.62022         | 0.008973843   | 0.5224955 | 0.06923  | 0.1585   | 0.4004  
+Prior selective EM              | -38.11318         | 0.009004822   | 0.5224955 | 0.06923  | 0.1585   | 0.4004  
+Frozen latest                   | -37.85844         | 0.009036936   | 0.5225709 | 0.06954  | 0.1595   | 0.4004  
+Compact sparse                  | -31.89549         | 0.00868525    | 0.4891589 | 0.06139  | 0.1359   | 0.2994  
+Adaptive start + EM40           | -35.69076         | 0.02637969    | 0.8082039 | 0.2185   | 0.4803   | 1.655   
+Global schedule + EM40          | -36.48227         | 0.02658368    | 0.8137179 | 0.2194   | 0.4889   | 1.662   
+Classical start + EM40          | -32.00473         | 0.02744311    | 0.8093873 | 0.2189   | 0.4802   | 1.655   
+Direct EM100                    | -30.56224         | 0.02839215    | 0.8288282 | 0.2215   | 0.5099   | 1.673   
+Standalone algebraic + EM20     | -36.53366         | 0.02788204    | 0.8356763 | 0.2231   | 0.5251   | 1.723   
+
+WEAK_TARGET (24 conditions)
+Method                          | Mean-cell NMSE dB | Pooled linear | BER %        | Case p95  | Case p99  | Case max 
+--------------------------------+-------------------+---------------+--------------+-----------+-----------+----------
+A-selected reliability receiver | -48.64383         | 3.878872e-05  | 0            | 0.0001597 | 0.0002468 | 0.0005842
+Prior selective EM              | -45.41146         | 0.0002366952  | 0            | 0.0008068 | 0.001409  | 0.04125  
+Frozen latest                   | -43.89334         | 0.00043972    | 0.0004803693 | 0.0002283 | 0.0009543 | 0.1447   
+Compact sparse                  | -25.60737         | 0.003079617   | 0.001441108  | 0.00173   | 0.06345   | 0.2079   
+Adaptive start + EM40           | -43.23533         | 0.0003391124  | 0.0005368833 | 0.0001825 | 0.0003251 | 0.1135   
+Global schedule + EM40          | -48.00012         | 4.317378e-05  | 0            | 0.0001756 | 0.0002629 | 0.0007525
+Classical start + EM40          | -24.33827         | 0.004010593   | 0.005340576  | 0.007502  | 0.08061   | 0.2007   
+Direct EM100                    | -24.96983         | 0.003324934   | 0.003560384  | 0.000327  | 0.07747   | 0.1698   
+Standalone algebraic + EM20     | -48.45705         | 4.278516e-05  | 0            | 0.0001756 | 0.0002635 | 0.0007556
+
+ORDINARY (45 conditions)
+Method                          | Mean-cell NMSE dB | Pooled linear | BER %    | Case p95 | Case p99 | Case max
+--------------------------------+-------------------+---------------+----------+----------+----------+---------
+A-selected reliability receiver | -20.24176         | 0.03016997    | 1.77644  | 0.1393   | 0.2204   | 0.4004  
+Prior selective EM              | -20.24176         | 0.03016997    | 1.77644  | 0.1393   | 0.2204   | 0.4004  
+Frozen latest                   | -20.24176         | 0.03016997    | 1.77644  | 0.1393   | 0.2204   | 0.4004  
+Compact sparse                  | -18.96408         | 0.02657511    | 1.662191 | 0.1168   | 0.1806   | 0.2994  
+Adaptive start + EM40           | -15.54857         | 0.08888657    | 2.747562 | 0.4357   | 0.6638   | 1.655   
+Global schedule + EM40          | -15.53805         | 0.08973752    | 2.766596 | 0.4398   | 0.6654   | 1.662   
+Classical start + EM40          | -15.21146         | 0.08951026    | 2.748752 | 0.4357   | 0.6578   | 1.655   
+Direct EM100                    | -15.11700         | 0.09321339    | 2.814987 | 0.4542   | 0.6998   | 1.673   
+Standalone algebraic + EM20     | -15.47026         | 0.09415179    | 2.841254 | 0.4719   | 0.73     | 1.723   
+
+TRANSITION_ALL (63 conditions)
+Method                          | Mean-cell NMSE dB | Pooled linear | BER %        | Case p95  | Case p99 | Case max
+--------------------------------+-------------------+---------------+--------------+-----------+----------+---------
+A-selected reliability receiver | -38.80231         | 0.0002394598  | 3.229373e-05 | 0.0008235 | 0.001292 | 0.03044 
+Prior selective EM              | -37.73638         | 0.0003146003  | 3.229373e-05 | 0.0009134 | 0.001432 | 0.04857 
+Frozen latest                   | -38.45630         | 0.0002938344  | 7.535204e-05 | 0.0008355 | 0.001334 | 0.09408 
+Compact sparse                  | -32.44868         | 0.001338361   | 0.0002260561 | 0.001851  | 0.004292 | 0.2024  
+Adaptive start + EM40           | -37.05267         | 0.0004644297  | 3.229373e-05 | 0.001826  | 0.002725 | 0.03429 
+Global schedule + EM40          | -37.13416         | 0.0004578485  | 3.229373e-05 | 0.001825  | 0.002725 | 0.007676
+Classical start + EM40          | -33.20742         | 0.001764252   | 0.000968812  | 0.002097  | 0.0507   | 0.2007  
+Direct EM100                    | -32.04605         | 0.001585608   | 0.001356337  | 0.002034  | 0.03778  | 0.1699  
+Standalone algebraic + EM20     | -37.13559         | 0.0004580807  | 3.229373e-05 | 0.001826  | 0.002722 | 0.00771 
+
+HIGH_ALL (45 conditions)
+Method                          | Mean-cell NMSE dB | Pooled linear | BER %        | Case p95  | Case p99  | Case max 
+--------------------------------+-------------------+---------------+--------------+-----------+-----------+----------
+A-selected reliability receiver | -56.74376         | 5.853695e-06  | 0            | 2.554e-05 | 4.091e-05 | 0.0001332
+Prior selective EM              | -56.51213         | 5.987578e-06  | 0            | 2.585e-05 | 4.257e-05 | 0.0001332
+Frozen latest                   | -54.63814         | 0.0001442475  | 0.0001959153 | 2.589e-05 | 4.287e-05 | 0.1132   
+Compact sparse                  | -44.05244         | 0.001081035   | 0.0006329572 | 0.0008797 | 0.01543   | 0.2079   
+Adaptive start + EM40           | -53.92628         | 0.0001541632  | 0.0002863378 | 2.658e-05 | 4.692e-05 | 0.1135   
+Global schedule + EM40          | -56.51384         | 5.98531e-06   | 0            | 2.585e-05 | 4.257e-05 | 0.0001332
+Classical start + EM40          | -47.11424         | 0.001326358   | 0.001808449  | 3.344e-05 | 0.05286   | 0.1876   
+Direct EM100                    | -43.93014         | 0.001100058   | 0.001130281  | 3.966e-05 | 0.03766   | 0.1698   
+Standalone algebraic + EM20     | -56.75436         | 5.841199e-06  | 0            | 2.557e-05 | 4.066e-05 | 0.0001338
+
+WEAK_WARM100 (18 conditions)
+Method                          | Mean-cell NMSE dB | Pooled linear | BER %        | Case p95  | Case p99  | Case max 
+--------------------------------+-------------------+---------------+--------------+-----------+-----------+----------
+A-selected reliability receiver | -51.50343         | 1.667719e-05  | 0            | 5.784e-05 | 8.431e-05 | 0.0001455
+Prior selective EM              | -49.32927         | 0.0001098269  | 0            | 0.0004902 | 0.001121  | 0.04125  
+Frozen latest                   | -46.18521         | 0.0003638849  | 0.0004897883 | 6.271e-05 | 0.0001029 | 0.1133   
+Compact sparse                  | -25.37328         | 0.003241164   | 0.001921477  | 0.001594  | 0.06815   | 0.2079   
+Adaptive start + EM40           | -44.54980         | 0.0004113651  | 0.0007158444 | 6.434e-05 | 0.0006552 | 0.1135   
+Global schedule + EM40          | -50.87351         | 1.753455e-05  | 0            | 6.191e-05 | 8.744e-05 | 0.0002372
+Classical start + EM40          | -24.36868         | 0.003987166   | 0.005312319  | 0.007417  | 0.08061   | 0.1876   
+Direct EM100                    | -25.01208         | 0.003292906   | 0.003390842  | 0.0001063 | 0.07745   | 0.1698   
+Standalone algebraic + EM20     | -51.47903         | 1.710776e-05  | 0            | 6.089e-05 | 8.549e-05 | 0.0002381
+
+STRONG_HIGH (30 conditions)
+Method                          | Mean-cell NMSE dB | Pooled linear | BER % | Case p95  | Case p99  | Case max 
+--------------------------------+-------------------+---------------+-------+-----------+-----------+----------
+A-selected reliability receiver | -58.55506         | 3.354983e-06  | 0     | 1.312e-05 | 2.035e-05 | 4.45e-05 
+Prior selective EM              | -58.55506         | 3.354983e-06  | 0     | 1.312e-05 | 2.035e-05 | 4.45e-05 
+Frozen latest                   | -58.55841         | 3.351696e-06  | 0     | 1.312e-05 | 2.015e-05 | 4.45e-05 
+Compact sparse                  | -53.38466         | 1.025363e-05  | 0     | 3.568e-05 | 5.357e-05 | 0.0001228
+Adaptive start + EM40           | -58.31574         | 3.360867e-06  | 0     | 1.312e-05 | 2.015e-05 | 4.45e-05 
+Global schedule + EM40          | -58.55761         | 3.351584e-06  | 0     | 1.312e-05 | 2.015e-05 | 4.45e-05 
+Classical start + EM40          | -58.48300         | 3.355627e-06  | 0     | 1.307e-05 | 2.015e-05 | 4.451e-05
+Direct EM100                    | -53.38466         | 1.025363e-05  | 0     | 3.568e-05 | 5.357e-05 | 0.0001228
+Standalone algebraic + EM20     | -58.55853         | 3.351592e-06  | 0     | 1.308e-05 | 2.011e-05 | 4.439e-05
+
+CHECK TRIGGERS AND ACCEPTED FALLBACKS
+All counts retain the separate training fits.
+Scope       | Fit  | Cases | Triggered | Accepted | Rank invalid | Trigger % | Accepted %
+------------+------+-------+-----------+----------+--------------+-----------+-----------
+all         | 9101 | 19584 | 829       | 829      | 0            | 4.2330    | 4.2330    
+all         | 9102 | 19584 | 819       | 819      | 0            | 4.1820    | 4.1820    
+all         | 9103 | 19584 | 824       | 824      | 0            | 4.2075    | 4.2075    
+weak_target | 9101 | 3072  | 829       | 829      | 0            | 26.9857   | 26.9857   
+weak_target | 9102 | 3072  | 819       | 819      | 0            | 26.6602   | 26.6602   
+weak_target | 9103 | 3072  | 824       | 824      | 0            | 26.8229   | 26.8229   
+ordinary    | 9101 | 5760  | 0         | 0        | 0            | 0.0000    | 0.0000    
+ordinary    | 9102 | 5760  | 0         | 0        | 0            | 0.0000    | 0.0000    
+ordinary    | 9103 | 5760  | 0         | 0        | 0            | 0.0000    | 0.0000    
+strong_high | 9101 | 3840  | 0         | 0        | 0            | 0.0000    | 0.0000    
+strong_high | 9102 | 3840  | 0         | 0        | 0            | 0.0000    | 0.0000    
+strong_high | 9103 | 3840  | 0         | 0        | 0            | 0.0000    | 0.0000    
+
+CONDITION-SPECIFIC LOSSES
+Complete adverse-cell lists are retained in completion.json; pointwise harm intervals are descriptive.
+Contrast                | NMSE worse | NMSE harm CI | BER worse | BER harm CI | Worst NMSE cell        | Gain dB  
+------------------------+------------+--------------+-----------+-------------+------------------------+----------
+receiver_vs_prior       | 0          | 0            | 0         | 0           | L2_rsr5_snr0           | +0       
+receiver_vs_latest      | 32         | 8            | 0         | 0           | L2_rsr20_snr32.5       | -0.700957
+receiver_vs_compact     | 22         | 20           | 22        | 12          | L4_rsr5_snr0           | -1.21399 
+receiver_vs_adaptive40  | 29         | 12           | 3         | 0           | random3to7_rsr5_snr30  | -3.74728 
+receiver_vs_global40    | 20         | 10           | 3         | 0           | random3to7_rsr5_snr30  | -3.73627 
+receiver_vs_classical40 | 24         | 2            | 3         | 0           | random3to7_rsr12_snr30 | -0.700439
+receiver_vs_em100       | 3          | 2            | 3         | 0           | random3to7_rsr12_snr30 | -0.701003
+receiver_vs_algebraic20 | 44         | 15           | 3         | 0           | random3to7_rsr5_snr30  | -3.7458  
+
+FIT SPREAD AND ACTUAL BIT COUNTS
+Scope       | Fit           | NMSE dB   | BER %       | Errors | Bits   
+------------+---------------+-----------+-------------+--------+--------
+all         | receiver_9101 | -38.61255 | 0.5183733   | 38983  | 7520256
+all         | receiver_9102 | -38.67368 | 0.5272959   | 39654  | 7520256
+all         | receiver_9103 | -38.57443 | 0.5218173   | 39242  | 7520256
+all         | prior_9101    | -38.11601 | 0.5183733   | 38983  | 7520256
+all         | prior_9102    | -38.16970 | 0.5272959   | 39654  | 7520256
+all         | prior_9103    | -38.05384 | 0.5218173   | 39242  | 7520256
+all         | latest_9101   | -38.25160 | 0.5183733   | 38983  | 7520256
+all         | latest_9102   | -38.55959 | 0.5272959   | 39654  | 7520256
+all         | latest_9103   | -36.76414 | 0.5220434   | 39259  | 7520256
+weak_target | receiver_9101 | -48.64410 | 0           | 0      | 1179648
+weak_target | receiver_9102 | -48.64898 | 0           | 0      | 1179648
+weak_target | receiver_9103 | -48.63843 | 0           | 0      | 1179648
+weak_target | prior_9101    | -45.47865 | 0           | 0      | 1179648
+weak_target | prior_9102    | -45.43609 | 0           | 0      | 1179648
+weak_target | prior_9103    | -45.31964 | 0           | 0      | 1179648
+weak_target | latest_9101   | -46.47305 | 0           | 0      | 1179648
+weak_target | latest_9102   | -47.95050 | 0           | 0      | 1179648
+weak_target | latest_9103   | -37.25647 | 0.001441108 | 17     | 1179648
+ordinary    | receiver_9101 | -20.37356 | 1.762424    | 38982  | 2211840
+ordinary    | receiver_9102 | -20.09954 | 1.792761    | 39653  | 2211840
+ordinary    | receiver_9103 | -20.25217 | 1.774134    | 39241  | 2211840
+ordinary    | prior_9101    | -20.37356 | 1.762424    | 38982  | 2211840
+ordinary    | prior_9102    | -20.09954 | 1.792761    | 39653  | 2211840
+ordinary    | prior_9103    | -20.25217 | 1.774134    | 39241  | 2211840
+ordinary    | latest_9101   | -20.37356 | 1.762424    | 38982  | 2211840
+ordinary    | latest_9102   | -20.09954 | 1.792761    | 39653  | 2211840
+ordinary    | latest_9103   | -20.25217 | 1.774134    | 39241  | 2211840
+strong_high | receiver_9101 | -58.55505 | 0           | 0      | 1474560
+strong_high | receiver_9102 | -58.55509 | 0           | 0      | 1474560
+strong_high | receiver_9103 | -58.55503 | 0           | 0      | 1474560
+strong_high | prior_9101    | -58.55505 | 0           | 0      | 1474560
+strong_high | prior_9102    | -58.55509 | 0           | 0      | 1474560
+strong_high | prior_9103    | -58.55503 | 0           | 0      | 1474560
+strong_high | latest_9101   | -58.55841 | 0           | 0      | 1474560
+strong_high | latest_9102   | -58.55841 | 0           | 0      | 1474560
+strong_high | latest_9103   | -58.55841 | 0           | 0      | 1474560
+
+WEAK-TARGET ERROR CONCENTRATION
+For each fit/path regime, sum each physical anchor’s numerator error over the eight coupled SNRs, then identify the largest contributor. Its share is not a failure probability; repeated SNR appearances are not independent failures. Complete per-cell and baseline diagnostics are retained in weak_error_concentration.json.
+Regime     | Fit           | Top anchor | Error share % | Case p95   | Case p99   | Case max  
+-----------+---------------+------------+---------------+------------+------------+-----------
+L2         | receiver_9101 | 85         | 1.8346        | 0.00010578 | 0.00018228 | 0.00033584
+L2         | receiver_9102 | 85         | 1.8619        | 0.00010243 | 0.00017904 | 0.00033584
+L2         | receiver_9103 | 85         | 1.8340        | 0.00010573 | 0.00018037 | 0.00033584
+L2         | prior_9101    | 45         | 22.7170       | 0.00017966 | 0.00040696 | 0.0024709 
+L2         | prior_9102    | 45         | 32.0054       | 0.00017249 | 0.00040321 | 0.0038732 
+L2         | prior_9103    | 45         | 32.1479       | 0.00018124 | 0.00041207 | 0.0039902 
+L2         | latest_9101   | 85         | 7.1739        | 0.00011909 | 0.00034476 | 0.0011766 
+L2         | latest_9102   | 85         | 6.5182        | 0.0001049  | 0.00022146 | 0.00084897
+L2         | latest_9103   | 45         | 74.8148       | 0.00012343 | 0.00034931 | 0.065275  
+L4         | receiver_9101 | 79         | 1.1661        | 0.00017772 | 0.00025329 | 0.00059567
+L4         | receiver_9102 | 119        | 1.3282        | 0.00017676 | 0.00026742 | 0.00057105
+L4         | receiver_9103 | 119        | 1.3478        | 0.00017704 | 0.00025727 | 0.00058596
+L4         | prior_9101    | 73         | 3.1158        | 0.00069151 | 0.0010725  | 0.0016069 
+L4         | prior_9102    | 73         | 3.2796        | 0.00065585 | 0.0010371  | 0.0016301 
+L4         | prior_9103    | 73         | 3.2666        | 0.00066713 | 0.0010552  | 0.0016635 
+L4         | latest_9101   | 73         | 2.3804        | 0.00023967 | 0.00057243 | 0.00082285
+L4         | latest_9102   | 73         | 2.6621        | 0.00019996 | 0.00042572 | 0.00080543
+L4         | latest_9103   | 95         | 44.8309       | 0.00026126 | 0.00075942 | 0.080834  
+random3to7 | receiver_9101 | 19         | 1.3250        | 0.00016947 | 0.0002646  | 0.00046883
+random3to7 | receiver_9102 | 19         | 1.3251        | 0.00016947 | 0.00026856 | 0.00044903
+random3to7 | receiver_9103 | 19         | 1.3445        | 0.00016947 | 0.00026719 | 0.00046106
+random3to7 | prior_9101    | 17         | 42.0153       | 0.001201   | 0.0017957  | 0.039152  
+random3to7 | prior_9102    | 17         | 42.6198       | 0.0011649  | 0.0018747  | 0.039037  
+random3to7 | prior_9103    | 17         | 45.9196       | 0.0011863  | 0.0018988  | 0.045558  
+random3to7 | latest_9101   | 17         | 80.8433       | 0.00032824 | 0.00086484 | 0.16979   
+random3to7 | latest_9102   | 17         | 15.6511       | 0.0002907  | 0.00060876 | 0.0058021 
+random3to7 | latest_9103   | 17         | 77.7392       | 0.00054995 | 0.049758   | 0.25843   
+
+COMPLETE-PIPELINE RUNTIME
+Both windows require full-grid AND weak-target p90<=10.74ms; weak-warm, triggered branch and51 bins separately disclosed. A p90 cap is not a hard per-call deadline.
+Pipeline                        | W1 p90 ms | W2 p90 ms | W1 target p90 | W2 target p90 | Full cap | Target cap
+--------------------------------+-----------+-----------+---------------+---------------+----------+-----------
+A-selected reliability receiver | 4.2824    | 7.2538    | 4.1621        | 7.0306        | PASS     | PASS      
+Prior selective EM              | 4.2226    | 7.1476    | 4.0136        | 6.8090        | PASS     | PASS      
+Frozen latest                   | 8.5758    | 14.6896   | 8.7281        | 14.8577       | FAIL     | FAIL      
+Compact sparse                  | 5.5206    | 9.5161    | 5.0565        | 8.7556        | PASS     | PASS      
+Adaptive start + EM40           | 5.3885    | 9.0403    | 5.1660        | 8.7043        | PASS     | PASS      
+Global schedule + EM40          | 4.2109    | 7.1034    | 4.0320        | 6.7447        | PASS     | PASS      
+Classical start + EM40          | 4.2393    | 7.1421    | 4.0434        | 6.8015        | PASS     | PASS      
+Direct EM100                    | 5.1889    | 8.8351    | 5.2258        | 8.7521        | PASS     | PASS      
+Standalone algebraic + EM20     | 1.8087    | 3.1010    | 1.5916        | 2.7475        | PASS     | PASS      
+
+Window  | Triggered calls | Accepted calls | Triggered-branch p90 ms | Overrun bins /51
+--------+-----------------+----------------+-------------------------+-----------------
+window1 | 69              | 69             | 3.5015                  | 0               
+window2 | 48              | 48             | 5.9177                  | 0               
+
+INDIVIDUAL RECEIVER LATENCIES
+Window  | Maximum ms | Calls >10.74 ms | Maximum-call fit | Regime     | Reference | SNR  | Index | Gate triggered
+--------+------------+-----------------+------------------+------------+-----------+------+-------+---------------
+window1 | 5.225209   | 0/1377          | receiver_9102    | random3to7 | 5.0       | 50.0 | 500   | false         
+window2 | 22.275833  | 1/1377          | receiver_9103    | random3to7 | 12.0      | 45.0 | 600   | false         
+The receiver passes the declared p90 targets in both windows, but an individual window-2 call exceeds 10.74 ms. Its gate was false; these measurements do not establish the cause of the outlier. Latencies vary substantially between the two windows; the slower second window remains part of the reported acceptance check. The p90 target is not a hard per-call deadline.
+
+INTERPRETATION AND VERIFICATION
+Both learned starts contain ten EM/structure stages before any continuation. The global schedule has 30 globally trained parameters; the 188-parameter adaptive controller conditions decisions on observations. A zero extra tail does not mean zero estimation iterations.
+Reference domains in the fresh generator separate both channel/noise and random path counts. The 20,000 paired bootstrap draws resample 128 indices independently inside each of nine (regime, reference) blocks, and share those indices across SNR/method/fit inside each block: 1,152 physical anchor clusters. Fit means average metrics, not predictions.
+Mean-cell NMSE first computes 10 log10(total squared channel error / total channel energy) within each condition and training fit, then averages those dB values equally over conditions and fits. Pooled linear NMSE instead sums errors and channel energy over all conditions before dividing, separately for each fit, then averages the fit ratios arithmetically. The summaries use different weights and can rank methods differently; neither is the mean of individual-channel NMSE ratios. Group p95/p99/max values average corresponding fit diagnostics. The grid has 108/153 conditions above 20 dB; these are not deployment-weighted effects.
+Every estimator sees the same fresh data and magnitude-only 64-hypothesis Rician ML detector. N=32, K=3, P=30, known reference/variance, 64 joint QPSK vectors once/channel. Zero observed BER and collapsed intervals do not prove equivalence, zero population BER, rare-event bounds or population noninferiority. The host-specific p90 cap is not a hard deadline.
+OptShrink was omitted prospectively from this cap-focused run because prior measured runtime greatly exceeded 10.74 ms. No historical result is presented as a fresh comparison.
+All required source/data/arithmetic/BER/timing audits passed. No test-driven tuning, deployment decision, manuscript edit or publication claim is made by this report.
+
+Figures: reliability_nmse.png and reliability_ber.png.

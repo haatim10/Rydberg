@@ -1,0 +1,64 @@
+P1 SECOND-REVIEW REVISION: WHAT CHANGED
+
+Completed 600 fresh paired worlds: 100 for each L=3,7,14 crossed with
+SNR=0,10 dB. N32/K3/P30/RSR12, 100/25 updates. Hard and smooth processing
+were tested with 1,2,4,8 sweeps, each selecting its own parameter. The same
+worlds also received three random pilot splits for four-sweep HS-GS.
+
+Main new finding
+One hard-rank sweep improves on four by 0.275-0.652 dB in all six settings;
+all pointwise 95% paired intervals are positive. Example: L7/SNR10 gain
+0.652 [0.488,0.824] dB. This shows the original four-sweep setting is not
+optimal in these conditions. It includes the effect of retuning rank.
+Original manuscript curves remain unchanged and explicitly retain Q=4.
+Smooth-filter results also depend on sweep count. No universal optimal
+count, adaptive stopping rule, or global convergence is claimed.
+
+Runtime
+Separate 12-world serial check at L7/SNR5: median hard-processing times
+for Q1/Q2/Q4/Q8 are 0.121/0.201/0.358/0.667 seconds, including selection,
+initialization and final fit. Thus Q1 is about 2.97 times faster than Q4
+in this small sample. It is not a portable speed constant. Four-worker
+simulation timings were not used as inference benchmarks.
+
+Pilot split
+Random split gain versus the fixed split ranges from -0.148 to +0.184 dB.
+Only L7/SNR10 has a positive pointwise interval: 0.184 [0.016,0.364] dB;
+the other five include zero. No consistent average advantage is shown.
+Random/fixed ranks disagree in 15.7%-86.7% of comparisons. Three masks
+are repeated observations of the same world, not independent samples.
+This is split sensitivity, not a proposed multi-fold estimator.
+
+Rank versus harm
+Reused the existing 2400 baseline worlds. At L7/SNR0, 315/400 select rank
+below seven, but only 31 of those 315 lose to EM-GS. Matching true rank is
+not necessarily the best denoising choice. At L14/SNR0, HS-GS loses in
+191/400 trials (47.75%). Full-rank fallback is an option, not a guarantee
+that every chosen lower rank helps.
+
+Manuscript locations
+- Introduction: verified Quantum-MUSIC IEEE citation and scope distinction.
+- Section III-D: per-update, rank-search and memory scaling.
+- Experimental setup: pilot assumptions and new evidence counts.
+- Structured comparisons: rationale and limits of empirical smooth filter.
+- Conclusion: one-sweep finding and split sensitivity; four-sweep comparison
+  explicitly qualified. Shortened repeated effective-rank discussion.
+- Appendix C: sweep-count study, random-split study, rank/harm diagnostics.
+- Fig. 9: sweep sensitivity; Tables IV/V: split and harm diagnostics.
+
+44 numerical tests passed (37 previous + 7 follow-up). All saved trial
+ranks agree with their held-out argmins; exact bypass cases verified.
+54 aggregate values independently recomputed. PDF compiles with resolved
+references, no overfull boxes/missing glyphs, and visually checked layout.
+
+Deferred deliberately
+No joint-user/2D Hankel model, hardware campaign, new SURE/AIC selector,
+neural model, or adaptive stopping algorithm was added. Those require
+new assumptions or new research. Only verified IEEE-published additions
+were cited; this is not an exhaustive current-literature review.
+
+Interpretation
+The paper is stronger as a careful empirical study. The new finding also
+narrows any claim based specifically on four-sweep hard truncation.
+This revision does not establish a fundamentally new low-rank principle
+or guarantee acceptance. Venue page limits still need to be checked.

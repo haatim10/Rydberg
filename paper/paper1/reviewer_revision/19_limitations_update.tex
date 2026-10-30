@@ -1,0 +1,26 @@
+% Replace the final three paragraphs of Section VI, starting with
+% "Limitations. All results in this work are obtained from simulations."
+% and ending immediately before the bibliography/appendix.
+
+\textit{Limitations.} All results are from simulations; we have not tested
+measured Rydberg receiver data. The additional path distributions retain
+the geometric channel model. The position-error study tests one departure
+from an ideal ULA with a known calibrated reference, but does not cover
+unknown calibration, mutual coupling, near-field propagation or correlated
+noise. Its offset levels are stress-test settings rather than hardware
+tolerances.
+
+The true effective rank remains an analysis quantity that is unavailable
+at the receiver. A proxy computed from EM-GS provides useful descriptive
+information, especially at higher SNR, but noise changes its value.
+Neither the true-rank plots nor the proxy study establish a universal
+cutoff or a validated per-trial switching rule. The comparison with smooth
+filtering also shows that the useful region depends on the structural
+operation and its parameter selection.
+
+The comparator results use the stated parameter grids and update budgets;
+they do not establish optimality over all structured estimators. The longer
+update check is limited to its tested conditions, and the timing results
+describe one implementation and machine. Finally, the CRLB and CCRB are
+local unbiased-estimation references. The tested estimators need not be
+unbiased, so the bounds are not absolute lower limits on their NMSE.

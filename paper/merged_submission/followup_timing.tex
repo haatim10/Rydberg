@@ -1,0 +1,11 @@
+The post-review timing run measures all five methods together on the
+same independent 24-world SNR 5~dB timing bank, with three repetitions.
+Mean times are 5.16~ms for one adaptive model,
+averaged across three trained models, 5.68~ms
+for in-loop OptShrink, 3.87~ms for final-only
+OptShrink, and 119.08/358.07~ms
+for one-/four-sweep HS-Rician. Initialization and setting selection or
+lookup are included; model loading and file I/O are excluded. These are
+new paired timing measurements, not averages with the earlier timing run.
+Backend differences remain. Learning avoids the hard method's per-case
+search, but has no large speed advantage over offline-tuned OptShrink.

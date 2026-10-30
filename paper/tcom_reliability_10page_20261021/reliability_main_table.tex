@@ -1,0 +1,24 @@
+\begin{table*}[!t]
+\centering
+\caption{Final comparison across 153 test settings. Lower values are better. Time is the slower result from two separate runs.}
+\label{tab:reliability-main}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrr}
+\toprule
+Method & \shortstack{Mean-setting\\NMSE (dB)} & \shortstack{Pooled linear\\NMSE} & BER (\%) & \shortstack{Full-grid\\p90 (ms)} & \shortstack{Target-range\\p90 (ms)} \\
+\midrule
+Proposed receiver & -38.620 & 0.00897384 & 0.522496 & 7.254 & 7.031 \\
+Previous hybrid & -38.113 & 0.00900482 & 0.522496 & 7.148 & 6.809 \\
+Earlier full repair & -37.858 & 0.00903694 & 0.522571 & 14.690 & 14.858 \\
+Adaptive start + EM40 & -35.691 & 0.02637969 & 0.808204 & 9.040 & 8.704 \\
+Fixed schedule + EM40 & -36.482 & 0.02658368 & 0.813718 & 7.103 & 6.745 \\
+Classical start + EM40 & -32.005 & 0.02744311 & 0.809387 & 7.142 & 6.802 \\
+Spectral EM100 & -30.562 & 0.02839215 & 0.828828 & 8.835 & 8.752 \\
+Compact sparse/EM & -31.895 & 0.00868525 & 0.489159 & 9.516 & 8.756 \\
+Algebraic start + EM20 & -36.534 & 0.02788204 & 0.835676 & 3.101 & 2.747 \\
+\bottomrule
+\end{tabular}
+\par\vspace{2pt}
+\begin{minipage}{0.98\textwidth}\footnotesize Learned rows average scores from three training runs, not channel predictions. Mean-setting NMSE gives each setting equal weight; pooled NMSE combines squared errors before forming the ratio. EM40 means 40 extra EM updates. The target range is RSR 5~dB and SNR $>30$~dB (24 settings). The 10.74~ms limit applies to p90 in both ranges and runs, not to every call. Sparse/EM has the best pooled NMSE and overall BER.\end{minipage}
+\end{table*}

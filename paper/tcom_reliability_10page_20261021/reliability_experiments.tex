@@ -1,0 +1,40 @@
+\section{How the Receiver Is Tested}
+\label{sec:protocol}
+\subsection{Separate Development and Test Data}
+The final test uses $N=32$ antennas, $K=3$ users and $P=30$ fitting pilots. It crosses three reference levels (5, 12 and 20~dB), three path cases (two, four or independent 3--7 paths per user), and 17 SNRs:
+\begin{equation*}
+ \begin{gathered}
+ \{0,5,10,15,20,22.5,25,27.5,30,32.5,\\
+ 35,37.5,40,42.5,45,50,60\}\ \mathrm{dB}.
+ \end{gathered}
+\end{equation*}
+Each reference/path group has 128 independent channel/pilot/noise draws. The same draws are reused across SNR by changing the noise scale. Thus there are 153 settings and 19,584 test cases, but only 1,152 independent channel draws. All methods share observations. The three training runs are scored separately, not combined into one prediction. The simulator screens nearly coincident paths and nearly singular steering and pilot matrices as specified in the supplement. True channels are used only to score errors.
+
+Before the final test, separate development and confirmation data select the new recovery rule. The candidates combine a mean or maximum residual, thresholds 2/4/8 and 10/20 extra EM steps. All 12 pass a separate runtime screen. Selection uses withheld pilot loss and known-symbol communication probes, not true-channel errors. Only the selected maximum/2/20 rule is checked on independent confirmation data. Its one-sided 95\% lower bound for loss improvement is 0.1987. Both methods have zero observed probe errors, which does not prove equal population BER. The selected rule is fixed before the final test is generated.
+
+This confirmation applies to the new recovery check. The earlier extra-EM table was exploratory, and its earlier confirmation failed. We retain that fact and do not present the new check as confirmation of every inherited choice. Earlier classical and training studies use separate data; their results are not pooled into the final comparison.
+
+\subsection{Fair Comparisons and BER}
+All final methods receive the same 30 pilots, reference and noise variance. Controls include the previous hybrid, the earlier full repair, and adaptive, fixed-schedule and classical starts with the same 40 extra EM steps and final filter. Each start already has ten stages. The classical start uses fixed noise multiplier $c=1$ and mixing $\beta=1$, selected from 30 choices on the same validation data. Spectral EM100 uses the common starting estimate and 100 EM steps.
+
+The angle-domain sparse/EM control uses the same Rician model. Its fixed table has 51 reference/SNR entries: 34 choose a sparse solver with 128 or 256 dictionary columns, while 17 choose direct EM100. It is therefore a sparse/EM combination. Full settings and selection records are included in the supplement. OptShrink was excluded before this final test because earlier p90 times were about 79--81~ms; its earlier comparisons remain separate. Published URformer is not reproduced.
+
+Every estimated channel is passed to the same magnitude-domain detector:
+\begin{equation}
+ \widehat x=\arg\min_{x\in\mathcal Q^K}\sum_n
+ \ell(z_n^{\rm d},\widehat g_n^Tx+b_n,v),
+\end{equation}
+where $\mathcal Q$ is unit-power QPSK. Each channel sends all 64 joint symbol vectors once, giving 384 bits per test case and 7,520,256 bits per training run. Data noise is independent of pilot noise. All estimators see the same data observations, which are unavailable during channel estimation. A detector given the true channel provides a reference curve only.
+
+\subsection{Error Scores and Processing Time}
+Normalized mean squared error (NMSE) divides squared channel error by channel energy. For each setting and method $a$, we use
+\begin{equation}
+ E_a=10\log_{10}\frac{\sum_i\|\widehat G_{a,i}-G_i\|_F^2}
+ {\sum_i\|G_i\|_F^2}.
+ \label{eq:nmse}
+\end{equation}
+The main score gives each of the 153 settings equal weight, then averages scores from the three training runs. Pooled NMSE instead combines all squared errors and channel energies before taking their ratio. These scores can rank methods differently. BER is the fraction of decoded bits that are wrong. The grid has 108 settings above 20~dB, so it does not represent a typical deployment mix.
+
+We use 20,000 paired bootstrap draws: repeated resampling of the independent channel draws to measure uncertainty. Resampling stays within each of the nine reference/path groups and preserves shared draws across SNR, methods and training runs. Four main comparisons cover NMSE and BER against the previous hybrid and full repair; their 95\% familywise intervals use Bonferroni adjustment. Other intervals are descriptive. They do not measure variation from new training populations, and zero observed errors do not prove zero true BER.
+
+Two separate timing runs measure complete processing of one channel block on one CPU thread in double precision. Both include initialization, all filters, checks, solves and extra EM, including rejected alternatives. They exclude training, model loading, preloaded constants, data generation and BER decoding. We require the 90th-percentile time (p90) to be at most 10.74~ms over both the full grid and weak-reference target range in both runs. This means 90\% of measured calls fall below that value; it is not a deadline for every call. Neither timing run is repeated to obtain a pass. The supplement gives call counts, software details and both runs.

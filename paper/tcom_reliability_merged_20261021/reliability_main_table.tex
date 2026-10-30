@@ -1,0 +1,24 @@
+\begin{table*}[!t]
+\centering
+\caption{Fresh 153-condition comparison. Lower values are better. Runtime is the slower of two independently timed windows, in milliseconds.}
+\label{tab:reliability-main}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lrrrrr}
+\toprule
+Method & \shortstack{Mean-cell\\NMSE (dB)} & \shortstack{Pooled linear\\NMSE} & BER (\%) & \shortstack{Full-grid\\p90 (ms)} & \shortstack{Weak-target\\p90 (ms)} \\
+\midrule
+Reliability receiver & -38.620 & 0.00897384 & 0.522496 & 7.254 & 7.031 \\
+Prior selective EM & -38.113 & 0.00900482 & 0.522496 & 7.148 & 6.809 \\
+Full repaired receiver & -37.858 & 0.00903694 & 0.522571 & 14.690 & 14.858 \\
+Adaptive start + EM40 & -35.691 & 0.02637969 & 0.808204 & 9.040 & 8.704 \\
+Global schedule + EM40 & -36.482 & 0.02658368 & 0.813718 & 7.103 & 6.745 \\
+Classical start + EM40 & -32.005 & 0.02744311 & 0.809387 & 7.142 & 6.802 \\
+Spectral EM100 & -30.562 & 0.02839215 & 0.828828 & 8.835 & 8.752 \\
+Compact sparse/EM & -31.895 & 0.00868525 & 0.489159 & 9.516 & 8.756 \\
+Algebraic start + EM20 & -36.534 & 0.02788204 & 0.835676 & 3.101 & 2.747 \\
+\bottomrule
+\end{tabular}
+\par\vspace{2pt}
+\begin{minipage}{0.98\textwidth}\footnotesize Neural rows average metrics from three separately evaluated fits, not ensembles. Mean-cell NMSE equally averages condition-level dB ratios of summed error to summed channel energy; pooled linear NMSE first pools all conditions within each fit and then averages the fit ratios. The weak target is RSR 5~dB and SNR $>30$~dB (24 conditions). The declared runtime target is 10.74~ms in both scopes and both windows; it is not a per-call deadline. Compact sparse/EM includes zero-penalty EM choices and remains best in pooled-linear NMSE and aggregate BER.\end{minipage}
+\end{table*}

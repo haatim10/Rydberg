@@ -1,0 +1,189 @@
+RESPONSE TO THE LATEST PAPER 2 REVIEW
+Abdullah Haatim | 8 October 2026
+
+Scope of this revision
+All seven author questions have now received an experimental answer or
+an explicit, bounded explanation. Answered does not mean every weakness
+has been solved. The new checks reveal important negative results. The
+original selected estimator, data and results have not been overwritten,
+and no new architecture was chosen using the new test scores.
+
+Most important change to the claims
+The compact estimator is not generally more accurate or much faster than
+a strong classical shrinkage baseline. In a controlled fresh comparison,
+in-loop OptShrink has 0.143 dB lower average per-SNR dB error, with similar
+processing time. The learned model has fewer severe errors in that tested
+mixture. The abstract, main results, discussion and conclusion now state
+this trade-off. The earlier roughly 64-fold speed ratio is explicitly
+restricted to the original rank-search HS-GS implementation, not OptShrink.
+
+1. Put a data-driven shrinker inside the Hankel loop
+Location: main paper, "A Stronger In-Loop Shrinkage Comparison";
+supplement, "Controlled In-Loop OptShrink Comparison."
+
+We added Rician EM updates followed by in-loop OptShrink and antidiagonal
+averaging. Rank, mixing and iteration budget were selected using withheld
+Rician likelihood on 224 development worlds, separately by known noise
+level. The frozen learned models and classical methods then used identical
+observations on 1,152 new test worlds. A final-only OptShrink control was
+included. No true channel was used to select classical settings.
+
+Across seven primary SNRs, NMSE is -14.319 dB for learned, -14.462 dB for
+in-loop OptShrink, -14.374 dB for final-only OptShrink, and -12.890 dB for
+Rician-ranked HS-GS. The learned loss against in-loop OptShrink is 0.143 dB
+with conditional paired 95% interval [0.086, 0.198] dB. Severe-error rates
+are 0.89% and 5.02%, respectively; the primary severe errors occur at
+-10 dB SNR. Mean per-case linear error gives a different ranking, which
+is reported without replacing the declared average-dB measure.
+
+Mean full inference times are 5.67 ms for learned and 6.20 ms for in-loop
+OptShrink in the same timing batch, including initialization and setting
+lookup. Longer OptShrink runs can also beat learned at weak references.
+This is a controlled OptShrink-based Rician reconstruction, not a full
+reproduction of published LRHD. Its denoising guarantees do not carry over
+automatically to correlated Hankel errors after nonlinear inversion.
+
+2. Train different stage counts and controller widths
+Location: main discussion; supplement, "Separately Trained Depth, Width
+and Training Controls," including both tables and the new figure.
+
+We completed 25 matched training jobs: seven variants with three seeds on
+one dataset, plus baseline training on two more independently generated
+datasets with two seeds each. Each has 4,096 training cases, 448 validation
+cases and 12 epochs. The test has 3,584 fresh worlds in 56 conditions.
+The original 16,384-case study remains separate. Selected and final
+checkpoints are both reported. Selection uses withheld Rician likelihood,
+not test NMSE. Ordinary variants share example orders and pilot masks.
+
+Relative to ten stages/width 16, selected-checkpoint macro gains are:
+  five stages: -1.977 dB; 4.25 ms versus 8.04 ms for ten stages;
+  twenty stages: +0.181 dB; 15.60 ms, with MORE severe errors;
+  width eight: -0.731 dB; little inference-time saving;
+  width 32: +0.065 dB; fewer severe errors, but some cells worsen.
+
+The study answers the sensitivity question, not the optimal-depth or
+convergence question. Matrix operations dominate the tiny controller's
+cost. No variant improves every condition, and twelve epochs are not
+proof of convergence. Conditional intervals exclude training uncertainty
+and are not adjusted for the six exploratory comparisons.
+
+3. Estimate noise variance or reference amplitude from observations
+Location: main discussion; supplement, "Static Noise and Reference
+Estimation," with update equations and a complete seven-condition table.
+
+We implemented a static observation-only EM diagnostic for a shared
+positive reference gain and shared complex noise variance. Reference
+shape and phase remain supplied. Nine candidate fits use 21 pilots and
+are scored on nine withheld pilots; the chosen fit is repeated using all
+30. The likelihood includes log(v), which cannot be omitted when choosing
+variance. All selection/refit computation is counted; preprocessing alone
+averages 45.05 ms before learned estimation. No extra pilots are used.
+
+192 independent worlds are reused across seven input-error conditions
+(1,344 condition-cases). Average learned-error reductions are 0.832/0.997
+dB for -6/+6 dB variance error, 1.863/1.449 dB for -10/+10% amplitude
+error, and 2.872 dB for joint +10%/+6 dB error. However, the worst +6 dB
+variance cell worsens by 1.048 dB. Correct inputs can also be worsened.
+Unknown reference phase is not recovered: channel and reference can
+rotate together without changing magnitudes. This is a limited diagnostic,
+not a general calibration fix, adaptive measurement policy or hardware result.
+
+4. Test pilot budgets near P = 2K
+Location: main "Operating Limits"; supplement, "Tight Pilot Counts and
+Weak References."
+
+We tested P = 6, 8, 10, 12, 20, 30 with K = 3, at SNR -5, 5, 15 dB,
+32 cases per cell (576 worlds). Learned models remain frozen: this is
+transfer, not pilot-specific retraining. At SNR 5 dB, learned NMSE changes
+from -14.332 dB at P=30 to -2.197 dB at P=6. At -5 dB SNR and P=6 it
+is +4.089 dB. Full local row-Jacobian rank in these sampled nonzero-reference
+cases does not ensure stable finite-noise estimation. At SNR 5 dB, the
+median smallest singular value drops from 2.488 to 0.172. We distinguish
+the unrestricted-row dimension condition from global sparse-channel
+identifiability; neither a general uniqueness theorem nor recovery at
+the dimension boundary is claimed.
+
+5. Diagnose weak references and try a curriculum
+Location: main discussion; supplement, "Tight Pilot Counts and Weak
+References," "A Nearly Noiseless Failure," and the new training study.
+
+Paired reference sweeps distinguish absent-reference phase ambiguity from
+nonzero-reference conditioning/optimization difficulties. At SNR 20 dB,
+RSR -10 dB, EM gives -1.773 dB from spectral initialization but -21.036 dB
+when started at the true channel. True-start EM is an oracle diagnostic,
+never a deployable comparator. This gap does not prove global identification
+or establish a single cause of all weak-reference failures.
+
+The matched curriculum presents stronger references before weaker ones,
+with the same total per-example exposure. It gains 0.206 dB overall and
+0.255 dB on RSR 0 dB cells, but loses 2.353 dB in the worst cell (SNR 20,
+RSR 5, two paths). Its repeated exposures share an epoch's mask, so it
+changes distinct-mask coverage as well as ordering. It is not a pure
+ordering intervention or a general remedy. No specialized low-RSR branch
+was added; the requested curriculum alternative was the bounded test.
+
+An additional, clearly out-of-range SNR 60 dB check found filtering damage
+even at RSR 12 dB: learned NMSE -6.647 dB versus EM100 -65.715 dB.
+Disabling filtering but retaining learned steps gives -44.020 dB; starting
+the full model at truth still gives -6.653 dB. These post-hoc interventions
+support filtering bias in this setting, not a universally safe switching
+rule. Independent numerical replay confirms the result. The paper makes
+no low-noise consistency claim.
+
+The pilot and weak-reference diagnostics have a documented seed/channel
+overlap and are not pooled as independent replications. The new training
+test uses a disjoint seed range amended before any test generation.
+
+6. Test a mixture of experts for few paths
+Location: main discussion and new training-study supplement section.
+
+A 374-parameter two-expert controller was trained with the same example,
+epoch and selection budgets as the 188-parameter baseline and 364-parameter
+width-32 control. It improves overall NMSE by only 0.023 dB and two-path
+NMSE by 0.179 dB. Width 32 improves those measures by 0.065 and 0.286 dB.
+The expert model does not demonstrate an advantage over that similarly
+sized plain controller in this experiment. Worst-cell losses are retained.
+It mixes controller outputs, not identified physical components; its
+initial thresholds also differ, so effects cannot be attributed to gating
+alone. The primary estimator is unchanged.
+
+7. Release fuller reproducibility materials
+Location: supplement, "Saved-Result Audit" and "Initialization and
+Numerical Record"; scientific archive instructions and manifest.
+
+The expanded scientific archive includes the relevant generating code,
+saved observations/truth/predictions, selected/final weights, histories,
+frozen settings, environment records, figure scripts and SHA-256 manifests.
+A separate smaller Overleaf archive contains the paper, supplement,
+bibliography and figures. Replay and clean-regeneration commands are
+provided; clean regeneration refuses to overwrite existing evidence.
+
+This revision audited all 300 epochs and 2,912 new prediction files,
+recomputed headline values and conditional intervals, checked matched
+orders/masks and all 50 new checkpoints, regenerated a case in each of
+56 test cells, and replayed selected and final models. The largest new
+replay difference was below 1.2e-15. Seventeen focused tests pass.
+Independent-data baseline averages (-12.450, -12.124, -12.229 dB, two
+initializations each) and individual seed scores are reported separately.
+These few datasets do not remove training-population uncertainty.
+
+Additional presentation/theory changes
+The supplement derives the Rician EM update from the latent complex field
+and its conditional von Mises phase distribution. The main text explains
+the cubic filter's spectral multiplier and its weak-path bias. Bounds apply
+to one correction, not global recovery or convergence of the full network.
+The relaxed EM argument is separated from the subsequent learned filter.
+Related work distinguishes LRHD/OptShrink, affine phase retrieval, Rician
+self-supervision and amplitude-only beam training by their observations
+and assumptions. Small parameter count is not presented as low operation
+count; matrix operations and implementation-specific timing are disclosed.
+
+Remaining limits before a venue submission
+This is a general IEEE-format manuscript, not an accepted or venue-approved
+paper. Hardware/atomic-response validation, unknown arbitrary per-antenna
+drift, full LRHD or published URformer reproduction, a strong angle-domain
+sparse comparator and general convergence remain outside this revision.
+CPU/GPU parity has not been tested. The evidence does not prove universal
+novelty, practical deployment readiness, or superiority to all structural
+methods. Verify author details, the companion manuscript's availability,
+page limits and the selected venue's AI-disclosure policy before submission.

@@ -1,0 +1,160 @@
+\section{Controlled In-Loop OptShrink Comparison}
+This experiment uses the frozen original three EM models. A separate
+development set has 32 worlds at each of seven SNRs. For both in-loop and
+final-only OptShrink, the candidate grid includes ranks 1--15, mixing
+0.25, 0.5 or 1, update budgets 10, 20, 50 or 100, and no filtering.
+Candidates fit 21 pilots; the other nine score Rician likelihood.
+Noise-dependent settings are frozen before generating 128 fresh worlds
+at each SNR and at each of two stress settings, giving 1,152 test worlds.
+All test methods use all 30 pilots. Reference strength is 12~dB and
+channels have three to seven paths, except in the labelled stress cells.
+
+Unlike the first final-filter diagnostic, this control shrinks the lifted
+channel after each EM update and averages its antidiagonals. It is an
+OptShrink-based Rician reconstruction, not full LRHD on directly observed
+noisy Hankel matrices. Hankel lifting and nonlinear reconstruction produce
+dependent errors, so matrix-denoising optimality guarantees are not claimed.
+Both noise-dependent and global settings are retained in the results.
+
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{round2_optshrink.pdf}
+\caption{New in-loop comparison, separate from the original main study.
+Each SNR has 128 paired worlds. Right: learned gain over in-loop OptShrink;
+positive means lower error. Intervals are conditional paired-case 95\%
+intervals, with no per-SNR multiplicity adjustment.}
+\end{figure*}
+
+The selected in-loop control uses ten iterations up to SNR 10~dB and
+twenty at 15 and 20~dB. The learned model loses 0.143~dB on the declared
+seven-SNR average. It gains 0.723~dB at $-10$~dB but loses 0.796~dB at
+20~dB. Its severe-error rate is 0.89\%, versus 5.02\% for the selected
+in-loop method. At $-10$~dB these rates are 6.25\% and 35.16\%; the
+other primary SNR cells have none in this sample. The lower mean per-case
+linear error of the learned method is a different metric, not a reason
+to replace the original primary metric after seeing the results.
+
+At RSR 0~dB and SNR 5~dB, the selected in-loop control has NMSE
+$-5.026$~dB, versus $-7.069$~dB for learned and $-8.307$~dB for HS-Rician.
+However, its 50- and 100-iteration controls reach $-8.790$ and $-8.981$~dB.
+The apparent learned advantage over the selected control therefore does
+not establish superiority over the in-loop family at weak references.
+For two paths, HS-Rician reaches $-17.833$~dB, learned $-16.814$~dB and
+selected in-loop $-16.407$~dB. No algorithm wins every comparison.
+
+End-to-end single-thread CPU timing at SNR 5~dB includes initialization,
+noise-level lookup and the selected reconstruction. Mean times are 5.67~ms
+for one learned model, averaged across three trained models, and 6.20~ms
+for selected in-loop OptShrink. Final-only filtering takes 3.99~ms and
+HS-Rician 356.65~ms in this timing sample. These are not ensemble inference
+times, embedded-device measurements or GPU benchmarks. The original
+64-fold ratio applies only to the earlier HS-GS comparison. Saved outputs
+were recalculated; independent OptShrink primitive replays agree within
+$5\times10^{-15}$ and selected learned replays agree exactly.
+
+\section{Static Noise and Reference Estimation}
+This exploratory check estimates a single positive reference-amplitude
+multiplier $a$ shared by the array and a shared complex noise variance
+$v$. Reference shape and phase remain supplied. It does not estimate
+per-antenna drift or choose new measurements. With posterior field $Q$,
+let $R=I-S^H(SS^H)^{-1}S$. One conditional least-squares update is
+\begin{align}
+ a^+&=\operatorname{clip}_{[0.25,4]}
+       \frac{\operatorname{Re}\langle BR,QR\rangle_F}{\|BR\|_F^2},\\
+ G^+&=(Q-a^+B)S^H(SS^H)^{-1},\\
+ v^+&=\operatorname{clip}_{[10^{-6},10^3]}
+       \operatorname{mean}\{Z^2+|M^+|^2-2\operatorname{Re}[(M^+)^*Q]\},
+\end{align}
+where $M^+=G^+S+a^+B$. Bounds use the normalized simulation units and
+are algorithm assumptions, not measured receiver limits. If $BR=0$,
+the gain is confounded with the channel and the joint fit is rejected.
+This denominator check is not a global identifiability proof for the
+full nonlinear problem.
+
+Three choices---unchanged inputs, noise estimation, and joint gain/noise
+estimation---are fitted on 21 pilots for 5, 20 or 100 iterations.
+The other nine choose a setting, which is refitted on all 30 observations.
+The selection loss includes $\log v$:
+\begin{equation}
+ \ell_{\rm nuisance}=(z-|\mu|)^2/v-\log I_{0e}(2z|\mu|/v)+\log v.
+\end{equation}
+Only $-\log(2z)$ may be omitted when comparing different variances.
+All nine candidates and the final refit count toward processing cost.
+The calibration preprocessing averages 45.05~ms per case in this CPU
+check, before the unchanged learned estimator runs. It is not a free
+robustness improvement.
+An EM control with the same held-out stopping choice separates stopping
+effects from nuisance estimation. Corrected inputs are also passed to
+the unchanged learned model; there is no retraining on these cases.
+
+There are 32 worlds per SNR/reference cell, at SNR $-5,5,15$~dB and
+RSR 0 or 12~dB: 192 independent worlds. Seven assumed-input conditions
+reuse them, giving 1,344 condition-cases, not independent worlds.
+The conditions are correct inputs, variance errors of $\pm6$~dB,
+reference-amplitude errors of $\pm10\%$, joint $+10\%/+6$~dB error,
+and constant phase error $+10^\circ$.
+
+\input{round2_tables.tex}
+
+Average improvement does not make the correction safe in every cell.
+With weak reference at SNR $-5$~dB and a $+6$~dB variance error, it
+worsens learned NMSE by 1.048~dB. At SNR 15~dB with strong reference,
+a $+10\%$ amplitude error is largely corrected: NMSE changes from
+$-16.346$ to $-24.107$~dB; the true-input diagnostic is $-24.253$~dB.
+These are simulation input errors, not observed hardware behavior.
+Unknown constant phase remains unresolved because channel and reference
+can rotate together. Likelihood improvement cannot certify absolute phase
+or reduced channel error. The original known-calibration estimator remains
+the primary method; this check is not a universal calibration remedy.
+
+\section{Tight Pilot Counts and Weak References}
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{round2_geometry.pdf}
+\caption{Exploratory checks, 32 worlds per cell. Left: frozen learned model
+under changing pilot count. Right: EM initialization diagnostic with the
+same channel, pilots and noise across reference levels. The true-start
+curve uses unavailable ground truth and is not a deployable estimator.}
+\end{figure*}
+The new pilot sweep has $P=6,8,10,12,20,30$, $K=3$, SNR $-5,5,15$~dB,
+RSR 12~dB and 32 fresh worlds per cell, or 576 worlds. Learned weights
+and OptShrink settings are transferred from $P=30$, without tuning on
+these tests. HS-Rician fits ranks on $\operatorname{round}(0.7P)$ pilots,
+scores the remainder, then refits all $P$. Its rank-fitting subset can
+be below $2K$ even when $P$ reaches it. Structural coupling across array
+elements means the unrestricted single-row count is not, by itself, an
+identifiability theorem for the structurally constrained model.
+
+At SNR 5~dB, learned NMSE is $-2.197$~dB with six pilots and
+$-14.332$~dB with thirty. At SNR $-5$~dB and six pilots it is
+$4.089$~dB, showing substantial failure. All sampled nonzero-reference
+full-data row Jacobians have rank six. Nevertheless, at SNR 5~dB the
+median smallest singular value is 0.172 with six pilots and 2.488 with
+thirty. Local full rank is not enough for stable finite-noise estimation
+or global recovery. The cells use different independent worlds; the
+method comparisons within each cell are paired.
+
+A second check shares the same channel, pilots and complex noise across
+absent reference and RSR $-10,0,5,12$~dB, at SNR 5, 20 and 60~dB.
+There are 32 independent worlds per SNR and 480 condition-cases.
+The SNR 5~dB reference check shares a generation seed and channels with
+one tight-pilot cell. The two diagnostic phases are not independent
+replications of each other and are not pooled for uncertainty estimates.
+At zero reference, sampled Jacobians have rank five and absolute phase
+is ambiguous. At nonzero reference they have rank six in this sample.
+At SNR 20~dB and RSR $-10$~dB, ordinary EM gives $-1.773$~dB NMSE
+from spectral initialization but $-21.036$~dB when initialized at truth.
+The latter is an oracle diagnostic only. The gap supports an initialization
+or optimization difficulty; it does not prove global identifiability or
+exclude controller problems.
+
+\subsection{A Nearly Noiseless Failure}
+SNR 60~dB lies far outside the training range. Even at RSR 12~dB the
+frozen learned model gives $-6.647$~dB, while EM100 gives $-65.715$~dB.
+A post-hoc intervention on the same 32 cases disables only learned
+filtering and retains the learned step sizes; its NMSE is $-44.020$~dB.
+Starting the full learned model at the true channel still gives
+$-6.653$~dB. Thus filtering can spoil an already accurate estimate in
+this setting; the failure is not explained solely by a bad initializer.
+Independent NumPy arithmetic for the no-filter intervention agrees with
+the PyTorch result within $5\times10^{-15}$. This is an out-of-range
+failure and a post-hoc diagnostic, not an independently confirmed switching
+policy. No low-noise consistency or generally safe filtering claim is made.

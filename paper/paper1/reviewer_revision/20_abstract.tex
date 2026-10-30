@@ -1,0 +1,24 @@
+% Optional replacement for the entire abstract environment. This version
+% is qualitative and assumes the new comparison/sensitivity sections are
+% included. It does not change the title, author or index terms.
+\begin{abstract}
+The magnitude-only Rydberg receiver model studied here measures the
+strength of a received field without directly observing its phase. This
+makes complex channel estimation difficult. We investigate when the
+spatial structure of a multipath channel helps this estimation problem.
+We propose a Hankel-structured extension of expectation--maximization
+Gerchberg--Saxton, called HS-GS, which uses the relationship between channel
+coefficients across a uniform linear array. The rank is chosen from
+held-out pilot measurements, and all pilots are then used for the final
+estimate. Selecting the maximum rank returns the estimator to EM-GS.
+Simulations show that HS-GS is most useful when the channel is simple
+relative to the array's structural capacity. However, smooth
+singular-value filtering can outperform hard-rank processing, including
+cases where HS-GS gives little benefit. The useful region therefore
+depends on how the structure is applied. We also examine reference
+strength, the pilot split and array position errors. Effective rank helps
+explain the results, while a version estimated from measurements remains
+sensitive to noise. These findings describe the benefits and limits of
+the tested structural methods without assuming a universal complexity
+threshold.
+\end{abstract}

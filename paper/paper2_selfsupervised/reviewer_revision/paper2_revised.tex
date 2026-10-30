@@ -1,0 +1,438 @@
+\documentclass[journal]{IEEEtran}
+\usepackage{amsmath,amssymb,amsfonts,graphicx,booktabs,array,cite,url}
+\usepackage[hidelinks]{hyperref}
+\hypersetup{pdftitle={Channel Estimation for Rydberg Receivers Using Learned Hankel Filtering},pdfauthor={Abdullah Haatim},pdfsubject={Simulation study of magnitude-only channel estimation}}
+\graphicspath{{figures/}}
+\interdisplaylinepenalty=2500
+\newcommand{\CN}{\mathcal{CN}}
+\newcommand{\Hank}{\mathcal{H}}
+\DeclareMathOperator{\sigmoid}{sigmoid}
+\DeclareMathOperator{\softplus}{softplus}
+\DeclareMathOperator{\tr}{tr}
+\hyphenation{Ryd-berg mea-sure-ments}
+\begin{document}
+\title{Channel Estimation for Rydberg Receivers\\Using Learned Hankel Filtering}
+\author{Abdullah~Haatim\thanks{A. Haatim is with the Department of Electrical and Electronics Engineering, Birla Institute of Technology and Science, Pilani, India (e-mail: f20220519@pilani.bits-pilani.ac.in).}}
+\maketitle
+\begin{abstract}
+Rydberg receivers use excited atoms to sense radio signals. Magnitude-only
+observations do not directly reveal the wireless channel. Channel structure
+can help recover it, but fixed filtering may remove useful details. We
+study a small learned estimator that alternates measurement fitting with
+Hankel filtering. It learns from withheld observations, without true-channel
+targets. Simulations show lower average error and processing time than
+the tested classical Hankel estimator. Both structure and noise information
+help average accuracy. However, the classical method remains better with
+a weak reference and in some few-path channels. Learned filtering is a
+useful option for the tested model within these operating limits.
+\end{abstract}
+\begin{IEEEkeywords}
+Channel estimation, Hankel filtering, magnitude measurements, Rydberg receivers.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\IEEEPARstart{R}{ydberg} atoms respond to radio-frequency electric fields,
+offering a way to study new wireless receivers. Here, signals from several
+users combine with a known reference. The receiver measures their combined
+magnitude, not their full complex value. The channel describes changes in
+signal strength and phase on the way to the receiver. Model-based methods
+and learned methods such as URformer estimate it~\cite{xu2025,xiao2026}.
+
+A few propagation paths can create a repeated pattern across a regular
+array. Arranging channel samples in a Hankel matrix lets an estimator use
+this pattern. Strong filtering can remove real details; weak filtering can
+leave noise. Searching many filtering settings also takes time. We study a
+small model that learns how much filtering to apply. The true channel is
+never shown to it during training. Instead, some measurements are hidden
+from the estimator and used to check its predictions. This is called
+self-supervised learning.
+
+Our contributions are: (i) a 188-parameter estimator that combines Rician
+measurement updates with smooth Hankel filtering; (ii) training this
+estimator on withheld measurements, without channel targets or channel-error
+checkpoint selection; and (iii) paired tests of accuracy, processing time
+and simpler versions, including fresh-test replication and input-removal
+tests. We report weak-reference and few-path failures alongside the gains.
+
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{fig1_method.pdf}
+\caption{Estimator overview. The controller chooses filtering strength and mixing. During training, nine withheld pilots score predictions but do not enter initialization or the ten stages.}
+\label{fig:method}
+\end{figure*}
+
+\section{Related Work}
+Training on withheld measurements is established in image
+reconstruction~\cite{yaman2020} and self-supervised denoising is used for
+Rydberg sensor signals~\cite{liu2026}. Huang et al.\ learn Hankel-factor
+updates from fully sampled targets~\cite{huang2021}. Luo et al.\ combine
+self-supervision and structured low-rank reconstruction for complex MRI
+data~\cite{luo2023}. DeepTensor fits network-based low-rank factors to an
+observed object~\cite{saragadam2022}. Rician-likelihood training for
+magnitude data is also established~\cite{parker2023}. Neither
+self-supervision, learned Hankel processing nor the Rician loss is new
+on its own.
+
+We recover a complex multiuser channel from noisy magnitudes and a known
+reference, rather than restoring measured complex samples. A small
+controller sets filtering strength instead of generating low-rank factors.
+Our companion manuscript studies classical Hankel estimation and rank
+selection~\cite{haatimcompanion}; here we learn filtering without channel labels.
+
+Structured alternating least squares~\cite{zachariah2012},
+data-driven OptShrink~\cite{nadakuditi2014}, low-rank Hankel denoising
+(LRHD)~\cite{yin2021} and robust Hankel completion~\cite{cai2023}
+already provide other structural methods. Their original linear or direct
+matrix observations differ from our referenced magnitudes. Sparse
+amplitude-only beam training is also relevant~\cite{wang2026}, but uses
+adaptive sensing without our additive reference. We do not claim an
+optimal shrinker or superiority over these complete methods. The
+supplement distinguishes their assumptions and reports a limited
+post-processing comparison.
+
+\section{Receiver and Channel Model}
+An array with $N$ elements receives $P$ known training symbols, or pilots,
+from each of $K$ users. The observations are
+\begin{equation}
+ Z=|GS+B+W|,\qquad W_{np}\sim\CN(0,v).
+ \label{eq:model}
+\end{equation}
+Here $G\in\mathbb C^{N\times K}$ is the channel,
+$S\in\mathbb C^{K\times P}$ contains the pilots, and
+$B\in\mathbb C^{N\times P}$ is the known reference. Magnitudes act
+entrywise. Independent noise has total complex variance $v$, or $v/2$ in
+each real component. The reference makes magnitudes depend on relative
+signal phases, but does not ensure accurate recovery in every case.
+Reference calibration and noise variance are known, except in stated
+input-mismatch checks. Receiver conversion gain is absorbed into the scaling.
+This effective model does not simulate atomic dynamics or optical readout.
+
+For the half-wavelength uniform linear array,
+\begin{equation}
+ g_{nk}=\sum_{\ell=1}^{L_k}\alpha_{\ell k}e^{-j\pi n\sin\theta_{\ell k}},
+ \quad n=0,\ldots,N-1.
+\end{equation}
+Independent gains follow $\CN(0,1/L_k)$, giving each user unit average
+channel power. Angles are uniform on $[-\pi/2,\pi/2]$; pilot entries
+follow $\CN(0,1)$. The reference has a known spatial response and constant waveform. Define
+$\mathrm{SNR}=10\log_{10}(K/v)$ and
+$\mathrm{RSR}=10\log_{10}|\alpha_b|^2$, where $\alpha_b$ is reference
+amplitude. RSR uses one user's power: for three users, RSR 12~dB is
+about 7.23~dB relative to their combined power.
+
+\subsection{What the Measurements Can Determine}
+For one array element, write $\mu_p=g^Ts_p+b_p$ and
+$x=[\operatorname{Re}g^T,\operatorname{Im}g^T]^T$. If $\mu_p\ne0$, the
+real Jacobian of $|\mu_p|$ has row
+\begin{equation}
+ A_p=\left[\operatorname{Re}c_p^T,-\operatorname{Im}c_p^T\right],
+ \qquad c_p=\mu_p^*s_p/|\mu_p|.
+\end{equation}
+Full column rank of $A$ ensures local recovery; a small minimum singular
+value means poor stability. Thus $P\ge2K$ is necessary for this condition,
+not sufficient. Full row rank of $S$ alone is insufficient. With $B=0$,
+channel rotation leaves magnitudes unchanged. A known reference can break
+this ambiguity, but its strength alone does not ensure recovery. This
+unrestricted-row condition is local, not a global or sparse-channel
+guarantee~\cite{gao2018}. Proof and information matrix are in the supplement.
+
+\section{Proposed Estimator}
+The estimator starts with a rough channel guess. It repeats two steps ten
+times: one pulls the guess toward the measurements, and the other smooths
+it using the array structure. A small network decides how much smoothing
+to apply at each step (Fig.~\ref{fig:method}).
+
+\subsection{Measurement Update}
+The magnitude of a complex signal with Gaussian noise follows a Rician
+distribution. For noiseless magnitude $a=|\mu|$, its density is
+\begin{equation}
+ p(z\mid a,v)=\frac{2z}{v}e^{-(z^2+a^2)/v}I_0(2za/v),
+\end{equation}
+where $I_0$ is a modified Bessel function. Let $M=GS+B$ and
+$\kappa=2Z|M|/v$. Entrywise, form
+\begin{equation}
+ Q=Z\frac{I_1(\kappa)}{I_0(\kappa)}\frac{M}{|M|},
+\end{equation}
+using the continuous limit at $M=0$. The expectation-maximization (EM)
+update and learned step are
+\begin{align}
+ G_{\rm EM}&=(Q-B)S^H(SS^H)^{-1},\\
+ G_{\rm dc}&=G+\gamma_t(G_{\rm EM}-G),\quad
+ \gamma_t=2\sigmoid(a_t).
+\end{align}
+A linear solve evaluates the inverse. Input pilots must have full row
+rank. Ten stages are a fixed computation budget, not a proved optimum.
+Separately trained five- and twenty-stage models have not been compared.
+
+\subsection{Smooth Hankel Filtering}
+Each updated user channel forms a Hankel matrix $H=\Hank(g_{{\rm dc},k})$,
+with equal entries along each antidiagonal. At $N=32$, it is $17\times16$.
+Singular values describe component strengths. Hard rank truncation deletes
+the smaller components. Our smooth rule is
+\begin{equation}
+ \widehat\sigma_i=\frac{\sigma_i^3}{\sigma_i^2+\tau^2}.
+\end{equation}
+Small components shrink more without being deleted outright, but may
+contain real channel details.
+
+Set $q=\lceil N/2\rceil$, $s_H=\|H\|_F/\sqrt q$, and
+$\tau=s_H[0.001+\softplus(u)]$. The equivalent operation is
+\begin{align}
+ \widehat H&=H-\tau^2H(H^HH+\tau^2I)^{-1},\\
+ g_k^{t+1}&=g_{{\rm dc},k}+\eta_{t,k}
+ (\Hank^\dagger\widehat H_k-g_{{\rm dc},k}),
+\end{align}
+where $\Hank^\dagger$ averages antidiagonals and
+$\eta_{t,k}=\sigmoid(w)$. The code normalizes by $s_H$ before solving and
+guards zero scales. Gradients pass through the solve, without an
+identity-backward approximation. Neither control estimates path count.
+The filter does not increase the Hankel Frobenius norm, but this does not imply
+smaller channel error. The relaxed EM step decreases its quadratic
+surrogate for $0\le\gamma_t\le2$; the following filter need not decrease
+the likelihood. We make no convergence claim for the full estimator.
+
+\subsection{Controller Inputs}
+The network has eight inputs, 16 hidden units, two outputs and SiLU
+activation $x\sigmoid(x)$. Its 178 parameters and ten step sizes give 188. For
+$p_i=\sigma_i/\sum_j\sigma_j$, its first
+three inputs are
+\begin{equation}
+ e^{-\sum_i p_i\log p_i}/q,\qquad p_1,\qquad
+ \sum_{i=q-\lceil q/2\rceil+1}^{q}p_i.
+\end{equation}
+They tell the network how spread out the components are, how much the
+largest contributes, and how much the smaller components contribute.
+Two more inputs measure disagreement with observations and expected
+noise relative to estimated channel power:
+\begin{align}
+ f_4&=\log\left(1+\frac{\operatorname{mean}[(Z-|G_{\rm dc}S+B|)^2]}{v}\right),\\
+ f_{5,k}&=\log\left(1+\frac{v\tr[(SS^H)^{-1}]}{K\widehat p_k}\right),
+ \quad\widehat p_k=\|g_{{\rm dc},k}\|^2/N.
+\end{align}
+Inputs $P/(2K)$, $\log q$ and $(t+1)/10$ give measurement count, size and
+stage ($t=0,\ldots,9$). Denominator guards avoid division by zero.
+True channels, path counts and family labels are not supplied. Weights stay fixed.
+
+\subsection{Training Without True Channels}
+Of 30 pilot columns, 21 enter the estimator and nine are withheld.
+Training scores predicted withheld magnitudes using the Rician loss
+\begin{equation}
+ \ell(z,\mu,v)=\frac{(z-|\mu|)^2}{v}-\log I_{0e}(2z|\mu|/v).
+\end{equation}
+Here $I_{0e}$ is the scaled Bessel function. We omit an observation-only
+term and use small-field series at continuous limits. The loss fits
+Rician amplitude, not its mean. Splits change each epoch; separate
+validation cases with a fixed split select the checkpoint. Deployment
+uses all pilots, without extra measurements or weight training.
+This avoids test-driven selection; it does not make withheld likelihood
+equivalent to channel NMSE or remove dependence on the validation mixture.
+
+\section{Simulation Study}
+\subsection{Setup and Comparators}
+Table~\ref{tab:setup} gives the settings. Half the training cases have
+three to seven paths per user; the rest use fixed counts of 2, 4, 8, 12
+and 16. Validation weights 126 SNR, RSR and path-setting combinations
+equally. These condition labels set validation weights only; model
+selection uses withheld likelihood, not channel error.
+
+\begin{table}[!t]
+\caption{Main Simulation and Training Settings}\label{tab:setup}
+\centering\small
+\begin{tabular}{@{}ll@{}}\toprule
+Setting & Value\\\midrule
+Array elements / users / pilots & $32/3/30$\\
+Training / validation cases & $16{,}384/2{,}048$\\
+SNR values (dB) & $-10,-5,0,5,10,15,20$\\
+Training RSR values (dB) & $5,12,20$\\
+Training seeds & 3, sharing training cases\\
+Estimator stages / parameters & $10/188$\\
+Training epochs / batch size & $20/32$\\
+Optimizer / learning rate & Adam / $0.001$\\
+Input / withheld pilots & $21/9$\\
+Training / evaluation precision & Single / double\\\bottomrule
+\end{tabular}
+\end{table}
+
+The main study trains 18 models: two updates, three filtering choices and
+three seeds. Seeds change weights, batch order and pilot splits, but share
+training cases. Training took 3.67 hours with overlapping workers,
+excluding data preparation and preflight. Tests cover 32 conditions with
+400 paired cases each. Two noise-input tests reuse cases, giving 12,000
+distinct cases. All methods share channels, pilots and noise per case.
+
+HS-GS, the companion study's classical Hankel estimator~\cite{haatimcompanion},
+fits ranks $1,\ldots,q$ on 70\% of pilots, using 25 EM updates and four
+rank/Hankel projection sweeps per update. Squared magnitude residuals on
+the remaining pilots select a rank. It then refits all pilots for 100
+updates. Rank search uses no extra observations and counts toward time.
+Its rank-selection loss differs from our Rician training loss.
+Other controls use EM, Rician or amplitude-gradient updates. Global
+filtering has 30 parameters and scales its threshold with $s_H$; no
+filtering has ten. Hard-Hankel Rician uses development-selected rank ten
+and one projection sweep per update. Constant-output controls replace
+adaptive outputs with validation averages without retraining.
+
+Our earlier URformer-style model has 1,586,900 parameters and used 80,000
+labelled examples, fixed pilots, $P=20$ and RSR 10~dB. It has no matched
+evaluation under this paper's protocol; its earlier scores are not
+included in Table~\ref{tab:all}.
+
+Channel error is normalized mean squared error (NMSE):
+\begin{equation}
+ \mathrm{NMSE}_{\rm dB}=10\log_{10}
+ \frac{\sum_i\|\widehat G_i-G_i\|_F^2}{\sum_i\|G_i\|_F^2}.
+\end{equation}
+Lower is better. Per-seed dB scores and the seven main SNR settings are
+averaged equally. Positive gain means lower error. A severe error has
+more energy than the true channel (per-case linear NMSE above one).
+Pointwise 95\% intervals use 4,000 paired whole-case resamples, conditional
+on saved models, excluding training-dataset uncertainty. Classical stopping
+methods have a 1,000-update cap; reaching it need not mean convergence.
+
+\begin{figure}[!t]
+\centering\includegraphics[width=\columnwidth]{fig2_snr.pdf}
+\caption{Main SNR test: $N=32$, $K=3$, $P=30$, RSR 12~dB, and three-to-seven-path channels. Lines average per-seed scores; bands are conditional paired-case 95\% intervals.}
+\label{fig:snr}
+\end{figure}
+
+\subsection{Accuracy and Processing Time}
+\begin{table}[!t]
+\caption{All Main-Study Comparators}\label{tab:all}
+\centering\footnotesize\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Method & NMSE & Time & Severe\\
+ & (dB) & (ms) & (\%)\\\midrule
+\csname @@input\endcsname baseline_rows.tex
+\bottomrule\end{tabular}
+\parbox{\columnwidth}{\footnotesize NMSE and severe-error rates average seven primary SNR conditions equally. Time is the median at SNR 5~dB, RSR 12~dB. Learned scores average three seeds; classical cases are not counted three times.}
+\end{table}
+
+HS-GS is the strongest original classical comparator on the declared average
+(Table~\ref{tab:all}). The adaptive gradient-descent (GD) core has lower
+test NMSE than the primary EM core. We retain EM because validation
+likelihood selected it before test generation.
+
+The EM model's average gain over HS-GS is 1.675~dB, with interval
+$[1.618,1.730]$~dB and seed-specific gains of 1.533--1.787~dB
+(Fig.~\ref{fig:snr}). At 20~dB, the gain is 0.139~dB with interval
+$[-0.017,0.294]$~dB, which does not establish a clear improvement.
+
+Severe errors fall from 14.25\% for HS-GS to 0.45\% for the proposed
+method. In the tested SNR mixture, that is roughly one badly wrong
+estimate in seven cases versus one in 220.
+
+Median time is 8.24~ms versus 525.62~ms for HS-GS, about 64 times faster
+(Table~\ref{tab:all}). Timing includes initialization and rank search,
+using one Apple M2 CPU thread, double precision, batch size one,
+100 cases and three repeats at SNR 5~dB and RSR 12~dB.
+These are implementation-specific measurements:
+learned methods use PyTorch and classical methods use NumPy/SciPy.
+Offline training is separate. No filtering is faster but less accurate.
+With $m=N-q+1$, one adaptive stage costs
+$O(NKP+NK^2+K^3+Kmq^2+Kq^3)$: the spectral features still require an SVD.
+HS-GS repeats comparable projections across candidate ranks and updates.
+The supplement separates initialization, update and projection costs;
+188 weights do not imply negligible computation.
+
+\begin{figure*}[!t]
+\centering\includegraphics[width=\textwidth]{fig3_limits.pdf}
+\caption{Limits at SNR 5~dB: (a) reference strength with three-to-seven-path channels; (b) fixed path counts at RSR 12~dB. Positive gain favors the proposed estimator. Bars are conditional pointwise paired-case 95\% intervals. Path counts overlap training.}
+\label{fig:limits}
+\end{figure*}
+
+\subsection{Operating Limits}
+The proposed method loses 1.617~dB at RSR 0~dB, 1.104~dB with two paths,
+and 0.203~dB with three paths (Fig.~\ref{fig:limits}). Good average
+performance does not ensure good performance with a weak reference or
+a simple channel.
+
+Transfer tests give gains for noise inputs wrong by $\pm3$~dB and three
+channel alternatives: four clusters of ten rays within $\pm5^\circ$,
+ten equal-power paths, or ten paths with geometrically decreasing powers.
+Alternatives match base-channel energy and are tested only at SNR 5~dB,
+RSR 12~dB. Dimension tests use $N\in\{8,16,32,64\}$,
+$K\in\{2,3,4\}$ and $P\in\{10,20,30\}$, changing one at a time.
+At $N=16$ and $64$, gains are 1.223 and 0.165~dB; at $N=8$ the
+interval includes zero. No tested pilot budget approaches $2K$ closely.
+The supplement reports all dimension changes. Path counts
+overlap training; these tests do not resolve failures under earlier protocols.
+
+\subsection{Further Comparisons}
+A follow-up trains 15 models and uses two fresh test sets, each with
+seven SNR settings and two difficult settings of 200 cases.
+Six primary comparisons are adjusted for multiple testing per set.
+Independent training-data runs gain 1.939 and 1.837~dB over HS-GS;
+each dataset uses one seed, limiting replication. These are separate
+from the main 1.675~dB result. The supplement retains all six comparisons.
+
+A matched-architecture supervised recipe uses mean linear NMSE and the
+same input pilots and training budget. Its approximately 1~dB gap depends
+on checkpoint and averaging choices: it reduces to about 0.73 or 0.36~dB
+under alternative rules. Supervision wins in some settings, including two
+paths. This is not a general superiority claim for self-supervision.
+
+Repeated filtering gains about 0.70~dB over separately trained final-only
+filtering. A separate timing sample gives 4.65 versus 2.05~ms. Mixing is
+usually near one; fixing it at one gives a small average gain but worsens
+two of three seeds on two-path cases. The controller adjusts shrinkage
+strength, not a reliable on/off decision.
+
+\subsection{Which Inputs Help?}
+We compare full, spectrum-only, noise/residual-only and size/stage-only
+controllers. Size and stage remain in every version. All use the same
+update and filter, trained from scratch on 4,096 shared cases, with three
+seeds and 12 epochs. Two fresh sets contain 2,304 cases: seven SNR
+settings and two difficult settings, 128 cases per condition per set.
+
+Full inputs gain 1.22--1.25~dB over spectrum-only, 0.57--0.58~dB over
+noise/residual-only, and 2.21--2.23~dB over size/stage-only inputs;
+adjusted intervals remain positive. Yet they lose 0.39--0.40~dB against
+noise/residual-only at SNR 5~dB, failing the declared 0.25~dB protection
+requirement, and 0.82--0.93~dB on two-path cases. The supplement retains
+the figure. Both groups help the average, not every channel. All variants
+store 188 parameters with masked weights inactive; noise variance still
+enters the measurement update and channel information still enters the filter.
+
+\subsection{Small Reviewer Diagnostics}
+Fresh checks use 32 cases per cell and frozen weights, not a new
+confirmation study. Rician rank scoring improves HS-GS by 0.182~dB;
+the learned model retains a 1.282~dB average gain. A separately
+development-tuned EM100-plus-OptShrink control narrows the learned gain
+to 0.552~dB and wins at SNR 20~dB and RSR 0~dB. In matched one-pass
+post-processing, OptShrink beats cubic filtering by 2.042~dB. Thus the
+cubic rule itself is not superior. Supplying noise variance 6~dB too
+high also makes the learned model 1.409~dB worse than Rician-ranked
+HS-GS. The supplement reports paired intervals, reference-input errors
+and controller trajectories. These results strengthen the comparisons
+but narrow the useful operating range.
+
+\section{Discussion and Conclusion}
+A small model can learn useful Hankel filtering without true-channel
+targets. Its practical setting is repeated estimation near the simulated
+training population, where offline training is reused. The average
+accuracy and time gains come with weak-reference and few-path losses.
+
+All results are simulations. Reference calibration is assumed known,
+and no physical receiver measurements are used. Three seeds sharing
+training cases are not three independent datasets. We have not proved
+unique channel recovery in every setting or convergence of the full
+learned estimator. The comparisons also do not establish superiority
+over published URformer performance.
+Noise-dependent regularized classical controls and broader independent
+training/pilot replications would be needed for a stronger robustness
+claim. We do not infer the cause of a loss solely from its association
+with SNR, path count or reference strength.
+Two-path and RSR 5~dB examples already occur in training, but RSR 0~dB
+does not. Changing
+their weights or adding a curriculum has not been tested. No robustness
+to physical shot statistics, unknown reference drift or two-dimensional
+arrays is established. A block-Hankel extension would require a separate
+geometry model and validation, not just reshaping the input.
+
+The supplement records initialization, numerical safeguards, controller
+trajectories and bounded reviewer diagnostics. These exploratory checks
+do not replace the original frozen confirmation results. The original
+reproducibility package contains compact outputs and a replay subset,
+not every observation/prediction array.
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+\end{document}

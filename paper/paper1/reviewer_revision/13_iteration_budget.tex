@@ -1,0 +1,16 @@
+% Append to the structured-comparison subsection or its supplementary notes.
+% Source: results/p1_revision/budget_check/analysis/summary.json.
+
+We check the final update budget using 300 additional paired trials,
+with 50 trials for each combination of $L\in\{3,7,14\}$ and
+SNR $\in\{0,10\}$~dB. The remaining settings are unchanged. For each
+method, the rank or shrinkage parameter is selected once using 25
+candidate updates, and the same final trajectory is recorded at 100 and
+300 updates. Across the five iterative methods and six operating points,
+the absolute change in ratio-of-sums NMSE is less than $0.06$~dB.
+The supplementary results include paired confidence intervals for these
+changes. This check supports the chosen final update budget in the tested
+conditions, but it does not establish equivalence, global convergence, or
+the best possible rank-selection budget. Some estimates are still changing
+slightly after 300 updates. Parameters are not selected again using the
+longer trajectories or the true channel errors.

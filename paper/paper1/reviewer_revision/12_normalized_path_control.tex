@@ -1,0 +1,20 @@
+% Optional short addition at the end of Effective Rank, or in the supplement.
+% Source: codex_verification/publication/VERIFICATION_REPORT.md, section 5,
+% and its supplemental_statistics.json. This is existing verification
+% evidence, not a result from the new reviewer-response campaign.
+
+We also compare effective rank with a simpler description of complexity,
+$L/r_{\max}$. In a separate prediction check, we fit a piecewise-linear
+gain predictor to the eight matched $N=32$ operating points and evaluate
+it on six $N=16$ and $N=64$ points. The mean absolute prediction errors
+are $2.067$~dB using $L$, $0.073$~dB using $L/r_{\max}$, and
+$0.317$~dB using $\rho$. The 95\% bootstrap interval for the error of
+the $\rho$ predictor minus that of the $L/r_{\max}$ predictor is
+$[0.086,0.283]$~dB. Thus, normalized path count is the better predictor
+in this check. This comparison is limited to the stated operating points
+and interpolation rule, with some endpoint extrapolation. All six target
+gains are positive, so it does not test the ability to detect harmful
+structural processing. Both quantities also use channel information that
+is unavailable at the receiver. We therefore treat $\rho$ as a useful
+description of the results, without claiming that it is the best or a
+receiver-ready predictor of gain.

@@ -1,0 +1,66 @@
+MATCHED COMPACT CONTROLLER COMPARISON, 12 OCTOBER 2026
+
+Purpose: test whether the188-parameter spectral/state controller adds value
+over simpler learned controls and a residual-driven recurrent control. This
+is a follow-up to inspected development studies, not a reproduction of
+C-TISTA, ALISTA, NA-ALISTA, OAMP-Net2 or published URformer.
+
+Four arms share10 relaxed exact-Rician EM stages and spectral initialization.
+None:10 learned update steps. Global:steps plus20 stage-specific filtering
+controls. Adaptive:original188-parameter8-16-2 SiLU controller. Recurrent:
+shared2-input4-hidden LSTMCell and4-to2 output, with10 learned EM steps,
+148 total parameters. All structured arms use exactly the same smooth Hankel
+operator and threshold/mixing range. Recurrent state resets to zero per
+received block and user. No learned initial hidden state. Recurrent outputs
+filter threshold and mixing, not NA-ALISTA's sparse-recovery step/threshold.
+Inputs are log1p normalized magnitude residual and per-user EM update power.
+This is one fixed adaptation, not a search for the best recurrent baseline.
+
+Reuse existing none/global/adaptive models:three seeds9101/9102/9103,20epochs,
+16384 shared observation-only training blocks,2048 separate validation
+blocks, Adam.001,batch32,10stages,float32. Train only recurrent with the SAME
+data, seeds, epoch-specific21/9pilot masks and batch permutations. Select
+initial/epoch1..20 checkpoints solely by equal126-stratum withheld Rician
+NLL. No true channel or generator labels enter training/inference. Include
+all3 seeds, not the best seed. Training seeds share one dataset, not three
+independent channel populations. Training cost reported separately from
+inference. No search-budget advantage is claimed for a historical design.
+
+Freeze source/data hashes before training and model/selection hashes before
+fresh test generation. Each bank has a fixed master seed; world index is
+cell_index*16+case_index, with disjoint seed/index trial IDs across cells.
+Two new independent master banks,16cases per each
+of126 SNR/RSR/path cells plus2separate stress cells,4096worlds total. N32,K3,
+P30; SNR-10..20 by5; RSR5,12,20; random3..7 paths or fixed2,4,8,12,16.
+Same channels/pilots/reference/noise for all methods. Stress:RSR0atSNR5 and
+SNR60atRSR12. Do not tune after seeing test truth. Evaluate all30pilots,
+retaining the existing train/test pilot-count change.
+
+Classical context:offline-frozen OptShrink and per-block in-loop rank
+selection from the existing fair comparison. No new classical tuning.
+Primary:equal average of126 per-cell10log10(sum squared channel error /
+sum true channel power), then average across the3model seeds. Three
+predeclared adaptive contrasts:against none/global/recurrent.4000paired
+within-bank/per-cell bootstrap resamples with Bonferroni95percent intervals.
+These intervals are conditional on training data/models and cannot certify
+novelty or capture training-population uncertainty. Classical comparisons
+descriptive in this small follow-up. Also report seed/bank variability,
+per-cell loss, pooled-linear NMSE and rates above NMSE.5/1/2. No changing the
+primary metric because another favors a preferred method.
+
+Inference timing after training:single-thread PyTorch CPU float64,batch1,
+one independent world per cell,3randomized repeats per method after warmup.
+Count initialization, features, recurrent state, rank search and all-pilot
+refit; exclude model loading and file I/O consistently. Do not compare
+NumPy and PyTorch timing as an algorithmic speed claim.
+
+Checks:parameter counts, constant-control equivalence, finite derivatives,
+float32/64 agreement, deterministic optimizer resume, block-state reset,
+disjoint split records, all4096worlds regenerated, matched trial IDs and
+hashes, representative model replay, independent classical replay, and
+independent statistic recalculation. Latest checkpoint saves last complete
+epoch; incomplete epoch is restarted with deterministic mask/order.
+
+No historical experiment or manuscript is overwritten. No new large neural
+matrix, hardware claim, global convergence theorem, optimum shrinker claim
+or first compact controller claim. User requested a focused study.

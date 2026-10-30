@@ -1,0 +1,6 @@
+\section{Conclusion}
+The network learns how much spatial filtering to apply from the current estimate and observations. The recovery step addresses a different problem: a poor starting estimate. It tries an algebraic alternative and keeps it only when the fitting loss improves. The receiver combines these parts according to the supplied noise and reference levels.
+
+On the final shared test, this design improves channel error over the previous hybrid, preserves its observed BER, and meets the 10.74~ms p90 target in both timing runs. It keeps the ordinary-SNR output unchanged and improves recovery at weak references and high SNR. Sparse/EM still has better overall BER and pooled NMSE. The result supports a useful combination of learned and classical methods, with clear limits.
+
+The source package includes all settings, numerical summaries and five checks covering selection, predictions, BER, statistics and timing. The supplement retains the earlier studies and additional method details. Large raw simulation files and trained weights are not included in this manuscript package; a permanent public code/data archive remains to be assigned. The three training runs share one data population. A matched URformer comparison, calibration-error tests and new training populations would strengthen the evidence.

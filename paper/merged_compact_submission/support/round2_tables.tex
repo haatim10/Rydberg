@@ -1,0 +1,18 @@
+\begin{table}[!t]
+\caption{Static calibration: gain of corrected over supplied inputs}
+\centering\small\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrr@{}}\toprule
+Input condition & Mean gain & Worst cell\\
+ & (dB) & gain (dB)\\\midrule
+Correct inputs & -0.013 & -0.054\\
+Variance $-6$ dB & 0.832 & 0.138\\
+Variance $+6$ dB & 0.997 & -1.048\\
+Amplitude $-10\%$ & 1.863 & -0.072\\
+Amplitude $+10\%$ & 1.449 & -0.413\\
+Joint $+10\%/+6$ dB & 2.872 & -0.746\\
+Phase $+10^\circ$ & -0.008 & -0.048\\
+\bottomrule\end{tabular}
+\parbox{\columnwidth}{\footnotesize Equal average over six SNR/RSR cells.
+Positive gain means lower error. These are descriptive point estimates,
+not a simultaneous robustness guarantee.}
+\end{table}

@@ -1,0 +1,37 @@
+FOCUSED COMPACT-CONTROLLER COMPARISON
+
+4096 fresh paired worlds; 126 primary conditions plus two separately reported stress conditions.
+Original 10/30/188-parameter arms reused; three recurrent controls trained with the matched budget.
+
+PRIMARY MACRO NMSE (lower is better), MEAN SERIAL TIME, TRAINABLE PARAMETERS
+none: -9.773 dB; 1.794 ms; 10 parameters
+global: -11.857 dB; 3.405 ms; 30 parameters
+adaptive: -13.692 dB; 4.874 ms; 188 parameters
+recurrent: -11.725 dB; 4.153 ms; 148 parameters
+opt_selected: -13.204 dB; 15.813 ms; 0 parameters
+rank_loop: -14.144 dB; 110.559 ms; 0 parameters
+
+188-PARAMETER GAINS (positive favors the 188-parameter model); adjusted 95% paired intervals
+none: 3.919 dB; [3.7889738529074646, 4.0013039787665505]; worst-cell deterioration 2.735 dB
+global: 1.835 dB; [1.8050842729477852, 1.8714768219226865]; worst-cell deterioration 0.580 dB
+recurrent: 1.967 dB; [1.9318242239184764, 2.005827298894032]; worst-cell deterioration 0.176 dB
+
+SEVERE-ERROR RATE (NMSE > 1)
+none: 22.842%
+global: 19.560%
+adaptive: 3.100%
+recurrent: 19.775%
+opt_selected: 4.464%
+rank_loop: 6.771%
+
+STRESS CONDITIONS (excluded from the primary average)
+weak_reference: none -4.065 dB, global -6.505 dB, adaptive -6.842 dB, recurrent -5.623 dB, opt_selected -10.823 dB, rank_loop -12.625 dB
+nearly_noiseless: none -44.417 dB, global -30.975 dB, adaptive -6.321 dB, recurrent -20.101 dB, opt_selected -67.701 dB, rank_loop -70.336 dB
+
+Input regeneration, checkpoint replay, independent classical replay and scalar statistic audit passed.
+
+The recurrent arm is a NA-ALISTA-inspired adaptation to this Rician EM/Hankel model, not a reproduction of NA-ALISTA.
+Three training seeds share the original development data. Paired intervals are conditional on these fitted models and frozen settings.
+The four learned arms share observation budget, training data/orders, epoch budget and validation criterion, not parameter count or controller features.
+Classical settings were frozen in the preceding validation-only study. Classical comparisons here are descriptive, not part of the three adjusted tests.
+Fresh held-out worlds do not establish hardware performance or novelty, and must not be pooled with preceding tests.

@@ -1,0 +1,36 @@
+Paper 2 latest review: scientific revision completed, 8 October 2026
+
+The seven author questions are reconciled in RESPONSE_TO_LATEST_REVIEW.txt.
+All 25 training jobs, 300 epochs, 56 fresh test conditions (3,584 worlds),
+and single-case runtime measurements are complete. The new audit passes
+all 2,912 saved prediction files and all 50 selected/final checkpoints.
+
+1. In-loop OptShrink: completed and in the main paper. It wins average dB
+   NMSE by 0.143 dB; learned makes fewer severe errors. Broad superiority
+   and large speedup over this stronger comparator are not claimed.
+2. Trained 5/10/20 stages and 8/16/32 widths: completed. More depth has an
+   accuracy/cost/failure trade-off. No optimal depth or convergence claim.
+3. Observation-only static gain/noise estimation: completed, with explicit
+   costs and failures. Not general calibration recovery or unknown-phase
+   recovery. The cancelled measurement-allocation project is not revived.
+4. P near 2K: completed with frozen-model transfer. Local full rank does
+   not prevent severe finite-noise degradation at six pilots.
+5. Weak-reference diagnostics and curriculum: completed. Curriculum gains
+   0.206 dB overall but loses 2.353 dB in one cell. Almost-noiseless tests
+   expose filtering bias, independently replayed. No universal remedy.
+6. Two experts: completed; the 0.023 dB overall gain is smaller than the
+   similarly sized width-32 control's 0.065 dB gain. Not a new main model.
+7. Fuller reproducibility: saved inputs/predictions/weights, independent
+   metric audit, deterministic regeneration and replay tools are included.
+   The release manifest is the authority for final packaging verification.
+
+The original model and results remain unchanged. Smaller-budget new
+training, previous main results, diagnostics and stronger-baseline tests
+remain separately labelled. Training-data variability is reported, not
+hidden inside conditional test-case intervals. Seed overlap between two
+diagnostic phases is disclosed; the new training test uses fresh seeds.
+
+General IEEE version only. Hardware results, arbitrary calibration drift,
+full published LRHD/URformer reproduction, GPU parity, and global
+convergence are not established. Venue rules, author details, companion
+paper availability and disclosure requirements still need a submission check.

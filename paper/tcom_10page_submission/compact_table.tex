@@ -1,0 +1,16 @@
+\begin{table}[!t]
+\caption{Fresh matched compact comparison: 4,032 primary worlds and 64 separate stress worlds. Lower NMSE is better. Neural scores average three models, not an ensemble. All timings include initialization, use one PyTorch CPU thread and count rank search/refitting.}
+\label{tab:compact}\centering\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}lrrr@{}}\toprule
+Method & Weights & NMSE (dB) & Time (ms)\\
+\midrule
+Learned steps only & 10 & -9.773 & 1.79\\
+Global filtering & 30 & -11.857 & 3.41\\
+Spectral/state controller & 188 & -13.692 & 4.87\\
+Recurrent control & 148 & -11.725 & 4.15\\
+OptShrink, offline & --- & -13.204 & 15.81\\
+OptShrink, block rank & --- & -14.144 & 110.56\\
+\bottomrule
+\end{tabular}
+\end{table}
