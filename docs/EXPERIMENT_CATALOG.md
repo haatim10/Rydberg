@@ -2,7 +2,7 @@
 
 This index links recorded campaigns to their code and saved evidence. Read each report for its result, completion status and limitations. Directory names do not imply successful outcomes.
 
-The complete index is for the `codex` branch. Later topic branches include earlier dependencies. Large raw files may be local-only; see the [archive inventory](archive_20261030/README.md).
+The complete index is for the `archive/complete` branch. Later topic branches include earlier dependencies. Large raw files may be local-only; see the [archive inventory](archive_20261030/README.md).
 
 | Campaign | Code | Saved report or summary |
 | --- | --- | --- |
