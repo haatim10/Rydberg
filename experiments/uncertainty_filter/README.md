@@ -4,7 +4,8 @@ Tests whether the EM phase posterior gives a better data-dependent scale for the
 receiver's Hankel filter. Start with [REPORT.md](REPORT.md); the math is in
 [DERIVATION.md](DERIVATION.md); every reported number is in `summary.json`.
 
-Status: **stopped at Gate 1 (failed)**. Nothing in the frozen studies was modified.
+Status: **closed at Gate 1 (failed); reported as a negative result, not adopted.**
+Nothing in the frozen studies was modified.
 
 ```bash
 .venv/bin/python -m pytest experiments/uncertainty_filter -o addopts=""

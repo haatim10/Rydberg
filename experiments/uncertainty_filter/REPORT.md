@@ -1,8 +1,15 @@
 # Uncertainty-scaled Hankel filter: study report
 
-**Status: stopped at Gate 1 (failed).** Phases 2–4 have not been run. No model was
-trained, no setting was selected and no test draws were generated. The study waits
-for a decision on how to proceed (Section 5).
+**Status: closed at Gate 1 (failed); reported as a negative result.** On review of
+the Gate 1 evidence, the decision was to stop. Phases 2–4 were not run. No model
+was trained, no setting was selected and no test draws were generated.
+
+**Recommendation: do not adopt.** Report the uncertainty-scaled filter as a
+negative result. It cannot meet the decision rule's second route (remove the
+lookup table or schedule switch). Above 20 dB the posterior scale ranks the error
+exactly like the existing final filter's scale, and that error is mostly bias the
+posterior does not model. Its only information gain is a modest one at or below
+20 dB, a region the lookup table does not touch (Section 3).
 
 ## 1. What was tested
 
@@ -160,9 +167,50 @@ filter, so the small rise there is the shrinkage bias.
   effect there is modest.
 - **Arms C/D** inherit the Phase 2 limitation above 20 dB.
 
-## 5. Decision needed
+## 5. Decision and decision rule
 
-Per the study rules, I have stopped here.
+The study stopped at the failed Gate 1, as its rules require. On review, the
+decision was not to continue with the fixed-rule arm, Arm B alone, or the full
+plan. Against the pre-stated decision rule:
+
+- **(1) Improve mean-setting NMSE or BER.** Not tested; no arm was run.
+- **(2) Remove the lookup table or schedule switch within 0.3 dB and the runtime
+  budget.** Not supported. Wherever the table acts, the posterior scale adds no
+  ranking information beyond the existing rule. A single-constant replacement
+  would test table removal, not the posterior.
+
+Outcome: **report as a negative result.**
+
+## 6. Draft text for the paper
+
+**Methods (draft).** We also tested whether the EM phase posterior could set the
+Hankel filter threshold from the data. Given the magnitudes and the current
+estimate, the phase of each field entry is von Mises with concentration
+κ = 2Z|M|/v. Because the magnitude is observed exactly, its posterior variance is
+Z²(1 − R(κ)²), with R = I₁/I₀. We propagated this variance through the
+least-squares M-step, treating entries as independent, to give a per-user
+predicted error u_k. On fresh simulated blocks we compared u_k with the nominal
+scale v tr[(SSᴴ)⁻¹]/K at every stage of the frozen receiver. The data were 128
+channels in each of 120 SNR, reference and path cells, three trained seeds, and
+both the receiver's start and a random start. The comparison used Spearman rank
+correlation with the actual squared error entering each filter. A pre-specified
+gate required a rank-correlation gain of at least 0.05 before any filter was
+built or trained.
+
+**Theory and result (draft).** For large κ, 1 − R(κ)² = 1/κ + O(κ⁻³). The
+posterior variance therefore tends to v/2, the tangential half of the noise, and
+the propagated scale tends to (v/2)[(SSᴴ)⁻¹]_kk. This is the noise-scaled rule
+already used by the final filter, up to a constant factor of √2 in the threshold.
+The known reference keeps |M| large, so the limit is reached whatever the channel
+error. With the receiver's estimates it already holds to within 8% at 0 dB, and
+to within 0.3% from 20 dB up. The posterior scale also does not include the
+current iterate's own error. In our simulations that error is mostly bias in
+early stages and at high SNR. Empirically, the gain in rank correlation was
+0.013 (0.627 against 0.614), well below the gate. Above 20 dB the posterior scale
+ranked the error identically to the existing filter's scale. A small gain (about
+0.1) appeared at or below 20 dB, where the learned controller, not the lookup
+table, sets the filter. We therefore kept the noise-scaled final filter and its
+lookup table.
 
 ## Files
 

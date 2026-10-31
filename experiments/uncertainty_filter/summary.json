@@ -1,5 +1,5 @@
 {
-  "status": "stopped at Gate 1 (failed); phases 2-4 not run",
+  "status": "closed at Gate 1 (failed); phases 2-4 not run by decision; reported as a negative result",
   "phase0": {
     "high_kappa_limit": "kappa (1 - R^2) = 1 + 1/(8 kappa^2) + O(kappa^-3)",
     "tau_relation": "tau_unc(c) -> tau_noise(c)/sqrt(2) at high kappa (not tau_noise(c))",
@@ -1394,5 +1394,11 @@
     "records": 3041280,
     "max_parity": 0.0,
     "per_cell_file": "results/phase1/summary.json"
+  },
+  "recommendation": {
+    "adopt": false,
+    "decision_rule_route_1": "not tested (no arm run)",
+    "decision_rule_route_2": "not supported: above 20 dB u_k ranks error identically to the existing per-user noise scale",
+    "outcome": "report as negative result"
   }
 }
