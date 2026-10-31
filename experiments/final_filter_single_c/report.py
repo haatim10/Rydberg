@@ -107,5 +107,8 @@ text = TEMPLATE
 for k, v in values.items():
     text = text.replace('{{' + k + '}}', v)
 assert '{{' not in text
+addendum = HERE/'m2_timing/ADDENDUM.md'
+if addendum.exists():
+    text = text.rstrip('\n') + '\n\n' + addendum.read_text()
 (HERE/'REPORT.md').write_text(text)
 print('REPORT.md written')

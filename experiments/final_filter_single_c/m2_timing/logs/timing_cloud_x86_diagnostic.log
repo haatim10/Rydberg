@@ -1,0 +1,61 @@
+timing 50 / 459
+timing 100 / 459
+timing 150 / 459
+timing 200 / 459
+timing 250 / 459
+timing 300 / 459
+timing 350 / 459
+timing 400 / 459
+timing 450 / 459
+{
+ "tag": "cloud_x86_diagnostic",
+ "cpu": "model name\t: Intel(R) Xeon(R) Processor @ 2.10GHz",
+ "p90": {
+  "A": {
+   "full_grid": 9.136,
+   "snr_30_60": 10.68,
+   "rsr5_above_30": 10.331
+  },
+  "C2": {
+   "full_grid": 9.113,
+   "snr_30_60": 10.83,
+   "rsr5_above_30": 10.93
+  },
+  "C3": {
+   "full_grid": 9.233,
+   "snr_30_60": 10.864,
+   "rsr5_above_30": 10.889
+  }
+ },
+ "max": {
+  "A": 17.7,
+  "C2": 16.03,
+  "C3": 20.31
+ },
+ "ratio": {
+  "C2": {
+   "full_grid": 0.9974473501185104,
+   "snr_30_60": 1.014066531822015,
+   "rsr5_above_30": 1.0580205607388884
+  },
+  "C3": {
+   "full_grid": 1.0105783129839827,
+   "snr_30_60": 1.0172394830188867,
+   "rsr5_above_30": 1.0540595061800455
+  }
+ },
+ "cap": {
+  "A": {
+   "full_grid_and_snr_30_60": true,
+   "rsr5_above_30": true
+  },
+  "C2": {
+   "full_grid_and_snr_30_60": false,
+   "rsr5_above_30": false
+  },
+  "C3": {
+   "full_grid_and_snr_30_60": false,
+   "rsr5_above_30": false
+  }
+ }
+}
