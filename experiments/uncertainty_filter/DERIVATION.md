@@ -92,9 +92,20 @@ where `m x q = 17 x 16` is the Hankel lift for `N = 32`.
 
 `u_k` is the spread of the **one-step** EM map conditioned on the current `M`. It
 treats the current iterate as fixed and ignores its own error. It ignores
-correlation between entries and pseudo-covariance. It describes `G_EM`, not the
-relaxed `G_dc = G + γ(G_EM - G)`. Bias from a poor current iterate is therefore not
-represented. Phase 1 measures this directly with the bias fraction.
+correlation between entries and pseudo-covariance. Bias from a poor current
+iterate is therefore not represented. Phase 1 measures this directly with the
+bias fraction.
+
+The Hankel filter is applied to the relaxed output
+`G_dc = G + γ(G_EM - G)`, not to `G_EM`. With the current iterate held fixed,
+
+    Cov(G_dc | Z, G) = γ² Cov(G_EM | Z, G),
+
+so the stage-wise conditional MSE proxy used for calibration must be `γ² u_k`.
+This correction applies to stages 1--10. The stored final-filter input is an
+already-produced estimate after the routed EM tail; a fresh `u_k` computed from
+its mean predicts a *next* EM map rather than that current estimate. It is thus
+not included in the corrected calibration gate.
 
 ## 5. Relation to the existing noise-scaled rule (correction)
 

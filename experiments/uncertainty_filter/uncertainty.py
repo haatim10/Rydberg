@@ -75,6 +75,20 @@ def user_uncertainty(z, mu, s, v):
     return np.einsum('bkp,bnp->bk', np.abs(w)**2, var)/z.shape[1]
 
 
+def relaxed_uncertainty(u, gamma):
+    """Conditional MSE scale of ``G_dc = G + gamma (G_EM - G)``.
+
+    ``user_uncertainty`` is the conditional spread of the full EM map
+    ``G_EM`` with the current iterate held fixed. The learned receiver filters
+    the relaxed map ``G_dc``, so its noise-driven conditional MSE is gamma^2
+    times that scale. This does not add the current iterate's bias.
+    """
+    gamma = np.asarray(gamma, dtype=np.float64)
+    if not np.all(np.isfinite(gamma)):
+        raise ValueError('finite relaxation values required')
+    return np.asarray(u, dtype=np.float64)*gamma**2
+
+
 def nominal_scale(s, v):
     """Existing f5 numerator: v tr[(S S^H)^-1] / K, one value per batch row."""
     gram = s @ s.conj().swapaxes(-1, -2)

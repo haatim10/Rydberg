@@ -4,6 +4,15 @@
 the Gate 1 evidence, the decision was to stop. Phases 2–4 were not run. No model
 was trained, no setting was selected and no test draws were generated.
 
+**Correction, 2026-10-31.** The original Stage-1 analysis compared the conditional
+variance of the unrelaxed EM map with the error of the relaxed map that is actually
+filtered. The corrected, saved-data audit is in [CORRECTION.md](CORRECTION.md).
+It multiplies both uncertainty proxies by the exact frozen `gamma_t^2` for stages
+1–10 and excludes the final-filter-input diagnostic row, which has no matching
+next relaxed EM map. The corrected gain is +0.0169 [+0.0165, +0.0174], still below
+the pre-registered +0.05 gate. The negative decision is therefore unchanged; the
+original numerical calibration table below is retained for provenance only.
+
 **Recommendation: do not adopt.** Report the uncertainty-scaled filter as a
 negative result. It cannot meet the decision rule's second route (remove the
 lookup table or schedule switch). Above 20 dB the posterior scale ranks the error
@@ -65,7 +74,8 @@ Setup (pre-registered in [configs/phase1.json](configs/phase1.json)):
 - Each cell also run from a random start.
 - Stages 1–10 are the routed learned stages; stage 11 is the final-filter input
   after the EM tail.
-- 2.28 M receiver-start records and 2.28 M poor-start records.
+- 1,520,640 receiver-start records and 1,520,640 poor-start records (3,041,280
+  total, including the 11th final-filter-input diagnostic row).
 
 The instrumented stage loop reproduces the frozen starts and the frozen receiver's
 filtered output with a maximum absolute difference of exactly 0 in all 120 cells.

@@ -64,18 +64,27 @@ def routed(obs):
 
 
 def stage_records(obs, truth, trace, g_final_in):
-    """Stack per-stage (a, b, c) for stages 1..10 and the final-filter input (11)."""
+    """Stack per-stage proxy, nominal scale and actual error.
+
+    For stages 1--10, ``a`` targets the relaxed output ``dc`` that immediately
+    enters the Hankel filter. The raw posterior covariance describes the full
+    EM map, hence the required gamma-squared factor. The final-filter input
+    remains recorded for diagnostics, but it is not a direct conditional-MSE
+    target: it has no following relaxed EM map.
+    """
     z, s, b, v = (x.detach().cpu().numpy() for x in obs.args())
     n = z.shape[1]
     nominal = np.broadcast_to(U.nominal_scale(s, v)[:, None], (len(z), s.shape[1]))
-    a, c = [], []
+    a, b_scale, c = [], [], []
     for st in trace:
-        a.append(U.user_uncertainty(z, st['mu'], s, v))
+        a.append(U.relaxed_uncertainty(U.user_uncertainty(z, st['mu'], s, v), st['gamma']))
+        b_scale.append(nominal*st['gamma']**2)
         c.append(np.sum(np.abs(st['dc'] - truth)**2, axis=-2)/n)
     a.append(U.user_uncertainty(z, g_final_in @ s + b, s, v))
+    b_scale.append(nominal)
     c.append(np.sum(np.abs(g_final_in - truth)**2, axis=-2)/n)
-    a, c = np.stack(a, 1), np.stack(c, 1)                       # [batch, 11, K]
-    return a, np.broadcast_to(nominal[:, None], a.shape).copy(), c
+    a, b_scale, c = (np.stack(x, 1) for x in (a, b_scale, c))   # [batch, 11, K]
+    return a, b_scale, c
 
 
 def evaluate_cell(args):

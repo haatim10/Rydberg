@@ -80,5 +80,8 @@ def run(core, obs, g0=None, *, tau_rule=None):
             beta = np.full((batch, k), tau_rule.beta)
         structured = _shrink(dc, rel, scale, eye, unhankel, cols)
         g = dc + beta[:, None, :]*(structured - dc)
-        trace.append(dict(mu=mu, dc=dc, g=g, tau=rel*scale, beta=beta))
+        # ``dc`` is the relaxed EM output and is the input to this stage's
+        # Hankel filter. Keep gamma so uncertainty calibration targets the same
+        # random variable rather than the unrelaxed EM map.
+        trace.append(dict(mu=mu, dc=dc, g=g, tau=rel*scale, beta=beta, gamma=float(gamma)))
     return g, trace

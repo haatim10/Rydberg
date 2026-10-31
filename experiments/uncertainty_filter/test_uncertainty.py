@@ -63,6 +63,12 @@ def test_zero_mean_gives_uniform_phase_variance():
     np.testing.assert_allclose(var, z*z, rtol=0, atol=0)
 
 
+def test_relaxed_uncertainty_has_gamma_squared_scale():
+    u = np.array([[.25, 2.], [4., .125]])
+    gamma = np.array([.5, 1.5])
+    np.testing.assert_allclose(U.relaxed_uncertainty(u, gamma), u*gamma**2)
+
+
 @pytest.mark.parametrize('kappa', [1e-3, .5, 2., 20., 300.])
 def test_mean_and_variance_against_quadrature(kappa):
     phi = np.linspace(-np.pi, np.pi, 400001)
