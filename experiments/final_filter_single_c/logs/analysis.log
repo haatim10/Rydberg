@@ -1,0 +1,98 @@
+{
+ "choices": {
+  "C1": 2.0,
+  "C2": 4.0
+ },
+ "verdicts": {
+  "B": {
+   "L1": {
+    "full_grid_diff_db": 1.5648213383360692,
+    "diff_30_60_db": 2.9557736390792417,
+    "passed": false
+   },
+   "L2": {
+    "worst_cell": "L2_rsr12_snr60",
+    "worst_diff_db": 7.4672938258568,
+    "passed": false
+   },
+   "L3": {
+    "passed": true,
+    "cells": 0
+   },
+   "L4": {
+    "passed": true,
+    "rule": "pre-registered substitute: p90 <= 1.02 x arm A p90 (A fails the absolute cap on this machine)",
+    "absolute_cap_pass": false
+   },
+   "replaces": false
+  },
+  "C1": {
+   "L1": {
+    "full_grid_diff_db": -0.20976458259278172,
+    "diff_30_60_db": -0.6000956046234106,
+    "passed": true
+   },
+   "L2": {
+    "worst_cell": "L2_rsr12_snr60",
+    "worst_diff_db": 1.8063935013239387,
+    "passed": false
+   },
+   "L3": {
+    "passed": false,
+    "cells": 6
+   },
+   "L4": {
+    "passed": false,
+    "rule": "pre-registered substitute: p90 <= 1.02 x arm A p90 (A fails the absolute cap on this machine)",
+    "absolute_cap_pass": false
+   },
+   "replaces": false
+  },
+  "C2": {
+   "L1": {
+    "full_grid_diff_db": -0.7012371208745783,
+    "diff_30_60_db": -1.324559006096426,
+    "passed": true
+   },
+   "L2": {
+    "worst_cell": "random3to7_rsr20_snr32.5",
+    "worst_diff_db": 0.23213195808810383,
+    "passed": true
+   },
+   "L3": {
+    "passed": true,
+    "cells": 0
+   },
+   "L4": {
+    "passed": false,
+    "rule": "pre-registered substitute: p90 <= 1.02 x arm A p90 (A fails the absolute cap on this machine)",
+    "absolute_cap_pass": false
+   },
+   "replaces": false
+  }
+ },
+ "oracle": {
+  "full_grid": {
+   "O": -39.27845226378228,
+   "A": -38.34766650108986,
+   "best_single": -39.048903621964435,
+   "B": -36.78284516275379,
+   "headroom_A_minus_O": 0.9307857626924241,
+   "cost_single_minus_A": -0.7012371208745783
+  },
+  "snr_30_60": {
+   "O": -51.53602298042189,
+   "A": -50.14010324464872,
+   "best_single": -51.46466225074513,
+   "B": -47.184329605569474,
+   "headroom_A_minus_O": 1.3959197357731716,
+   "cost_single_minus_A": -1.324559006096426
+  }
+ },
+ "max_headroom": {
+  "value": 7.508949122920015,
+  "cell": "L2_rsr5_snr50"
+ },
+ "conclusion": false,
+ "best_single": "C2"
+}

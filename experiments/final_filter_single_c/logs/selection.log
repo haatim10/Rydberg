@@ -1,0 +1,22 @@
+{
+  "selected": {
+    "C1": 2.0,
+    "C2": 4.0
+  },
+  "d_gate": {
+    "run": false,
+    "c1_low30_heldout_nll": 4.715155990341942,
+    "c2_low30_heldout_nll": 4.707907896681418,
+    "rule": "Run D only if, at the frozen C1 and C2 constants, C1's equal-cell mean held-out NLL over validation cells with SNR <= 30 dB is lower than C2's (= no filter there) by more than 1e-12. Otherwise record D as skipped: above 20 dB u_k equals the noise scale / sqrt(2) to within 0.3%, so D adds nothing where the filter acts.",
+    "reason": "C1 did not beat C2 (no filter) below 30 dB on validation held-out loss; above 20 dB u_k equals the noise scale / sqrt(2) to within 0.3%, so D adds nothing where the filter acts."
+  },
+  "diagnostic": {
+    "C1": 2.0,
+    "C2": 4.0,
+    "D": 3.0
+  },
+  "A": {
+    "heldout_nll": 6.101529959272618,
+    "nmse_db": -38.65098481158938
+  }
+}
