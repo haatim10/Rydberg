@@ -1,0 +1,85 @@
+{
+  "study": "Can one constant replace the final-filter table? Value of per-setting filter strength.",
+  "branch": "study/final-filter-single-constant",
+  "base": "archive/complete (25a4af4112e15e17684d97137e12dc9f77a84518)",
+  "written_before_any_data": true,
+  "model": {"N": 32, "K": 3, "P_fit": 30, "P_heldout": 9, "pilots": "Gaussian", "reference": "known repeated LOS"},
+  "frozen_receiver": {
+    "entry": "tcom_reliability_20261021.inference.gated(obs, seed, rule, est, BASE_POLICY)",
+    "seeds": [9101, 9102, 9103],
+    "recovery_rule": "results/tcom_reliability_20261021/policy.json candidate_rule (max_t2_e20)",
+    "routing_policy": "results/tcom_hybrid_sensitivity_20261020/protocol.json proposal_policy",
+    "filter_table": "results/tcom_filter_continuation_20261019/policy.json repair_choices, applied via tcom_start_budget_20261020/study.py finish"
+  },
+  "upstream_definition": "Pre-filter estimate g_pre per channel and fit = the estimate the frozen receiver passes to its final filter: adaptive output (SNR <= 20 dB); start + EM tail (SNR > 20 dB); if the recovery check accepted an alternative, that alternative (unfiltered, since the table filter is off at reference key 5). Recovery trigger/acceptance decisions are those of the frozen receiver and are not recomputed per arm. See POLICY_TRACE.md.",
+  "arms": {
+    "A": "Current table: shrink.apply(g_pre, c_table, beta=1) where the table filters and the receiver calls finish; identity elsewhere. Must equal frozen gated() output with max abs diff exactly 0 on every validation and test cell, fit and channel; otherwise the study stops.",
+    "B": "No final filter anywhere: g_pre.",
+    "C1": "Noise scale, one global c, beta=1, applied in ALL settings (including SNR <= 20 dB).",
+    "C2": "Noise scale, one global c, beta=1, applied only on the high-SNR route (nominal SNR > 30 dB + 1e-10, the global-start/EM-tail path). This region contains every setting the table filters; the difference (RSR key 5 above 30 dB, and 31.25 dB at all references) is reported.",
+    "D": "Posterior scale: tau_k = c sqrt(2 u_k max(m,q)), u_k = user_uncertainty(Z, g_pre S + B, S, v) from uncertainty_vendored.py (byte copy of audit/uncertainty-filter-correction f1155f0b experiments/uncertainty_filter/uncertainty.py, sha256 54de64e3...e1a4); same smooth Hankel shrinkage, beta=1, all settings. Run only if the D gate passes.",
+    "O": "Oracle: per test cell (SNR x RSR x paths), the noise-scale c from the grid minimizing that cell's 3-fit mean test NMSE (dB), chosen with the true channel on the test draws (in-sample; optimistic by construction). Diagnostic only; never used to select A-D."
+  },
+  "grid": {
+    "noise_c": [0, 0.5, 1, 1.5, 2, 3, 4, 5, 5.66, 6, 8],
+    "posterior_c": "noise_c values union sqrt(2) * noise_c values (22 values, c=0 once)",
+    "beta": 1
+  },
+  "settings": {
+    "grid_snrs_db": [0, 5, 10, 15, 20, 22.5, 25, 27.5, 30, 32.5, 35, 37.5, 40, 42.5, 45, 50, 60],
+    "grid_rsrs_db": [5, 12, 20],
+    "regimes": {"L2": 2, "L4": 4, "random3to7": null},
+    "main_grid_cells": 153,
+    "test_offgrid_snrs_db": [31.25, 33.75, 36.25, 38.75, 47.5],
+    "test_offgrid_rsrs_db": [8, 16],
+    "test_weak_rsr_db": [0],
+    "test_cells": "153 grid + 45 (off-grid SNR x grid RSR x paths) + 132 (RSR 8,16 x 22 SNRs x paths) + 66 (RSR 0 x 22 SNRs x paths) = 396",
+    "channels_per_cell": 128,
+    "anchors": "Per (regime, reference) block: 128 channels shared across all SNRs of that block (existing risk_data.make_anchor convention: one unit-noise realization scaled per SNR); 39 pilots = 30 fitting + 9 held-out.",
+    "physical_seed": "1000 * role_seed + round(10 * RSR_dB) (existing formula, extended to RSR 0/8/16)"
+  },
+  "seeds": {
+    "validation": 2026103101,
+    "test": 2026103102,
+    "heldout_pilots_and_noise": 2026103103,
+    "ber_data": 2026103104,
+    "bootstrap": 2026103105,
+    "timing": 2026103106,
+    "timing_window_indices": [[700, 701, 702], [800, 801, 802]]
+  },
+  "selection": {
+    "data": "validation draws only (153 grid cells); never test draws, never truth",
+    "score": "held-out exact Rician NLL (tcom_pilot_em_20261018.continuation.nll) of g S_h + B_h against the 9 held-out magnitudes, mean over entries; cell score = mean over 128 channels and 3 fits; objective = equal-cell mean over the 153 cells",
+    "rule": "argmin over the arm's grid; ties within 1e-12 -> smaller c",
+    "diagnostic": "also report the c that validation true-channel NMSE (equal-cell mean dB) would pick; not used",
+    "d_gate": "Run D only if, at the frozen C1 and C2 constants, C1's equal-cell mean held-out NLL over validation cells with SNR <= 30 dB is lower than C2's (= no filter there) by more than 1e-12. Otherwise record D as skipped: above 20 dB u_k equals the noise scale / sqrt(2) to within 0.3%, so D adds nothing where the filter acts.",
+    "freeze": "configs/frozen_choices.json with all selected constants, the D decision and validation bank hashes; its sha256 is written to configs/frozen_choices.sha256 and checked before any test draw is generated"
+  },
+  "metrics": {
+    "cell_nmse_db": "10 log10(sum_channels ||G_hat - G||^2 / sum_channels ||G||^2) per fit, averaged over the 3 fits (existing reports)",
+    "mean_setting_nmse_db": "equal-cell mean of cell NMSE dB over a scope",
+    "pooled_nmse": "ratio of sums over all channels in a scope, per fit, mean over fits (linear and dB)",
+    "ber": "existing exact 64-hypothesis Rician magnitude ML detector (tcom_followups_20261017/ber_detector.py), 64 Gray-QPSK vectors per channel, fresh data noise SeedSequence([ber_data, regime_index, round(10*RSR), local_index]) shared across SNR and arms; cell BER = mean over channels and fits",
+    "bootstrap": "20,000 multinomial resamples of the 128 anchors independently within each (regime, reference) block, shared across SNR, arm and fit (existing procedure); intervals for arm - A",
+    "runtime": "complete call per arm (receiver + recovery check + arm filter, including u_k for D), one CPU thread, float64, randomized order, warm-up excluded; two windows (before and after the test accuracy runs) of 459 worlds (153 grid settings x 3 indices); p90 and max; scopes: full grid and target range (RSR 5, SNR > 30 dB, existing 'weak_target')"
+  },
+  "acceptance_limits": {
+    "scope": "153-setting test grid. Off-grid and RSR 0 points get the same per-setting checks, reported as secondary (not part of pass/fail).",
+    "L1": "mean-setting NMSE(arm) - NMSE(A) <= 0.3 dB over the full grid AND over 30-60 dB (SNR >= 30, 81 cells)",
+    "L2": "no setting with NMSE(arm) - NMSE(A) > 1.0 dB",
+    "L3": "no setting whose 95% bootstrap interval for BER(arm) - BER(A) lies entirely above zero",
+    "L4": "p90 runtime <= 10.74 ms in the full grid and in the target range, in both windows",
+    "L4_contingency": "This machine is not the Apple M2 on which 10.74 ms was set. If arm A itself fails the absolute cap here, L4 is reported as not assessable as written and the pre-registered substitute is used: arm p90 <= 1.02 x A p90 in both scopes and both windows. The user is told.",
+    "replaces_table": "all of L1-L4 hold",
+    "preference": "If several arms pass, prefer C1, then C2, then D"
+  },
+  "oracle_analysis": {
+    "table": "per setting and averaged over 30-60 dB and the full grid: NMSE of O, A, best single-constant arm, B",
+    "best_single_constant_arm": "the frozen single-constant arm (C1, C2 or D if run) with the lowest full-grid mean-setting test NMSE (reporting only)",
+    "headroom": "A - O",
+    "cost_of_one_constant": "best single-constant arm - A",
+    "conclusion_rule": "If A - O < 0.3 dB on average (full grid and 30-60 dB) and < 1 dB in every setting, conclude that further filter development is unlikely to pay off"
+  },
+  "truth_use": "True channels only for scoring and the oracle; never for selection of A-D.",
+  "storage": "Large caches (anchor banks with truth, pre-filter estimates) are kept out of git; their SHA-256 hashes are committed."
+}
