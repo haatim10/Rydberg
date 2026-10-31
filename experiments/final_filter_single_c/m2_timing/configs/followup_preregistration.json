@@ -1,0 +1,38 @@
+{
+  "status": "POST HOC follow-up to the frozen final-filter single-constant study. Written after its test results were seen; nothing here changes the frozen results, choices or verdicts.",
+  "written_before_any_followup_data": true,
+  "parent": {
+    "branch": "study/final-filter-single-constant",
+    "commit": "7e0ebf42",
+    "frozen_choices_sha256": "d87e168e4770a30e3878fe44c5d7dde8374929e898869a82e614d7f50e0487dc",
+    "constants": {"C2": 4.0}
+  },
+  "part_1_timing": {
+    "requested_hardware": "Apple M2 (the hardware on which the 10.74 ms limit was set)",
+    "limit": "absolute p90 <= 10.74 ms: the ORIGINAL pre-registered limit. The 1.02 x arm-A ratio used in the main study was only the fallback for the cloud machine, where arm A itself exceeded the cap.",
+    "arms": ["A", "C2", "C3"],
+    "method": "One process, one CPU thread, float64. For every world and fit the arms run back to back on the same inputs, with the arm order rotated per call (A,C2,C3 / C2,C3,A / C3,A,C2) so no arm always runs first. Warm-up on two worlds before timing. Nothing else running.",
+    "worlds": "153 grid settings x 3 indices = 459 worlds; indices 900, 901, 902 in the main study's timing seed domain (2026103106), disjoint from windows 1 (700-702) and 2 (800-802)",
+    "scopes": {
+      "full_grid": "all 153 settings",
+      "snr_30_60": "SNR 30-60 dB, all RSR (the scope named '30-60 dB target range' in the follow-up request)",
+      "rsr5_above_30": "RSR 5 dB, SNR > 30 dB (the 'target range' defined in the main pre-registration, existing 'weak_target')"
+    },
+    "report": "p90, max per arm and scope; C2/A and C3/A p90 ratios; pass/fail of each arm against 10.74 ms in full_grid AND snr_30_60, and separately in rsr5_above_30",
+    "cloud_diagnostic": "The same script is also run on the cloud x86 machine and reported ONLY as a labelled diagnostic (ratios); it is not an M2 result and gives no pass/fail against the absolute limit."
+  },
+  "part_2_c3": {
+    "arm": "C3 = C2 (noise scale, c = 4, beta = 1, nominal SNR > 30 dB) but applied only where the receiver's routed EM-tail length is > 0 (proposal_policy.tails after the family-mismatch rule). Recovery decisions stay those of the frozen receiver, as in the main study.",
+    "where_c3_filters": "reference key 5: SNR key >= 40 dB; reference keys 12/20: SNR key >= 32.5 dB; never at 31.25 dB (zero-tail mismatch). See ../POLICY_TRACE.md.",
+    "comparison_arms": ["A", "C2", "C3"],
+    "seeds": {"draws": 2026103121, "heldout_pilots_and_noise": 2026103103, "ber_data": 2026103124, "bootstrap": 2026103125},
+    "settings": "153 grid cells + off-grid SNR {31.25, 33.75, 36.25, 38.75, 47.5} dB x grid RSR (45) + RSR {0, 8, 16} dB x 22 SNRs (198) = 396 cells, 3 path regimes, 128 channels per cell, 3 fits",
+    "metrics": "same as the main study: cell NMSE (dB of ratio of sums, mean over fits), mean-setting and pooled NMSE, BER through the existing detector (64 vectors per channel), 20,000-draw block bootstrap within (regime, reference), shared across SNR/arm/fit",
+    "questions": {
+      "Q1": "Does C3 remove the > 1 dB losses at 31.25 dB (C2 - A > 1 dB at RSR 12/16 in the main test)? Pass if no 31.25 dB cell has C3 - A > 1 dB.",
+      "Q2": "Does C3 keep C2's gains elsewhere? Report C3 - C2 per scope with intervals, and list every cell where C3 is worse than C2 by > 0.3 dB.",
+      "limits": "The main study's L1-L3 are also reported for C3 against A, descriptively (post hoc)."
+    },
+    "truth_use": "scoring only"
+  }
+}
